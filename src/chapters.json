@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Bouncing Ball",
+    "desc": "Simulation of the ball bouncing off the walls.",
+    "link": "/BouncingBall",
+    "level": {"color": 1, "name": "Easy"},
+    "duration": 10
+  },
+  {
+    "id": 2,
+    "name": "Vector Operations",
+    "desc": "Vector Operations in real time.",
+    "link": "/VectorsOperations",
+    "level": {"color": 2, "name": "Easy"},
+    "duration": 12
+  },
+  {
+    "id": 3,
+    "name": "Dinamica",
+    "desc": "Analisi delle forze e delle leggi di Newton.",
+    "link": "/cap3",
+    "level": {"color": 2, "name": "intermedio"},
+    "duration": 15
+  },
+  {
+    "id": 4,
+    "name": "Energia e Lavoro",
+    "desc": "Concetti di energia cinetica, potenziale e lavoro.",
+    "link": "/cap3",
+    "level": {"color": 3, "name": "avanzato"},
+    "duration": 14
+  },
+  {
+    "id": 5,
+    "name": "Quantità di moto",
+    "desc": "Studio della quantità di moto e del principio di conservazione.",
+    "link": "/cap4",
+    "level": {"color": 3, "name": "avanzato"},
+    "duration": 13
+  }
+]
