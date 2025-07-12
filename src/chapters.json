@@ -4,39 +4,34 @@
     "name": "Bouncing Ball",
     "desc": "Simulation of the ball bouncing off the walls.",
     "link": "/BouncingBall",
-    "level": {"color": 1, "name": "Easy"},
-    "duration": 10
+    "tags": [
+      {"color": 1, "name": "Easy"},
+      {"color": 7, "name": "Physics"},
+      {"color": 4, "name": "Collision"},
+      {"color": 5, "name": "Animation"}
+    ]
   },
   {
     "id": 2,
     "name": "Vector Operations",
     "desc": "Vector Operations in real time.",
     "link": "/VectorsOperations",
-    "level": {"color": 2, "name": "Easy"},
-    "duration": 12
+    "tags": [
+      {"color": 2, "name": "Medium"},
+      {"color": 6, "name": "Math"},
+      {"color": 7, "name": "Vectors"},
+      {"color": 7, "name": "Physics"}
+    ]
   },
   {
     "id": 3,
-    "name": "Dinamica",
-    "desc": "Analisi delle forze e delle leggi di Newton.",
-    "link": "/cap3",
-    "level": {"color": 2, "name": "intermedio"},
-    "duration": 15
-  },
-  {
-    "id": 4,
-    "name": "Energia e Lavoro",
-    "desc": "Concetti di energia cinetica, potenziale e lavoro.",
-    "link": "/cap3",
-    "level": {"color": 3, "name": "avanzato"},
-    "duration": 14
-  },
-  {
-    "id": 5,
-    "name": "Quantità di moto",
-    "desc": "Studio della quantità di moto e del principio di conservazione.",
-    "link": "/cap4",
-    "level": {"color": 3, "name": "avanzato"},
-    "duration": 13
+    "name": "Ball Acceleration",
+    "desc": "Ball accelerating to the mouse direction.",
+    "link": "/BallAcceleration",
+    "tags": [
+      {"color": 3, "name": "Advanced"},
+      {"color": 7, "name": "Physics"},
+      {"color": 4, "name": "Acceleration"}
+    ]
   }
 ]

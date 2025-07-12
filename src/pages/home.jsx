@@ -15,7 +15,7 @@ export function Home() {
             name={chap.name}
             desc={chap.desc}
             link={chap.link}
-            level={chap.level} 
+            tags={chap.tags} 
           />
         ))}
       </main>

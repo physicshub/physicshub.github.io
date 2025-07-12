@@ -103,9 +103,6 @@ header.sticky {
 
 nav {
   z-index: 2100;
-  position: absolute;
-  margin-top: 0.5rem;
-  border-radius: 0px, 0px, 8px,8px;
 }
 
 nav ul {
@@ -170,11 +167,13 @@ nav a.active::after {
   color: var(--text-color);
   width: 150px;
   transition: width 0.3s, border-color 0.3s, box-shadow 0.3s;
+  outline: none;
 }
 
 .search-container input:focus {
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
-  border-color: var(--accent-color);
+  outline: var(--accent-color);
+  outline-color: var(--accent-color);
   width: 200px;
 } 
 
@@ -184,6 +183,7 @@ nav a.active::after {
   padding: 0 0.75rem;
   color: #000;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 .search-container button:hover {
@@ -290,6 +290,7 @@ main {
 .chapter-card-overlay > h2{
   line-height: normal;
   margin-bottom: 0.8rem;
+  text-shadow: 0 0 3px var(--glow-color);
 }
 
 .chapter-card-stroke{
@@ -597,6 +598,31 @@ footer {
   box-shadow: 0 0 8px #ff0019;
 }
 
+.tag4 {
+  background: linear-gradient(135deg, #007bff, #00cfff);
+  box-shadow: 0 0 8px #00cfff;
+}
+
+.tag5 {
+  background: linear-gradient(135deg, #8e44ad, #c678dd);
+  box-shadow: 0 0 8px #c678dd;
+}
+
+.tag6 {
+  background: linear-gradient(135deg, #fd7e14, #ffb07c);
+  box-shadow: 0 0 8px #fd7e14;
+}
+
+.tag7 {
+  background: linear-gradient(135deg, #20c997, #00ffb3);
+  box-shadow: 0 0 8px #00ffb3;
+}
+
+.tag8 {
+  background: linear-gradient(135deg, #6c757d, #adb5bd);
+  box-shadow: 0 0 8px #adb5bd;
+}
+
 /* Screen */
 .screen {
   flex: 2;
@@ -641,6 +667,14 @@ footer {
 .input-number:focus {
   border-color: var(--accent-color);
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
+}
+
+.input-number:disabled {
+  background: #222;
+  color: #888;
+  border-color: #333;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .input-slider {
@@ -815,7 +849,7 @@ footer {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(0,230,230,0.4) 0%, transparent 50%);
+  background: radial-gradient(circle at center, rgba(0,230,230, 0.1) 0%, transparent 50%);
   opacity: 0;
   transform: scale(0);
   transition: opacity 0.5s, transform 0.5s;
@@ -829,8 +863,8 @@ footer {
 .back-to-home__link:hover,
 .back-to-home__link:focus {
   background: rgba(0, 230, 230, 0.1);
-  box-shadow: 0 0 12px var(--glow-color);
-  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--accent-color);
+  transform: translateY(-4px);
 }
 
 .back-to-home__icon {

@@ -1,6 +1,6 @@
 function Tag(props) {
     return (
-        <span className={`tag tag${props.level.color}`}>{props.level.name}</span>
+        <span className={`tag tag${props.level.color}`} key={props.id}>{props.level.name}</span>
     );
 }
 

@@ -1,58 +1,44 @@
-import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMoon, faSun, faMagnifyingGlass, faHamburger} from '@fortawesome/free-solid-svg-icons'
-import { Link } from "react-router-dom"
+import { useState, useCallback } from 'react';
+import { Logo } from './Logo';
+import { NavMenu } from './Nav';
+import { Theme } from './Theme';
+import { Search } from './Search';
+import { useSticky } from '../hooks/useSticky';
+import { useTheme } from '../hooks/useTheme';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHamburger } from '@fortawesome/free-solid-svg-icons';
 
-function Header(){
-  const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useState('dark');
-  const [sticky, setSticky] = useState(false);
+export default function Header() {
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const isSticky = useSticky(50);
+  const { mode, toggleMode } = useTheme('dark');
 
-  useEffect(() => {
-    document.body.dataset.theme = theme;
-  }, [theme]);
-
-  useEffect(() => {
-    const onScroll = () => setSticky(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  const handleMenuToggle = useCallback(
+    () => setMenuOpen(open => !open),
+    []
+  );
 
   return (
-    <header className={`${sticky?'sticky':''} ${open?'open':''}`}>
+    <header className={`header ${isSticky ? 'sticky' : ''} ${isMenuOpen ? 'open' : ''}`.trim()}>
       <div className="header-inner">
-        <Link to="/" className="logo" aria-label="Home">
-          <img src="../public/icon.png" alt="Logo" draggable="false" />
-        </Link>
+        <Logo />
+
         <button
           className="menu-toggle"
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-          aria-label="Toggle menu"
-        ><FontAwesomeIcon icon={faHamburger}/></button>
-        <nav>
-          <ul>
-            <li><a href="#home" className="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
+          onClick={handleMenuToggle}
+          aria-expanded={isMenuOpen}
+          aria-label="Apri/Chiudi menu"
+        >
+          <FontAwesomeIcon icon={faHamburger} />
+        </button>
+
+        <NavMenu isOpen={isMenuOpen} />
+
         <div className="controls">
-          <button
-            className="theme-toggle"
-            onClick={() => setTheme(theme==='dark'?'light':'dark')}
-            aria-label="Toggle theme"
-          >{theme==='dark'?<FontAwesomeIcon icon={faSun}/>:<FontAwesomeIcon icon={faMoon}/>}</button>
-          <div className="search-container">
-            <input type="search" placeholder="Search..." aria-label="Search"/>
-            <button type="submit" aria-label="Submit search"><FontAwesomeIcon icon={faMagnifyingGlass}/></button>
-          </div>
+          <Theme mode={mode} onToggle={toggleMode} />
+          <Search />
         </div>
       </div>
     </header>
   );
 }
-
-export default Header;

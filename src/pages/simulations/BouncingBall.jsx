@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import Screen from "../components/Screen.jsx"
-import NumberInput from "../components/inputs/NumberInput.jsx"
-import CheckboxInput from "../components/inputs/CheckboxInput.jsx"
-import Back from "../components/Back.jsx"
+import Screen from "../../components/Screen.jsx"
+import NumberInput from "../../components/inputs/NumberInput.jsx"
+import CheckboxInput from "../../components/inputs/CheckboxInput.jsx"
+import ColorInput from "../../components/inputs/ColorInput.jsx";
+import Back from "../../components/Back.jsx"
 
 export function BouncingBall() {
     const [inputs, setInputs] = useState({
@@ -10,6 +11,7 @@ export function BouncingBall() {
         velocityY: 2,
         size: 48,
         trailEnabled: true,
+        ballColor: "#7f7f7f",
     });
 
     // Input handling
@@ -19,10 +21,7 @@ export function BouncingBall() {
     }, [inputs]);
 
     const handleInputChange = (name, value) => {
-        setInputs(prev => ({
-        ...prev,
-        [name]: value
-        }));
+        setInputs(prev => ({...prev, [name]: value}));
     };
 
     // p5 sketch
@@ -39,7 +38,7 @@ export function BouncingBall() {
         }
 
         p.draw = () => {
-            const { velocityX, velocityY, size, trailEnabled } = inputsRef.current;
+            const { velocityX, velocityY, size, trailEnabled, ballColor } = inputsRef.current;
             if (Math.abs(velocity.x) !== Math.abs(velocityX)) {
                 velocity.x = Math.sign(velocity.x) * Math.abs(velocityX);
             }
@@ -62,10 +61,11 @@ export function BouncingBall() {
                 p.fill(bgColor[0], bgColor[1], bgColor[2], 60);
                 p.rect(0, 0, p.width, p.height);
                 p.stroke(0);
-                p.fill(127);
             } else {
                 p.background(bgColor[0], bgColor[1], bgColor[2]);
             }
+
+            p.fill(ballColor);
             p.circle(position.x, position.y, size);   
         }
 
@@ -108,6 +108,12 @@ export function BouncingBall() {
                     onChange={e =>
                         handleInputChange("trailEnabled", e.target.checked)
                     }
+                />
+                <ColorInput
+                    label="Ball Color:"
+                    name="ballColor"
+                    value={inputs.ballColor} 
+                    onChange={e => handleInputChange("ballColor", e.target.value)}
                 />
             </main>
         </>

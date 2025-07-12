@@ -8,8 +8,9 @@ function Chapter(props) {
         <section id={props.id} className="chapter-card">
             <div className='chapter-card-overlay'>
                 <div className="chapter-card-tags-container">
-                    <Tag level={props.level}/>
-                    <Tag level={props.level}/>
+                    {props.tags.map((tag, idx) => (
+                        <Tag level={tag} key={tag.id || idx} />
+                    ))}
                 </div>
                 <h2>Capitolo {props.id}: {props.name}</h2>
                 <p>{props.desc}</p>
