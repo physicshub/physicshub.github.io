@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import {faXTwitter, faGithub, faDiscord} from '@fortawesome/free-brands-svg-icons' 
 
 function Footer() {
@@ -9,14 +10,6 @@ function Footer() {
 
   return (
     <footer>
-      <div className="footer-divider">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M0,0 C300,100 900,0 1200,80 L1200,120 L0,120 Z" opacity="0.6"/>
-          <path d="M0,20 C300,120 900,20 1200,100 L1200,120 L0,120 Z" opacity="0.4"/>
-          <path d="M0,40 C300,140 900,40 1200,120 L1200,120 L0,120 Z"/>
-        </svg>
-      </div>
-
       <div className="footer-content">
         <div className="footer-section footer-about">
           <h3>About the website</h3>
@@ -36,7 +29,7 @@ function Footer() {
           <div>
             <a href="https://twitter.com/mattqdev" aria-label="Twitter"><FontAwesomeIcon icon={faXTwitter}/></a>
             <a href="https://github.com/mattqdev" aria-label="GitHub"><FontAwesomeIcon icon={faGithub}/></a>
-            <a href="https://linkedin.com/in/mattqdev" aria-label="LinkedIn"><FontAwesomeIcon icon={faDiscord}/></a>
+            <a href="https://discord.gg/invite/Rpwbb9YMzr" aria-label="LinkedIn"><FontAwesomeIcon icon={faDiscord}/></a>
           </div>
         </div>
       </div>
@@ -46,7 +39,7 @@ function Footer() {
           onClick={scrollToTop}
           className="back-to-top"
           aria-label="Back to top"
-        >↑</button>
+        ><FontAwesomeIcon icon={faArrowUp}/></button>
       </div>
     </footer>
   );
