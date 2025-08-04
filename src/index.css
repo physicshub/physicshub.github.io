@@ -416,14 +416,16 @@ footer {
   color: var(--accent-color);
 }
 
-.footer-socials a > *{
+.footer-socials a > * {
+  transform: scale(1) rotateY(0deg);
   transition: transform 0.3s, text-shadow 0.3s;
 }
 
-.footer-socials a > *:hover {
-  transform: scale(1.2);
+.footer-socials a:hover > * {
+  transform: rotateY(180deg);
   text-shadow: 0 0 8px var(--glow-color);
 }
+
 
 
 /* bottom bar */

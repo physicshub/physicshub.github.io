@@ -1,4 +1,3 @@
-import Header from "../components/Header.jsx"
 import Footer from "../components/Footer.jsx"
 import Button from "../components/Button.jsx"
 
