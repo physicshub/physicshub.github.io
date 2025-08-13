@@ -6,10 +6,13 @@ import React, {
 } from "react";
 import p5 from "p5";
 
-import Back from "../../components/Back.jsx";
+import TopSim from "../../components/TopSim.jsx";
 import NumberInput from "../../components/inputs/NumberInput.jsx";
 import ColorInput from "../../components/inputs/ColorInput.jsx";
 import SelectInput from "../../components/inputs/SelectInput.jsx";
+import TheoryRenderer from "../../components/theory/TheoryRenderer";
+import chapters from "../../chapters.json";
+import { useLocation } from "react-router-dom";
 
 export function BallGravity() {
   const [config, setConfig] = useState({
@@ -19,6 +22,8 @@ export function BallGravity() {
     color: "#7f7f7f",
     wind: 0.1
   });
+  const [isBlowing, setIsBlowing] = useState(false); // NEW
+
   const configRef = useRef(config);
   useEffect(() => { configRef.current = config; }, [config]);
 
@@ -104,6 +109,10 @@ export function BallGravity() {
         ball.update();
       };
 
+      // NEW: sincronizza isBlowing con eventi mouse
+      p.mousePressed = () => setIsBlowing(true);
+      p.mouseReleased = () => setIsBlowing(false);
+
       p.windowResized = () => {
         const newW = canvasParent.current.clientWidth;
         const newH = canvasParent.current.clientHeight;
@@ -118,6 +127,7 @@ export function BallGravity() {
       p5Instance.current.remove();
     };
   }, []);
+
 
   const handleChange = useCallback(
     name => e => {
@@ -142,15 +152,26 @@ export function BallGravity() {
     { value: 2.528 * earthG, label: "Jupiter (24.79 m/s²)"            }
   ])();
 
-
-
   return (
     <>
-      <Back content="Back to home" link="/" />
+      <TopSim/>
 
-      <div ref={canvasParent} className="screen" style={{ flex: 1 }} />
+      <div ref={canvasParent} className="screen wind-container" style={{ flex: 1 }}>
+        <div
+          className={`wind-overlay ${isBlowing ? 'blowing' : ''}`}
+          aria-hidden="true"
+        >
+          <svg className="wind-icon" viewBox="0 0 64 32" width="80" height="40">
+            <path d="M2 10 Q18 5, 30 10 T62 10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" />
+            <path d="M8 20 Q22 15, 34 20 T62 20" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="58" cy="10" r="2" fill="white" />
+            <circle cx="56" cy="20" r="2" fill="white" />
+          </svg>
+        </div>
+      </div>
 
-      <main>
+
+      <div className="inputs-container">
         <NumberInput
           label="Ball Size:"
           val={config.size}
@@ -184,7 +205,9 @@ export function BallGravity() {
           value={config.color}
           onChange={handleChange("color")}
         />
-      </main>
+      </div>
+
+      <TheoryRenderer theory={chapters.find(ch => ch.link === useLocation().pathname)?.theory} />
     </>
   );
 }

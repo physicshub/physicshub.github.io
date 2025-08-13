@@ -1,0 +1,302 @@
+/* Theory styles section */
+:root {
+  --bg: rgba(255,255,255,0.04);
+  --muted: rgba(255,255,255,0.6);
+  --accent: #00e6e6;
+  --success: rgba(16,185,129,0.12);
+  --warning: rgba(245,158,11,0.08);
+  --info: rgba(59,130,246,0.08);
+  --radius: 8px;
+}
+
+/* Container e titoli */
+.theory-container {
+  margin: 2rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.theory-section + .theory-section {
+  margin-top: 1.5rem;
+}
+
+.theory-title {
+  font-size: 1.25rem;
+  margin: 0 0 .75rem;
+  color: var(--accent);
+}
+
+.theory-subheading {
+  font-size: 1.1rem;
+  margin: 1rem 0 .25rem;
+  color: var(--muted);
+}
+
+.theory-paragraph {
+  line-height: 1.7;
+  margin: .5rem 0;
+  color: var(--muted);
+}
+
+.theory-blocks > :not(:last-child) {
+  margin-bottom: .75rem;
+}
+
+/* Formula */
+.theory-formula {
+  position: relative;
+  margin: .75rem 0;
+  padding: .75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+}
+
+.theory-formula .copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: none;
+  border: none;
+  padding: .4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: .85;
+  transition: opacity .2s ease;
+}
+
+.theory-formula .copy-btn:hover {
+  opacity: 1;
+}
+
+.theory-formula .formula-code,
+.theory-formula code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  font-size: .95rem;
+  color: #fff;
+}
+
+/* Copy feedback (se vuoi ancora usare uno span) */
+.copied-msg {
+  position: absolute;
+  bottom: 4px;
+  left: 8px;
+  font-size: 0.75rem;
+  color: #8f8;
+}
+
+/* Note e liste */
+.theory-note {
+  margin: .75rem 0;
+  padding: .6rem .85rem;
+  background: rgba(255,255,0,0.07);
+  border-left: 3px solid rgba(255,255,0,0.6);
+  border-radius: 6px;
+  color: #fff;
+}
+
+.theory-list {
+  margin: .5rem 1.25rem;
+  padding-left: 1rem;
+}
+
+.theory-list li {
+  margin: .35rem 0;
+}
+
+/* Code block esteso */
+.theory-codeblock {
+  border-radius: 10px;
+  padding: .5rem;
+}
+
+.code-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 .25rem;
+  margin-bottom: .35rem;
+}
+
+.code-lang {
+  font-size: .75rem;
+  opacity: .8;
+}
+
+.code-content {
+  display: block;
+  padding: .65rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  font-size: .9rem;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* Callout / avvisi */
+.theory-callout {
+  display: flex;
+  gap: .75rem;
+  padding: .65rem;
+  border-radius: 8px;
+  background: var(--bg);
+  align-items: flex-start;
+}
+
+.callout-icon {
+  flex: 0 0 36px;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+}
+
+.callout-body { flex: 1; }
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+
+.callout-content { color: var(--muted); }
+
+.callout-info {
+  border-left: 4px solid rgba(59,130,246,0.9);
+}
+
+.callout-warning {
+  border-left: 4px solid rgba(245,158,11,0.95);
+  background: var(--warning);
+}
+
+.callout-tip {
+  border-left: 4px solid rgba(99,102,241,0.95);
+  background: var(--info);
+}
+
+.callout-success {
+  border-left: 4px solid rgba(16,185,129,0.95);
+  background: var(--success);
+}
+
+/* Example */
+.theory-example {
+  border: 1px dashed rgba(255,255,255,0.06);
+  padding: .65rem;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.example-title {
+  font-weight: 600;
+  margin-bottom: .4rem;
+}
+
+.example-body { color: var(--muted); }
+
+/* Tabelle */
+.theory-table-wrap {
+  overflow: auto;
+  border-radius: 8px;
+  margin: .75rem 0;
+}
+
+.theory-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--muted);
+}
+
+.theory-table th {
+  text-align: left;
+  padding: .5rem;
+  background: rgba(255,255,255,0.03);
+  font-size: .85rem;
+}
+
+.theory-table td {
+  padding: .6rem;
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Immagini */
+.theory-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.theory-image figcaption {
+  font-size: .85rem;
+  opacity: .8;
+  margin-top: .35rem;
+}
+
+/* Toggle/accordion */
+.theory-toggle {
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .6rem;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.toggle-panel {
+  transition: max-height .25s ease, padding .25s;
+  overflow: hidden;
+  padding: 0 .6rem 0;
+}
+
+.theory-toggle.open .toggle-panel {
+  padding: .6rem;
+}
+
+/* Accessibilità e utilità */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Bottoni copia generici */
+.copy-btn {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.copy-btn:hover { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .theory-container {
+    margin: 1rem;
+    padding: .75rem;
+  }
+  .theory-title { font-size: 1.1rem; }
+}

@@ -34,7 +34,7 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {year} @mattqdev. All rights reserved.</p>
+        <p>&copy; {year} @mattqdev. All rights reserved. Credit to <a href='https://p5js.org/'>p5.js</a> for simulations.</p>
         <button
           onClick={scrollToTop}
           className="back-to-top"

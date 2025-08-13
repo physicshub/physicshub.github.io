@@ -3,7 +3,10 @@ import Screen from "../../components/Screen.jsx"
 import NumberInput from "../../components/inputs/NumberInput.jsx"
 import CheckboxInput from "../../components/inputs/CheckboxInput.jsx"
 import ColorInput from "../../components/inputs/ColorInput.jsx";
-import Back from "../../components/Back.jsx"
+import TopSim from "../../components/TopSim.jsx";
+import TheoryRenderer from "../../components/theory/TheoryRenderer";
+import chapters from "../../chapters.json";
+import { useLocation } from "react-router-dom";
 
 export function BouncingBall() {
     const [inputs, setInputs] = useState({
@@ -77,9 +80,9 @@ export function BouncingBall() {
 
     return(
         <>
-            <Back content="Back to home" link="/" />
+            <TopSim/>
             <Screen sketch={Sketch}/>
-            <main>
+            <div className="inputs-container">
                 <NumberInput
                     label="Velocity X:"
                     name="velocityX"
@@ -115,7 +118,9 @@ export function BouncingBall() {
                     value={inputs.ballColor} 
                     onChange={e => handleInputChange("ballColor", e.target.value)}
                 />
-            </main>
+            </div>
+
+            <TheoryRenderer theory={chapters.find(ch => ch.link === useLocation().pathname)?.theory} />
         </>
     );
 }

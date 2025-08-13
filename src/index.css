@@ -44,9 +44,10 @@ body {
 a {
   color: var(--accent-color);
   text-decoration: none;
-  transition: text-shadow 0.3s;
 }
+
 a:hover {
+  transition: text-shadow 0.3s;
   text-shadow: 0 0 8px var(--accent-color);
 }
 
@@ -281,6 +282,11 @@ main {
   background: var(--accent-color);
   color: #000;
   box-shadow: 0 0 8px var(--accent-color);
+}
+
+.chapter-card-overlay > a:hover > svg{
+  transition: transform 0.3s;
+  transform: translateX(5px);
 }
 
 .chapter-card-overlay > p{
@@ -842,6 +848,7 @@ footer {
   text-shadow: 0 0 4px var(--glow-color);
   overflow: hidden;
   transition: background 0.3s, box-shadow 0.3s, transform 0.1s;
+  gap: 0.5rem;
 }
 
 .back-to-home__link::before {
@@ -870,7 +877,6 @@ footer {
 }
 
 .back-to-home__icon {
-  margin-right: 0.5rem;
   font-size: 1.25rem;
   line-height: 1;
 }
@@ -925,4 +931,91 @@ footer {
   box-shadow: 0 0 8px var(--glow-color);
   outline: none;
   border: none;
+}
+
+
+
+/* Inputs container */
+
+.inputs-container{
+  flex: 1;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  background: var(--bg-gradient-rotated);
+  border-radius: 2rem;
+  margin: 2rem 5rem;
+  border: var(--accent-color) solid 1px;
+  box-shadow: 0px 0px 5px var(--accent-color);
+}
+
+/* Top nav simulation */
+.top-nav-sim {
+  display: flex;
+  align-items: center;
+}
+
+.top-nav-sim-inner {
+  position: absolute;  
+  left: 50%;        
+  transform: translateX(-50%); 
+  display: flex;
+  gap: 1rem;   
+  align-items: center;
+}
+
+.top-nav-sim-inner > h3{
+  white-space: nowrap;
+}
+
+
+/* Wind icon for Ball Gravity Simulation*/
+.wind-container {
+  position: relative;
+}
+
+/* Posizionata sul lato sinistro, centrata verticalmente */
+.wind-overlay {
+  position: absolute;
+  top: 50%;
+  left: 20%;             
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.2; 
+  transition: opacity 0.3s ease;
+}
+
+.wind-overlay.blowing {
+  opacity: 1;
+}
+
+.wind-icon {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  animation: wind-drift 900ms ease-in-out infinite alternate;
+}
+
+@keyframes wind-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+.wind-icon path {
+  stroke-dasharray: 6 10;
+  animation: wind-wave 600ms linear infinite;
+}
+
+.wind-icon {
+  animation: wind-drift var(--wind-speed, 0.9s) ease-in-out infinite alternate;
+}
+
+
+@keyframes wind-wave {
+  to {
+    stroke-dashoffset: -16;
+  }
 }

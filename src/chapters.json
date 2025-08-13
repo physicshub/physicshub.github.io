@@ -1,48 +1,486 @@
 [
-  {
-    "id": 1,
-    "name": "Bouncing Ball",
-    "desc": "Simulation of the ball bouncing off the walls.",
-    "link": "/BouncingBall",
-    "tags": [
-      {"color": 1, "name": "Easy"},
-      {"color": 7, "name": "Physics"},
-      {"color": 4, "name": "Collision"},
-      {"color": 5, "name": "Animation"}
-    ]
-  },
-  {
-    "id": 2,
-    "name": "Vector Operations",
-    "desc": "Vector Operations in real time.",
-    "link": "/VectorsOperations",
-    "tags": [
-      {"color": 2, "name": "Medium"},
-      {"color": 6, "name": "Math"},
-      {"color": 7, "name": "Vectors"},
-      {"color": 7, "name": "Physics"}
-    ]
-  },
-  {
-    "id": 3,
-    "name": "Ball Acceleration",
-    "desc": "Ball accelerating to the mouse direction.",
-    "link": "/BallAcceleration",
-    "tags": [
-      {"color": 3, "name": "Advanced"},
-      {"color": 7, "name": "Physics"},
-      {"color": 4, "name": "Acceleration"}
-    ]
-  },
-  {
-    "id": 4,
-    "name": "Ball Gravity",
-    "desc": "Ball fall and bounce on the ground.",
-    "link": "/BallGravity",
-    "tags": [
-      {"color": 1, "name": "Easy"},
-      {"color": 7, "name": "Vectors"},
-      {"color": 8, "name": "Gravity"}
-    ]
-  }
+   {
+      "id":1,
+      "name":"Bouncing Ball",
+      "desc":"Simulation of the ball bouncing off the walls.",
+      "link":"/BouncingBall",
+      "tags":[
+         {"color":1,"name":"Easy"},
+         {"color":7,"name":"Physics"},
+         {"color":4,"name":"Collision"},
+         {"color":5,"name":"Animation"}
+      ],
+      "theory":{
+         "sections":[
+            {
+               "title":"Overview",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"Simple simulation showing a sphere bouncing against the canvas edges with constant velocity except for reversals due to collisions."
+                  },
+                  {
+                     "type":"list",
+                     "ordered":false,
+                     "items":[
+                        "Uniform rectilinear motion between collisions",
+                        "Reverse velocity component when ball collides with an edge",
+                        "Option to add friction or energy loss via restitution coefficient"
+                     ]
+                  }
+               ]
+            },
+            {
+               "title":"Bounce Rule",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"For each axis (x or y), the velocity component is negated when the ball exceeds the boundary position and is repositioned to prevent getting stuck outside the canvas."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"v\\_{after} = -\\,e\\,v\\_{before}"
+                  },
+                  {
+                     "type":"note",
+                     "text":"e \\in \\[0,1] is the restitution coefficient: e = 1 elastic bounce, e < 1 energy loss."
+                  }
+               ]
+            },
+            {
+               "title":"Implementation (p5 example)",
+               "blocks":[
+                  {
+                     "type":"code",
+                     "language":"javascript",
+                     "code":"let x = 100, y = 100, vx = 3, vy = 2, r = 16, e = 0.95;\nfunction draw(){\n  x += vx; y += vy;\n  if(x - r < 0){ x = r; vx = -vx \\* e; }\n  if(x + r > width){ x = width - r; vx = -vx \\* e; }\n  if(y - r < 0){ y = r; vy = -vy \\* e; }\n  if(y + r > height){ y = height - r; vy = -vy \\* e; }\n  ellipse(x,y,r*2,r*2);\n}"
+                  }
+               ]
+            },
+            {
+               "title":"Useful Parameters",
+               "blocks":[
+                  {
+                     "type":"table",
+                     "columns":[
+                        "Parameter",
+                        "Description",
+                        "Typical value"
+                     ],
+                     "data":[
+                        {
+                           "Parameter":"r",
+                           "Description":"ball radius",
+                           "Typical value":"8-32 px"
+                        },
+                        {
+                           "Parameter":"e",
+                           "Description":"restitution coefficient",
+                           "Typical value":"0.7 - 1.0"
+                        },
+                        {
+                           "Parameter":"vx, vy",
+                           "Description":"initial velocity components",
+                           "Typical value":"-5 .. 5 px/frame"
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "title":"Observations and Ideas",
+               "blocks":[
+                  {
+                     "type":"list",
+                     "ordered":false,
+                     "items":[
+                        "Add velocity-proportional friction to simulate continuous loss",
+                        "Handle collisions between multiple balls with momentum conservation",
+                        "Change coefficient e for different materials (rubber, metal)"
+                     ]
+                  },
+                  {
+                     "type":"callout",
+                     "calloutType":"tip",
+                     "title":"Performance",
+                     "text":"Limit checks per frame: use bounding box or spatial hashing for many balls."
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      "id":2,
+      "name":"Vector Operations",
+      "desc":"Vector Operations in real time.",
+      "link":"/VectorsOperations",
+      "tags":[
+         {"color":2,"name":"Medium"},
+         {"color":6,"name":"Math"},
+         {"color":7,"name":"Vectors"},
+         {"color":7,"name":"Physics"}
+      ],
+      "theory":{
+         "sections":[
+            {
+               "title":"Purpose",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"This section describes basic vector operations used in 2D simulations: addition, subtraction, scaling, normalization, dot product, and cross product (2D - pseudoscalar)."
+                  }
+               ]
+            },
+            {
+               "title":"Fundamental Operations",
+               "blocks":[
+                  {
+                     "type":"subheading",
+                     "text":"Addition and subtraction"
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"\\vec{c} = \\vec{a} + \\vec{b},\\quad \\vec{d} = \\vec{a} - \\vec{b}"
+                  },
+                  {
+                     "type":"subheading",
+                     "text":"Scale and norm"
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"\\lambda\\vec{a} = (\\lambda a\\_x,\\lambda a\\_y),\\quad ||\\vec{a}|| = \\sqrt{a\\_x^2 + a\\_y^2}"
+                  },
+                  {
+                     "type":"subheading",
+                     "text":"Normalization"
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"\\hat{a} = \frac{\\vec{a}}{||\\vec{a}||}"
+                  },
+                  {
+                     "type":"paragraph",
+                     "text":"The dot product is useful for angles and projections; the (2D) cross product returns a pseudoscalar indicating relative orientation."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"\\vec{a}\\cdot\\vec{b} = a\\_x b\\_x + a\\_y b\\_y,\\quad a\\_x b\\_y - a\\_y b\\_x"
+                  }
+               ]
+            },
+            {
+               "title":"Practical Examples",
+               "blocks":[
+                  {
+                     "type":"code",
+                     "language":"javascript",
+                     "code":"function normalize(v){ const m = Math.hypot(v.x,v.y)||1; return {x\\:v.x/m, y\\:v.y/m}; }\nfunction dot(a,b){ return a.x*b.x + a.y*b.y; }\nfunction reflect(v,n){ // reflection relative to normal n (unit)\n  const d = dot(v,n);\n  return { x: v.x - 2*d*n.x, y: v.y - 2*d*n.y };\n}"
+                  }
+               ]
+            },
+            {
+               "title":"Exercises and Observations",
+               "blocks":[
+                  {
+                     "type":"list",
+                     "ordered":false,
+                     "items":[
+                        "Verify normalization handles null vector",
+                        "Use dot to calculate angle between vectors: cos(θ)=a·b/(|a||b|)",
+                        "Use reflect to calculate bounces on inclined surfaces"
+                     ]
+                  },
+                  {
+                     "type":"callout",
+                     "calloutType":"info",
+                     "title":"Precision",
+                     "text":"For high per-frame velocities, consider more accurate integrations or sub-stepping to avoid penetrations."
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      "id":3,
+      "name":"Ball Acceleration",
+      "desc":"Ball accelerating to the mouse direction.",
+      "link":"/BallAcceleration",
+      "tags":[
+         {"color":3,"name":"Advanced"},
+         {"color":7,"name":"Physics"},
+         {"color":4,"name":"Acceleration"}
+      ],
+      "theory":{
+         "sections":[
+            {
+               "title":"Description",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"The ball accelerates toward the cursor position: the applied force is directed from the object toward the target and can be limited by a maximum value (maxForce)."
+                  }
+               ]
+            },
+            {
+               "title":"Steering Force (seeking)",
+               "blocks":[
+                  {
+                     "type":"formula",
+                     "latex":"\\vec{F} = m\\,\\vec{a},\\quad \\vec{a} = \text{clamp}\\left(\frac{\\vec{v}*{desired}-\\vec{v}}{\\Delta t},\\,a*{max}\right)"
+                  },
+                  {
+                     "type":"paragraph",
+                     "text":"v\\_{desired} is the velocity pointing toward the target (direction × speed). Limiting acceleration yields smoother behavior."
+                  }
+               ]
+            },
+            {
+               "title":"Code Example (pseudocode)",
+               "blocks":[
+                  {
+                     "type":"code",
+                     "language":"javascript",
+                     "code":"let pos, vel = {x:0,y:0}, mass = 1, maxForce = 0.4, maxSpeed = 6;\nfunction applySteer(target){\n  const desired = normalize({x: target.x - pos.x, y: target.y - pos.y});\n  desired.x *= maxSpeed; desired.y *= maxSpeed;\n  let steer = {x: desired.x - vel.x, y: desired.y - vel.y};\n  // limit steer magnitude to maxForce\n  const m = Math.hypot(steer.x,steer.y)||1;\n  if(m > maxForce){ steer.x = steer.x/m*maxForce; steer.y = steer.y/m*maxForce; }\n  // acceleration = steer / mass\n  vel.x += steer.x / mass; vel.y += steer.y / mass;\n  pos.x += vel.x; pos.y += vel.y;\n}"
+                  }
+               ]
+            },
+            {
+               "title":"Parameters to Tune",
+               "blocks":[
+                  {
+                     "type":"table",
+                     "columns":[
+                        "Parameter",
+                        "Effect"
+                     ],
+                     "data":[
+                        {
+                           "Parameter":"maxForce",
+                           "Effect":"controls responsiveness/speed of direction change"
+                        },
+                        {
+                           "Parameter":"maxSpeed",
+                           "Effect":"maximum cruising speed"
+                        },
+                        {
+                           "Parameter":"mass",
+                           "Effect":"reduces acceleration for greater mass"
+                        }
+                     ]
+                  },
+                  {
+                     "type":"callout",
+                     "calloutType":"warning",
+                     "title":"Warning",
+                     "text":"MassForce too high can cause oscillations and unstable behavior."
+                  }
+               ]
+            },
+            {
+               "title":"Suggested Experiments",
+               "blocks":[
+                  {
+                     "type":"list",
+                     "ordered":false,
+                     "items":[
+                        "Try different mass values and observe inertia",
+                        "Add damping to vel to stabilize movement",
+                        "Combine seeking with avoidance to evade obstacles"
+                     ]
+                  },
+                  {
+                     "type":"example",
+                     "title":"Desired Behavior",
+                     "content":"The ball follows the mouse with slight delay and smooth curves, avoiding sudden jerks."
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      "id":4,
+      "name":"Ball Gravity",
+      "desc":"Ball fall and bounce on the ground.",
+      "link":"/BallGravity",
+      "tags":[
+         {"color":1,"name":"Easy"},
+         {"color":7,"name":"Vectors"},
+         {"color":8,"name":"Gravity"}
+      ],
+      "theory":{
+         "sections":[
+            {
+               "title":"Introduction",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"In this simulation we observe an object subjected to gravitational force and a horizontal force (wind) optionally applied by the user. The goal is to demonstrate simple numerical integration and bounces with restitution coefficient."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"F = m \\cdot a"
+                  }
+               ]
+            },
+            {
+               "title":"Forces Involved",
+               "blocks":[
+                  {
+                     "type":"subheading",
+                     "text":"Gravitational Force"
+                  },
+                  {
+                     "type":"paragraph",
+                     "text":"Gravity acts downward with intensity equal to the product of mass and gravitational acceleration g."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"F\\_{g} = m \\cdot g"
+                  },
+                  {
+                     "type":"subheading",
+                     "text":"Wind"
+                  },
+                  {
+                     "type":"paragraph",
+                     "text":"Wind provides a constant horizontal force when the user clicks: this alters velocity along the x-axis."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"F\\_{wind} = F\\_{w}\\,\\hat{x}"
+                  }
+               ]
+            },
+            {
+               "title":"Motion Equations and Discrete Integration",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"With constant forces, acceleration is constant on each axis. In frame-based implementations (p5) we use explicit (Euler) integration:"
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"a = \frac{F\\_{tot}}{m},\\quad v \\leftarrow v + a\\,\\Delta t,\\quad x \\leftarrow x + v\\,\\Delta t"
+                  },
+                  {
+                     "type":"note",
+                     "text":"Δt corresponds to time step per frame (e.g. 1/60 s). For stability at high speeds consider sub-stepping or better integrators."
+                  }
+               ]
+            },
+            {
+               "title":"Collisions and Bounces",
+               "blocks":[
+                  {
+                     "type":"paragraph",
+                     "text":"When the ball reaches the ground or edges, we reverse the velocity component normal to the surface; we apply restitution coefficient e to simulate energy loss."
+                  },
+                  {
+                     "type":"formula",
+                     "latex":"v\\_{after} = -\\,e\\,v\\_{before}"
+                  },
+                  {
+                     "type":"paragraph",
+                     "text":"With e = 1 perfectly elastic bounce; typically 0.6-0.95 is used for realistic bounces."
+                  }
+               ]
+            },
+            {
+               "title":"p5 Code Example",
+               "blocks":[
+                  {
+                     "type":"code",
+                     "language":"javascript",
+                     "code":"let pos = {x:200,y:50}, vel = {x:0,y:0}, acc = {x:0,y:0};\nconst mass = 1, g = 0.98, windForce = 0.5, e = 0.85;\nfunction applyForces(windActive){\n  acc.x = windActive ? windForce/mass : 0;\n  acc.y = g; // mass compensated in g if mass==1\n}\nfunction step(dt, windActive){\n  applyForces(windActive);\n  vel.x += acc.x \\* dt; vel.y += acc.y \\* dt;\n  pos.x += vel.x \\* dt; pos.y += vel.y \\* dt;\n  // ground collision\n  if(pos.y > height - r){ pos.y = height - r; vel.y = -vel.y \\* e; }\n}"
+                  }
+               ]
+            },
+            {
+               "title":"Constants and Recommended Values",
+               "blocks":[
+                  {
+                     "type":"table",
+                     "columns":[
+                        "Constant",
+                        "Meaning",
+                        "Suggested value"
+                     ],
+                     "data":[
+                        {
+                           "Constant":"g",
+                           "Meaning":"gravitational acceleration",
+                           "Suggested value":"0.5 - 1.0 px/frame^2"
+                        },
+                        {
+                           "Constant":"e",
+                           "Meaning":"restitution coefficient",
+                           "Suggested value":"0.6 - 0.95"
+                        },
+                        {
+                           "Constant":"Δt",
+                           "Meaning":"time step (frame)",
+                           "Suggested value":"1 (or 1/60 normalized)"
+                        }
+                     ]
+                  },
+                  {
+                     "type":"callout",
+                     "calloutType":"info",
+                     "title":"Note on Mass",
+                     "text":"If mass ≠ 1 remember to divide forces by mass: a = F / m."
+                  }
+               ]
+            },
+            {
+               "title":"Measurements and Observations",
+               "blocks":[
+                  {
+                     "type":"list",
+                     "ordered":false,
+                     "items":[
+                        "Vertical velocity grows linearly with g without collisions",
+                        "Wind deflects trajectory on x-axis without directly affecting y",
+                        "Greater mass reduces acceleration for same applied force"
+                     ]
+                  },
+                  {
+                     "type":"callout",
+                     "calloutType":"warning",
+                     "title":"Warning",
+                     "text":"Explicit integration can introduce errors for large time steps: test reduced Δt."
+                  }
+               ]
+            },
+            {
+               "title":"Advanced Derivation",
+               "blocks":[
+                  {
+                     "type":"toggle",
+                     "title":"Show Mathematical Derivation",
+                     "content":"Starting from m\\,\\ddot{x}=\\sum F we get per axis: \\ddot{y}=g => v\\_y(t)=v\\_{y0}+g t; integrating we obtain y(t)=y\\_0+v\\_{y0}t+\tfrac{1}{2}gt^2. In discrete-time we approximate with difference equations above."
+                  }
+               ]
+            },
+            {
+               "title":"Visual Example",
+               "blocks":[
+                  {
+                     "type":"image",
+                     "src":"/assets/ball-gravity/trajectory.png",
+                     "alt":"Ball trajectory with active wind",
+                     "caption":"Comparison between trajectory without wind and with constant wind."
+                  },
+                  {
+                     "type":"example",
+                     "title":"What to Observe",
+                     "content":"Varying e you'll see maximum bounce height decrease exponentially; mass doesn't change trajectory if forces are scaled proportionally."
+                  }
+               ]
+            }
+         ]
+      }
+   }
 ]
