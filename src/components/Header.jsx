@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import { useState, useCallback } from 'react';
 import { Logo } from './Logo';
 import { NavMenu } from './Nav';
@@ -8,13 +9,13 @@ import { useTheme } from '../hooks/useTheme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHamburger } from '@fortawesome/free-solid-svg-icons';
 
-export default function Header() {
+export default function Header({ onSearch }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const isSticky = useSticky(50);
   const { mode, toggleMode } = useTheme('dark');
 
   const handleMenuToggle = useCallback(
-    () => setMenuOpen(open => !open),
+    () => setMenuOpen((open) => !open),
     []
   );
 
@@ -36,7 +37,7 @@ export default function Header() {
 
         <div className="controls">
           <Theme mode={mode} onToggle={toggleMode} />
-          <Search />
+          <Search onSearch={onSearch} />
         </div>
       </div>
     </header>

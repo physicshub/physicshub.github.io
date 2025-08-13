@@ -242,6 +242,9 @@ main {
 }
 
 .chapter-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   border: 1px solid transparent;
@@ -263,6 +266,7 @@ main {
   padding: 1.5rem;
   z-index: 2;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -300,16 +304,14 @@ main {
 }
 
 .chapter-card-stroke{
-  content: "";
   position: absolute;
-  top: -100%;
-  left: -50%;
-  width: 250%;
-  height: 350%;
+  width: 200%;
+  height: 700%;
   background-image: radial-gradient(circle at top left, var(--accent-color), transparent);
   transform-origin: center;
-  animation: spinStroke 3s linear infinite;
+  animation: spinStroke 1.5s linear infinite;
   z-index: 0;
+  border-radius: 50%;
 }
 
 @keyframes spinStroke {
