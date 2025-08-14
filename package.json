@@ -1,8 +1,8 @@
 {
-  "name": "my-react-app",
+  "name": "physicshub",
   "homepage": "https://physicshub.github.io",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
