@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./public/Icon.png" width=60% height=50% />
+<img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width=40% height=40% />
 <h1>PhysicsHub</h1>
 <h3><em>Website that contains free physics simulations for students.</em></h3>
 <p>
