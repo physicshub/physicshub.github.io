@@ -6,7 +6,7 @@ import ColorInput from "../../components/inputs/ColorInput.jsx";
 import TopSim from "../../components/TopSim.jsx";
 import { adjustColor } from "../../utils/adjustColor.js";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
-import chapters from "../../chapters.json";
+import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
 
 

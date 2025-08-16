@@ -3,9 +3,7 @@ import { NavLink } from 'react-router-dom';
 const menuItems = [
   { label: 'Home', to: '/', exact: true },
   { label: 'About', to: '/about' },
-  { label: 'Services', to: '/services' },
-  { label: 'Blog', to: '/blog' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Contribute', to: '/contribute' }
 ];
 
 interface NavMenuProps {

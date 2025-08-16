@@ -79,18 +79,19 @@ header.sticky {
 }
 
 /* Logo icon */
+.logo{
+  display: flex;
+}
+
 .logo img {
   position: relative;
-  background: var(--card-bg);
-  border-radius: 50%;
-  box-shadow: 0 0 12px rgba(255,255,255,0.1);
+  border-radius: 10%;
   height: 3rem;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .logo img:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 8px var(--glow-color);
+  transform: scale(1.05);
 }
 
 .menu-toggle {
@@ -498,7 +499,9 @@ footer {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2rem;
+  padding: 3rem;
+  padding-bottom: 5rem;
+  margin-top: 5rem;
 }
 
 .page-404 h1 {
@@ -593,42 +596,42 @@ footer {
 
 
 /* Levels Tag */
-.tag1 { 
+.tag-green { 
   background: linear-gradient(135deg, #00c62e, #00ff3c);
   box-shadow: 0 0 8px #00ff3c;
 }
 
-.tag2 {
+.tag-lightorange {
   background: linear-gradient(135deg, #ffc823, #ffb300);
   box-shadow: 0 0 8px #ffc823;
 }
 
-.tag3 {
+.tag-red {
   background: linear-gradient(135deg, #dc3545, #ff0019);
   box-shadow: 0 0 8px #ff0019;
 }
 
-.tag4 {
+.tag-bluesky {
   background: linear-gradient(135deg, #007bff, #00cfff);
   box-shadow: 0 0 8px #00cfff;
 }
 
-.tag5 {
+.tag-purple {
   background: linear-gradient(135deg, #8e44ad, #c678dd);
   box-shadow: 0 0 8px #c678dd;
 }
 
-.tag6 {
+.tag-orange {
   background: linear-gradient(135deg, #fd7e14, #ffb07c);
   box-shadow: 0 0 8px #fd7e14;
 }
 
-.tag7 {
+.tag-cyan {
   background: linear-gradient(135deg, #20c997, #00ffb3);
   box-shadow: 0 0 8px #00ffb3;
 }
 
-.tag8 {
+.tag-grey {
   background: linear-gradient(135deg, #6c757d, #adb5bd);
   box-shadow: 0 0 8px #adb5bd;
 }

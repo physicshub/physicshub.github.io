@@ -4,7 +4,7 @@ import NumberInput from "../../components/inputs/NumberInput.jsx";
 import ColorInput from "../../components/inputs/ColorInput.jsx";
 import TopSim from "../../components/TopSim.jsx";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
-import chapters from "../../chapters.json";
+import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
 
 export function BallAcceleration() {

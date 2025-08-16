@@ -1,0 +1,526 @@
+import { TAGS } from "./tags";
+
+export default [
+   {
+      id:1,
+      name:"Bouncing Ball",
+      desc:"Simulation of the ball bouncing off the walls.",
+      link:"/BouncingBall",
+      tags:[
+         TAGS.EASY,
+         TAGS.PHYSICS,
+         TAGS.COLLISION,
+         TAGS.ANIMATIONS
+      ],
+      theory:{
+         sections:[
+            {
+               title:"Section 1 Title",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eu faucibus enim."
+                  },
+                  {
+                     type:"list",
+                     ordered:true,
+                     items:[
+                        "Ordered list item 1",
+                        "Ordered list item 2",
+                        "Ordered list item 3"
+                     ]
+                  }
+               ]
+            },
+            {
+               title:"Section 2 Title",
+               blocks:[
+                  {
+                     type:"list",
+                     ordered:false,
+                     items:[
+                        "Unordered list item 1",
+                        "Unordered list item 2",
+                        "Unordered list item 3"
+                     ]
+                  },
+                  {
+                     type:"formula",
+                     latex:"x = (1 + 1 * 4)"
+                  },
+                  {
+                     type:"note",
+                     text:"This is a note."
+                  }
+               ]
+            },
+            {
+               title:"Section 3 Title",
+               blocks:[
+                  {
+                     type:"code",
+                     language:"javascript",
+                     code:`let x = "100";
+
+function draw(){
+  x += vx;
+  y += vy;
+  
+  return 1 + 1
+}`
+                  }
+               ]
+            },
+            {
+               title:"Section 4 Title",
+               blocks:[
+                  {
+                     type:"table",
+                     columns:[
+                        "First column",
+                        "Second column",
+                        "Third column"
+                     ],
+                     data:[
+                        {
+                           "First column":"Value 1",
+                           "Second column":"Value 2",
+                           "Third column":"Value 3"
+                        },
+                        {
+                           "First column":"Value 1",
+                           "Second column":"Value 2",
+                           "Third column":"Value 3"
+                        },
+                        {
+                           "First column":"Value 1",
+                           "Second column":"Value 2",
+                           "Third column":"Value 3"
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               title:"Section 5 Title",
+               blocks:[
+                  {
+                     type:"callout",
+                     calloutType:"info",
+                     title:"Info",
+                     text:"This is a info."
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"warning",
+                     title:"Attention!",
+                     text:"This is a warning."
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"tip",
+                     title:"Smart Tip!",
+                     text:"This is a tip."
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"success",
+                     title:"Success!",
+                     text:"Congratulation, you won!"
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      id:2,
+      name:"Vector Operations",
+      desc:"Vector Operations in real time.",
+      link:"/VectorsOperations",
+      tags:[
+         TAGS.MEDIUM, 
+         TAGS.MATH, 
+         TAGS.VECTORS, 
+         TAGS.PHYSICS
+      ],
+      theory:{
+         sections:[
+            {
+               title:"Purpose",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"This section describes basic vector operations used in 2D simulations: addition, subtraction, scaling, normalization, dot product, and cross product (2D - pseudoscalar)."
+                  }
+               ]
+            },
+            {
+               title:"Fundamental Operations",
+               blocks:[
+                  {
+                     type:"subheading",
+                     text:"Addition and subtraction"
+                  },
+                  {
+                     type:"formula",
+                     latex:"\\vec{c} = \\vec{a} + \\vec{b},\\quad \\vec{d} = \\vec{a} - \\vec{b}"
+                  },
+                  {
+                     type:"subheading",
+                     text:"Scale and norm"
+                  },
+                  {
+                     type:"formula",
+                     latex:"\\lambda\\vec{a} = (\\lambda a_x,\\lambda a_y),\\quad ||\\vec{a}|| = \\sqrt{a_x^2 + a_y^2}"
+                  },
+                  {
+                     type:"subheading",
+                     text:"Normalization"
+                  },
+                  {
+                     type:"formula",
+                     latex:"\\hat{a} = \\frac{\\vec{a}}{||\\vec{a}||}"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"The dot product is useful for angles and projections; the (2D) cross product returns a pseudoscalar indicating relative orientation."
+                  },
+                  {
+                     type:"formula",
+                     latex:"\\vec{a}\\cdot\\vec{b} = a_x b_x + a_y b_y,\\quad a_x b_y - a_y b_x"
+                  }
+               ]
+            },
+            {
+               title:"Practical Examples",
+               blocks:[
+                  {
+                     type:"code",
+                     language:"javascript",
+                     code:`function normalize(v){ 
+  const m = Math.hypot(v.x,v.y)||1; 
+  return {x: v.x/m, y: v.y/m}; 
+}
+function dot(a,b){ 
+  return a.x*b.x + a.y*b.y; 
+}
+function reflect(v,n){ 
+  // reflection relative to normal n (unit)
+  const d = dot(v,n);
+  return { 
+    x: v.x - 2*d*n.x, 
+    y: v.y - 2*d*n.y 
+  };
+}`
+                  }
+               ]
+            },
+            {
+               title:"Exercises and Observations",
+               blocks:[
+                  {
+                     type:"list",
+                     ordered:false,
+                     items:[
+                        "Verify normalization handles null vector",
+                        "Use dot to calculate angle between vectors: cos(θ)=a·b/(|a||b|)",
+                        "Use reflect to calculate bounces on inclined surfaces"
+                     ]
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"info",
+                     title:"Precision",
+                     text:"For high per-frame velocities, consider more accurate integrations or sub-stepping to avoid penetrations."
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      id:3,
+      name:"Ball Acceleration",
+      desc:"Ball accelerating to the mouse direction.",
+      link:"/BallAcceleration",
+      tags:[
+         TAGS.ADVANCED,
+         TAGS.PHYSICS,
+         TAGS.ACCELERATION
+      ],
+      theory:{
+         sections:[
+            {
+               title:"Description",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"The ball accelerates toward the cursor position: the applied force is directed from the object toward the target and can be limited by a maximum value (maxForce)."
+                  }
+               ]
+            },
+            {
+               title:"Steering Force (seeking)",
+               blocks:[
+                  {
+                     type:"formula",
+                     latex:"\\vec{F} = m\\,\\vec{a},\\quad \\vec{a} = \\text{clamp}\\left(\\frac{\\vec{v}_{desired}-\\vec{v}}{\\Delta t},\\,a_{max}\\right)"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"v_{desired} is the velocity pointing toward the target (direction × speed). Limiting acceleration yields smoother behavior."
+                  }
+               ]
+            },
+            {
+               title:"Code Example (pseudocode)",
+               blocks:[
+                  {
+                     type:"code",
+                     language:"javascript",
+                     code:`let pos, vel = {x:0,y:0}, mass = 1, maxForce = 0.4, maxSpeed = 6;
+
+function applySteer(target){
+  const desired = normalize({
+    x: target.x - pos.x, 
+    y: target.y - pos.y
+  });
+  desired.x *= maxSpeed; 
+  desired.y *= maxSpeed;
+  
+  let steer = {
+    x: desired.x - vel.x, 
+    y: desired.y - vel.y
+  };
+  
+  // limit steer magnitude to maxForce
+  const m = Math.hypot(steer.x,steer.y)||1;
+  if(m > maxForce){ 
+    steer.x = steer.x/m*maxForce; 
+    steer.y = steer.y/m*maxForce; 
+  }
+  
+  // acceleration = steer / mass
+  vel.x += steer.x / mass; 
+  vel.y += steer.y / mass;
+  pos.x += vel.x; 
+  pos.y += vel.y;
+}`
+                  }
+               ]
+            },
+            {
+               title:"Parameters to Tune",
+               blocks:[
+                  {
+                     type:"table",
+                     columns:["Parameter", "Effect"],
+                     data:[
+                        {"Parameter":"maxForce", "Effect":"controls responsiveness/speed of direction change"},
+                        {"Parameter":"maxSpeed", "Effect":"maximum cruising speed"},
+                        {"Parameter":"mass", "Effect":"reduces acceleration for greater mass"}
+                     ]
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"warning",
+                     title:"Warning",
+                     text:"MassForce too high can cause oscillations and unstable behavior."
+                  }
+               ]
+            },
+            {
+               title:"Suggested Experiments",
+               blocks:[
+                  {
+                     type:"list",
+                     ordered:false,
+                     items:[
+                        "Try different mass values and observe inertia",
+                        "Add damping to vel to stabilize movement",
+                        "Combine seeking with avoidance to evade obstacles"
+                     ]
+                  },
+                  {
+                     type:"example",
+                     title:"Desired Behavior",
+                     content:"The ball follows the mouse with slight delay and smooth curves, avoiding sudden jerks."
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   {
+      id:4,
+      name:"Ball Gravity",
+      desc:"Ball fall and bounce on the ground.",
+      link:"/BallGravity",
+      tags:[
+         TAGS.EASY,
+         TAGS.VECTORS,
+         TAGS.GRAVITY
+      ],
+      theory:{
+         sections:[
+            {
+               title:"Introduction",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"In this simulation we observe an object subjected to gravitational force and a horizontal force (wind) optionally applied by the user. The goal is to demonstrate simple numerical integration and bounces with restitution coefficient."
+                  },
+                  {
+                     type:"formula",
+                     latex:"F = m \\cdot a"
+                  }
+               ]
+            },
+            {
+               title:"Forces Involved",
+               blocks:[
+                  {
+                     type:"subheading",
+                     text:"Gravitational Force"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"Gravity acts downward with intensity equal to the product of mass and gravitational acceleration g."
+                  },
+                  {
+                     type:"formula",
+                     latex:"F_{g} = m \\cdot g"
+                  },
+                  {
+                     type:"subheading",
+                     text:"Wind"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"Wind provides a constant horizontal force when the user clicks: this alters velocity along the x-axis."
+                  },
+                  {
+                     type:"formula",
+                     latex:"F_{wind} = F_{w}\\,\\hat{x}"
+                  }
+               ]
+            },
+            {
+               title:"Motion Equations and Discrete Integration",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"With constant forces, acceleration is constant on each axis. In frame-based implementations (p5) we use explicit (Euler) integration:"
+                  },
+                  {
+                     type:"formula",
+                     latex:"a = \\frac{F_{tot}}{m},\\quad v \\leftarrow v + a\\,\\Delta t,\\quad x \\leftarrow x + v\\,\\Delta t"
+                  },
+                  {
+                     type:"note",
+                     text:"Δt corresponds to time step per frame (e.g. 1/60 s). For stability at high speeds consider sub-stepping or better integrators."
+                  }
+               ]
+            },
+            {
+               title:"Collisions and Bounces",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"When the ball reaches the ground or edges, we reverse the velocity component normal to the surface; we apply restitution coefficient e to simulate energy loss."
+                  },
+                  {
+                     type:"formula",
+                     latex:"v_{after} = -\\,e\\,v_{before}"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"With e = 1 perfectly elastic bounce; typically 0.6-0.95 is used for realistic bounces."
+                  }
+               ]
+            },
+            {
+               title:"p5 Code Example",
+               blocks:[
+                  {
+                     type:"code",
+                     language:"javascript",
+                     code:`let pos = {x:200,y:50}, vel = {x:0,y:0}, acc = {x:0,y:0};
+const mass = 1, g = 0.98, windForce = 0.5, e = 0.85;
+
+function applyForces(windActive){
+  acc.x = windActive ? windForce/mass : 0;
+  acc.y = g; // mass compensated in g if mass==1
+}
+
+function step(dt, windActive){
+  applyForces(windActive);
+  vel.x += acc.x * dt; 
+  vel.y += acc.y * dt;
+  pos.x += vel.x * dt; 
+  pos.y += vel.y * dt;
+  
+  // ground collision
+  if(pos.y > height - r){ 
+    pos.y = height - r; 
+    vel.y = -vel.y * e; 
+  }
+}`
+                  }
+               ]
+            },
+            {
+               title:"Constants and Recommended Values",
+               blocks:[
+                  {
+                     type:"table",
+                     columns:["Constant", "Meaning", "Suggested value"],
+                     data:[
+                        {"Constant":"g", "Meaning":"gravitational acceleration", "Suggested value":"0.5 - 1.0 px/frame^2"},
+                        {"Constant":"e", "Meaning":"restitution coefficient", "Suggested value":"0.6 - 0.95"},
+                        {"Constant":"Δt", "Meaning":"time step (frame)", "Suggested value":"1 (or 1/60 normalized)"}
+                     ]
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"info",
+                     title:"Note on Mass",
+                     text:"If mass ≠ 1 remember to divide forces by mass: a = F / m."
+                  }
+               ]
+            },
+            {
+               title:"Measurements and Observations",
+               blocks:[
+                  {
+                     type:"list",
+                     ordered:false,
+                     items:[
+                        "Vertical velocity grows linearly with g without collisions",
+                        "Wind deflects trajectory on x-axis without directly affecting y",
+                        "Greater mass reduces acceleration for same applied force"
+                     ]
+                  },
+                  {
+                     type:"callout",
+                     calloutType:"warning",
+                     title:"Warning",
+                     text:"Explicit integration can introduce errors for large time steps: test reduced Δt."
+                  }
+               ]
+            },
+            {
+               title:"Advanced Derivation",
+               blocks:[
+                  {
+                     type:"toggle",
+                     title:"Show Mathematical Derivation",
+                     content:"Starting from m\\,\\ddot{x}=\\sum F we get per axis: \\ddot{y}=g => v_y(t)=v_{y0}+g t; integrating we obtain y(t)=y_0+v_{y0}t+\tfrac{1}{2}gt^2. In discrete-time we approximate with difference equations above."
+                  }
+               ]
+            }
+         ]
+      }
+   }
+];

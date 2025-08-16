@@ -1,5 +1,5 @@
 import Back from "./Back";
-import simulations from "../chapters.json";
+import simulations from "../data/chapters";
 import { useLocation } from "react-router-dom";
 
 export default function TopSim() {

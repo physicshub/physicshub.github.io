@@ -1,13 +1,15 @@
 import Footer from "../components/Footer.jsx"
 import Button from "../components/Button.jsx"
+import Header from "../components/Header.jsx"
 
 export function Error() {
     return(
         <>
+            <Header/>
             <div className="page-404">
                 <h1>404</h1>
-                <p>Ops! La pagina che stai cercando non esiste. Torna al portale principale e riprova.</p>
-                <Button content="Torna alla Home" link = "/"/>
+                <p>Oops! The page you are looking for does not exist. Please return to the main page and try again.</p>
+                <Button content="Back to home" link = "/"/>
             </div>
             <Footer />
         </>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Chapter from "../components/Chapter.jsx";
-import Chapters from "../chapters.json";
+import Chapters from "../data/chapters.js";
 
 export function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,10 +11,8 @@ export function Home() {
   const filteredChapters = Chapters.filter((chap) => {
     const term = searchTerm.toLowerCase();
 
-    // Controllo su nome e descrizione
     const matchesName = chap.name.toLowerCase().includes(term);
 
-    // Controllo sui tag
     const matchesTags = chap.tags.some((tag) =>
       tag.name.toLowerCase().includes(term)
     );
