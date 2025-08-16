@@ -14,11 +14,11 @@
 
 ## About
 
-- A small web application to help student understand physics with cool interactive simulations and easily understandable theory.
+A small web application to help student understand physics with cool interactive simulations and easily understandable theory.
 
 ## Link
 
-- You can clone the project locally or try the web app on the [website](https://physicshub.github.io).
+You can clone the project locally or try the web app on the [website](https://physicshub.github.io).
 
 ## Steps to run it locally
 
@@ -39,14 +39,16 @@
    npm run dev
 7. Open your browser to http://localhost:3000 or http://localhost:5173/
 
+<br>
+<hr>
 
-## Contributors
+### Contributors
 
 | [<img src="https://avatars.githubusercontent.com/u/226545239" width="80"><br><sub><b>physicshub</b></sub>](https://physicshub.github.io) | [<img src="https://avatars.githubusercontent.com/u/115874885" width="80"><br><sub><b>mattqdev</b></sub>](https://twitter.com/mattqdev)
 |:--:|:--:|
 
 
-## Supporters
+### Supporters
 
 No supporters yet
 
@@ -54,12 +56,12 @@ Become a supporter by donating on Ko-Fi:
 
 [SOON](https://ko-fi.com/)
 
-## Community 
+### Community 
 Join us on Discord:
 <br>
 [![](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
 
 
-## License
+### License
 
 <img src="https://img.shields.io/github/license/PhysicsHub/physicshub.github.io" alt="Licence">
