@@ -4,12 +4,12 @@
 <h3><em>Website that contains free physics simulations for students.</em></h3>
 <p>
 <img src="https://img.shields.io/github/contributors/PhysicsHub/physicshub.github.io?style=plastic" alt="Contributors">
+<img src="https://img.shields.io/discord/1406404598679470121" alt="Discord">
 <img src="https://img.shields.io/github/forks/PhysicsHub/physicshub.github.io" alt="Forks">
 <img src="https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io" alt="Stars">
-<img src="https://img.shields.io/github/issues/PhysicsHub/physicshub.github.io" alt="Issues">
-<img src="https://img.shields.io/github/languages/count/PhysicsHub/physicshub.github.io" alt="Languages">
+<!-- <img src="https://img.shields.io/github/issues/PhysicsHub/physicshub.github.io" alt="Issues"> -->
+<!-- <img src="https://img.shields.io/github/languages/count/PhysicsHub/physicshub.github.io" alt="Languages"> -->
 <img src="https://img.shields.io/github/repo-size/PhysicsHub/physicshub.github.io" alt="Repository Size">
-<img src="https://img.shields.io/discord/1406404598679470121" alt="Discord">
 </p>
 </div>
 
