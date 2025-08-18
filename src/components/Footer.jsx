@@ -39,14 +39,14 @@ function Footer() {
         <div className="footer-section footer-socials">
           <h3>Connect</h3>
           <div>
-            <a href="https://x.com/mattqdev" aria-label="XTwitter"><FontAwesomeIcon icon={faXTwitter}/></a>
             <a href="https://github.com/physicshub/physicshub.github.io" aria-label="GitHub"><FontAwesomeIcon icon={faGithub}/></a>
             <a href="https://discord.gg/hT68DTcwfD" aria-label="Discord"><FontAwesomeIcon icon={faDiscord}/></a>
+            <a href="https://x.com/mattqdev" aria-label="XTwitter"><FontAwesomeIcon icon={faXTwitter}/></a>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Thanks to <a href="https://p5js.org/">p5.js</a> for the simulations.</p>
+        <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Thanks to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for the simulations.</p>
         <button
           onClick={scrollToTop}
           className="back-to-top"

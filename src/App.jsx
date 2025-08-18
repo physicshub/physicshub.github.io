@@ -6,12 +6,16 @@ import { BouncingBall } from "./pages/simulations/BouncingBall.jsx"
 import { VectorsOperations } from "./pages/simulations/VectorsOperations.jsx"
 import { BallAcceleration } from "./pages/simulations/BallAcceleration.jsx"
 import { BallGravity } from "./pages/simulations/BallGravity.jsx"
+import Contribute from "./pages/contribute.jsx"
+import About from "./pages/about.jsx"
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
           <Route index element={<Home />} />
+          <Route path="/contribute" element={<Contribute />} />
+          <Route path="/about" element={<About />} />
           <Route path="BouncingBall" element={<BouncingBall />} />
           <Route path="VectorsOperations" element={<VectorsOperations />} />
           <Route path="BallAcceleration" element={<BallAcceleration />} />

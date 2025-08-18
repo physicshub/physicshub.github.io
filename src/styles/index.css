@@ -39,6 +39,15 @@ body {
   background: var(--bg-gradient);
 }
 
+hr{
+  border: 0;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+strong{
+  color: var(--accent);
+}
 
 /* Link */
 a {
@@ -1023,4 +1032,69 @@ footer {
   to {
     stroke-dashoffset: -16;
   }
+}
+
+/* Countribute About pages */
+
+.page-container{
+  flex: 1;
+  padding: 7rem 4rem 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.page-container ol, ul{
+  padding-left: 1rem;
+}
+
+.container-layout{
+  flex: 1;
+  padding: 2rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.title{
+  color: var(--accent);
+}
+
+.contributors-section {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  height: 200px;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.contributor-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid var(--accent);
+  box-shadow: 0px 0px 5px var(--accent-color);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.contributor-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.contributor-name {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.contributor-data {
+  font-size: 0.85rem;
+  color: #555;
 }
