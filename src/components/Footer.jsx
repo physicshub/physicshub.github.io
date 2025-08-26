@@ -24,10 +24,11 @@ function Footer() {
           <p>A small web application to help student understand physics with cool interactive simulations and easily understandable theory.</p>
         </div>
         <div className="footer-section footer-links">
-          <h3>Quick Links</h3>
+          <h3 className='footer-center'>Quick Links</h3>
           <ul>
             {links.map(({ to, label, exact }) => (
               <li key={to}>
+                <div className='footer-links-dot'/>
                 <NavLink
                   to={to}
                   end={exact}
@@ -37,8 +38,8 @@ function Footer() {
           </ul>
         </div>
         <div className="footer-section footer-socials">
-          <h3>Connect</h3>
-          <div>
+          <h3 className='footer-center'>Connect</h3>
+          <div className='footer-socials-inner'>
             <a href="https://github.com/physicshub/physicshub.github.io" aria-label="GitHub"><FontAwesomeIcon icon={faGithub}/></a>
             <a href="https://discord.gg/hT68DTcwfD" aria-label="Discord"><FontAwesomeIcon icon={faDiscord}/></a>
             <a href="https://x.com/mattqdev" aria-label="XTwitter"><FontAwesomeIcon icon={faXTwitter}/></a>
@@ -46,7 +47,7 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Thanks to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for the simulations.</p>
+        <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Credits to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for the simulations.</p>
         <button
           onClick={scrollToTop}
           className="back-to-top"

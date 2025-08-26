@@ -7,12 +7,14 @@ import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
 
+import Ball from "../../components/classes/Ball.js"; // <-- import classe esterna
+
 export function BallAcceleration() {
   const [inputs, setInputs] = useState({
     maxspeed: 5,
     size: 48,
     acceleration: 0.1,
-    color: "#7f7f7f",
+    color: "#7f7f7f"
   });
 
   const inputsRef = useRef(inputs);
@@ -28,51 +30,27 @@ export function BallAcceleration() {
     let ball;
     let w, h;
 
-    class Ball {
-      constructor() {
-        this.resetPosition();
-        this.velocity = p.createVector();
-        this.acceleration = p.createVector();
-      }
-
-      resetPosition() {
-        this.position = p.createVector(w / 2, h / 2);
-      }
-
-      update() {
-        const { maxspeed, size, acceleration, color } = inputsRef.current;
-        let mouse = p.createVector(p.mouseX, p.mouseY);
-        let dir = mouse.sub(this.position);
-        dir.setMag(acceleration);
-        this.acceleration = dir;
-        this.velocity.add(this.acceleration);
-        this.velocity.limit(maxspeed);
-        this.position.add(this.velocity);
-
-        p.stroke(0);
-        p.strokeWeight(2);
-        p.fill(p.color(color));
-        p.circle(this.position.x, this.position.y, size);
-      }
-    }
-
     p.setup = () => {
       w = p._userNode.clientWidth;
       h = p._userNode.clientHeight;
       p.createCanvas(w, h);
-      ball = new Ball();
+
+      // creo la palla in modalità "acceleration"
+      ball = new Ball(p, inputsRef.current, w, h, "acceleration");
     };
 
     p.draw = () => {
-      const screenEl = document.querySelector('.screen');
+      const screenEl = document.querySelector(".screen");
       let bgColor = window.getComputedStyle(screenEl).backgroundColor.match(/\d+/g);
       if (bgColor) {
-        bgColor = bgColor.map(Number);
-        p.background(bgColor[0], bgColor[1], bgColor[2]);
+        p.background(...bgColor.map(Number));
       } else {
         p.background(0);
       }
-      ball.update();
+
+      ball.setConfig(inputsRef.current);
+      // passo le coordinate del mouse come target
+      ball.update({ x: p.mouseX, y: p.mouseY });
     };
 
     p.windowResized = () => {
@@ -91,7 +69,6 @@ export function BallAcceleration() {
         <NumberInput
           label="Ball Size:"
           name="size"
-          placeholder="Insert Ball Size..."
           val={inputs.size}
           min={10}
           max={200}
@@ -100,7 +77,6 @@ export function BallAcceleration() {
         <NumberInput
           label="Max Speed:"
           name="maxspeed"
-          placeholder="Insert Max Speed..."
           val={inputs.maxspeed}
           min={1}
           max={20}
@@ -109,7 +85,6 @@ export function BallAcceleration() {
         <NumberInput
           label="Acceleration:"
           name="acceleration"
-          placeholder="Insert Acceleration..."
           val={inputs.acceleration}
           min={0.001}
           max={1}
@@ -124,7 +99,11 @@ export function BallAcceleration() {
         />
       </div>
 
-      <TheoryRenderer theory={chapters.find(ch => ch.link === useLocation().pathname)?.theory} />
+      <TheoryRenderer
+        theory={
+          chapters.find(ch => ch.link === useLocation().pathname)?.theory
+        }
+      />
     </>
   );
 }

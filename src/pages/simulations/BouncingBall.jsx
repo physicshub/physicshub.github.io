@@ -37,7 +37,6 @@ export function BouncingBall() {
 
             position = p.createVector(100, 100)
             velocity = p.createVector(2.5, 2)
-
         }
 
         p.draw = () => {

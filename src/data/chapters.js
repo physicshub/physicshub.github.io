@@ -522,5 +522,32 @@ function step(dt, windActive){
             }
          ]
       }
+   },
+   {
+      id:5,
+      name:"Spring Connection",
+      desc:"A Ball connected to a string.",
+      link:"/SpringConnection",
+      tags:[
+         TAGS.EASY,
+         TAGS.VECTORS,
+         TAGS.GRAVITY
+      ],
+      theory:{
+      }
+   },
+      {
+      id:6,
+      name:"Simple Pendulum",
+      desc:"A Simple Pendulum system.",
+      link:"/SimplePendulum",
+      tags:[
+         TAGS.MEDIUM,
+         TAGS.VECTORS,
+         TAGS.GRAVITY,
+         TAGS.PHYSICS
+      ],
+      theory:{
+      }
    }
 ];

@@ -5,11 +5,11 @@
 | [ ] | 🔴 High | `src/chapters.json` | — | We need physics teachers or people who can explain it well for writing some theory on the simulation pages (no coding required, just JSON formatting). |
 | [ ] | 🔴 High | `public/icon.png` | — | Create an icon for the project. |
 | [ ] | 🟢 Low | `src/components/Search.jsx` | — | Implement filters based on tags: a menu where tags can be selected to filter between cards. |
-| [ ] | 🟡 Medium | `src/pages/about.jsx` | — | Create an “About Us” page with project history, links, and contact info. |
-| [ ] | 🟡 Medium | `src/pages/contribute.jsx` | — | Create a “Contribute” page with contributor names, rules, GitHub links, and mission. |
 | [ ] | 🟡 Medium | `src/pages/simulations/*` | — | Centralize simulations to make them easier to modify and create. |
 | [ ] | 🟢 Low  | `src/styles/index.css` | — | Improve light theme: make colors darker to reduce eye strain. |
 | [ ] | 🟢 Low  | `src/components/Theme.tsx` | — | Change theme button behavior to cycle through Dark, Light, and System modes. |
+| [x] | 🟡 Medium | `src/pages/about.jsx` | — | Create an “About Us” page with project history, links, and contact info. |
+| [x] | 🟡 Medium | `src/pages/contribute.jsx` | — | Create a “Contribute” page with contributor names, rules, GitHub links, and mission. |
 
 
 ---

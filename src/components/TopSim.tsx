@@ -27,12 +27,15 @@ export default function TopSim() {
 
   return (
     <div className="top-nav-sim">
-      <Back link="/" />
+      <div className="top-nav-sim-back-to-home-wrapper">
+        <Back link="/" />
+      </div>
       <div className="top-nav-sim-inner">
         <Back link={getPrevious()} type="full" arrowPosition="left" content="Previous" />
         <h3>{getCurrentName()}</h3>
         <Back link={getNext()} type="full" arrowPosition="right" content="Next" />
       </div>
+      <div className="top-nav-sim-filler"/>
     </div>
   );
 }
