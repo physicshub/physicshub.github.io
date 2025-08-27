@@ -4,6 +4,7 @@ import Screen from "../../components/Screen.jsx";
 import TopSim from "../../components/TopSim.js";
 import TheoryRenderer from "../../components/theory/TheoryRenderer.js";
 import chapters from "../../data/chapters.js";
+import { gravityTypes } from "../../data/gravity.js";
 import { useLocation } from "react-router-dom";
 
 import Pendulum from "../../components/classes/Pendulum.js";
@@ -15,9 +16,10 @@ import SelectInput from "../../components/inputs/SelectInput.jsx";
 
 export function SimplePendulum() {
     const [inputs, setInputs] = useState({
-        //
-        // Inputs
-        //
+        damping: 0.995,
+        size: 24.0,
+        color: "#7f7f7f",
+        gravity: 1,
     });
 
     // Input handling
@@ -50,6 +52,11 @@ export function SimplePendulum() {
         p.draw = () => {
             p.background(...bgColor.current);
             
+            pendulum.damping = inputsRef.current.damping;
+            pendulum.size = inputsRef.current.size;
+            pendulum.gravity = inputsRef.current.gravity;
+            pendulum.color = inputsRef.current.color;
+
             pendulum.update();
             pendulum.show();
             pendulum.drag();
@@ -76,7 +83,33 @@ export function SimplePendulum() {
         <TopSim/>
         <Screen sketch={Sketch} />
         <div className="inputs-container">
-            
+            <NumberInput
+            label="Bob Size"
+            val={inputs.size}
+            min={5}
+            max={200}
+            step={1}
+            onChange={e => handleInputChange("size", Number(e.target.value))}
+            />
+            <NumberInput
+            label="Damping"
+            val={inputs.damping}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={e => handleInputChange("damping", Number(e.target.value))}
+            />
+            <SelectInput
+            label="Gravity"
+            options={gravityTypes}
+            value={inputs.gravity}
+            onChange={e => handleInputChange("gravity", Number(e.target.value))}
+            />
+            <ColorInput
+            label="Color"
+            val={inputs.color}
+            onChange={e => handleInputChange("color", e.target.value)}
+            />
         </div>
 
         <TheoryRenderer

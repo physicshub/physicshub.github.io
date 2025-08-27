@@ -181,7 +181,7 @@ export function SpringConnection() {
           onChange={e => handleInputChange("maxLength", Number(e.target.value))}
         />
         <ColorInput
-          label="Colore Bob"
+          label="Bob Color"
           val={inputs.bobColor}
           onChange={e => handleInputChange("bobColor", e.target.value)}
         />

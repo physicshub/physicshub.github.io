@@ -21,6 +21,15 @@ export function BallGravity() {
     wind: 0.1,
     friction: 0
   });
+
+  // handling input
+  const handleChange = useCallback(
+    (name) => (e) => {
+      const val = name === "color" ? e.target.value : +e.target.value;
+      setConfig((cfg) => ({ ...cfg, [name]: val }));
+    },
+    []
+  );
   const [isBlowing, setIsBlowing] = useState(false);
 
   const configRef = useRef(config);
@@ -92,15 +101,6 @@ export function BallGravity() {
       p5Instance.current.remove();
     };
   }, []);
-
-  // gestione input
-  const handleChange = useCallback(
-    (name) => (e) => {
-      const val = name === "color" ? e.target.value : +e.target.value;
-      setConfig((cfg) => ({ ...cfg, [name]: val }));
-    },
-    []
-  );
 
   return (
     <>

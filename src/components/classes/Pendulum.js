@@ -25,8 +25,10 @@ export default class Pendulum {
 
     this.angleVelocity = 0.0;
     this.angleAcceleration = 0.0;
+    this.gravity = 0.4; // Arbitrary constant
     this.damping = 0.995; // Arbitrary damping
-    this.ballr = 24.0; // Arbitrary ball radius
+    this.size = 24.0; // Arbitrary ball radius
+    this.color
   }
 
   // Function to update position
@@ -34,8 +36,7 @@ export default class Pendulum {
     const p = this.p;
     // As long as we aren't dragging the pendulum, let it swing!
     if (!this.dragging) {
-      let gravity = 0.4; // Arbitrary constant
-      this.angleAcceleration = ((-1 * gravity) / this.r) * p.sin(this.angle); // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
+      this.angleAcceleration = ((-1 * this.gravity * 0.4) / this.r) * p.sin(this.angle); // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
 
       this.angleVelocity += this.angleAcceleration; // Increment velocity
       this.angle += this.angleVelocity; // Increment angle
@@ -54,9 +55,9 @@ export default class Pendulum {
     p.strokeWeight(2);
     // Draw the arm
     p.line(this.pivot.x, this.pivot.y, this.bob.x, this.bob.y);
-    p.fill(127);
+    p.fill(this.color);
     // Draw the ball
-    p.circle(this.bob.x, this.bob.y, this.ballr * 2);
+    p.circle(this.bob.x, this.bob.y, this.size * 2);
   }
 
   // The methods below are for mouse interaction
@@ -66,7 +67,7 @@ export default class Pendulum {
     const p = this.p;
 
     let d = p.dist(mx, my, this.bob.x, this.bob.y);
-    if (d < this.ballr) {
+    if (d < this.size) {
       this.dragging = true;
     }
   }
