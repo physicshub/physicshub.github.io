@@ -10,6 +10,7 @@ import { SpringConnection } from "./pages/simulations/SpringConnection.jsx"
 import { SimplePendulum } from "./pages/simulations/SimplePendulum.jsx"
 import Contribute from "./pages/contribute.jsx"
 import About from "./pages/about.jsx"
+import Simulations from "./pages/simulations.jsx"
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
       <Routes>
           <Route index element={<Home />} />
           <Route path="/contribute" element={<Contribute />} />
+          <Route path="/simulations" element={<Simulations />} />
           <Route path="/about" element={<About />} />
           <Route path="BouncingBall" element={<BouncingBall />} />
           <Route path="VectorsOperations" element={<VectorsOperations />} />

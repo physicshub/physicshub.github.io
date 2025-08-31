@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 
 const menuItems = [
   { label: 'Home', to: '/', exact: true },
+  { label: 'Simulations', to: '/simulations' },
   { label: 'About', to: '/about' },
   { label: 'Contribute', to: '/contribute' }
 ];

@@ -1,0 +1,191 @@
+/* hero.css */
+:root {
+  --ph-bg: #0b0f19;
+  --ph-surface: #0f1524;
+  --ph-fg: #e8eefb;
+  --ph-fg-muted: rgba(232, 238, 251, 0.55);
+  --ph-accent: #00e6e6;
+  --ph-grid: rgba(115, 130, 175, 0.16);
+  --ph-ring: color-mix(in oklab, var(--ph-accent), white 12%);
+  --ph-radius: 14px;
+  --ph-gap: 1rem;
+}
+
+[data-theme='light'] {
+  --ph-bg: #ffffff;
+  --ph-surface: #f6f7fb;
+  --ph-fg: #0b1220;
+  --ph-fg-muted: rgba(11, 18, 32, 0.62);
+  --ph-grid: rgba(0, 15, 40, 0.06);
+  --ph-ring: color-mix(in oklab, var(--ph-accent), black 8%);
+}
+
+.ph-landing-page{
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  background: var(--ph-bg);
+  min-height: 100vh;
+}
+
+.ph-hero {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(180deg, var(--ph-surface), var(--ph-bg));
+  border-radius: var(--ph-radius);
+  overflow: clip;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  min-height: 62vh;
+  display: grid;
+  align-items: center;
+  padding: 10rem 0;
+}
+
+.ph-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ph-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.ph-hero__radial {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 80%;
+  background: radial-gradient(60% 60% at 50% 40%, color-mix(in oklab, var(--ph-accent), transparent 65%), transparent 70%);
+  filter: blur(40px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.ph-hero__container {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  margin: 1.5rem;
+  text-align: left;
+  color: var(--ph-fg);
+}
+
+.ph-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ph-fg-muted);
+  background: color-mix(in oklab, var(--ph-accent), transparent 86%);
+  border: 1px solid color-mix(in oklab, var(--ph-accent), transparent 70%);
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+}
+
+.ph-hero__title {
+  margin: 0.7rem 0 0.5rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.ph-hero__subtitle {
+  margin: 0.25rem 0 1.25rem;
+  color: var(--ph-fg-muted);
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  max-width: 62ch;
+}
+
+.ph-hero__ctas {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ph-btn {
+  --pad-x: 1rem;
+  --pad-y: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: var(--pad-y) var(--pad-x);
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
+  border: 1px solid transparent;
+  will-change: transform;
+}
+
+.ph-btn--primary {
+  color: white;
+  background: linear-gradient(180deg, var(--ph-accent), color-mix(in oklab, var(--ph-accent), black 12%));
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--ph-accent), transparent 75%);
+}
+
+.ph-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px color-mix(in oklab, var(--ph-accent), transparent 68%);
+}
+
+.ph-btn--ghost {
+  color: var(--ph-fg);
+  background: color-mix(in oklab, var(--ph-accent), transparent 92%);
+  border-color: color-mix(in oklab, var(--ph-accent), transparent 60%);
+}
+
+.ph-btn--ghost:hover {
+  background: color-mix(in oklab, var(--ph-accent), transparent 86%);
+  transform: translateY(-1px);
+}
+
+.ph-hero__stats {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.ph-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: color-mix(in oklab, var(--ph-accent), transparent 94%);
+  border: 1px solid color-mix(in oklab, var(--ph-accent), transparent 75%);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.ph-stat__value {
+  display: block;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ph-stat__label {
+  display: block;
+  color: var(--ph-fg-muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .ph-hero {
+    min-height: 56vh;
+  }
+  .ph-hero__ctas {
+    gap: 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-hero__canvas { display: none; }
+}

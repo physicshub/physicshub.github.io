@@ -20,7 +20,9 @@ export default function Header({ onSearch }) {
   );
 
   return (
-    <header className={`header ${isSticky ? 'sticky' : ''} ${isMenuOpen ? 'open' : ''}`.trim()}>
+    <header
+      className={`header ${isSticky ? 'sticky' : ''} ${isMenuOpen ? 'open' : ''}`.trim()}
+    >
       <div className="header-inner">
         <Logo />
 
@@ -28,7 +30,7 @@ export default function Header({ onSearch }) {
           className="menu-toggle"
           onClick={handleMenuToggle}
           aria-expanded={isMenuOpen}
-          aria-label="Apri/Chiudi menu"
+          aria-label="Open/close menu"
         >
           <FontAwesomeIcon icon={faHamburger} />
         </button>
@@ -37,9 +39,11 @@ export default function Header({ onSearch }) {
 
         <div className="controls">
           <Theme mode={mode} onToggle={toggleMode} />
+          {/* {onSearch && <Search onSearch={onSearch} />} */}
           <Search onSearch={onSearch} />
         </div>
       </div>
     </header>
   );
 }
+

@@ -1,18 +1,18 @@
 /* Stile globale */
 :root {
-  --bg-color: #000;
-  --text-color: #fff;
+  --bg-color: #0b0f19; 
+  --text-color: #e8eefb;
   --accent-color: #00e6e6;
   --glow-color: #fff;
   --card-bg: #111;
   --border-color: #222;
   --bg-gradient: linear-gradient(135deg, #0a0a0a, #141416);
   --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
-
 }
+
 /* Light Theme Overrides */
 [data-theme='light'] {
-  --bg-color: #fff;
+  --bg-color: #e8eefb;
   --text-color: #111;
   --accent-color: #04cdcd;
   --glow-color: #fff;

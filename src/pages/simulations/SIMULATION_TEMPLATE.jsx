@@ -59,19 +59,19 @@ export function SIMULATIONNAME() {
 
     return (
         <>
-        <TopSim/>
-        <Screen sketch={Sketch} />
-        <div className="inputs-container">
-            //
-            // Inputs Components
-            //
-        </div>
+            <TopSim/>
+            <Screen sketch={Sketch} />
+            <div className="inputs-container">
+                //
+                // Inputs Components
+                //
+            </div>
 
-        <TheoryRenderer
-            theory={
-            chapters.find(ch => ch.link === useLocation().pathname)?.theory
-            }
-        />
+            <TheoryRenderer
+                theory={
+                chapters.find(ch => ch.link === useLocation().pathname)?.theory
+                }
+            />
         </>
     );
 }

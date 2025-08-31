@@ -18,7 +18,9 @@ The original creator of the repository, being a student himself and therefore no
    variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this
    Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. You may merge the Pull Request in once you have the sign-off of repository's owner, or if you 
+4. If you changed significatly the ui, take some screenshots and add a new folder in public/screenshots/NEW_VERSION 
+   and add your screenshots.
+5. You may merge the Pull Request in once you have the sign-off of repository's owner, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ### Our Pledge
