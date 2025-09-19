@@ -19,8 +19,7 @@ function Chapter(props) {
                     <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '10px' }}/>
                 </Link>
             </div>
-            <div className="chapter-card-stroke"/>
-        </section>
+        </section> 
     );
 }
 

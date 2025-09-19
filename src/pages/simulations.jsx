@@ -4,6 +4,8 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Chapter from "../components/Chapter.jsx";
 import Chapters from "../data/chapters.js";
+import GradientBackground from '../components/GradientBackground.jsx';
+import Stars from "../components/Stars.jsx";
 
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,7 +25,9 @@ export default function Simulations() {
   return (
     <>
       <Header onSearch={setSearchTerm} />
+      <Stars color="#AEE3FF" opacity={0.4} zIndex={1} starDensity={0.005}/>
       <main>
+        <GradientBackground />
         {filteredChapters.map((chap) => (
           <Chapter
             key={chap.id}

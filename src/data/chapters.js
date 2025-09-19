@@ -15,6 +15,17 @@ export default [
       theory:{
          sections:[
             {
+               title:"",
+               blocks:[
+                  {
+                        type:"callout",
+                        calloutType:"warning",
+                        title:"Attention!",
+                        text:"This section is still under development; from this block onward, this is an example placeholder. See \"/Contribute\" to find out how you can contribute to this page.."
+                  },
+               ]
+            },
+            {
                title:"Section 1 Title",
                blocks:[
                   {

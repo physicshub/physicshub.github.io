@@ -5,6 +5,8 @@ import TopSim from "../../components/TopSim.jsx";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 // Classes imports, example:   
 // import Spring from "../../components/classes/Bob.js";
@@ -60,6 +62,8 @@ export function SIMULATIONNAME() {
     return (
         <>
             <TopSim/>
+            <Stars color="#AEE3FF" opacity={0.3}/>
+            <GradientBackground />
             <Screen sketch={Sketch} />
             <div className="inputs-container">
                 //

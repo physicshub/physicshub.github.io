@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import Stars from "../components/Stars.jsx";
+import GradientBackground from "../components/GradientBackground.jsx";
 
 export default function Contribute() {
   const [contributors, setContributors] = useState([]);
@@ -42,6 +44,8 @@ export default function Contribute() {
     <>
       <Header />
       <div className="page-container">
+        <Stars color="#AEE3FF" opacity={0.4} starDensity={0.005}/>
+        <GradientBackground/>
         <h1 className="title">Contribute to PhysicsHub</h1>
         <p>
           PhysicsHub is an open-source project: anyone can help make it better

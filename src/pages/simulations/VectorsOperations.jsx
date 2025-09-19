@@ -8,6 +8,8 @@ import { adjustColor } from "../../utils/adjustColor.js";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 
 export function VectorsOperations() {
@@ -97,6 +99,8 @@ export function VectorsOperations() {
     <>
       <TopSim/>
       <Screen sketch={Sketch} />
+      <Stars color="#AEE3FF" opacity={0.3}/>
+      <GradientBackground/>
       <div className="inputs-container">
         <NumberInput
           label="Vectors lines weight:"
@@ -104,6 +108,14 @@ export function VectorsOperations() {
           val={inputs.strokeWeight}
           onChange={e => handleInputChange("strokeWeight", Number(e.target.value))}
           min={1}
+        />
+        <SelectInput
+          label="Vectors Operation:"
+          name="operation"
+          options={operations}
+          value={inputs.operation}
+          onChange={e => handleInputChange("operation", e.target.value)}
+          placeholder="Select vectors operation…"
         />
         <NumberInput
           label="Multiplicate vector (multiplication only):"
@@ -113,14 +125,6 @@ export function VectorsOperations() {
           min={1}
           max={10}
           disabled={inputs.operation !== "x"}
-        />
-        <SelectInput
-          label="Vectors Operation:"
-          name="operation"
-          options={operations}
-          value={inputs.operation}
-          onChange={e => handleInputChange("operation", e.target.value)}
-          placeholder="Select vectors operation…"
         />
         <ColorInput
           label="Vectors color:"

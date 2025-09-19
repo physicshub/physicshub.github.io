@@ -9,6 +9,8 @@ import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { gravityTypes } from "../../data/gravity.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 import Ball from "../../components/classes/Ball.js";
 
@@ -105,6 +107,8 @@ export function BallGravity() {
   return (
     <>
       <TopSim/>
+      <Stars color="#AEE3FF" opacity={0.3}/>
+      <GradientBackground/>
 
       {/* canvas simulazione */}
       <div

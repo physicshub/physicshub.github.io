@@ -7,6 +7,9 @@ import TopSim from "../../components/TopSim.jsx";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
+import Stars from "../../components/Stars.jsx";
+import GradientBackground from "../../components/GradientBackground.jsx";
+
 
 export function BouncingBall() {
     const [inputs, setInputs] = useState({
@@ -79,6 +82,8 @@ export function BouncingBall() {
 
     return(
         <>
+            <Stars color="#AEE3FF" opacity={0.3}/>
+            <GradientBackground/>
             <TopSim/>
             <Screen sketch={Sketch}/>
             <div className="inputs-container">

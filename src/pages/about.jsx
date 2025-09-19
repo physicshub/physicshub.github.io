@@ -1,11 +1,15 @@
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Stars from "../components/Stars.jsx";
+import GradientBackground from "../components/GradientBackground.jsx";
 
 export default function About() {
   return (
     <>
       <Header/>
+      <Stars color="#AEE3FF" opacity={0.4} zIndex={1} starDensity={0.005}/>
+      <GradientBackground/>
       <div className="page-container">
         <h1 className="title"><strong>About PhysicsHub</strong></h1>
         <p>

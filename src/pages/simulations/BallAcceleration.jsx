@@ -6,6 +6,8 @@ import TopSim from "../../components/TopSim.jsx";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 import Ball from "../../components/classes/Ball.js"; // <-- import classe esterna
 
@@ -64,6 +66,8 @@ export function BallAcceleration() {
   return (
     <>
       <TopSim/>
+      <Stars color="#AEE3FF" opacity={0.3}/>
+      <GradientBackground/>
       <Screen sketch={Sketch} />
       <div className="inputs-container">
         <NumberInput

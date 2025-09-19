@@ -6,6 +6,8 @@ import TheoryRenderer from "../../components/theory/TheoryRenderer.js";
 import chapters from "../../data/chapters.js";
 import { gravityTypes } from "../../data/gravity.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 import Pendulum from "../../components/classes/Pendulum.js";
 
@@ -82,6 +84,8 @@ export function SimplePendulum() {
         <>
         <TopSim/>
         <Screen sketch={Sketch} />
+        <Stars color="#AEE3FF" opacity={0.3}/>
+        <GradientBackground/>
         <div className="inputs-container">
             <NumberInput
             label="Bob Size"

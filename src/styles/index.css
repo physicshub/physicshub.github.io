@@ -26,9 +26,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-html {
-  background-color: var(--bg-color);
-}
 body {
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -58,6 +55,10 @@ a {
 a:hover {
   transition: text-shadow 0.3s;
   text-shadow: 0 0 8px var(--accent-color);
+}
+
+a  > strong {
+  text-decoration: underline;
 }
 
 
@@ -113,6 +114,7 @@ header.sticky {
 }
 
 nav {
+  position: relative;
   z-index: 2100;
 }
 
@@ -208,7 +210,7 @@ header.open nav ul {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 840px) {
   .menu-toggle {
     display: block;
   }
@@ -220,9 +222,9 @@ header.open nav ul {
     width: 100%;
     max-height: 0;
     overflow: hidden;
-    background: var(--bg-gradient);
     transition: max-height 0.4s ease;
     z-index: 1000;
+    background-color: var(--bg);
   }
 
   header.open nav {
@@ -234,6 +236,9 @@ header.open nav ul {
     gap: 1rem;
     padding: 1rem 2rem;
     justify-content: flex-start;
+    border: 1px solid transparent;
+  background-color: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
   }
 
   .controls {
@@ -249,6 +254,7 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 7.5rem;
 }
 
 .chapter-card {
@@ -258,10 +264,24 @@ main {
   position: relative;
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(255,255,255,0.05);
+  border-radius: 1rem;
+  box-shadow: 0 0 1rem 0 #04cdcd1a;
   transition: transform 0.3s, box-shadow 0.3s;
-  padding: 0.08rem;
+  padding: 0.5rem;
+  color: var(--ph-fg);
+}
+
+.chapter-card::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at top left,
+    var(--accent-color),
+    transparent 75%
+  );
+  animation: spinStroke 6s ease-in-out infinite;
 }
 
 .chapter-card > * {
@@ -270,16 +290,19 @@ main {
 }
 
 .chapter-card-overlay{
-  background: var(--card-bg);
+  /* background: var(--card-bg); */
   border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 1.5rem;
+  background: color-mix(in oklab, var(--ph-accent), transparent 90%);
+  border-radius: 1rem;
   z-index: 2;
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 1rem 1.5rem;
+  background-color: rgb(11,15,25);
 }
+
 
 .chapter-card-overlay > a {
   margin-top: auto;
@@ -313,28 +336,18 @@ main {
   text-shadow: 0 0 3px var(--glow-color);
 }
 
-.chapter-card-stroke{
-  position: absolute;
-  width: 200%;
-  height: 700%;
-  background-image: radial-gradient(circle at top left, var(--accent-color), transparent);
-  transform-origin: center;
-  animation: spinStroke 1.5s linear infinite;
-  z-index: 0;
-  border-radius: 50%;
-}
 
 @keyframes spinStroke {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  to {transform: rotate(360deg);}
 }
 
 
 /* Footer */
 footer {
   position: relative;
-  background: var(--bg-gradient-rotated);
-  color: var(--text-color);
+  border-top: 1px solid transparent;
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%); 
   overflow: hidden;
   padding-top: 4rem;
 }
@@ -991,7 +1004,7 @@ footer {
 
   overflow: hidden;
   box-sizing: border-box;
-  max-width: 50%;
+  max-width: 80%;
   margin: 0 auto;
   flex-wrap: wrap;
 }

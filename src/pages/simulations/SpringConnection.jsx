@@ -6,6 +6,8 @@ import TheoryRenderer from "../../components/theory/TheoryRenderer";
 import chapters from "../../data/chapters.js";
 import { gravityTypes } from "../../data/gravity.js";
 import { useLocation } from "react-router-dom";
+import GradientBackground from "../../components/GradientBackground.jsx";
+import Stars from "../../components/Stars.jsx";
 
 import Bob from "../../components/classes/Bob.js";
 import Spring from "../../components/classes/Spring.js";
@@ -116,6 +118,8 @@ export function SpringConnection() {
   return (
     <>
       <TopSim/>
+      <Stars color="#AEE3FF" opacity={0.3}/>
+      <GradientBackground />
       <Screen sketch={Sketch} />
       <div className="inputs-container">
         <NumberInput
