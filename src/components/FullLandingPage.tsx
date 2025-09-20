@@ -26,7 +26,7 @@ export default function FullLandingPage() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        const voiceActiveCount = data.members.filter(m => m.channel_id).length;
+        const voiceActiveCount = data.members.filter((m: { channel_id: any; }) => m.channel_id).length;
 
         setStats({
           online: data.presence_count ?? null,
