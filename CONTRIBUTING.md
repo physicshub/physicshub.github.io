@@ -1,97 +1,213 @@
-# PLEASE READ THIS, IT'S VERY IMPORTANT
+# 📚 Full Guide for Contributors
+> **Please read carefully — every section is important!**
 
-# Our mission
-The most important thing is to fully understand our mission: the reason we do this.
 
-The project is and always will be aimed at students, so it must always be a site that is easy to understand and use, but above all, useful. It will always be free and open to all, with the aim of improving the study of physics.
 
-# Contributing
-I grant many freedoms to those who wish to contribute to this project; I don't want to impose stringent rules. Therefore, please do not abuse these freedoms.
+## 🎯 Our Mission
+PhysicsHub exists to help **students** understand physics through **interactive simulations** and **clear explanations**.  
+It will **always** be:
+- Easy to use
+- Free and open to all
+- Focused on improving physics learning
 
-The original creator of the repository, being a student himself and therefore not very experienced in web development, encourages those with more experience to set a good example. Therefore, please feel free to rewrite parts of the code in a way you think is best.
 
-## Pull Request Process
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
-2. Update the README.md with details of changes to the interface, this includes new environment 
-   variables, exposed ports, useful file locations and container parameters.
-3. Increase the version numbers in any examples files and the README.md to the new version that this
-   Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. If you changed significatly the ui, take some screenshots and add a new folder in public/screenshots/NEW_VERSION 
-   and add your screenshots.
-5. You may merge the Pull Request in once you have the sign-off of repository's owner, or if you 
-   do not have permission to do that, you may request the second reviewer to merge it for you.
+## 🤝 Contributing
+We welcome contributions from everyone.  
+There are **no overly strict rules**, but please:
+- Respect the project's mission
+- Keep the code clean and maintainable
+- Use your experience to set a good example for others
 
-### Our Pledge
+You are free to **rewrite or improve** parts of the code if you believe it benefits the project.
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, gender identity and expression, level of experience,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
 
-### Our Standards
+## 🔄 Pull Request Process — Step-by-Step (Beginner Friendly)
 
-Examples of behavior that contributes to creating a positive environment
-include:
+This guide will walk you through **setting up the project locally** and creating a **Pull Request (PR)**, even if it’s your first time contributing to an open-source project.
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+---
 
-Examples of unacceptable behavior by participants include:
+### 🛠️ 1. Setting up the project locally
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+0. **Install Dependences**
+   - Install [Node.js](https://nodejs.org/en/download)
+   - Install [Git](https://git-scm.com/downloads)
+   - Check if [Npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) and Node.js are installed with `npm -v` and `node -v`
 
-### Our Responsibilities
+1. **Fork the repository**
+   - Go to the project’s [GitHub page](https://github.com/physicshub/physicshub.github.io).
+   - Click the **Fork** button (top right) to create a copy of the repository under your account.
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+2. **Clone your fork to your computer**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/physicshub.github.io.git
+   ```
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+3. **Navigate into the project folder**
+   ```bash
+   cd physicshub.github.io
+   ```
 
-### Scope
+4. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+   - Open your browser at `http://localhost:3000` or `http://localhost:5173` to see the site running locally.
 
-### Enforcement
+---
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team on the Discord server or mailing at mattqdevv@gmail.com. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
+### 2️⃣ Make your changes
 
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
+- You can:
+  - Add new simulations
+  - Improve UI/UX
+  - Fix bugs
+  - Update documentation
+- Keep your code **clean, readable, and consistent** with the existing style.
 
-### Attribution
+---
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at [http://contributor-covenant.org/version/1/4][version]
+### 3️⃣ Versioning
 
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+- Open `package.json` and update the `"version"` field.
+- Follow **[Semantic Versioning](http://semver.org/)**:
+  - **MAJOR** → Breaking changes (e.g., `2.0.0`)
+  - **MINOR** → New features, backward-compatible (e.g., `1.4.0`)
+  - **PATCH** → Bug fixes or small improvements (e.g., `1.3.1`)
+
+---
+
+### 4️⃣ UI Changes
+
+If you made **significant changes** to the interface:
+1. Take screenshots of the updated UI.
+2. Create a folder in:
+   ```
+   public/screenshots/NEW_VERSION
+   ```
+3. Save all screenshots there.
+4. The main screenshot (usually the homepage) should be named:
+   ```
+   main.png
+   ```
+
+---
+
+### 5️⃣ Commit and Push
+
+1. **Stage your changes**
+   ```bash
+   git add .
+   ```
+2. **Write a clear commit message**
+   ```bash
+   git commit -m "<Commit message>"
+   ```
+3. **Push your branch to your fork**
+   ```bash
+   git push
+   ```
+
+---
+
+### 6️⃣ Create the Pull Request (PR)
+
+1. Go to your fork on GitHub.
+2. Click **Compare & pull request**.
+3. Fill in the PR description:
+   - **What** you changed
+   - **Why** you changed it
+   - Link related issues (e.g., `Closes #12`)
+   - Add screenshots/GIFs if relevant
+4. Make sure the base branch is:
+   ```
+   base repository: physicshub/physicshub.github.io
+   base: main
+   ```
+The title of your pull request should follow the [conventional commit format](https://www.conventionalcommits.org/en/v1.0.0/). When a pull request is merged to the main branch, all changes are going to be squashed into a single commit. The message of this commit will be the title of the pull request. And for every release, the commit messages are used to generate the changelog.
+
+Here are some examples of conventional PR titles:
+
+- `feat: add new icons for Rust`
+- `fix: correct icon for .gitignore`
+- `ci: add GitHub Actions for automated testing`
+
+Generating the changelog based on the commit messages saves time and helps to keep the changelog up-to-date. It also helps to understand the changes in the project.
+
+
+---
+
+### 7️⃣ Review and Merge
+
+- Wait for the repository owner to review your PR.
+- If changes are requested:
+  ```bash
+  git commit -m "Fix: updated UI based on review"
+  git push
+  ```
+- Once approved:
+  - If you have write permissions → you can merge.
+  - If not → the maintainer will merge for you.
+
+---
+
+
+## 🏛 Our Pledge
+We pledge to maintain an **open, welcoming, and harassment-free** environment for everyone, regardless of:
+- Age, body size, disability, ethnicity
+- Gender identity/expression
+- Level of experience, nationality
+- Personal appearance, race, religion
+- Sexual identity/orientation
+
+
+
+## ✅ Standards of Conduct
+
+### Positive Behaviors
+- Use inclusive language
+- Respect different viewpoints
+- Accept constructive criticism gracefully
+- Focus on community benefit
+- Show empathy towards others
+
+### Unacceptable Behaviors
+- Sexualized language or imagery
+- Trolling, insults, or personal/political attacks
+- Harassment (public or private)
+- Publishing private information without consent
+- Any conduct inappropriate in a professional setting
+
+
+
+## 📌 Responsibilities
+- Maintainers clarify acceptable behavior
+- Maintainers may remove or reject contributions that violate the Code of Conduct
+- Maintainers may ban contributors for harmful behavior
+
+
+
+## 🌍 Scope
+This Code of Conduct applies:
+- In all project spaces
+- In public spaces when representing the project
+
+
+
+## 🚨 Enforcement
+Report unacceptable behavior or just ask anything here:
+- **Discord**: [Join here](https://discord.gg/hT68DTcwfD)
+- **Email**: mattqdevv@gmail.com
+
+
+## 📜 Attribution
+Adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/4/), version 1.4.
+

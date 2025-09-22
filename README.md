@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width=40% height=40% />
 <h1>PhysicsHub</h1>
-<h3><em>Website that contains free physics simulations for students.</em></h3>
+<h3><em>Best website to learn physics easily, with cool interactive simulations. </em></h3>
 <p>
 <img src="https://img.shields.io/github/contributors/PhysicsHub/physicshub.github.io?style=plastic" alt="Contributors">
 <img src="https://img.shields.io/github/forks/PhysicsHub/physicshub.github.io" alt="Forks">
@@ -12,17 +12,22 @@
 </p>
 </div>
 
-## About
+## 📚 About
 
 A small web application to help student understand physics with cool interactive simulations and easily understandable theory.
 
-## Link
 
-You can clone the project locally or try the web app on the [website](https://physicshub.github.io).
+## 🌐 Live Demo
 
-<img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true"/>
+Try PhysicsHub directly in your browser:  
+🔗 **[Visit the Website](https://physicshub.github.io)**
 
-## Steps to run it locally
+<p align="center">
+  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true" alt="PhysicsHub Screenshot" width="80%">
+</p>
+
+
+## 🛠️ Steps to run it locally
 
 1. Clone the repository to your computer <br>
    ``` bash
@@ -41,29 +46,37 @@ You can clone the project locally or try the web app on the [website](https://ph
    npm run dev
 7. Open your browser to http://localhost:3000 or http://localhost:5173/
 
+## 🤝 Contributing
+
+We welcome contributions from the community!  
+Whether you want to **fix a bug**, **add a new simulation**, or **improve the UI/UX**, your help is appreciated.
+
+Our project is **perfect for first-contribution!**
+
+Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md) for starting now!
+
+
 <br>
 <hr>
 
-### Contributors
+### 👥 Contributors
 
-| [<img src="https://avatars.githubusercontent.com/u/226545239" width="80"><br><sub><b>physicshub</b></sub>](https://physicshub.github.io) | [<img src="https://avatars.githubusercontent.com/u/115874885" width="80"><br><sub><b>mattqdev</b></sub>](https://twitter.com/mattqdev)
-|:--:|:--:|
+| [<img src="https://avatars.githubusercontent.com/u/226545239" width="80"><br><sub><b>physicshub</b></sub>](https://physicshub.github.io) | [<img src="https://avatars.githubusercontent.com/u/115874885" width="80"><br><sub><b>mattqdev</b></sub>](https://github.com/mattqdev)| [<img src="https://avatars.githubusercontent.com/u/184136337" width="80"><br><sub><b>supertutto</b></sub>](https://github.com/supertutto)
+|:--:|:--:|:--:|
 
 
-### Supporters
+### 💖 Supporters
 
 No supporters yet
 
-Become a supporter by donating on Ko-Fi:
+Become a supporter by donating on Ko-Fi: [COMING SOON](https://ko-fi.com/)
 
-[SOON](https://ko-fi.com/)
-
-### Community 
+### 🌍 Community 
 Join us on Discord:
 <br>
 [![](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
 
 
-### License
+### 📜 License
 
 <img src="https://img.shields.io/github/license/PhysicsHub/physicshub.github.io" alt="Licence">
