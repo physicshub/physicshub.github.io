@@ -175,7 +175,7 @@ function draw(){
                      text:"This section describes basic vector operations used in 2D simulations: addition, subtraction, scaling, normalization, dot product, and cross product (2D - pseudoscalar)."
                   }
                ]
-            },
+            }, 
             {
                title:"Fundamental Operations",
                blocks:[
