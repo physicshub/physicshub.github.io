@@ -10,6 +10,9 @@
 | [ ] | 🟢 Low  | `src/components/Theme.tsx` | — | Change theme button behavior to cycle through Dark, Light, and System modes. |
 | [x] | 🟡 Medium | `src/pages/about.jsx` | — | Create an “About Us” page with project history, links, and contact info. |
 | [x] | 🟡 Medium | `src/pages/contribute.jsx` | — | Create a “Contribute” page with contributor names, rules, GitHub links, and mission. |
+| [ ] | 🟢 Low  || — | inserting pop up lights in all the sections for small facts about physics
+| [ ] | 🟢 Low  || — | in the theory formulas a pop up screen with formulas written as movable objects to get your own derivative formula or hints on how to get it
+| [ ] | 🔴 High || — | Insert some type of translation for various languages |
 
 
 ---
