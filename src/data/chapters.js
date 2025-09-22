@@ -46,7 +46,7 @@ export default [
                ]
             },
             {
-               title:"How does it affec the position of the ball?",
+               title:"How does it affect the position of the ball?",
                blocks:[
                   {
                      type:"paragraph",
