@@ -16,17 +16,6 @@ export default [
       theory:{
          sections:[
             {
-               title:"",
-               blocks:[
-                  {
-                        type:"callout",
-                        calloutType:"warning",
-                        title:"Attention!",
-                        text:"This section is still under development; from this block onward, this is an example placeholder. See \"/Contribute\" to find out how you can contribute to this page.."
-                  },
-               ]
-            },
-            {
                title:"What's a velocity?",
                blocks:[
                   {
@@ -100,61 +89,6 @@ export default [
                         "Moreover, you can now show your physics skills with all of your friends the next time you're attending "+
                         "a biliardo night out!"
                      ]
-                  },
-                  {
-                     type:"formula",
-                     latex:"x = (1 + 1 * 4)"
-                  },
-                  {
-                     type:"note",
-                     text:"This is a note."
-                  }
-               ]
-            },
-            {
-               title:"Section 3 Title",
-               blocks:[
-                  {
-                     type:"code",
-                     language:"javascript",
-                     code:`let x = "100";
-
-function draw(){
-  x += vx;
-  y += vy;
-  
-  return 1 + 1
-}`
-                  }
-               ]
-            },
-            {
-               title:"Section 4 Title",
-               blocks:[
-                  {
-                     type:"table",
-                     columns:[
-                        "First column",
-                        "Second column",
-                        "Third column"
-                     ],
-                     data:[
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        },
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        },
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        }
-                     ]
                   }
                ]
             },
@@ -169,35 +103,6 @@ function draw(){
                         "Enable the trail to better see the motion of the ball and its incidence angles",
                         "Verify the formulas above by measuring the time it takes to the ball to go from a corner to the other of the window"
                      ]
-                  }
-               ]
-            },
-            {
-               title:"Section 5 Title",
-               blocks:[
-                  {
-                     type:"callout",
-                     calloutType:"info",
-                     title:"Info",
-                     text:"This is a info."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"warning",
-                     title:"Attention!",
-                     text:"This is a warning."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"tip",
-                     title:"Smart Tip!",
-                     text:"This is a tip."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"success",
-                     title:"Success!",
-                     text:"Congratulation, you won!"
                   }
                ]
             }
