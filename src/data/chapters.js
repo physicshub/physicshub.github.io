@@ -175,7 +175,7 @@ function draw(){
                      text:"This section describes basic vector operations used in 2D simulations: addition, subtraction, scaling, normalization, dot product, and cross product (2D - pseudoscalar)."
                   }
                ]
-            }, 
+            },
             {
                title:"Fundamental Operations",
                blocks:[
@@ -213,71 +213,11 @@ function draw(){
                   },
                   {
                      type:"subheading",
-                     text:"Scale and norm"
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\lambda\\vec{a} = (\\lambda a_x,\\lambda a_y),\\quad ||\\vec{a}|| = \\sqrt{a_x^2 + a_y^2}"
-                  },
-                  {
-                     type:"subheading",
-                     text:"Normalization"
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\hat{a} = \\frac{\\vec{a}}{||\\vec{a}||}"
+                     text:"Multiplication by a Scalar"
                   },
                   {
                      type:"paragraph",
-                     text:"The dot product is useful for angles and projections; the (2D) cross product returns a pseudoscalar indicating relative orientation."
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\vec{a}\\cdot\\vec{b} = a_x b_x + a_y b_y,\\quad a_x b_y - a_y b_x"
-                  }
-               ]
-            },
-            {
-               title:"Practical Examples",
-               blocks:[
-                  {
-                     type:"code",
-                     language:"javascript",
-                     code:`function normalize(v){ 
-  const m = Math.hypot(v.x,v.y)||1; 
-  return {x: v.x/m, y: v.y/m}; 
-}
-function dot(a,b){ 
-  return a.x*b.x + a.y*b.y; 
-}
-function reflect(v,n){ 
-  // reflection relative to normal n (unit)
-  const d = dot(v,n);
-  return { 
-    x: v.x - 2*d*n.x, 
-    y: v.y - 2*d*n.y 
-  };
-}`
-                  }
-               ]
-            },
-            {
-               title:"Exercises and Observations",
-               blocks:[
-                  {
-                     type:"list",
-                     ordered:false,
-                     items:[
-                        "Verify normalization handles null vector",
-                        "Use dot to calculate angle between vectors: cos(θ)=a·b/(|a||b|)",
-                        "Use reflect to calculate bounces on inclined surfaces"
-                     ]
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"info",
-                     title:"Precision",
-                     text:"For high per-frame velocities, consider more accurate integrations or sub-stepping to avoid penetrations."
+                     text:"The multiplication of a vector by a scalar is done by multiplying the module of the vector by the scalar, while the angle remains unchanged. If the scalar is negative, the angle changes by 180 degrees (the vector points in the opposite direction)."
                   }
                ]
             }
