@@ -15,129 +15,93 @@ export default [
       theory:{
          sections:[
             {
-               title:"",
-               blocks:[
-                  {
-                        type:"callout",
-                        calloutType:"warning",
-                        title:"Attention!",
-                        text:"This section is still under development; from this block onward, this is an example placeholder. See \"/Contribute\" to find out how you can contribute to this page.."
-                  },
-               ]
-            },
-            {
-               title:"Section 1 Title",
+               title:"What's a velocity?",
                blocks:[
                   {
                      type:"paragraph",
-                     text:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eu faucibus enim."
+                     text:"Let's start with some basic theory, defining what velocity is and how to calculate it. "+
+                          "Velocity is a vector quantity defined as the change in position of a body as a function of time; "+
+                          "in the matter of fact, we can write it as: "
                   },
                   {
-                     type:"list",
-                     ordered:true,
-                     items:[
-                        "Ordered list item 1",
-                        "Ordered list item 2",
-                        "Ordered list item 3"
-                     ]
+                     type:"formula",
+                     latex:"$\\v = \\frac{\\Delta_s}{\\Delta_t}$"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"where Δs is the change in space, while Δt is the change in time."
                   }
                ]
             },
             {
-               title:"Section 2 Title",
+               title:"How does it affect the position of the ball?",
+               blocks:[
+                  {
+                     type:"paragraph",
+                     text:"For the next step, let's consider our motion as one-dimensional: this means that , we'll need only "+
+                          "one variable, or direction, to describe it. For example, let's set VelocityY = 0, giving VeloccityX "+
+                          "some speed. Our ball is now moving in Rectilinear Uniform Motion (RMU), which can be expressed using "+
+                          "the x(t) function: "
+                  },
+                  {
+                     type:"formula",
+                     latex:"x(t) = x0 + v*t"
+                  },
+                  {
+                     type:"paragraph",
+                     text:"where, in order, x0 is the ball's initial position, v is its velocity, and t is the instant of time "+
+                          "we're considering. In this way, the x(t) function will return the value of the ball's position at "+
+                          "that given instant in time."
+                  },
+                  {
+                     type:"note",
+                     text:"P.S.: It works the same way if, instead of setting VelocityY = 0, we set VelocityX = 0; except that "+
+                          "in this case, the ball would clearly be moving vertically."
+                  },
+                  {
+                     type:"paragraph",
+                     text:"Are we tough guys, and one-dimensional motion isn't our thing? Let's add a dimension! Now let's "+
+                          "consider the motion on both the X and Y axes, giving both a non-zero velocity. The first thing we "+
+                          "notice is that, by giving X and Y the same velocity, the ball creates an angle of incidence with the "+
+                          "plane (the window walls!) of 45 degrees, or pi/4 radians, if you prefer. This happens because, if we "+
+                          "consider a cartesian reference system (CRS) and think of the velocity as a vector, we obtain that we "+
+                          "are giving the ball a vertical vector equal to the horizontal one, so the resultant will be a vector "+
+                          "directed at 45 degrees (see vector simulation to learn more!). By modifying the velocities, making "+
+                          "them different from each other, we notice that the angle of incidence increases or decreases depending "+
+                          "on the case."
+                  }
+               ]
+            },
+            {
+               title:"Some curiosities!",
                blocks:[
                   {
                      type:"list",
                      ordered:false,
                      items:[
-                        "Unordered list item 1",
-                        "Unordered list item 2",
-                        "Unordered list item 3"
-                     ]
-                  },
-                  {
-                     type:"formula",
-                     latex:"x = (1 + 1 * 4)"
-                  },
-                  {
-                     type:"note",
-                     text:"This is a note."
-                  }
-               ]
-            },
-            {
-               title:"Section 3 Title",
-               blocks:[
-                  {
-                     type:"code",
-                     language:"javascript",
-                     code:`let x = "100";
-
-function draw(){
-  x += vx;
-  y += vy;
-  
-  return 1 + 1
-}`
-                  }
-               ]
-            },
-            {
-               title:"Section 4 Title",
-               blocks:[
-                  {
-                     type:"table",
-                     columns:[
-                        "First column",
-                        "Second column",
-                        "Third column"
-                     ],
-                     data:[
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        },
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        },
-                        {
-                           "First column":"Value 1",
-                           "Second column":"Value 2",
-                           "Third column":"Value 3"
-                        }
+                        "The angle of incidence and the angle of reflection (i.e., the angle between the direction of the ball "+
+                        "and the plane, created after the ball hits the latter) are equal",
+                        "This occurs even when the plane has a different inclination: in fact, just look at the axis perpendicular "+
+                        "to the plane at the point where the ball touches it and you immediately notice the symmetry",
+                        "This phenomenon is very common in optics, when light beams are bounced off surfaces to analyze their "+
+                        "reactions: depending on the material and the type of light transmitted, a lot of useful information can be obtained",
+                        "Moreover, you can now show your physics skills with all of your friends the next time you're attending "+
+                        "a biliardo night out!"
                      ]
                   }
                ]
             },
             {
-               title:"Section 5 Title",
+               title:"Suggested Experiments",
                blocks:[
                   {
-                     type:"callout",
-                     calloutType:"info",
-                     title:"Info",
-                     text:"This is a info."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"warning",
-                     title:"Attention!",
-                     text:"This is a warning."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"tip",
-                     title:"Smart Tip!",
-                     text:"This is a tip."
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"success",
-                     title:"Success!",
-                     text:"Congratulation, you won!"
+                     type:"list",
+                     ordered:false,
+                     items:[
+                        "Try different velocities for both X and Y",
+                        "Enable the trail to better see the motion of the ball and its incidence angles",
+                        "Verify the formulas above by measuring the time it takes to the ball to go from a corner to the other of the window"
+                     ]
                   }
                ]
             }
@@ -174,7 +138,7 @@ function draw(){
                      text:"This section describes basic vector operations used in 2D simulations: addition, subtraction, scaling, normalization, dot product, and cross product (2D - pseudoscalar)."
                   }
                ]
-            }, 
+            },
             {
                title:"Fundamental Operations",
                blocks:[
@@ -212,71 +176,11 @@ function draw(){
                   },
                   {
                      type:"subheading",
-                     text:"Scale and norm"
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\lambda\\vec{a} = (\\lambda a_x,\\lambda a_y),\\quad ||\\vec{a}|| = \\sqrt{a_x^2 + a_y^2}"
-                  },
-                  {
-                     type:"subheading",
-                     text:"Normalization"
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\hat{a} = \\frac{\\vec{a}}{||\\vec{a}||}"
+                     text:"Multiplication by a Scalar"
                   },
                   {
                      type:"paragraph",
-                     text:"The dot product is useful for angles and projections; the (2D) cross product returns a pseudoscalar indicating relative orientation."
-                  },
-                  {
-                     type:"formula",
-                     latex:"\\vec{a}\\cdot\\vec{b} = a_x b_x + a_y b_y,\\quad a_x b_y - a_y b_x"
-                  }
-               ]
-            },
-            {
-               title:"Practical Examples",
-               blocks:[
-                  {
-                     type:"code",
-                     language:"javascript",
-                     code:`function normalize(v){ 
-  const m = Math.hypot(v.x,v.y)||1; 
-  return {x: v.x/m, y: v.y/m}; 
-}
-function dot(a,b){ 
-  return a.x*b.x + a.y*b.y; 
-}
-function reflect(v,n){ 
-  // reflection relative to normal n (unit)
-  const d = dot(v,n);
-  return { 
-    x: v.x - 2*d*n.x, 
-    y: v.y - 2*d*n.y 
-  };
-}`
-                  }
-               ]
-            },
-            {
-               title:"Exercises and Observations",
-               blocks:[
-                  {
-                     type:"list",
-                     ordered:false,
-                     items:[
-                        "Verify normalization handles null vector",
-                        "Use dot to calculate angle between vectors: cos(θ)=a·b/(|a||b|)",
-                        "Use reflect to calculate bounces on inclined surfaces"
-                     ]
-                  },
-                  {
-                     type:"callout",
-                     calloutType:"info",
-                     title:"Precision",
-                     text:"For high per-frame velocities, consider more accurate integrations or sub-stepping to avoid penetrations."
+                     text:"The multiplication of a vector by a scalar is done by multiplying the module of the vector by the scalar, while the angle remains unchanged. If the scalar is negative, the angle changes by 180 degrees (the vector points in the opposite direction)."
                   }
                ]
             }
