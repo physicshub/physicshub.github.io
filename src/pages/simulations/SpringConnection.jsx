@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 import Screen from "../../components/Screen.jsx";
 import TopSim from "../../components/TopSim.jsx";
 import TheoryRenderer from "../../components/theory/TheoryRenderer";
-import chapters from "../../data/chapters.js";
-import { gravityTypes } from "../../data/gravity.js";
-import { useLocation } from "react-router-dom";
 import GradientBackground from "../../components/GradientBackground.jsx";
 import Stars from "../../components/Stars.jsx";
 
@@ -16,30 +14,45 @@ import NumberInput from "../../components/inputs/NumberInput.jsx";
 import ColorInput from "../../components/inputs/ColorInput.jsx";
 import SelectInput from "../../components/inputs/SelectInput.jsx";
 
+import chapters from "../../data/chapters.js";
+import {
+  gravityTypes,
+  metersToPixels,
+  pixelsToMeters,
+  springK_SI_to_px,
+  springK_px_to_SI,
+  kgToSimMass,
+  accelSI_to_pxSec
+} from "../../data/constants.js";
+
 export function SpringConnection() {
+  // Stato iniziale in unità SI (convertiti in px per la simulazione)
   const [inputs, setInputs] = useState({
-    bobMass: 24,
-    bobDamping: 0.98,
-    gravity: 1,
-    springRestLength: 100,
-    springK: 0.2,
-    minLength: 30,
-    maxLength: 400,
+    bobMass: kgToSimMass(10), // kg
+    bobDamping: 1,
+    gravity: gravityTypes.find(g => g.label.includes("Earth")).value, // px/s²
+    springK: springK_SI_to_px(100), // N/m → N/px
+    springRestLength: metersToPixels(0.5), // m → px
+    minLength: metersToPixels(0.1), // m → px
+    maxLength: metersToPixels(3.5), // m → px
     bobColor: "#7f7f7f",
     anchorColor: "#7f7f7f",
     springColor: "#000000",
-    bobSize: 48
+    bobSize: 40 // px
   });
 
-    // Input handling
-    const inputsRef = useRef(inputs);
-    useEffect(() => {
-        inputsRef.current = inputs;
-    }, [inputs]);
+  const inputsRef = useRef(inputs);
+  useEffect(() => {
+    inputsRef.current = inputs;
+  }, [inputs]);
 
-    const handleInputChange = (name, value) => {
-        setInputs(prev => ({...prev, [name]: value}));
-    };
+  const handleInputChange = (name, converter) => (e) => {
+    const val = +e.target.value;
+    setInputs(prev => ({
+      ...prev,
+      [name]: converter ? converter(val) : val
+    }));
+  };
 
   const bgColor = useRef([0, 0, 0]);
 
@@ -47,10 +60,10 @@ export function SpringConnection() {
     let spring, bob;
 
     p.setup = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode
-      p.createCanvas(w, h)
+      const { clientWidth: w, clientHeight: h } = p._userNode;
+      p.createCanvas(w, h);
 
-      const style = getComputedStyle(document.querySelector('.screen'));
+      const style = getComputedStyle(document.querySelector(".screen"));
       const rgb = (style.backgroundColor.match(/\d+/g) || []).map(Number);
       bgColor.current = rgb.length === 3 ? rgb : [0, 0, 0];
 
@@ -66,9 +79,23 @@ export function SpringConnection() {
     p.draw = () => {
       p.background(...bgColor.current);
 
-      const { gravity, springK, springRestLength, bobMass, bobDamping, bobSize, bobColor, springColor, anchorColor, minLength, maxLength } = inputsRef.current;
+      const {
+        gravity,
+        springK,
+        springRestLength,
+        bobMass,
+        bobDamping,
+        bobSize,
+        bobColor,
+        springColor,
+        anchorColor,
+        minLength,
+        maxLength
+      } = inputsRef.current;
 
-      let Gravity = p.createVector(0, gravity);
+      // gravità già in px/s²
+      const gravityPx = accelSI_to_pxSec(gravity);
+      let Gravity = p.createVector(0, gravityPx);
       bob.applyForce(Gravity);
 
       spring.k = springK;
@@ -101,10 +128,9 @@ export function SpringConnection() {
 
     p.windowResized = () => {
       const { springRestLength, springK, bobMass, bobDamping, bobSize } = inputsRef.current;
-      const { clientWidth: w, clientHeight: h } = p._userNode
+      const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
 
-      // Ricrea gli oggetti con i parametri correnti
       spring = new Spring(p, w / 2, 10, springRestLength);
       spring.k = springK;
 
@@ -117,26 +143,27 @@ export function SpringConnection() {
 
   return (
     <>
-      <TopSim/>
-      <Stars color="#AEE3FF" opacity={0.3}/>
+      <TopSim />
+      <Stars color="#AEE3FF" opacity={0.3} />
       <GradientBackground />
       <Screen sketch={Sketch} />
+
       <div className="inputs-container">
         <NumberInput
-          label="Bob Mass"
-          val={inputs.bobMass}
-          min={1}
-          max={100}
-          step={1}
-          onChange={e => handleInputChange("bobMass", Number(e.target.value))}
+          label="Bob Mass (kg)"
+          val={inputs.bobMass} // già in kg
+          min={0.1}
+          max={10}
+          step={0.1}
+          onChange={handleInputChange("bobMass")}
         />
         <NumberInput
-          label="Bob Size"
-          val={inputs.bobSize}
-          min={5}
-          max={200}
-          step={1}
-          onChange={e => handleInputChange("bobSize", Number(e.target.value))}
+          label="Bob Size (px)"
+          val={inputs.bobSize} // mostro in metri
+          min={0.05}
+          max={40}
+          step={0.01}
+          onChange={handleInputChange("bobSize")}
         />
         <NumberInput
           label="Damping Bob"
@@ -144,67 +171,65 @@ export function SpringConnection() {
           min={0}
           max={1}
           step={0.01}
-          onChange={e => handleInputChange("bobDamping", Number(e.target.value))}
+          onChange={handleInputChange("bobDamping")}
         />
         <SelectInput
-          label="Gravity"
+          label="Gravity (m/s²)"
           options={gravityTypes}
           value={inputs.gravity}
-          onChange={e => handleInputChange("gravity", Number(e.target.value))}
+          onChange={handleInputChange("gravity")}
         />
         <NumberInput
-          label="Spring costant (k)"
-          val={inputs.springK}
+          label="Spring constant k (N/m)"
+          val={springK_px_to_SI(inputs.springK)} // mostro in N/m
           min={0.01}
-          max={1}
+          max={500}
+          step={0.1}
+          onChange={handleInputChange("springK", springK_SI_to_px)}
+        />
+        <NumberInput
+          label="Spring Rest Length (m)"
+          val={pixelsToMeters(inputs.springRestLength)} // mostro in m
+          min={0.1}
+          max={5}
           step={0.01}
-          onChange={e => handleInputChange("springK", Number(e.target.value))}
+          onChange={handleInputChange("springRestLength", metersToPixels)}
         />
         <NumberInput
-          label="Spring Rest Length"
-          val={inputs.springRestLength}
-          min={10}
-          max={500}
-          step={1}
-          onChange={e => handleInputChange("springRestLength", Number(e.target.value))}
-        />
-        <NumberInput
-          label="Min Length"
-          val={inputs.minLength}
+          label="Min Length (m)"
+          val={pixelsToMeters(inputs.minLength)} // mostro in m
           min={0}
-          max={200}
-          step={1}
-          onChange={e => handleInputChange("minLength", Number(e.target.value))}
+          max={2}
+          step={0.01}
+          onChange={handleInputChange("minLength", metersToPixels)}
         />
         <NumberInput
-          label="Max Length"
-          val={inputs.maxLength}
-          min={50}
-          max={500}
-          step={1}
-          onChange={e => handleInputChange("maxLength", Number(e.target.value))}
+          label="Max Length (m)"
+          val={pixelsToMeters(inputs.maxLength)} // mostro in m
+          min={0.5}
+          max={5}
+          step={0.01}
+          onChange={handleInputChange("maxLength", metersToPixels)}
         />
         <ColorInput
           label="Bob Color"
           val={inputs.bobColor}
-          onChange={e => handleInputChange("bobColor", e.target.value)}
+          onChange={e => handleInputChange("bobColor")(e)}
         />
         <ColorInput
           label="Anchor Color"
           val={inputs.anchorColor}
-          onChange={e => handleInputChange("anchorColor", e.target.value)}
+          onChange={e => handleInputChange("anchorColor")(e)}
         />
         <ColorInput
           label="Spring Color"
           val={inputs.springColor}
-          onChange={e => handleInputChange("springColor", e.target.value)}
+          onChange={e => handleInputChange("springColor")(e)}
         />
       </div>
 
       <TheoryRenderer
-        theory={
-          chapters.find(ch => ch.link === useLocation().pathname)?.theory
-        }
+        theory={chapters.find(ch => ch.link === useLocation().pathname)?.theory}
       />
     </>
   );

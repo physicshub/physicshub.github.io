@@ -16,7 +16,7 @@ export default class Spring {
     this.p = p;
     this.anchor = p.createVector(x, y);
     this.restLength = length;
-    this.k = 0.2; // costante elastica
+    this.k; // costante elastica
     this.color
     this.anchorColor
   }
@@ -36,7 +36,7 @@ export default class Spring {
     let direction = p.constructor.Vector.sub(bob.position, this.anchor);
     const length = direction.mag();
 
-    if (length < minlen) {
+/*     if (length < minlen) {
       direction.setMag(minlen);
       bob.position = p.constructor.Vector.add(this.anchor, direction);
       bob.velocity.mult(0);
@@ -44,7 +44,7 @@ export default class Spring {
       direction.setMag(maxlen);
       bob.position = p.constructor.Vector.add(this.anchor, direction);
       bob.velocity.mult(0);
-    }
+    } */
   }
 
 

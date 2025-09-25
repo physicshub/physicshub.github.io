@@ -1138,3 +1138,28 @@ footer {
   font-size: 0.85rem;
   color: #555;
 }
+
+
+/* Simulation info panel */
+.sim-info-panel {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.7rem;
+  padding: 0.7rem 0.7rem;
+  border-radius: 0.7rem;
+  pointer-events: none;
+}
+
+.sim-info-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sim-info-label {
+  margin-right: 1rem;
+  font-weight: bold;
+}

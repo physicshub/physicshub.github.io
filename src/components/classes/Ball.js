@@ -4,56 +4,62 @@ export default class Ball {
    * @param {Object} cfg - Configurazione iniziale
    * @param {number} w - Larghezza canvas
    * @param {number} h - Altezza canvas
-   * @param {string} mode - "gravity" o "acceleration"
    */
-  constructor(p, cfg, w, h, mode = "gravity") {
+  constructor(p, cfg, w, h) {
     this.p = p;
-    this.mode = mode; // tipo di simulazione
     this.setConfig(cfg);
     this.w = w;
     this.h = h;
 
+    // Stato dinamico
     this.pos = p.createVector(w / 2, cfg.size / 2);
     this.vel = p.createVector(0, 0);
     this.acc = p.createVector(0, 0);
+
+    // Coefficiente di restituzione per i rimbalzi (0 = inelastico, 1 = elastico)
+    this.restitution = 1;
   }
 
-  applyForce(f) {
-    const force = f.copy().div(this.mass || 1);
-    this.acc.add(force);
+  /**
+   * Applica una forza in Newton (N).
+   * F = m * a  →  a = F / m
+   */
+  applyForce(forceVec) {
+    const f = forceVec.copy().div(this.mass);
+    this.acc.add(f);
   }
 
-  update(target = null) {
+  /**
+   * Applica un’accelerazione diretta (es. gravità), indipendente dalla massa.
+   */
+  applyAcceleration(accVec) {
+    this.acc.add(accVec);
+  }
+
+  update() {
     const p = this.p;
     const { size, color } = this.cfg;
 
-    if (this.mode === "gravity") {
-      this.vel.add(this.acc);
-      this.pos.add(this.vel);
-      this.acc.mult(0);
+    // Integrazione di Eulero
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
 
-      // collisioni
-      if (this.pos.x < 0 || this.pos.x > this.w) {
-        this.vel.x *= -1;
-        this.pos.x = p.constrain(this.pos.x, 0, this.w);
-      }
-      if (this.pos.y > this.h) {
-        this.vel.y *= -1;
-        this.pos.y = this.h;
-      }
+    // Collisioni con i bordi
+    if (this.pos.x - size / 2 < 0) {
+      this.pos.x = size / 2;
+      this.vel.x *= -this.restitution;
+    }
+    if (this.pos.x + size / 2 > this.w) {
+      this.pos.x = this.w - size / 2;
+      this.vel.x *= -this.restitution;
+    }
+    if (this.pos.y + size / 2 > this.h) {
+      this.pos.y = this.h - size / 2;
+      this.vel.y *= -this.restitution;
     }
 
-    if (this.mode === "acceleration" && target) {
-      const { maxspeed, acceleration } = this.cfg;
-      let dir = p.createVector(target.x, target.y).sub(this.pos);
-      dir.setMag(acceleration);
-      this.acc = dir;
-      this.vel.add(this.acc);
-      this.vel.limit(maxspeed);
-      this.pos.add(this.vel);
-    }
-
-    // disegno palla
+    // Disegno
     p.stroke(0);
     p.strokeWeight(2);
     p.fill(p.color(color));
@@ -81,6 +87,6 @@ export default class Ball {
 
   setConfig(cfg) {
     this.cfg = { ...cfg };
-    if (cfg.mass) this.mass = cfg.mass;
+    if (cfg.mass) this.mass = cfg.mass; // in kg
   }
 }

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import p5 from "p5"
+import { FPS_FOR_SIMULATIONS } from "../data/constants.js";
 
 function Screen({ sketch }) {
   const containerRef = useRef(null)
@@ -12,6 +13,8 @@ function Screen({ sketch }) {
   }
 
   p5Instance.current = new p5(sketch, containerRef.current)
+  p5Instance.current.frameRate(FPS_FOR_SIMULATIONS);
+
 
   return () => {
     if (p5Instance.current) {

@@ -8,6 +8,7 @@ import { useSticky } from '../hooks/useSticky';
 import { useTheme } from '../hooks/useTheme';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHamburger } from '@fortawesome/free-solid-svg-icons';
+import GoogleTranslator from './GoogleTranslator.jsx';
 
 export default function Header({ onSearch }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -38,6 +39,7 @@ export default function Header({ onSearch }) {
         <NavMenu isOpen={isMenuOpen} />
 
         <div className="controls">
+          <GoogleTranslator/>
           <Theme mode={mode} onToggle={toggleMode} />
           {/* {onSearch && <Search onSearch={onSearch} />} */}
           <Search onSearch={onSearch} />

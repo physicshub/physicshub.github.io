@@ -1,0 +1,14 @@
+#google_translate_element {
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+.goog-te-gadget img {
+    display: none; /* Hide Google branding flag icon */
+}
+  

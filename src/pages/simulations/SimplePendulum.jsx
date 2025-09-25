@@ -4,7 +4,7 @@ import Screen from "../../components/Screen.jsx";
 import TopSim from "../../components/TopSim.js";
 import TheoryRenderer from "../../components/theory/TheoryRenderer.js";
 import chapters from "../../data/chapters.js";
-import { gravityTypes } from "../../data/gravity.js";
+import { gravityTypes } from "../../data/constants.js";
 import { useLocation } from "react-router-dom";
 import GradientBackground from "../../components/GradientBackground.jsx";
 import Stars from "../../components/Stars.jsx";

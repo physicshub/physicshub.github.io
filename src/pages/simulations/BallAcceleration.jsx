@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 import GradientBackground from "../../components/GradientBackground.jsx";
 import Stars from "../../components/Stars.jsx";
 
-import Ball from "../../components/classes/Ball.js"; // <-- import classe esterna
+import Ball from "../../components/classes/Ball.js";
 
 export function BallAcceleration() {
   const [inputs, setInputs] = useState({

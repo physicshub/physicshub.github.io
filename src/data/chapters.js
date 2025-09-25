@@ -1,4 +1,3 @@
-import type from "p5/type";
 import { TAGS } from "./tags";
 
 export default [
