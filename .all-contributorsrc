@@ -1,4 +1,26 @@
 {
   "projectName": "physicshub.github.io",
-  "projectOwner": "physicshub"
+  "projectOwner": "physicshub",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "mattqdev",
+      "name": "MattQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/115874885?v=4",
+      "profile": "http://mattqdev.github.io",
+      "contributions": [
+        "code",
+        "bug",
+        "doc",
+        "design",
+        "ideas",
+        "content"
+      ]
+    }
+  ]
 }
