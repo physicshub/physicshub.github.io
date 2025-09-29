@@ -1,8 +1,10 @@
 # ✅ TODOs
 
+# NOTICE: THIS TODO FILE IS NOW IN READ MODE ONLY: DON'T ADD ANYTHING HERE. ADD YOUR REPORT/QUESTIONS/SUGGESTION/REQUEST IN ISSUES
+
 | Status | Priority | File / Path | Line | Task Description |
 |:------:|:--------:|-------------|:----:|------------------|
-| [ ] | 🔴 High | `src/chapters.json` | — | We need physics teachers or people who can explain it well for writing some theory on the simulation pages (no coding required, just JSON formatting). |
+| [ ] | 🔴 High | `src/data/chapters.json` | — | We need physics teachers or people who can explain it well for writing some theory on the simulation pages (no coding required, just JSON formatting). |
 | [ ] | 🔴 High | `public/icon.png` | — | Create an icon for the project. |
 | [ ] | 🟢 Low | `src/components/Search.jsx` | — | Implement filters based on tags: a menu where tags can be selected to filter between cards. |
 | [ ] | 🟡 Medium | `src/pages/simulations/*` | — | Centralize simulations to make them easier to modify and create. |

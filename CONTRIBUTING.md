@@ -72,6 +72,7 @@ This guide will walk you through **setting up the project locally** and creating
   - Fix bugs
   - Update documentation
 - Keep your code **clean, readable, and consistent** with the existing style.
+- If you want you can add your profile to the Contributors section in the README.md, following the pattern. We are using [AllContributors](https://all-contributors.github.io/) for the list. For adding yourself check [here](https://all-contributors.github.io/bot/usage/).
 
 ---
 

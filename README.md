@@ -61,8 +61,14 @@ Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/
 
 ### 👥 Contributors
 
-| [<img src="https://avatars.githubusercontent.com/u/226545239" width="80"><br><sub><b>physicshub</b></sub>](https://physicshub.github.io) | [<img src="https://avatars.githubusercontent.com/u/115874885" width="80"><br><sub><b>mattqdev</b></sub>](https://github.com/mattqdev) | [<img src="https://avatars.githubusercontent.com/u/184136337" width="80"><br><sub><b>supertutto</b></sub>](https://github.com/supertutto) | [<img src="https://avatars.githubusercontent.com/u/233789238" width="80"><br><sub><b>RiriLab17</b></sub>](https://github.com/RiriLab17)
-|:--:|:--:|:--:|:--:|
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 
 ### 💖 Supporters
