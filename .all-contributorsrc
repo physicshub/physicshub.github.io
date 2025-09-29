@@ -1,4 +1,65 @@
 {
   "projectName": "physicshub.github.io",
-  "projectOwner": "physicshub"
+  "projectOwner": "physicshub",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "mattqdev",
+      "name": "MattQ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/115874885?v=4",
+      "profile": "http://mattqdev.github.io",
+      "contributions": [
+        "code",
+        "bug",
+        "doc",
+        "design",
+        "ideas",
+        "content"
+      ]
+    },
+    {
+      "login": "supertutto",
+      "name": "supertutto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/184136337?v=4",
+      "profile": "https://github.com/supertutto",
+      "contributions": [
+        "content",
+        "ideas"
+      ]
+    },
+    {
+      "login": "RiriLab17",
+      "name": "RiriLab17",
+      "avatar_url": "https://avatars.githubusercontent.com/u/233789238?v=4",
+      "profile": "https://github.com/RiriLab17",
+      "contributions": [
+        "ideas",
+        "content"
+      ]
+    },
+    {
+      "login": "koderka2020",
+      "name": "koderka2020",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64405107?v=4",
+      "profile": "https://github.com/koderka2020",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "physicshub",
+      "name": "physicshub",
+      "avatar_url": "https://avatars.githubusercontent.com/u/226545239?v=4",
+      "profile": "https://github.com/physicshub",
+      "contributions": [
+        "review",
+        "test"
+      ]
+    }
+  ]
 }
