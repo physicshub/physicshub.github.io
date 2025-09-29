@@ -3,7 +3,7 @@
 <h1>PhysicsHub</h1>
 <h3><em>Best website to learn physics easily, with cool interactive simulations. </em></h3>
 <p>
-<img src="https://img.shields.io/github/contributors/PhysicsHub/physicshub.github.io?style=plastic" alt="Contributors">
+<img src="https://img.shields.io/github/all-contributors/physicshub/physicshub.github.io?color=ee8449&style=flat-square" alt="Contributors">
 <img src="https://img.shields.io/github/forks/PhysicsHub/physicshub.github.io" alt="Forks">
 <img src="https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io" alt="Stars">
 <img src="https://img.shields.io/github/issues/PhysicsHub/physicshub.github.io" alt="Issues">
@@ -59,7 +59,10 @@ Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/
 <br>
 <hr>
 
-### Contributors
+### 👥 Contributors
+
+We recognize all types of contributions. This project follows the [all-contributors specification](https://github.com/all-contributors/all-contributors) and the [Emoji Key](https://allcontributors.org/docs/en/emoji-key) ✨ for contribution types. Instructions to add yourself or add contribution emojis to your name are [here](https://github.com/processing/p5.js/issues/2309). You can also post an issue or comment on a pull request with the text: `@all-contributors please add @YOUR-USERNAME for THINGS` (where `THINGS` is a comma-separated list of entries from the [list of possible contribution types](https://github.com/all-contributors/all-contributors/blob/master/docs/emoji-key.md)) and our nice bot will add you.
+
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
