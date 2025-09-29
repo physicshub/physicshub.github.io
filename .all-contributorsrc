@@ -40,6 +40,14 @@
       "contributions": [
         "ideas",
         "content"
+    },
+    {
+      "login": "koderka2020",
+      "name": "koderka2020",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64405107?v=4",
+      "profile": "https://github.com/koderka2020",
+      "contributions": [
+        "bug"
       ]
     }
   ]
