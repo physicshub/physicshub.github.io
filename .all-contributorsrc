@@ -21,6 +21,16 @@
         "ideas",
         "content"
       ]
+    },
+    {
+      "login": "supertutto",
+      "name": "supertutto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/184136337?v=4",
+      "profile": "https://github.com/supertutto",
+      "contributions": [
+        "content",
+        "ideas"
+      ]
     }
   ]
 }
