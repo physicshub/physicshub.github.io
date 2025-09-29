@@ -14,7 +14,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/115874885?v=4",
       "profile": "http://mattqdev.github.io",
       "contributions": [
-        "code"
+        "code",
+        "bug",
+        "doc",
+        "design"
       ]
     }
   ]
