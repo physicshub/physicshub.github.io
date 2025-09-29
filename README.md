@@ -67,7 +67,7 @@ Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://mattqdev.github.io"><img src="https://avatars.githubusercontent.com/u/115874885?v=4?s=100" width="100px;" alt="MattQ"/><br /><sub><b>MattQ</b></sub></a><br /><a href="#code-mattqdev" title="Code">💻</a> <a href="#bug-mattqdev" title="Bug reports">🐛</a> <a href="#doc-mattqdev" title="Documentation">📖</a> <a href="#design-mattqdev" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://mattqdev.github.io"><img src="https://avatars.githubusercontent.com/u/115874885?v=4?s=100" width="100px;" alt="MattQ"/><br /><sub><b>MattQ</b></sub></a><br /><a href="#code-mattqdev" title="Code">💻</a> <a href="#bug-mattqdev" title="Bug reports">🐛</a> <a href="#doc-mattqdev" title="Documentation">📖</a> <a href="#design-mattqdev" title="Design">🎨</a> <a href="#ideas-mattqdev" title="Ideas, Planning, & Feedback">🤔</a> <a href="#content-mattqdev" title="Content">🖋</a></td>
     </tr>
   </tbody>
 </table>
