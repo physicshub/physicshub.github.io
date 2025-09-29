@@ -90,6 +90,7 @@
   margin: 8rem 0rem;
   text-align: left;
   color: var(--ph-fg);
+  pointer-events: none;
 }
 
 .ph-hero__eyebrow {
@@ -125,6 +126,7 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   margin: 2rem 0;
+  pointer-events: auto;
 }
 
 .ph-btn {
@@ -177,6 +179,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.75rem;
+  pointer-events: auto;
 }
 
 .ph-stat {
