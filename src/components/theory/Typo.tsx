@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faCheck, faInfoCircle, faExclamationTriangle, faLightbulb, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { stackoverflowDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { BlockMath, InlineMath } from "react-katex";
 
 type Children = { children?: React.ReactNode };
 
@@ -28,7 +29,7 @@ export const TheoryList: React.FC<{ items: React.ReactNode[]; ordered?: boolean 
     <ul className="theory-list">{items.map((it, i) => <li key={i}>{it}</li>)}</ul>
   );
 
-export const TheoryFormula: React.FC<{ latex: string }> = ({ latex }) => {
+export const TheoryFormula: React.FC<{ latex: string; inline?: boolean }> = ({ latex, inline }) => {
   const [copied, setCopied] = useState(false);
   const liveRef = useRef<HTMLSpanElement | null>(null);
 
@@ -46,10 +47,16 @@ export const TheoryFormula: React.FC<{ latex: string }> = ({ latex }) => {
 
   return (
     <div className="theory-formula">
-      <button className="copy-btn" onClick={handleCopy} aria-pressed={copied} aria-label={copied ? "Copied" : "Copy formula"} title={copied ? "Copied!" : "Copy formula"}>
+      <button
+        className="copy-btn"
+        onClick={handleCopy}
+        aria-pressed={copied}
+        aria-label={copied ? "Copied" : "Copy formula"}
+        title={copied ? "Copied!" : "Copy formula"}
+      >
         <FontAwesomeIcon icon={copied ? faCheck : faCopy} color="white" />
       </button>
-      <code className="formula-code">{latex}</code>
+      {inline ? <InlineMath math={latex} /> : <BlockMath math={latex} />}
       <span aria-live="polite" className="visually-hidden" ref={liveRef}></span>
     </div>
   );
