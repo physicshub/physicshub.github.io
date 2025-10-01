@@ -34,6 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--bg-gradient);
+  background-color: var(--bg-color);
 }
 
 hr{
@@ -857,7 +858,7 @@ footer {
   pointer-events: none;
   font-size: 0.8rem;
   color: var(--accent-color);
-  text-shadow: 0 0 4px var(--glow-color);
+  text-shadow: 0 0 4px var(--accent-color);
 }
 
 .select-input option[disabled] {
@@ -1107,7 +1108,6 @@ footer {
 .contributors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  height: 200px;
   gap: 1.5rem;
   margin-top: 1.5rem;
 }
@@ -1124,8 +1124,8 @@ footer {
 }
 
 .contributor-avatar {
-  width: 80px;
-  height: 80px;
+  width: 6rem;
+  height: 6rem;
   border-radius: 50%;
 }
 

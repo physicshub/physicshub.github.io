@@ -1,30 +1,27 @@
 /* hero.css */
 :root {
-  --ph-bg: #0b0f19;
   --ph-surface: #0f1524;
   --ph-fg: #e8eefb;
   --ph-fg-muted: rgba(232, 238, 251, 0.55);
-  --ph-accent: #00e6e6;
   --ph-grid: rgba(115, 130, 175, 0.16);
-  --ph-ring: color-mix(in oklab, var(--ph-accent), white 12%);
+  --ph-ring: color-mix(in oklab, var(--accent-color), white 12%);
   --ph-radius: 14px;
   --ph-gap: 1rem;
 }
 
 [data-theme='light'] {
-  --ph-bg: #ffffff;
   --ph-surface: #f6f7fb;
   --ph-fg: #0b1220;
   --ph-fg-muted: rgba(11, 18, 32, 0.62);
   --ph-grid: rgba(0, 15, 40, 0.06);
-  --ph-ring: color-mix(in oklab, var(--ph-accent), black 8%);
+  --ph-ring: color-mix(in oklab, var(--accent-color), black 8%);
 }
 
 .ph-landing-page{
   display: flex;
   flex-direction: column;
   gap: 4rem;
-  background: var(--ph-bg);
+  background: var(--bg-color);
   min-height: 100vh;
 }
 
@@ -68,7 +65,7 @@
   position: absolute;
   inset: -13.5rem -12rem auto -12rem;
   height: 90rem;
-  background: radial-gradient(80% 60% at 50% 40%, color-mix(in oklab, var(--ph-accent), transparent 65%), transparent 70%);
+  background: radial-gradient(80% 60% at 50% 40%, color-mix(in oklab, var(--accent-color), transparent 65%), transparent 70%);
   filter: blur(2rem);
   opacity: .95;
   pointer-events: none;
@@ -101,8 +98,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ph-fg-muted);
-  background: color-mix(in oklab, var(--ph-accent), transparent 86%);
-  border: 1px solid color-mix(in oklab, var(--ph-accent), transparent 70%);
+  background: color-mix(in oklab, var(--accent-color), transparent 86%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 70%);
   padding: 0.35rem 0.55rem;
   border-radius: 999px;
 }
@@ -146,25 +143,25 @@
 
 .ph-btn--primary {
   color: white;
-  background: linear-gradient(180deg, var(--ph-accent), color-mix(in oklab, var(--ph-accent), black 12%));
-  box-shadow: 0 8px 24px color-mix(in oklab, var(--ph-accent), transparent 75%);
+  background: linear-gradient(180deg, var(--accent-color), color-mix(in oklab, var(--accent-color), black 12%));
+  box-shadow: 0 8px 24px color-mix(in oklab, var(--accent-color), transparent 75%);
 }
 
 .ph-btn--primary:hover {
   transform: scale3d(1.03, 1.03, 1);
   transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
-  box-shadow: 0 10px 28px color-mix(in oklab, var(--ph-accent), transparent 68%);
+  box-shadow: 0 10px 28px color-mix(in oklab, var(--accent-color), transparent 68%);
 }
 
 .ph-btn--ghost {
   color: var(--ph-fg);
-  background: color-mix(in oklab, var(--ph-accent), transparent 92%);
-  border-color: color-mix(in oklab, var(--ph-accent), transparent 60%);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
 }
 
 .ph-btn--ghost:hover {
   transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, text-shadow 0.4s ease;
-  background: color-mix(in oklab, var(--ph-accent), transparent 86%);
+  background: color-mix(in oklab, var(--accent-color), transparent 86%);
   transform: translateY(-1px);
 }
 
@@ -186,8 +183,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: color-mix(in oklab, var(--ph-accent), transparent 94%);
-  border: 1px solid color-mix(in oklab, var(--ph-accent), transparent 75%);
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
   border-radius: 12px;
   padding: 0.85rem 1rem;
 }

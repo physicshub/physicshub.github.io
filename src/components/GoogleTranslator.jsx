@@ -1,29 +1,48 @@
 import React, { useEffect } from "react";
 import "../styles/translator.css";
 
-
 const GoogleTranslator = () => {
   useEffect(() => {
+    // Funzione globale di init
     window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "it,fr,de,es",
-          layout: window.google.translate.TranslateElement.InlineLayout.VERTICAL,
-          autoDisplay: false,
-        },
-        "google_translate_element" 
-      );
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "it,fr,de,es",
+            layout: window.google.translate.TranslateElement.InlineLayout.VERTICAL,
+            autoDisplay: false,
+          },
+          "google_translate_element"
+        );
+      }
     };
 
-    const addScript = document.createElement("script");
-    addScript.src =
-      "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    addScript.async = true;
-    document.body.appendChild(addScript);
-  }, []);
+    // Carica script solo se non esiste già
+    if (!document.querySelector("#google-translate-script")) {
+      const addScript = document.createElement("script");
+      addScript.id = "google-translate-script";
+      addScript.src =
+        "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      addScript.async = true;
+      document.body.appendChild(addScript);
+    } else {
+      // Se già caricato, reinizializza
+      if (window.google && window.google.translate) {
+        window.googleTranslateElementInit();
+      }
+    }
+  }, []); // <-- solo al primo mount
 
-  return <div id="google_translate_element"></div>;
+  return (
+    <div className="select-container translator-container">
+      <div className="select-wrapper">
+        <div id="google_translate_element">
+          <span className="select-arrow translator-arrow">▼</span>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default GoogleTranslator;
