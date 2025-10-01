@@ -43,7 +43,7 @@
   margin-right: 2.5rem;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 0.6rem !important;
+  font-size: 0.6rem;
   color: var(--accent-color);
   text-shadow: 0 0 4px var(--accent-color);
 }
