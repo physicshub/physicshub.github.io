@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faCircleHalfStroke } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
-  mode: 'light' | 'dark';
+  mode: 'light' | 'dark' | 'system';
   onToggle: () => void;
 }
 
@@ -13,7 +13,11 @@ export function Theme({ mode, onToggle }: Props) {
       onClick={onToggle}
       aria-label="Toggle theme"
     >
-      <FontAwesomeIcon icon={mode === 'dark' ? faSun : faMoon} />
+     <FontAwesomeIcon icon={
+    mode === 'dark' ? faMoon :
+    mode === 'light' ? faSun :
+    faCircleHalfStroke
+} />
     </button>
   );
 }
