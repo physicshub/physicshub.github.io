@@ -79,7 +79,7 @@ We recognize all types of contributions. This project follows the [all-contribut
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ElshadHu"><img src="https://avatars.githubusercontent.com/u/216122679?v=4?s=100" width="100px;" alt="Elshad Humbatli"/><br /><sub><b>Elshad Humbatli</b></sub></a><br /><a href="#code-ElshadHu" title="Code">💻</a></td>
     </tr>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yukesh-30"><img src="https://avatars.githubusercontent.com/u/180100862?v=4?s=100" width="100px;" alt="Devmon"/><br /><sub><b>Devmon</b></sub></a><br /><a href="#code-Yukesh-30" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yukesh-30"><img src="https://avatars.githubusercontent.com/u/180100862?v=4?s=100" width="100px;" alt="Devmon"/><br /><sub><b>Devmon</b></sub></a><br /><a href="#code-Yukesh-30" title="Code">💻</a> <a href="#content-Yukesh-30" title="Content">🖋</a></td>
     </tr>
   </tbody>
 </table>
