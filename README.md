@@ -76,6 +76,7 @@ We recognize all types of contributions. This project follows the [all-contribut
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/RiriLab17"><img src="https://avatars.githubusercontent.com/u/233789238?v=4?s=100" width="100px;" alt="RiriLab17"/><br /><sub><b>RiriLab17</b></sub></a><br /><a href="#content-RiriLab17" title="Content">🖋</a> <a href="#ideas-RiriLab17" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/koderka2020"><img src="https://avatars.githubusercontent.com/u/64405107?v=4?s=100" width="100px;" alt="koderka2020"/><br /><sub><b>koderka2020</b></sub></a><br /><a href="#bug-koderka2020" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/lustrax"><img src="https://avatars.githubusercontent.com/u/235310252?v=4?s=100" width="100px;" alt="lustrax"/><br /><sub><b>lustrax</b></sub></a><br /><a href="#bug-lustrax" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ElshadHu"><img src="https://avatars.githubusercontent.com/u/216122679?v=4?s=100" width="100px;" alt="Elshad Humbatli"/><br /><sub><b>Elshad Humbatli</b></sub></a><br /><a href="#code-ElshadHu" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
