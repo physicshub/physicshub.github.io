@@ -1,6 +1,7 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom"
 import { Home } from "./pages/home.jsx"
 import { Error } from "./pages/error.jsx"
+import "katex/dist/katex.min.css";
 
 import { BouncingBall } from "./pages/simulations/BouncingBall.jsx"
 import { VectorsOperations } from "./pages/simulations/VectorsOperations.jsx"

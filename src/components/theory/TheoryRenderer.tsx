@@ -6,14 +6,16 @@ import {
   TheorySubheading,
   TheoryNote,
   TheoryList,
-  TheoryFormula,
   TheoryCodeBlock,
   TheoryCallout,
+  TheoryFormula,
   TheoryExample,
   TheoryTable,
   TheoryImage,
   TheoryToggle
 } from "./Typo";
+
+import { BlockMath, InlineMath } from "react-katex";
 
 export default function TheoryRenderer({ theory }: { theory: any }) {
   if (!theory?.sections?.length) return null;
@@ -33,7 +35,7 @@ export default function TheoryRenderer({ theory }: { theory: any }) {
               case "list":
                 return <TheoryList key={j} items={b.items || []} ordered={!!b.ordered} />;
               case "formula":
-                return <TheoryFormula key={j} latex={b.latex} />;
+                 return <TheoryFormula key={j} latex={b.latex} inline={b.inline} />;
               case "code":
                 return <TheoryCodeBlock key={j} code={b.code || ""} language={b.language || ""} />;
               case "callout":
