@@ -42,8 +42,15 @@ export default function Contribute() {
 
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossOrigin="anonymous"
+        referrerPolicy="no-referrer"
+      />
       <Header />
-      <div className="page-container">
+      <div className="contribution-page-container">
         <Stars color="#AEE3FF" opacity={0.4} starDensity={0.005}/>
         <GradientBackground/>
         <h1 className="title">Contribute to PhysicsHub</h1>
@@ -53,19 +60,25 @@ export default function Contribute() {
           educational resources.
         </p>
 
-        <div className="container-layout">
-          <div>
-            <h3 className="title">Who can contribute</h3>
-            <p>
+        <div className="contribution-grid">
+          <div className="contribution-card">
+            <div className="card-icon">
+              <i className="fas fa-users" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+            </div>
+            <h3 className="card-title">Who can contribute</h3>
+            <p className="card-description">
               Anyone can contribute to this project, even if you aren't a
               programmer. We need people that want to write the theory part or
               just to give us some new ideas.
             </p>
           </div>
 
-          <div>
-            <h3 className="title">How to contribute</h3>
-            <ol>
+          <div className="contribution-card">
+            <div className="card-icon">
+              <i className="fas fa-file-code" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+            </div>
+            <h3 className="card-title">How to contribute</h3>
+            <ol className="card-list">
               <li>
                 Open the repository on{" "}
                 <a
@@ -84,18 +97,24 @@ export default function Contribute() {
             </ol>
           </div>
 
-          <div>
-            <h3 className="title">What contributors get</h3>
-            <ul>
+          <div className="contribution-card">
+            <div className="card-icon">
+              <i className="fas fa-gift" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+            </div>
+            <h3 className="card-title">What contributors get</h3>
+            <ul className="card-list">
               <li>Discord special role</li>
               <li>Link profile in the README.md</li>
               <li>Link profile in the section <a href="#contributors">below</a></li>
             </ul>
           </div>
 
-          <div>
-            <h3 className="title">Other ways to help</h3>
-            <ul>
+          <div className="contribution-card">
+            <div className="card-icon">
+              <i className="fas fa-hands-helping" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+            </div>
+            <h3 className="card-title">Other ways to help</h3>
+            <ul className="card-list">
               <li>Report bugs or errors</li>
               <li>Translate the site into other languages</li>
               <li>Write theory about simulations</li>
@@ -132,10 +151,12 @@ export default function Contribute() {
                     className="contributor-avatar"
                   />
                 </a>
-                <p className="contributor-name">{contributor.login}</p>
-                <p className="contributor-data">
-                  {contributor.contributions} commits
-                </p>
+                <div className="contributor-info">
+                  <p className="contributor-name">{contributor.login}</p>
+                  <p className="contributor-data">
+                    {contributor.contributions} {contributor.contributions === 1 ? 'commit' : 'commits'}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
