@@ -80,6 +80,7 @@ We recognize all types of contributions. This project follows the [all-contribut
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yukesh-30"><img src="https://avatars.githubusercontent.com/u/180100862?v=4?s=100" width="100px;" alt="Devmon"/><br /><sub><b>Devmon</b></sub></a><br /><a href="#code-Yukesh-30" title="Code">💻</a> <a href="#content-Yukesh-30" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://portfoliov2-three-steel.vercel.app/"><img src="https://avatars.githubusercontent.com/u/142435507?v=4?s=100" width="100px;" alt="Aditya Kumar Singh"/><br /><sub><b>Aditya Kumar Singh</b></sub></a><br /><a href="#code-Axestein" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
