@@ -8,6 +8,7 @@
   --border-color: #222;
   --bg-gradient: linear-gradient(135deg, #0a0a0a, #141416);
   --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
+  --border-radius: 10px;
 }
 
 /* Light Theme Overrides */
@@ -170,7 +171,7 @@ nav a.active::after {
 .search-container {
   display: flex;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   overflow: hidden;
 }
 
@@ -265,7 +266,7 @@ main {
   position: relative;
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: 1rem;
+  border-radius: var(--border-radius);
   box-shadow: 0 0 1rem 0 #04cdcd1a;
   transition: transform 0.3s, box-shadow 0.3s;
   padding: 0.5rem;
@@ -294,7 +295,7 @@ main {
   /* background: var(--card-bg); */
   border: 1px solid transparent;
   background: color-mix(in oklab, var(--ph-accent), transparent 90%);
-  border-radius: 1rem;
+  border-radius: var(--border-radius);
   z-index: 2;
   height: 100%;
   width: 100%;
@@ -309,7 +310,7 @@ main {
   margin-top: auto;
   padding: 0.5rem 1rem;
   border: 1px solid var(--accent-color);
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   text-align: center;
   color: var(--accent-color);
   transition: background 0.3s, box-shadow 0.3s;
@@ -574,7 +575,7 @@ footer {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   border: 2px solid var(--accent-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   color: var(--accent-color);
   text-shadow: 0 0 4px var(--glow-color);
   background: rgba(0, 230, 230, 0);
@@ -618,7 +619,7 @@ footer {
 .tag {
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   font-size: 0.8rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -675,7 +676,7 @@ footer {
   flex: 2;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   box-shadow: 0 0 12px rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
@@ -703,7 +704,7 @@ footer {
 .input-text, .input-number, .input-slider{
   padding: 0.5rem;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   background: var(--bg-color);
   color: var(--text-color);
   outline: none;
@@ -781,7 +782,7 @@ footer {
   width: 40px;
   height: 20px;
   background: var(--border-color);
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   margin-right: 0.75rem;
   transition: background 0.3s;
 }
@@ -982,7 +983,7 @@ footer {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
   background: var(--bg-gradient-rotated);
-  border-radius: 2rem;
+  border-radius: var(--border-radius);
   margin: 2rem 1.5rem;
   border: var(--accent-color) solid 1px;
   box-shadow: 0px 0px 5px var(--accent-color);
@@ -1119,7 +1120,7 @@ footer {
   padding: 0.5rem;
   border: 1px solid var(--accent);
   box-shadow: 0px 0px 5px var(--accent-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   background: var(--bg);
 }
 
@@ -1150,7 +1151,7 @@ footer {
   font-family: monospace;
   font-size: 0.7rem;
   padding: 0.7rem 0.7rem;
-  border-radius: 0.7rem;
+  border-radius: var(--border-radius);
   pointer-events: none;
 }
 
@@ -1192,7 +1193,7 @@ footer {
 
 .contribution-card {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: 1.5rem;
   padding: 40px 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1215,7 +1216,7 @@ footer {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4ab9e2ff, #057f88ff);
+  background: linear-gradient(90deg, var(--accent-color), rgb(11, 188, 201));
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -1232,14 +1233,21 @@ footer {
 }
 
 .card-icon {
-  margin-bottom: 25px;
-  padding: 20px;
-  border-radius: 16px;
+  width: 6rem;
+  height: 6rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
   background: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+}
+
+.card-icon svg {
+  font-size: 2.5rem;
+  color: var(--accent-color);
 }
 
 .contribution-card:hover .card-icon {
@@ -1288,23 +1296,6 @@ footer {
   margin-bottom: 0;
 }
 
-.card-list a {
-  color: #1995aeff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  font-weight: 500;
-}
-
-.card-list a:hover {
-  color: #1995aeff;
-  text-decoration: underline;
-}
-
-.card-list strong {
-  color: #1995aeff;
-  font-weight: 600;
-}
-
 .workflow-step {
   flex: 1;
   min-width: 300px;
@@ -1324,19 +1315,6 @@ footer {
 .step-box:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #4A90E2, #6C63FF);
-  color: white;
-  border-radius: 50%;
-  font-weight: bold;
-  margin-bottom: 16px;
 }
 
 .step-arrow {
@@ -1395,9 +1373,8 @@ footer {
 }
 
 .contributor-card:hover {
-  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 13px var(--accent-color);
 }
 
 .contributor-avatar {
@@ -1410,7 +1387,7 @@ footer {
 }
 
 .contributor-card:hover .contributor-avatar {
-  border-color: #4A90E2;
+  border-color: var(--accent-color);
 }
 
 .contributor-info {
@@ -1455,7 +1432,8 @@ footer {
 
 @media (max-width: 768px) {
   .contribution-page-container {
-    padding: 0 15px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
   .contribution-workflow {
@@ -1490,7 +1468,8 @@ footer {
 
 @media (max-width: 600px) {
   .contribution-page-container {
-    padding: 0 10px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   
   .contribution-grid {
@@ -1539,7 +1518,8 @@ footer {
 
 @media (max-width: 480px) {
   .contribution-page-container {
-    padding: 0 8px;
+    padding-left: 8px;
+    padding-right: 8px;
   }
   
   .contribution-grid {

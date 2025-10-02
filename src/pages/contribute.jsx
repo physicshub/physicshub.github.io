@@ -3,6 +3,9 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Stars from "../components/Stars.jsx";
 import GradientBackground from "../components/GradientBackground.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUsers, faFileCode, faGift, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
+
 
 export default function Contribute() {
   const [contributors, setContributors] = useState([]);
@@ -42,13 +45,6 @@ export default function Contribute() {
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
       <Header />
       <div className="contribution-page-container">
         <Stars color="#AEE3FF" opacity={0.4} starDensity={0.005}/>
@@ -63,7 +59,7 @@ export default function Contribute() {
         <div className="contribution-grid">
           <div className="contribution-card">
             <div className="card-icon">
-              <i className="fas fa-users" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+              <FontAwesomeIcon icon={faUsers} />
             </div>
             <h3 className="card-title">Who can contribute</h3>
             <p className="card-description">
@@ -75,7 +71,7 @@ export default function Contribute() {
 
           <div className="contribution-card">
             <div className="card-icon">
-              <i className="fas fa-file-code" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+              <FontAwesomeIcon icon={faFileCode} />
             </div>
             <h3 className="card-title">How to contribute</h3>
             <ol className="card-list">
@@ -99,7 +95,7 @@ export default function Contribute() {
 
           <div className="contribution-card">
             <div className="card-icon">
-              <i className="fas fa-gift" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+              <FontAwesomeIcon icon={faGift} />
             </div>
             <h3 className="card-title">What contributors get</h3>
             <ul className="card-list">
@@ -111,7 +107,7 @@ export default function Contribute() {
 
           <div className="contribution-card">
             <div className="card-icon">
-              <i className="fas fa-hands-helping" style={{ fontSize: '48px', color: '#18a498ff' }}></i>
+              <FontAwesomeIcon icon={faHandsHelping} />
             </div>
             <h3 className="card-title">Other ways to help</h3>
             <ul className="card-list">
