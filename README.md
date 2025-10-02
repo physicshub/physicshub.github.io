@@ -81,6 +81,7 @@ We recognize all types of contributions. This project follows the [all-contribut
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yukesh-30"><img src="https://avatars.githubusercontent.com/u/180100862?v=4?s=100" width="100px;" alt="Devmon"/><br /><sub><b>Devmon</b></sub></a><br /><a href="#code-Yukesh-30" title="Code">💻</a> <a href="#content-Yukesh-30" title="Content">🖋</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://portfoliov2-three-steel.vercel.app/"><img src="https://avatars.githubusercontent.com/u/142435507?v=4?s=100" width="100px;" alt="Aditya Kumar Singh"/><br /><sub><b>Aditya Kumar Singh</b></sub></a><br /><a href="#code-Axestein" title="Code">💻</a> <a href="#design-Axestein" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sanketshinde3001"><img src="https://avatars.githubusercontent.com/u/126979961?v=4?s=100" width="100px;" alt="Sanket Rajendra Shinde"/><br /><sub><b>Sanket Rajendra Shinde</b></sub></a><br /><a href="#bug-sanketshinde3001" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
