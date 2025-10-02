@@ -72,7 +72,6 @@ This guide will walk you through **setting up the project locally** and creating
   - Fix bugs
   - Update documentation
 - Keep your code **clean, readable, and consistent** with the existing style.
-- If you want you can add your profile to the Contributors section in the README.md, following the pattern. We are using [AllContributors](https://all-contributors.github.io/) for the list. For adding yourself check [here](https://all-contributors.github.io/bot/usage/).
 
 ---
 
@@ -157,6 +156,13 @@ Generating the changelog based on the commit messages saves time and helps to ke
 - Once approved:
   - If you have write permissions → you can merge.
   - If not → the maintainer will merge for you.
+
+---
+
+### 8️⃣ Adding you to contributors
+
+- When the merge is approved and done, you can add you to the contributors section in the README.md 
+- To know how to do it check the contributors section in the README.md or [here](https://github.com/physicshub/physicshub.github.io/issues/25).
 
 ---
 
