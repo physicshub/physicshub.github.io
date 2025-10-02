@@ -48,7 +48,8 @@
   position: fixed;
   inset: 0;
   z-index: -10;
-
+  border: none;
+  outline: none;
 }
 
 .ph-background {
@@ -59,6 +60,8 @@
   background-color: rgb(11,15,25, 0.6);
   opacity: 0.95;
   z-index: -10;
+  border: none;
+  outline: none;
 }
 
 .ph-radial {
