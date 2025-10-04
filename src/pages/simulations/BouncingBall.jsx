@@ -30,6 +30,8 @@ export function BouncingBall() {
         setInputs(prev => ({...prev, [name]: value}));
     };
 
+    const bgColor = useRef(null);
+
     // p5 sketch
     const Sketch = useCallback(p => {
         let position, velocity
@@ -37,6 +39,13 @@ export function BouncingBall() {
         p.setup = () => {
             const { clientWidth: w, clientHeight: h } = p._userNode
             p.createCanvas(w, h)
+
+            const screenEl = document.querySelector('.screen');
+            const bg = window
+                .getComputedStyle(screenEl)
+                .backgroundColor.match(/\d+/g)
+                .map(Number);
+            bgColor.current = bg;
 
             position = p.createVector(100, 100)
             velocity = p.createVector(2.5, 2)
@@ -55,19 +64,13 @@ export function BouncingBall() {
             if (position.y > p.height || position.y < 0) velocity.y *= -1;
             position.add(velocity)
 
-            const screenEl = document.querySelector('.screen');
-            const bgColor = window
-                .getComputedStyle(screenEl)
-                .backgroundColor.match(/\d+/g)
-                .map(Number);
-
             if (trailEnabled) {
                 p.noStroke();
-                p.fill(bgColor[0], bgColor[1], bgColor[2], 60);
+                p.fill(bgColor.current[0], bgColor.current[1], bgColor.current[2], 60);
                 p.rect(0, 0, p.width, p.height);
                 p.stroke(0);
             } else {
-                p.background(bgColor[0], bgColor[1], bgColor[2]);
+                p.background(bgColor.current[0], bgColor.current[1], bgColor.current[2]);
             }
 
             p.fill(ballColor);
