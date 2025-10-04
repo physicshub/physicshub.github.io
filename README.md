@@ -96,7 +96,8 @@ We recognize all types of contributions. This project follows the [all-contribut
 
 No supporters yet
 
-Become a supporter by donating on Ko-Fi: [COMING SOON](https://ko-fi.com/)
+Become a supporter by donating on Ko-Fi: 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W41MA4Y1)
 
 ### 🌍 Community 
 Join us on Discord:

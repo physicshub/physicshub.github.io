@@ -1142,6 +1142,17 @@ footer {
   color: #555;
 }
 
+.contributor-card-skeleton{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 15rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  background: #33333340;
+  animation: pulse 1.5s infinite;
+}
+
 
 /* Simulation info panel */
 .sim-info-panel {

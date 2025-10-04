@@ -1,10 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Stars from "../components/Stars.jsx";
 import GradientBackground from "../components/GradientBackground.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faFileCode, faGift, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from "../components/ContributorsSectionSkeleton.jsx";
+import {
+  faUsers,
+  faFileCode,
+  faGift,
+  faHandsHelping,
+} from "@fortawesome/free-solid-svg-icons";
+
+// Lazy load del componente ContributorsSection
+const ContributorsSection = React.lazy(
+  () => import("../components/ContributorsSection.jsx")
+);
 
 
 export default function Contribute() {
@@ -131,32 +142,9 @@ export default function Contribute() {
         </p>
 
         <hr/>
-        <div className="contributors-section" id="contributors">
-          <h2 className="title">Project Contributors</h2>
-          <div className="contributors-grid">
-            {contributors.map((contributor) => (
-              <div key={contributor.id} className="contributor-card">
-                <a
-                  href={contributor.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src={contributor.avatar_url}
-                    alt={contributor.login}
-                    className="contributor-avatar"
-                  />
-                </a>
-                <div className="contributor-info">
-                  <p className="contributor-name">{contributor.login}</p>
-                  <p className="contributor-data">
-                    {contributor.contributions} {contributor.contributions === 1 ? 'commit' : 'commits'}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Suspense fallback={<Skeleton />}>
+          <ContributorsSection />
+        </Suspense>
       </div>
       <Footer />
     </>
