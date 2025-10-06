@@ -151,7 +151,7 @@ function draw(){
       desc:"Vector Operations in real time.",
       link:"/VectorsOperations",
       tags:[
-         TAGS.MEDIUM, 
+         TAGS.EASY, 
          TAGS.MATH, 
          TAGS.VECTORS, 
          TAGS.PHYSICS
@@ -230,7 +230,7 @@ function draw(){
       desc:"Ball accelerating to the mouse direction.",
       link:"/BallAcceleration",
       tags:[
-         TAGS.ADVANCED,
+         TAGS.MEDIUM,
          TAGS.PHYSICS,
          TAGS.ACCELERATION
       ],
@@ -373,8 +373,9 @@ function draw(){
       desc:"Ball fall and bounce on the ground.",
       link:"/BallGravity",
       tags:[
-         TAGS.EASY,
-         TAGS.VECTORS,
+         TAGS.MEDIUM,
+         TAGS.COLLISION,
+         TAGS.PHYSICS,
          TAGS.GRAVITY
       ],
       // Placeholder: theory section still in development
@@ -516,9 +517,10 @@ function draw(){
       desc:"A Ball connected to a string.",
       link:"/SpringConnection",
       tags:[
-         TAGS.EASY,
-         TAGS.VECTORS,
-         TAGS.GRAVITY
+         TAGS.ADVANCED,
+         TAGS.PHYSICS,
+         TAGS.OSCILLATIONS,
+         TAGS.SPRINGS
       ],
       // Placeholder: theory section still in development
       theory:{
@@ -660,8 +662,8 @@ function draw(){
       link:"/SimplePendulum",
       tags:[
          TAGS.MEDIUM,
-         TAGS.VECTORS,
-         TAGS.GRAVITY,
+         TAGS.OSCILLATIONS,
+         TAGS.ENERGY,
          TAGS.PHYSICS
       ],
       theory:{
