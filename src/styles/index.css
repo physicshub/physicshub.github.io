@@ -583,6 +583,9 @@ footer {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-glow::before {
@@ -604,7 +607,7 @@ footer {
 
 .btn-glow:hover {
   background: rgba(0, 230, 230, 0.1);
-  box-shadow: 0 0 12px var(--glow-color);
+  box-shadow: 0 0 12px var(--accent-color);
   transform: scale(1.05);
   transition: transform 0.5s;
 }
@@ -986,7 +989,7 @@ footer {
   gap: 1.5rem;
   background: var(--bg-gradient-rotated);
   border-radius: var(--border-radius);
-  margin: 2rem 1.5rem;
+  margin: 1rem 1.5rem;
   border: var(--accent-color) solid 1px;
   box-shadow: 0px 0px 5px var(--accent-color);
 }
@@ -1560,4 +1563,32 @@ footer {
   .contributor-info {
     align-items: flex-start;
   }
+}
+
+
+/* Style for Controls in simlations (resume, play, stop, reset, speed) */
+
+.simulation-controls{
+  position: relative;
+  width: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-gradient-rotated);
+  border: 1px solid var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: fit-content;
+  height: fit-content;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.simulation-controls button{
+  width: clamp(20px, 20%, 100px);
+  aspect-ratio: 1.2 / 1;
 }
