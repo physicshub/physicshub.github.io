@@ -1581,7 +1581,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(10px, 1rem, 2rem);
   width: fit-content;
   height: fit-content;
   max-width: 90vw;
@@ -1589,6 +1589,6 @@ footer {
 }
 
 .simulation-controls button{
-  width: clamp(20px, 20%, 100px);
+  width: clamp(10px, 10%, 100px);
   aspect-ratio: 1.2 / 1;
 }
