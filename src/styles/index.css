@@ -674,6 +674,21 @@ footer {
   box-shadow: 0 0 8px #adb5bd;
 }
 
+.tag-pink {
+  background: linear-gradient(135deg, #e83e8c, #ff6fba);
+  box-shadow: 0 0 8px #ff6fba;
+}
+
+.tag-orange {
+  background: linear-gradient(135deg, #fd7e14, #ffb07c);
+  box-shadow: 0 0 8px #fd7e14;
+}
+
+.tag-coral {
+  background: linear-gradient(135deg, #ff6f61, #ff9a8d);
+  box-shadow: 0 0 8px #ff9a8d;
+}
+
 /* Screen */
 .screen {
   flex: 2;
