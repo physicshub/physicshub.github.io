@@ -13,14 +13,14 @@
 
 /* Light Theme Overrides */
 [data-theme='light'] {
-  --bg-color: #e8eefb;
-  --text-color: #111;
+  --bg-color: #d1d9e8;
+  --text-color: #1a1a1a;
   --accent-color: #04cdcd;
   --glow-color: #fff;
-  --card-bg: #fff;
-  --border-color: #ddd;
-  --bg-gradient: linear-gradient(135deg, #f9f9f9, #e2e2e2);
-  --bg-gradient-rotated: linear-gradient(0, #f9f9f9, #e2e2e2);
+  --card-bg: #e8f0f7;
+  --border-color: #b8c5d6;
+  --bg-gradient: linear-gradient(135deg, #d1d9e8, #c5d1e2);
+  --bg-gradient-rotated: linear-gradient(0, #d1d9e8, #c5d1e2);
 }
 * {
   margin: 0;
@@ -71,7 +71,7 @@ header {
   width: 100%;
   padding: 1rem 2rem;
   text-align: center;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
   transition: padding 0.3s, box-shadow 0.3s, top 0.3s;
   z-index: 2000;
@@ -336,6 +336,16 @@ main {
   line-height: normal;
   margin-bottom: 0.8rem;
   text-shadow: 0 0 3px var(--glow-color);
+}
+
+/* Light theme chapter cards */
+[data-theme='light'] .chapter-card-overlay {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme='light'] .chapter-card-overlay > h2 {
+  text-shadow: none;
 }
 
 
@@ -705,6 +715,12 @@ footer {
   text-shadow: 0 0 4px var(--glow-color);
 }
 
+/* Light theme screen */
+[data-theme='light'] .screen {
+  text-shadow: none;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
 
 
 /* Input styles */
@@ -717,6 +733,12 @@ footer {
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
   text-shadow: 0 0 4px var(--glow-color);
+}
+
+/* Light theme input labels */
+[data-theme='light'] .input-label {
+  text-shadow: none;
+  color: var(--text-color);
 }
 
 .input-text, .input-number, .input-slider{
@@ -741,6 +763,13 @@ footer {
   border-color: #333;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+/* Light theme disabled inputs */
+[data-theme='light'] .input-number:disabled {
+  background: var(--border-color);
+  color: var(--text-color);
+  opacity: 0.6;
 }
 
 .input-slider {
@@ -960,6 +989,11 @@ footer {
   text-shadow: 0 0 4px var(--glow-color);
 }
 
+/* Light theme color input labels */
+[data-theme='light'] .color-input-label {
+  text-shadow: none;
+}
+
 .color-input {
   width: 2.5rem;
   height: 2.5rem;
@@ -1109,6 +1143,12 @@ footer {
   padding-left: 1rem;
 }
 
+/* Enhanced visibility for light theme */
+[data-theme='light'] .page-container p {
+  color: #1a1a1a !important;
+  font-weight: 600;
+} */
+
 .container-layout{
   flex: 1;
   padding: 2rem 0;
@@ -1160,6 +1200,12 @@ footer {
   color: #555;
 }
 
+/* Light theme contributor data */
+[data-theme='light'] .contributor-data {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
 .contributor-card-skeleton{
   display: flex;
   flex-direction: column;
@@ -1184,6 +1230,13 @@ footer {
   padding: 0.7rem 0.7rem;
   border-radius: var(--border-radius);
   pointer-events: none;
+}
+
+/* Light theme simulation info panel */
+[data-theme='light'] .sim-info-panel {
+  background: rgba(255,255,255,0.9);
+  color: #333;
+  border: 1px solid rgba(0,0,0,0.2);
 }
 
 .sim-info-row {

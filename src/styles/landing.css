@@ -10,10 +10,10 @@
 }
 
 [data-theme='light'] {
-  --ph-surface: #f6f7fb;
-  --ph-fg: #0b1220;
-  --ph-fg-muted: rgba(11, 18, 32, 0.62);
-  --ph-grid: rgba(0, 15, 40, 0.06);
+  --ph-surface: #dde6f0;
+  --ph-fg: #1a1a1a;
+  --ph-fg-muted: rgba(26, 26, 26, 0.7);
+  --ph-grid: rgba(0, 15, 40, 0.12);
   --ph-ring: color-mix(in oklab, var(--accent-color), black 8%);
 }
 

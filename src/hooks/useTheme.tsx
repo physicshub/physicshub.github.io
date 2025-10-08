@@ -1,38 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export function useTheme(defaultMode: 'light' | 'dark' | 'system' = 'system') {
-  const [mode, setMode] = useState(defaultMode);
+const THEME_STORAGE_KEY = 'physicshub-theme';
 
-  const getSystemTheme = () => {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
+export function useTheme(defaultMode: 'light' | 'dark' = 'dark') {
+  // Initialize theme from localStorage or default
+  const [mode, setMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved && ['light', 'dark'].includes(saved)) {
+        return saved as 'light' | 'dark';
+      }
+    }
+    return defaultMode;
+  });
 
- useEffect(() => {
-  let actualTheme = mode;
-  if(mode === 'system'){
-    actualTheme = getSystemTheme();
-  }
-  document.body.dataset.theme = actualTheme;
-  if(mode === 'system'){
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  // Apply theme to document and save to localStorage
+  useEffect(() => {
+    // Apply theme to document
+    document.body.dataset.theme = mode;
+    
+    // Save to localStorage
+    localStorage.setItem(THEME_STORAGE_KEY, mode);
+  }, [mode]);
 
-    const handleChange = () => {
-      document.body.dataset.theme = getSystemTheme();
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return ()=> mediaQuery.removeEventListener('change', handleChange);
-  }
-}, [mode]);
-
-  const toggleMode = useCallback(
-    () => setMode(prev => {
-    if(prev === 'dark') return 'light';
-    if(prev === 'light') return 'system';
-    return 'dark';
-    }),
-    []
-  );
+  const toggleMode = useCallback(() => {
+    setMode(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
 
   return { mode, toggleMode };
 }
