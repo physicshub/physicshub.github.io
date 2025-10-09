@@ -39,7 +39,7 @@ export function BouncingBall() {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
         pos = p.createVector(1, 1);
-        vel = p.createVector(inputsRef.current.velocityX, inputsRef.current.velocityY);
+        vel = p.createVector() //p.createVector(inputsRef.current.velocityX, inputsRef.current.velocityY);
 
         const bg = getComputedStyle(document.body).backgroundColor
           .match(/\d+/g)
