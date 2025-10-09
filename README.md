@@ -85,6 +85,7 @@ We recognize all types of contributions. This project follows the [all-contribut
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Vaishnavi-Raykar"><img src="https://avatars.githubusercontent.com/u/126966675?v=4?s=100" width="100px;" alt="Vaishnavi Vijay Raykar"/><br /><sub><b>Vaishnavi Vijay Raykar</b></sub></a><br /><a href="#bug-Vaishnavi-Raykar" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/shauryakushwaha08"><img src="https://avatars.githubusercontent.com/u/116422872?v=4?s=100" width="100px;" alt="Shaurya Kushwaha"/><br /><sub><b>Shaurya Kushwaha</b></sub></a><br /><a href="#design-shauryakushwaha08" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/praria"><img src="https://avatars.githubusercontent.com/u/12003611?v=4?s=100" width="100px;" alt="Prakash Shrestha"/><br /><sub><b>Prakash Shrestha</b></sub></a><br /><a href="#code-praria" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/shivansh_pathak01"><img src="https://avatars.githubusercontent.com/u/128770733?v=4?s=100" width="100px;" alt="Shivansh Pathak"/><br /><sub><b>Shivansh Pathak</b></sub></a><br /><a href="#code-shivanshpathak01" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
