@@ -10,7 +10,8 @@
 }
 
 /* Google Translate select */
-#google_translate_element .goog-te-combo {
+#google_translate_element .goog-te-combo,
+.language-select {
   appearance: none;
   width: auto;
   padding: 0.5rem 2.5rem 0.5rem 0.75rem;
@@ -23,12 +24,14 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-#google_translate_element .goog-te-combo:focus {
+#google_translate_element .goog-te-combo:focus,
+.language-select:focus {
   border-color: var(--accent-color);
   box-shadow: 0 0 8px rgba(0,230,230,0.6);
 }
 
-#google_translate_element .goog-te-combo option[disabled] {
+#google_translate_element .goog-te-combo option[disabled],
+.language-select option[disabled] {
   color: #888;
 }
 
