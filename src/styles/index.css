@@ -176,11 +176,13 @@ nav a.active::after {
 }
 
 .search-container input {
-  background: var(--card-bg);
+  background: var(--bg-color);
   border: none;
   padding: 0.5rem;
   color: var(--text-color);
-  width: 150px;
+  width: 15rem;
+  max-width: 20rem;
+  min-width: 10rem;
   transition: width 0.3s, border-color 0.3s, box-shadow 0.3s;
   outline: none;
 }
