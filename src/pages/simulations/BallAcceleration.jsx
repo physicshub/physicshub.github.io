@@ -66,7 +66,7 @@ export function BallAcceleration() {
   return (
     <>
       <TopSim/>
-      <Stars color="#AEE3FF" opacity={0.3}/>
+      <Stars color="var(--accent-color)" opacity={0.3}/>
       <GradientBackground/>
       <Screen sketch={Sketch} />
       <div className="inputs-container">

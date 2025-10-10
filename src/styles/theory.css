@@ -9,6 +9,44 @@
   --radius: 8px;
 }
 
+/* Light Theme Overrides for Theory */
+[data-theme='light'] {
+  --bg: rgba(0,0,0,0.08);
+  --muted: rgba(0,0,0,0.7);
+}
+
+/* Light theme specific overrides */
+[data-theme='light'] .theory-container {
+  border-top: 1px solid rgba(0,0,0,0.15);
+}
+
+[data-theme='light'] .theory-formula code,
+[data-theme='light'] .theory-formula .formula-code {
+  color: #333;
+}
+
+[data-theme='light'] .theory-note {
+  color: #333;
+  background: rgba(255,255,0,0.15);
+  border-left: 3px solid rgba(255,255,0,0.8);
+}
+
+[data-theme='light'] .theory-table th {
+  background: rgba(0,0,0,0.08);
+}
+
+[data-theme='light'] .theory-table td {
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+[data-theme='light'] .theory-example {
+  border: 1px dashed rgba(0,0,0,0.15);
+}
+
+[data-theme='light'] .theory-toggle {
+  background: rgba(0,0,0,0.05);
+}
+
 /* Container e titoli */
 .theory-container {
   margin: 2rem;

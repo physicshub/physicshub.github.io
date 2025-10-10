@@ -77,6 +77,16 @@ export function VectorsOperations() {
             .backgroundColor.match(/\d+/g)
             .map(Number);
         p.background(bgColor[0], bgColor[1], bgColor[2]);
+        
+        // Get proper contrast text color for labels
+        const currentTheme = document.body.dataset.theme;
+        const rgbTextColor = currentTheme === 'light' ? [0, 0, 0] : [255, 255, 255];
+        
+        // Get theme-aware accent color for result vectors
+        const accentColor = window
+            .getComputedStyle(document.body)
+            .getPropertyValue('--accent-color');
+        const rgbAccentColor = accentColor.match(/\d+/g)?.map(Number) || [255, 100, 100];
 
         const { strokeColor, strokeWeight, multiVector } = inputsRef.current;
         const mouse = p.createVector(p.mouseX, p.mouseY);
@@ -89,10 +99,10 @@ export function VectorsOperations() {
                 // R: from originA to mouse
                 drawArrow(originA, headA, strokeColor, strokeWeight);
                 drawArrow(headA, mouse, adjustColor(strokeColor), Math.max(1, strokeWeight * 0.9));
-                drawArrow(originA, mouse, [255, 100, 100], strokeWeight + 1);
+                drawArrow(originA, mouse, rgbAccentColor, strokeWeight + 1);
 
                 // Labels
-                p.fill(255);
+                p.fill(...rgbTextColor);
                 p.textAlign(p.CENTER);
                 p.textSize(16);
                 p.text("A", (originA.x + headA.x) / 2, (originA.y + headA.y) / 2 - 12);
@@ -124,10 +134,10 @@ export function VectorsOperations() {
                   // Arrows
                   drawArrow(originA, headA, strokeColor, strokeWeight);
                   drawArrow(originA, mouse, adjustColor(strokeColor), Math.max(1, strokeWeight * 0.9));
-                  drawArrow(originA, rEnd, [255, 100, 100], strokeWeight + 1);
+                  drawArrow(originA, rEnd, rgbAccentColor, strokeWeight + 1);
 
                   // Labels
-                  p.fill(255);
+                  p.fill(...rgbTextColor);
                   p.textAlign(p.CENTER);
                   p.textSize(16);
                   p.text("A", (originA.x + headA.x) / 2, (originA.y + headA.y) / 2 - 12);
@@ -155,7 +165,7 @@ export function VectorsOperations() {
 
                 // Draw original vector A and resultant kA from origin
                 drawArrow(p.createVector(0, 0), aVecMul, strokeColor, strokeWeight);
-                drawArrow(p.createVector(0, 0), rVecMul, [255, 100, 100], strokeWeight + 1);
+                drawArrow(p.createVector(0, 0), rVecMul, rgbAccentColor, strokeWeight + 1);
 
                 // Optional connector from end of A to end of kA
                 p.stroke(adjustColor(strokeColor));
@@ -163,7 +173,7 @@ export function VectorsOperations() {
                 p.line(aVecMul.x, aVecMul.y, rVecMul.x, rVecMul.y);
 
                 // Labels
-                p.fill(255);
+                p.fill(...rgbTextColor);
                 p.noStroke();
                 p.textAlign(p.CENTER);
                 p.textSize(16);
@@ -236,7 +246,7 @@ export function VectorsOperations() {
     <>
       <TopSim/>
       <Screen sketch={Sketch} />
-      <Stars color="#AEE3FF" opacity={0.3}/>
+      <Stars color="var(--accent-color)" opacity={0.3}/>
       <GradientBackground/>
       <div className="inputs-container">
         <NumberInput

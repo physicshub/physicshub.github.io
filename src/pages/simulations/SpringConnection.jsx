@@ -144,7 +144,7 @@ export function SpringConnection() {
   return (
     <>
       <TopSim />
-      <Stars color="#AEE3FF" opacity={0.3} />
+      <Stars color="var(--accent-color)" opacity={0.3} />
       <GradientBackground />
       <Screen sketch={Sketch} />
 

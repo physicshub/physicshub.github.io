@@ -13,7 +13,7 @@ import GoogleTranslator from './GoogleTranslator.jsx';
 export default function Header({ onSearch }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const isSticky = useSticky(50);
-  const { mode, toggleMode } = useTheme('dark');
+  const { mode, toggleMode } = useTheme();
 
   const handleMenuToggle = useCallback(
     () => setMenuOpen((open) => !open),

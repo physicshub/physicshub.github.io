@@ -127,9 +127,14 @@ export default function HeroBackground() {
       ctx.scale(shrink, shrink);
       ctx.translate(-cx, -cy);
 
-/*       // sfondo + trail
-      ctx.fillStyle = `rgba(11,15,25,${SIM_CONFIG.trailOpacity})`;
-      ctx.fillRect(0, 0, w, h); */
+      // sfondo + trail - theme aware
+      const theme = document.body.dataset.theme;
+      if (theme === 'light') {
+        ctx.fillStyle = `rgba(255, 255, 255, ${SIM_CONFIG.trailOpacity})`;
+      } else {
+        ctx.fillStyle = `rgba(11, 15, 25, ${SIM_CONFIG.trailOpacity})`;
+      }
+      ctx.fillRect(0, 0, w, h);
 
       // easing mouse
       mouse.current.x +=

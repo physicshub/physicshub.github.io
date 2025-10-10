@@ -84,7 +84,7 @@ export function SimplePendulum() {
         <>
         <TopSim/>
         <Screen sketch={Sketch} />
-        <Stars color="#AEE3FF" opacity={0.3}/>
+        <Stars color="var(--accent-color)" opacity={0.3}/>
         <GradientBackground/>
         <div className="inputs-container">
             <NumberInput

@@ -10,11 +10,11 @@
 }
 
 [data-theme='light'] {
-  --ph-surface: #f6f7fb;
-  --ph-fg: #0b1220;
-  --ph-fg-muted: rgba(11, 18, 32, 0.62);
-  --ph-grid: rgba(0, 15, 40, 0.06);
-  --ph-ring: color-mix(in oklab, var(--accent-color), black 8%);
+  --ph-surface: #ffffff;
+  --ph-fg: #1a1a1a;
+  --ph-fg-muted: rgba(26, 26, 26, 0.65);
+  --ph-grid: rgba(0, 0, 0, 0.08);
+  --ph-ring: color-mix(in oklab, var(--accent-color), black 15%);
 }
 
 .ph-landing-page{
@@ -62,6 +62,10 @@
   z-index: -10;
   border: none;
   outline: none;
+}
+
+[data-theme='light'] .ph-background {
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 .ph-radial {

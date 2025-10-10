@@ -168,7 +168,7 @@ export function BallGravity() {
   return (
     <>
       <TopSim/>
-      <Stars color="#AEE3FF" opacity={0.3}/>
+      <Stars color="var(--accent-color)" opacity={0.3}/>
       <GradientBackground/>
 
       <div ref={canvasParent} className="screen wind-container" style={{ flex: 1, position: "relative" }}>
