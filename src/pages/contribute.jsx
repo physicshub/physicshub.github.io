@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
+import { HashLink } from 'react-router-hash-link';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Stars from "../components/Stars.jsx";
@@ -58,7 +59,7 @@ export default function Contribute() {
     <>
       <Header />
       <div className="contribution-page-container">
-        <Stars color="var(--accent-color)" opacity={0.4} starDensity={0.005}/>
+        <Stars color="var(--stars-color)" opacity={0.4} starDensity={0.005}/>
         <GradientBackground/>
         <h1 className="title">Contribute to PhysicsHub</h1>
         <p>
@@ -112,7 +113,7 @@ export default function Contribute() {
             <ul className="card-list">
               <li>Discord special role</li>
               <li>Link profile in the README.md</li>
-              <li>Link profile in the section <a href="#contributors">below</a></li>
+              <li>Link profile in the section <HashLink smooth to="/contribute#contributors">below</HashLink></li>
             </ul>
           </div>
 

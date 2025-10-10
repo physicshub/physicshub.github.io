@@ -25,7 +25,7 @@ export default function Simulations() {
   return (
     <>
       <Header onSearch={setSearchTerm} />
-      <Stars color="var(--accent-color)" opacity={0.4} zIndex={1} starDensity={0.005}/>
+      <Stars opacity={0.4} zIndex={1} starDensity={0.005}/>
       <main>
         <GradientBackground />
         {filteredChapters.map((chap) => (

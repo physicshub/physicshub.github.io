@@ -18,7 +18,7 @@ const LANGUAGES = {
   es: "Spanish",
 };
 
-// Sequenza di icone per simulare la rotazione
+// Sequence of icons to simulate rotation
 const ICON_FRAMES = [
   faGlobeAfrica,
   faGlobeAsia,
@@ -27,7 +27,7 @@ const ICON_FRAMES = [
   faGlobeEurope,
 ];
 
-// Icona finale per ogni lingua
+// Final icon for each language
 const LANGUAGE_ICONS = {
   en: faGlobeAmericas,
   it: faGlobeEurope,
@@ -71,25 +71,25 @@ export default function GoogleTranslator() {
     }
   }, []);
 
-  // Funzione cambio lingua + animazione globe
+  // Language change function + globe animation
   const changeLanguage = (languageCode) => {
     if (languageCode === currentLanguage) return;
 
     setCurrentLanguage(languageCode);
 
-    // Animazione: cicla tra le icone
+    // Animation: cycle through icons
     let frame = 0;
     const interval = setInterval(() => {
       setIcon(ICON_FRAMES[frame % ICON_FRAMES.length]);
       frame++;
       if (frame > ICON_FRAMES.length) {
         clearInterval(interval);
-        // Alla fine mostra l’icona finale della lingua
+        // At the end show the final icon of the language
         setIcon(LANGUAGE_ICONS[languageCode] || LANGUAGE_ICONS.default);
       }
-    }, 100); // velocità frame (100ms → 0.6s totale)
+    }, 100); // frame speed (100ms → 0.6s total)
 
-    // Cambio lingua Google Translate
+    // Change Google Translate language
     const selectElement = document.querySelector(".goog-te-combo");
     if (selectElement) {
       selectElement.value = languageCode;

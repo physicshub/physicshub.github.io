@@ -8,7 +8,7 @@ export default function About() {
   return (
     <>
       <Header/>
-      <Stars color="var(--accent-color)" opacity={0.4} zIndex={1} starDensity={0.005}/>
+      <Stars color="var(--stars-color)" opacity={0.4} zIndex={1} starDensity={0.005}/>
       <GradientBackground/>
       <div className="page-container">
         <h1 className="title"><strong>About PhysicsHub</strong></h1>
