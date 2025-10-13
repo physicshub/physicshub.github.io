@@ -11,7 +11,8 @@ export default function SimulationLayout({
   simulation,
   onLoad,
   theory,
-  children, // This prop will contain the P5Wrapper and DynamicInputs
+  children, // This will now ONLY be the canvas (P5Wrapper)
+  dynamicInputs, // A new prop for the simulation-specific inputs
 }) {
   return (
     <>
@@ -19,15 +20,19 @@ export default function SimulationLayout({
       <GradientBackground />
       <TopSim />
 
-      {/* This renders the simulation canvas and input controls passed from the parent */}
+      {/* 1. Render the Canvas */}
       {children}
 
+      {/* 2. Render the Main Controls */}
       <Controls
         onReset={onReset}
         inputs={inputs}
         simulation={simulation}
         onLoad={onLoad}
       />
+
+      {/* 3. Render the Dynamic Inputs */}
+      {dynamicInputs}
       
       <TheoryRenderer theory={theory} />
     </>

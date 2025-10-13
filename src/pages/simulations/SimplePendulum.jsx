@@ -27,7 +27,7 @@ export function SimplePendulum() {
   }, [setInputs]);
 
   const theory = useMemo(
-    () => chapters.find((ch) => ch.link === useLocation().pathname)?.theory,
+    () => chapters.find((ch) => ch.link === location.pathname)?.theory,
     [location.pathname]
   );
 
@@ -74,8 +74,6 @@ export function SimplePendulum() {
       pendulumRef.current?.stopDragging();
     };
 
-
-
     p.windowResized = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
@@ -100,13 +98,15 @@ export function SimplePendulum() {
         setResetVersion((v) => v + 1);
       }}
       theory={theory}
+      dynamicInputs={(
+        <DynamicInputs
+          config={INPUT_FIELDS}
+          values={inputs}
+          onChange={handleInputChange}
+        />
+      )}
     >
       <P5Wrapper sketch={sketch} key={resetVersion} />
-      <DynamicInputs
-        config={INPUT_FIELDS}
-        values={inputs}
-        onChange={handleInputChange}
-      />
     </SimulationLayout>
   );
 }

@@ -109,13 +109,15 @@ export function BouncingBall() {
         setResetVersion((v) => v + 1);
       }}
       theory={theory}
+      dynamicInputs={(
+        <DynamicInputs
+          config={INPUT_FIELDS}
+          values={inputs}
+          onChange={handleInputChange}
+        />
+      )}
     >
       <P5Wrapper sketch={sketch} key={resetVersion} />
-      <DynamicInputs
-        config={INPUT_FIELDS}
-        values={inputs}
-        onChange={handleInputChange}
-      />
     </SimulationLayout>
   );
 }
