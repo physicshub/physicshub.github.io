@@ -1,34 +1,34 @@
-// components/SimulationLayout.jsx
+// src/components/SimulationLayout.jsx (Corrected)
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
-import TopSim from "./TopSim.js";
-import Screen from "./Screen.jsx";
+import TopSim from "./TopSim.tsx";
 import Controls from "./Controls.jsx";
-import TheoryRenderer from "./theory/TheoryRenderer.js";
+import TheoryRenderer from "./theory/TheoryRenderer.tsx";
 
 export default function SimulationLayout({
-  sketch,
-  resetVersion,
   onReset,
   inputs,
   simulation,
   onLoad,
   theory,
-  children,
+  children, // This prop will contain the P5Wrapper and DynamicInputs
 }) {
   return (
     <>
       <Stars color="#AEE3FF" opacity={0.3} />
       <GradientBackground />
       <TopSim />
-      <Screen sketch={sketch} key={resetVersion} />
+
+      {/* This renders the simulation canvas and input controls passed from the parent */}
+      {children}
+
       <Controls
         onReset={onReset}
         inputs={inputs}
         simulation={simulation}
         onLoad={onLoad}
       />
-      {children}
+      
       <TheoryRenderer theory={theory} />
     </>
   );
