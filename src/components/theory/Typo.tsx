@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faCheck, faInfoCircle, faExclamationTriangle, faLightbulb, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { stackoverflowDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { stackoverflowDark, stackoverflowLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { BlockMath, InlineMath } from "react-katex";
 
 type Children = { children?: React.ReactNode };
@@ -64,6 +64,21 @@ export const TheoryFormula: React.FC<{ latex: string; inline?: boolean }> = ({ l
 
 export const TheoryCodeBlock: React.FC<{ code: string; language?: string }> = ({ code, language = "" }) => {
   const [copied, setCopied] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.body.dataset.theme as 'light' | 'dark';
+      setTheme(currentTheme || 'dark');
+    };
+    
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -83,7 +98,7 @@ export const TheoryCodeBlock: React.FC<{ code: string; language?: string }> = ({
   return (
     <div className='theory-codeblock'>
         <SyntaxHighlighter language={language}
-          style={stackoverflowDark}
+          style={theme === 'light' ? stackoverflowLight : stackoverflowDark}
           customStyle={{ padding: "1rem", fontSize: "15px", borderRadius: "8px"}}
           wrapLongLines={false}>
           {code}

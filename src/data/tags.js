@@ -39,5 +39,16 @@ export const TAGS = {
     name: "Gravity", 
     color: "grey", 
   },
-
+  OSCILLATIONS: { 
+    name: "Oscillations", 
+    color: "pink", 
+  },
+  SPRINGS: { 
+    name: "Springs", 
+    color: "orange", 
+  },
+  ENERGY: { 
+    name: "Energy", 
+    color: "coral", 
+  },
 };

@@ -122,6 +122,16 @@ export function VectorsOperations() {
             .backgroundColor.match(/\d+/g)
             .map(Number);
         p.background(bgColor[0], bgColor[1], bgColor[2]);
+        
+        // Get proper contrast text color for labels
+        const currentTheme = document.body.dataset.theme;
+        const rgbTextColor = currentTheme === 'light' ? [0, 0, 0] : [255, 255, 255];
+        
+        // Get theme-aware accent color for result vectors
+        const accentColor = window
+            .getComputedStyle(document.body)
+            .getPropertyValue('--accent-color');
+        const rgbAccentColor = accentColor.match(/\d+/g)?.map(Number) || [255, 100, 100];
 
         const { strokeColor, strokeWeight, multiVector } = inputsRef.current;
         const mouse = p.createVector(p.mouseX, p.mouseY);
@@ -193,11 +203,16 @@ export function VectorsOperations() {
             case "x": {
                 mouse.sub(center);
                 p.translate(p.width / 2, p.height / 2);
-                p.strokeWeight(strokeWeight);
-                p.stroke(strokeColor);
-                p.line(0, 0, mouse.x, mouse.y);
-                let multiplied = mouse.copy().mult(multiVector);
-                p.strokeWeight(strokeWeight * 0.8);
+
+                // Define vectors
+                const aVecMul = mouse.copy();
+                const rVecMul = mouse.copy().mult(multiVector);
+
+                // Draw original vector A and resultant kA from origin
+                drawArrow(p.createVector(0, 0), aVecMul, strokeColor, strokeWeight);
+                drawArrow(p.createVector(0, 0), rVecMul, rgbAccentColor, strokeWeight + 1);
+
+                // Optional connector from end of A to end of kA
                 p.stroke(adjustColor(strokeColor));
                 p.line(mouse.x, mouse.y, multiplied.x, multiplied.y);
                 // If scalar negative, hint flip with a faint opposite
@@ -395,6 +410,36 @@ export function VectorsOperations() {
           p.fill(adjustColor(strokeColor));
           p.circle(pos.x * SCALE, pos.y * SCALE, rPx);
         }
+    };
+
+    p.mousePressed = () => {
+      const op = inputsRef.current.operation;
+      if (op === "+" || op === "-") {
+        // Drag from arrow tail or head
+        if (isNear(originA, p.mouseX, p.mouseY)) {
+          dragging = 'tail';
+          return;
+        }
+        if (isNear(headA, p.mouseX, p.mouseY)) {
+          dragging = 'head';
+          return;
+        }
+      }
+    };
+
+    p.mouseDragged = () => {
+      if (!dragging) return;
+      const clampedX = Math.max(0, Math.min(p.width, p.mouseX));
+      const clampedY = Math.max(0, Math.min(p.height, p.mouseY));
+      if (dragging === 'tail') {
+        originA.set(clampedX, clampedY);
+      } else if (dragging === 'head') {
+        headA.set(clampedX, clampedY);
+      }
+    };
+
+    p.mouseReleased = () => {
+      dragging = null;
     };
 
     p.windowResized = () => {

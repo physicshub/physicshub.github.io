@@ -48,6 +48,25 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/src/styles/index.css" >
     
+    <!-- Theme initialization script to prevent flash of unstyled content -->
+    <script>
+      (function() {
+        const THEME_STORAGE_KEY = 'physicshub-theme';
+        
+        // Get saved theme or default to dark
+        const saved = localStorage.getItem(THEME_STORAGE_KEY);
+        const theme = saved && ['light', 'dark'].includes(saved) ? saved : 'dark';
+        
+        // Set theme attribute immediately
+        document.body.dataset.theme = theme;
+        
+        // Set initial body background to prevent flash
+        if (theme === 'light') {
+          document.body.style.backgroundColor = '#ffffff';
+        }
+      })();
+    </script>
+    
     <!-- Additional SEO enhancements -->
     <meta name="theme-color" content="#ffffff" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" >

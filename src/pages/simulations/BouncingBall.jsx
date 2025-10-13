@@ -15,7 +15,7 @@ import chapters from "../../data/chapters.js";
 export function BouncingBall() {
   const location = useLocation();
   const storageKey = location.pathname.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
   const [resetVersion, setResetVersion] = useState(0);
 
   const handleInputChange = useCallback(
@@ -39,7 +39,7 @@ export function BouncingBall() {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
         pos = p.createVector(1, 1);
-        vel = p.createVector(inputsRef.current.velocityX, inputsRef.current.velocityY);
+        vel = p.createVector() //p.createVector(inputsRef.current.velocityX, inputsRef.current.velocityY);
 
         const bg = getComputedStyle(document.body).backgroundColor
           .match(/\d+/g)
@@ -96,7 +96,7 @@ export function BouncingBall() {
         resetTime();
         if (wasPaused) setPause(true);
 
-        setInputs(INITIAL_INPUTS);
+        resetInputs(true); // preferisci i valori salvati se ci sono
         setResetVersion((v) => v + 1);
       }}
       inputs={inputs}

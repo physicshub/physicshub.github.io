@@ -115,6 +115,34 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "shauryakushwaha08",
+      "name": "Shaurya Kushwaha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/116422872?v=4",
+      "profile": "https://github.com/shauryakushwaha08",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "praria",
+      "name": "Prakash Shrestha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12003611?v=4",
+      "profile": "https://github.com/praria",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "shivanshpathak01",
+      "name": "Shivansh Pathak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/128770733?v=4",
+      "profile": "https://linktr.ee/shivansh_pathak01",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ]
 }

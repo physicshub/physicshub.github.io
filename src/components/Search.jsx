@@ -26,9 +26,10 @@ export function Search({ onSearch }) {
         value={value}
         onChange={handleChange}
       />
-      <button type="submit" aria-label="Submit Search">
+      {/* Search button disabled due a width problem */}
+{/*       <button type="submit" aria-label="Submit Search">
         <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </button>
+      </button> */}
     </form>
   );
 }
