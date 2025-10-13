@@ -6,9 +6,9 @@ import BackToTopButton from './BackToTop';
 
 const links = [
   { label: 'Home', to: '/', exact: true },
+  { label: 'Simulations', to: '/simulations' },
   { label: 'About', to: '/about' },
   { label: 'Contribute', to: '/contribute' },
-  { label: 'Contact', to: '/contact' },
 ];
 
 function Footer() {
