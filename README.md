@@ -87,6 +87,9 @@ We recognize all types of contributions. This project follows the [all-contribut
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/praria"><img src="https://avatars.githubusercontent.com/u/12003611?v=4?s=100" width="100px;" alt="Prakash Shrestha"/><br /><sub><b>Prakash Shrestha</b></sub></a><br /><a href="#code-praria" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/shivansh_pathak01"><img src="https://avatars.githubusercontent.com/u/128770733?v=4?s=100" width="100px;" alt="Shivansh Pathak"/><br /><sub><b>Shivansh Pathak</b></sub></a><br /><a href="#code-shivanshpathak01" title="Code">💻</a> <a href="#bug-shivanshpathak01" title="Bug reports">🐛</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arjav007"><img src="https://avatars.githubusercontent.com/u/111127105?v=4?s=100" width="100px;" alt="ARJAV PATNI"/><br /><sub><b>ARJAV PATNI</b></sub></a><br /><a href="#code-arjav007" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
