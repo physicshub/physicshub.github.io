@@ -89,6 +89,7 @@ We recognize all types of contributions. This project follows the [all-contribut
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/arjav007"><img src="https://avatars.githubusercontent.com/u/111127105?v=4?s=100" width="100px;" alt="ARJAV PATNI"/><br /><sub><b>ARJAV PATNI</b></sub></a><br /><a href="#code-arjav007" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://capecod.world"><img src="https://avatars.githubusercontent.com/u/26460352?v=4?s=100" width="100px;" alt="Peter Cruckshank"/><br /><sub><b>Peter Cruckshank</b></sub></a><br /><a href="#code-petercr" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
