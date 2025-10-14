@@ -19,7 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "clsx": "^2.1.1",
     "katex": "^0.16.25",
-    "motion": "^12.23.12",
+    "motion": "^12.23.24",
     "p5": "^2.0.3",
     "planck": "^1.4.2",
     "react": "^19.1.0",
