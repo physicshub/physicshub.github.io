@@ -1878,3 +1878,9 @@ footer {
   width: clamp(10px, 10%, 100px);
   aspect-ratio: 1.2 / 1;
 }
+
+.control-item {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+}
