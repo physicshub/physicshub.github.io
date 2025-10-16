@@ -1,4 +1,4 @@
-// src/components/SimulationLayout.jsx (Corrected)
+// src/components/SimulationLayout.jsx
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
 import TopSim from "./TopSim.tsx";

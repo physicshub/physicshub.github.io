@@ -2,10 +2,10 @@
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 export const INITIAL_INPUTS = {
-  size: 0.48,
+  size: 0.5,
   trailEnabled: true,
   ballColor: "#7f7f7f",
-  restitution: 0.9,
+  restitution: 1,
   gravity: EARTH_G_SI,
 };
 
