@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const publicDir = path.resolve("public");
-const indexFile = path.join(publicDir, "index.html");
+const indexFile = path.join("", "index.html");
 const notFoundFile = path.join(publicDir, "404.html");
 
 try {
