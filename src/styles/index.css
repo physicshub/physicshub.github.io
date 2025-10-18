@@ -1119,6 +1119,7 @@ footer {
   display: flex;
   align-items: stretch;
   width: 100%;
+  margin-top: 5rem;
 }
 
 .top-nav-sim-inner {
