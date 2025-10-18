@@ -90,7 +90,7 @@ We recognize all types of contributions. This project follows the [all-contribut
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/arjav007"><img src="https://avatars.githubusercontent.com/u/111127105?v=4?s=100" width="100px;" alt="ARJAV PATNI"/><br /><sub><b>ARJAV PATNI</b></sub></a><br /><a href="#code-arjav007" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://capecod.world"><img src="https://avatars.githubusercontent.com/u/26460352?v=4?s=100" width="100px;" alt="Peter Cruckshank"/><br /><sub><b>Peter Cruckshank</b></sub></a><br /><a href="#code-petercr" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://clevertag.netlify.app/"><img src="https://avatars.githubusercontent.com/u/66276321?v=4?s=100" width="100px;" alt="Tajudeen Abdulgafar"/><br /><sub><b>Tajudeen Abdulgafar</b></sub></a><br /><a href="#code-Abdulgafar4" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://clevertag.netlify.app/"><img src="https://avatars.githubusercontent.com/u/66276321?v=4?s=100" width="100px;" alt="Tajudeen Abdulgafar"/><br /><sub><b>Tajudeen Abdulgafar</b></sub></a><br /><a href="#code-Abdulgafar4" title="Code">💻</a> <a href="#design-Abdulgafar4" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
