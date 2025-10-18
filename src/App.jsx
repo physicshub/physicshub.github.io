@@ -1,4 +1,5 @@
 import { Route, HashRouter, Routes } from "react-router-dom";
+import Layout from "./components/Layout.jsx";
 import { Home } from "./pages/home.jsx";
 import { Error } from "./pages/error.jsx";
 import "katex/dist/katex.min.css";
@@ -16,19 +17,21 @@ import Simulations from "./pages/simulations.jsx";
 export default function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="/contribute" element={<Contribute />} />
-        <Route path="/simulations" element={<Simulations />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/BouncingBall" element={<BouncingBall />} />
-        <Route path="/VectorsOperations" element={<VectorsOperations />} />
-        <Route path="/BallAcceleration" element={<BallAcceleration />} />
-        <Route path="/BallGravity" element={<BallGravity />} />
-        <Route path="/SpringConnection" element={<SpringConnection />} />
-        <Route path="/SimplePendulum" element={<SimplePendulum />} />
-        <Route path="*" element={<Error />} />
-      </Routes>
+      <Layout showStars={true} showGradient={true}>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/contribute" element={<Contribute />} />
+          <Route path="/simulations" element={<Simulations />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/BouncingBall" element={<BouncingBall />} />
+          <Route path="/VectorsOperations" element={<VectorsOperations />} />
+          <Route path="/BallAcceleration" element={<BallAcceleration />} />
+          <Route path="/BallGravity" element={<BallGravity />} />
+          <Route path="/SpringConnection" element={<SpringConnection />} />
+          <Route path="/SimplePendulum" element={<SimplePendulum />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </Layout>
     </HashRouter>
   );
 }

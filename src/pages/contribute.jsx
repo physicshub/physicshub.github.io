@@ -1,8 +1,4 @@
 import React, { Suspense, useEffect, useState } from "react";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
-import Stars from "../components/Stars.jsx";
-import GradientBackground from "../components/GradientBackground.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Skeleton from "../components/ContributorsSectionSkeleton.jsx";
 import {
@@ -55,12 +51,8 @@ export default function Contribute() {
   }, []);
 
   return (
-    <>
-      <Header />
-      <div className="contribution-page-container">
-        <Stars color="#AEE3FF" opacity={0.4} starDensity={0.005}/>
-        <GradientBackground/>
-        <h1 className="title">Contribute to PhysicsHub</h1>
+    <div className="contribution-page-container">
+      <h1 className="title">Contribute to PhysicsHub</h1>
         <p>
           PhysicsHub is an open-source project: anyone can help make it better
           by adding simulations, improving the code, or creating new
@@ -142,11 +134,9 @@ export default function Contribute() {
         </p>
 
         <hr/>
-        <Suspense fallback={<Skeleton />}>
-          <ContributorsSection />
-        </Suspense>
-      </div>
-      <Footer />
-    </>
+      <Suspense fallback={<Skeleton />}>
+        <ContributorsSection />
+      </Suspense>
+    </div>
   );
 }
