@@ -58,7 +58,7 @@ export default function Contribute() {
     <>
       <Header />
       <div className="contribution-page-container">
-        <Stars color="var(--accent-color)" opacity={0.4} starDensity={0.005}/>
+        <Stars color="#AEE3FF" opacity={0.4} starDensity={0.005}/>
         <GradientBackground/>
         <h1 className="title">Contribute to PhysicsHub</h1>
         <p>

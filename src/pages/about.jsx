@@ -8,9 +8,9 @@ export default function About() {
   return (
     <>
       <Header/>
-      <Stars color="var(--accent-color)" opacity={0.4} zIndex={1} starDensity={0.005}/>
+      <Stars color="#AEE3FF" opacity={0.4} zIndex={1} starDensity={0.005}/>
       <GradientBackground/>
-      <div className="page-container">
+      <div className="page-container min-h-screen">
         <h1 className="title"><strong>About PhysicsHub</strong></h1>
         <p>
           <strong>PhysicsHub</strong> is an <strong>open‑source</strong> platform that provides <strong>free</strong> and <strong>interactive</strong> physics simulations,
