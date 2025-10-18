@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { routes } from "./routes";
 import { Home } from "./pages/home.jsx";
@@ -28,7 +29,7 @@ const components = {
 
 export default function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter>
       <Routes>
         {routes.map(({ path, component }) => {
           const Element = components[component];

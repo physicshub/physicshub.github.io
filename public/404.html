@@ -57,13 +57,16 @@
         const saved = localStorage.getItem(THEME_STORAGE_KEY);
         const theme = saved && ['light', 'dark'].includes(saved) ? saved : 'dark';
         
-        // Set theme attribute immediately
-        document.body.dataset.theme = theme;
-        
-        // Set initial body background to prevent flash
-        if (theme === 'light') {
-          document.body.style.backgroundColor = '#ffffff';
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+          // Set theme attribute immediately
+          document.body.dataset.theme = theme;
+
+          // Set initial body background to prevent flash
+          if (theme === 'light') {
+            document.body.style.backgroundColor = '#ffffff';
+          }
+        });
+      
       })();
     </script>
     
