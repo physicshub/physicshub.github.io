@@ -6,7 +6,7 @@ import { LandingPart } from "./LandingPart.js";
 import HeroBackground from "./HeroBackground";
 import GradientBackground from "./GradientBackground.jsx";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faDotCircle, faGlobe, faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { faGlobe, faMicrophone } from "@fortawesome/free-solid-svg-icons";
 
 export default function FullLandingPage() {
   const [stats, setStats] = useState({
@@ -45,7 +45,7 @@ export default function FullLandingPage() {
   return (
     <section className="ph-hero" aria-label="Hero">
       <GradientBackground />
-      <Stars color="#AEE3FF" opacity={0.3} />
+      <Stars color="var(--stars-color)" opacity={0.3} />
       <Comets count={12} speed={1} direction="down-right" color="#AEE3FF" opacity={0.3} zIndex={1} />
       <HeroBackground />
       <Hero />

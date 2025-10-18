@@ -51,5 +51,4 @@ export const TAGS = {
     name: "Energy", 
     color: "coral", 
   },
-
 };

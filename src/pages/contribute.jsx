@@ -1,3 +1,4 @@
+// src/pages/contribute.jsx
 import React, { Suspense, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Skeleton from "../components/ContributorsSectionSkeleton.jsx";
@@ -8,28 +9,32 @@ import {
   faHandsHelping,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Lazy load del componente ContributorsSection
+// Lazy load del componente ContributorsSection con ritardo artificiale (3s)
 const ContributorsSection = React.lazy(
-  () => import("../components/ContributorsSection.jsx")
+  () =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(import("../components/ContributorsSection.jsx"));
+      }, 3000); // 3000ms = 3 secondi di delay
+    })
 );
-
 
 export default function Contribute() {
   const [contributors, setContributors] = useState([]);
 
+  // Fetch contributors da GitHub API
   async function getContributors(page = 1) {
     const request = await fetch(
       `https://api.github.com/repos/physicshub/physicshub.github.io/contributors?per_page=100&page=${page}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       }
     );
-    return await request.json();
+    return request.json();
   }
 
+  // Recupera tutti i contributors (paginati)
   async function getAllContributors() {
     let contributorsList = [];
     let page = 1;
@@ -45,9 +50,7 @@ export default function Contribute() {
   }
 
   useEffect(() => {
-    getAllContributors().then((data) => {
-      setContributors(data);
-    });
+    getAllContributors().then((data) => setContributors(data));
   }, []);
 
   return (
@@ -55,8 +58,8 @@ export default function Contribute() {
       <h1 className="title">Contribute to PhysicsHub</h1>
         <p>
           PhysicsHub is an open-source project: anyone can help make it better
-          by adding simulations, improving the code, or creating new
-          educational resources.
+          by adding simulations, improving the code, or creating new educational
+          resources.
         </p>
 
         <div className="contribution-grid">
@@ -91,7 +94,9 @@ export default function Contribute() {
               <li>Read the rules in CONTRIBUTING.md</li>
               <li>Follow the instruction in the README.md</li>
               <li>Modify the source code</li>
-              <li>Submit a <strong>pull request</strong></li>
+              <li>
+                Submit a <strong>pull request</strong>
+              </li>
               <li>Wait it to be accepted</li>
             </ol>
           </div>
@@ -104,7 +109,10 @@ export default function Contribute() {
             <ul className="card-list">
               <li>Discord special role</li>
               <li>Link profile in the README.md</li>
-              <li>Link profile in the section <a href="#contributors">below</a></li>
+              <li>
+                Link profile in the section{" "}
+                <HashLink smooth to="/contribute#contributors">below</HashLink>
+              </li>
             </ul>
           </div>
 

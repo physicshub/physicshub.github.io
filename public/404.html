@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ELZTKTE86N');
+    </script>
+
+    <!-- Base SEO essentials -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <title>Physics Portal – Free Physics Simulations</title>
+    <meta name="description" content="Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers." >
+    <meta name="keywords" content="physics, science, education, portal, learning, research, simulations, free" >
+    <meta name="author" content="mattqdev" >
+    
+    <!-- Robots -->
+    <meta name="robots" content="index, follow" >
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" >
+    <meta property="og:url" content="https://physicshub.github.io/" >
+    <meta property="og:title" content="Physics Portal – Free Physics Simulations" >
+    <meta property="og:description" content="Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers." >
+    <meta property="og:image" content="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Thumbnail.png?raw=true" >
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" >
+    <meta name="twitter:url" content="https://physicshub.github.io/" >
+    <meta name="twitter:title" content="Physics Portal – Free Physics Simulations" >
+    <meta name="twitter:description" content="Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers." >
+    <meta name="twitter:image" content="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Thumbnail.png?raw=true" >
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://physicshub.github.io/" >
+    
+    <!-- Favicon -->
+    <!-- Standard favicon -->
+    <link rel="icon" type="image/x-icon" href="./Logo.ico">
+    <!-- Recommended favicon format -->
+    <link rel="icon" type="image/png" href="./Logo.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/src/styles/index.css" >
+    
+    <!-- Theme initialization script to prevent flash of unstyled content -->
+    <script>
+      (function() {
+        const THEME_STORAGE_KEY = 'physicshub-theme';
+        
+        // Get saved theme or default to dark
+        const saved = localStorage.getItem(THEME_STORAGE_KEY);
+        const theme = saved && ['light', 'dark'].includes(saved) ? saved : 'dark';
+        
+        // Set theme attribute immediately
+        document.body.dataset.theme = theme;
+        
+        // Set initial body background to prevent flash
+        if (theme === 'light') {
+          document.body.style.backgroundColor = '#ffffff';
+        }
+      })();
+    </script>
+    
+    <!-- Additional SEO enhancements -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+
+    <!-- Apple Touch Icon (at least 200x200px) -->
+    <link rel="apple-touch-icon" href="./Logo.png">
+
+    <!-- To run web application in full-screen -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Status Bar Style (see Supported Meta Tags below for available values) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

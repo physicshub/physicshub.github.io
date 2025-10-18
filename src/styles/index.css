@@ -9,6 +9,7 @@
   --bg-gradient: linear-gradient(135deg, #0a0a0a, #141416);
   --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
   --border-radius: 10px;
+  --stars-color: #ffffff;
 }
 
 /* Light Theme Overrides */
@@ -21,6 +22,7 @@
   --border-color: #e0e0e0;
   --bg-gradient: linear-gradient(135deg, #ffffff, #f8f9fa);
   --bg-gradient-rotated: linear-gradient(0, #ffffff, #f8f9fa);
+  --stars-color: var(--accent-color);
 }
 
 /* Remove all glow effects in light mode */
@@ -57,6 +59,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
 }
 body {
   color: var(--text-color);
@@ -210,28 +215,37 @@ nav a.active::after {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+}
+
+.search-container:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
 }
 
 .search-container input {
-  background: var(--card-bg);
+  background: var(--bg-color);
   border: none;
   padding: 0.5rem;
   color: var(--text-color);
-  width: 150px;
-  transition: width 0.3s, border-color 0.3s, box-shadow 0.3s;
+  width: 15rem;
+  max-width: 20rem;
+  min-width: 10rem;
+  transition: width 0.3s;
   outline: none;
+  border-radius: var(--border-radius);
 }
 
 .search-container input:focus {
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
   outline: var(--accent-color);
   outline-color: var(--accent-color);
-  width: 200px;
+  width: 20rem;
 } 
 
 .search-container button {
   background: var(--accent-color);
-  border: none;
   padding: 0 0.75rem;
   color: #000;
   cursor: pointer;
@@ -276,8 +290,8 @@ header.open nav ul {
     padding: 1rem 2rem;
     justify-content: flex-start;
     border: 1px solid transparent;
-  background-color: color-mix(in oklab, var(--accent-color), transparent 92%);
-  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
+    background-color: color-mix(in oklab, var(--accent-color), transparent 92%);
+    border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
   }
 
   .controls {
@@ -557,7 +571,6 @@ footer {
 .back-to-top {
   position: fixed;
   right: 1.5rem;
-  bottom: 1.5rem;
   width: 3rem;
   height: 3rem;
   background: var(--accent-color);
@@ -570,7 +583,11 @@ footer {
   justify-content: center;
   box-shadow: 0 0 12px var(--accent-color);
   cursor: pointer;
-  transition: transform 0.3s;
+  opacity: 0;
+  bottom: -20px;
+  pointer-events: none; /* non cliccabile quando invisibile */
+  transition: transform 0.3s, opacity 0.4s ease, bottom 0.4s ease;
+  z-index: 1000;
 }
 
 .back-to-top > *{
@@ -581,18 +598,12 @@ footer {
   transform: translateY(-0.4rem);
 }
 
-/* responsive adjustments */
-@media (max-width: 600px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  .back-to-top {
-    position: absolute;
-    right: 2rem;
-    bottom: 2rem;
-  }
+.back-to-top.visible {
+  opacity: 1;
+  bottom: 1.5rem;
+  pointer-events: auto;
 }
+
 
 
 /* Stile 404 */
@@ -1290,6 +1301,48 @@ footer {
   animation: pulse 1.5s infinite;
 }
 
+/* Shimmer for skeleton */
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: shimmer 1s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
+}
+
+/* Pulse */
+@keyframes pulse-strong {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.animate-pulse-strong {
+  animation: pulse-strong 1.2s ease-in-out infinite;
+}
+
+/* Dinamic entrance cards */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+
 
 /* Simulation info panel */
 .sim-info-panel {
@@ -1327,7 +1380,7 @@ footer {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 90px 20px 0 20px;
+  padding: 8rem 20px 0 20px;
 }
 
 .contribution-workflow {
@@ -1824,4 +1877,10 @@ footer {
 .simulation-controls button{
   width: clamp(10px, 10%, 100px);
   aspect-ratio: 1.2 / 1;
+}
+
+.control-item {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
 }

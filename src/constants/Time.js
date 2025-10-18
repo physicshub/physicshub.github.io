@@ -1,9 +1,10 @@
+// constants/Time.js
 let timeScale = 1;
 let paused = false;
 
 export function computeDelta(p) {
   if (paused) return 0;
-  return (p.deltaTime / 1000) * timeScale;
+  return (p.deltaTime / 1000) * timeScale; // convert ms to s
 }
 
 export function setTimeScale(scale) {

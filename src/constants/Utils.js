@@ -16,28 +16,37 @@ export function integrate(pos, vel, acc, dt) {
 
 // Collisione con restituzione
 export function collideBoundary(pos, vel, bounds, radius, restitution) {
-  if (pos.x + radius > bounds.w) {
-    pos.x = bounds.w - radius;
-    vel.x *= -restitution;
-  }
-  if (pos.x - radius < 0) {
-    pos.x = radius;
-    vel.x *= -restitution;
-  }
-  if (pos.y + radius > bounds.h) {
-    pos.y = bounds.h - radius;
-    vel.y *= -restitution;
-  }
-  if (pos.y - radius < 0) {
-    pos.y = radius;
-    vel.y *= -restitution;
-  }
-  return { pos, vel };
-}
+  const newPos = pos.copy();
+  const newVel = vel.copy();
 
+  // Asse X
+  if (newPos.x - radius < 0) {
+    newPos.x = radius; // correggi posizione
+    newVel.x = Math.abs(newVel.x) * restitution; // inverti verso positivo
+  } else if (newPos.x + radius > bounds.w) {
+    newPos.x = bounds.w - radius;
+    newVel.x = -Math.abs(newVel.x) * restitution; // inverti verso negativo
+  }
+
+  // Asse Y
+  if (newPos.y - radius < 0) {
+    newPos.y = radius;
+    newVel.y = Math.abs(newVel.y) * restitution;
+  } else if (newPos.y + radius > bounds.h) {
+    newPos.y = bounds.h - radius;
+    newVel.y = -Math.abs(vel.y) * restitution;
+  }
+
+  return { pos: newPos, vel: newVel };
+}
+/* 
 // Forza di drag aerodinamico (quadratico)
 export function dragForce(vel, rho, Cd, A) {
-  const v = Math.hypot(vel.x, vel.y);
-  const F = 0.5 * rho * Cd * A * v * v;
-  return { x: -F * (vel.x / v), y: -F * (vel.y / v) };
+  const speed = Math.hypot(vel.x, vel.y);
+  const magnitude = 0.5 * rho * Cd * A * speed * speed;
+  return {
+    x: -magnitude * (vel.x / speed),
+    y: -magnitude * (vel.y / speed),
+  };
 }
+ */

@@ -1,3 +1,4 @@
+// src/pages/error.jsx
 import Footer from "../components/Footer.jsx"
 import Button from "../components/Button.jsx"
 import Header from "../components/Header.jsx"
@@ -8,7 +9,7 @@ export function Error() {
     return(
         <>
             <Header/>
-            <Stars color="var(--accent-color)" opacity={0.4} starDensity={0.005}/>
+            <Stars color="var(--stars-color)" opacity={0.4} starDensity={0.005}/>
             <GradientBackground/>
             <div className="page-404">
                 <h1>404</h1>

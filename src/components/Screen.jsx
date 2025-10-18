@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import p5 from "p5"
-import { FPS_FOR_SIMULATIONS } from "../data/constants.js";
+import { FPS_FOR_SIMULATIONS } from "../constants/Config.js";
 
 function Screen({ sketch }) {
   const containerRef = useRef(null)

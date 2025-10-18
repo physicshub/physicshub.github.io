@@ -3,6 +3,9 @@
 // Conversione metri ↔ pixel
 export const SCALE = 100; // 1 m = 100 px
 
+// Frame rate for simulations
+export const FPS_FOR_SIMULATIONS = 60; //I think the max FPS is 60
+
 // Accelerazione di gravità terrestre in m/s²
 export const EARTH_G_SI = 9.81;
 

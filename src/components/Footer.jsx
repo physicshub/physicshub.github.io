@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import {faXTwitter, faGithub, faDiscord} from '@fortawesome/free-brands-svg-icons' 
 import { NavLink } from 'react-router-dom';
+import BackToTopButton from './BackToTop';
 
 const links = [
   { label: 'Home', to: '/', exact: true },
+  { label: 'Simulations', to: '/simulations' },
   { label: 'About', to: '/about' },
   { label: 'Contribute', to: '/contribute' },
-  { label: 'Contact', to: '/contact' },
 ];
 
 function Footer() {
@@ -48,11 +48,7 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Credits to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for the simulations.</p>
-        <button
-          onClick={scrollToTop}
-          className="back-to-top"
-          aria-label="Back to top"
-        ><FontAwesomeIcon icon={faArrowUp}/></button>
+        <BackToTopButton/>
       </div>
     </footer>
   );
