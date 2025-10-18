@@ -12,6 +12,7 @@ import { SimplePendulum } from "./pages/simulations/SimplePendulum.jsx";
 import Contribute from "./pages/contribute.jsx";
 import About from "./pages/about.jsx";
 import Simulations from "./pages/simulations.jsx";
+import Layout from "./components/Layout.jsx";
 
 const components = {
   Home,
@@ -29,6 +30,7 @@ const components = {
 export default function App() {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <Layout showStars={true} showGradient={true}>
       <Routes>
         {routes.map(({ path, component }) => {
           const Element = components[component];
@@ -36,6 +38,7 @@ export default function App() {
         })}
         <Route path="*" element={<Error />} />
       </Routes>
+      </Layout>
     </BrowserRouter>
   );
 }

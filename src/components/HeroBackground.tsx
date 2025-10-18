@@ -131,10 +131,12 @@ export default function HeroBackground() {
       const theme = document.body.dataset.theme;
       if (theme === 'light') {
         ctx.fillStyle = `rgba(255, 255, 255, ${SIM_CONFIG.trailOpacity})`;
+        ctx.fillRect(0, 0, w, h);
       } else {
-        ctx.fillStyle = `rgba(11, 15, 25, ${SIM_CONFIG.trailOpacity})`;
+        // In dark mode, use a more transparent background so the radial glow shows through
+        ctx.fillStyle = `rgba(11, 15, 25, 0.3)`;
+        ctx.fillRect(0, 0, w, h);
       }
-      ctx.fillRect(0, 0, w, h);
 
       // easing mouse
       mouse.current.x +=
