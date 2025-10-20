@@ -44,7 +44,7 @@
     "gh-pages": "^6.3.0",
     "globals": "^16.4.0",
     "nodemon": "^3.1.10",
-    "sitemap": "^8.0.0",
+    "sitemap": "^8.0.1",
     "vite": "^7.1.9"
   },
   "author": "MattQ",
