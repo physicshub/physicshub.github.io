@@ -1,0 +1,65 @@
+name: ❓ Question / Help
+description: Use this template to ask questions, request clarification, or seek help.
+title: "[Question]: "
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out!  
+        This template is for asking questions, requesting clarification, or seeking help with using or contributing to this project.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Clearly state your question or what you need help with.
+      placeholder: |
+        Example:
+        - How do I configure X?
+        - Can you clarify how Y works?
+        - I'm not sure how to contribute to Z...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any context that might help us answer your question (e.g. what you tried, what you expected, related docs).
+      validations:
+        required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (if relevant)
+      description: |
+        If your question is related to setup or usage, please include:
+          - **OS edition**: [e.g. Ubuntu 22.04, Windows 11]
+          - **Tool/Extension version**: [e.g. 5.6.0]
+          - **VSCode/Node version**: [if applicable]
+      value: |
+          - **OS edition**:
+          - **Tool/Extension version**:
+          - **VSCode/Node version**:
+      validations:
+        required: false
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Add any other details, links, or screenshots that might help.
+      validations:
+        required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](../../CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's **Code of Conduct**
+          required: true

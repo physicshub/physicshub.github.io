@@ -6,7 +6,7 @@ import p5 from 'p5';
  * A reusable wrapper component to handle the p5.js instance and sketch lifecycle.
  * It abstracts away the boilerplate of creating and removing the canvas.
  */
-const P5Wrapper = ({ sketch }) => {
+const P5Wrapper = ({ sketch, simInfos }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -19,7 +19,11 @@ const P5Wrapper = ({ sketch }) => {
     };
   }, [sketch]); // Rerun the effect if the sketch function changes.
 
-  return <div ref={canvasRef} className="screen" id="Screen" />;
+  return (
+    <div ref={canvasRef} className="screen" id="Screen" >
+      {simInfos ? simInfos : ""}
+    </div>
+  );
 };
 
 export default P5Wrapper;

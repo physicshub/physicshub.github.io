@@ -1,3 +1,10 @@
+// IMPORTANT!
+// This is a template file to use if you want create another brand new simulation.
+// THIS FILE IS INACTIVE RIGHT NOW, USE BouncingBall Sim as a model to follow, It's tight now the best and more optimized sim 
+// If you make some changes about code centralized that every simulation should use, add it here.
+// If you have questions, please ask on the Github repository opening an issue.
+
+
 import { useState, useRef, useEffect, useCallback } from "react";
 
 import Screen from "../../components/Screen.jsx";
