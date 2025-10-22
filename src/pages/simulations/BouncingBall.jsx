@@ -47,7 +47,10 @@ export function BouncingBall() {
       p.createCanvas(w, h);
 
       // Initialize ball state here
-      ballState.current.pos = p.createVector(w/2, h/2);
+      ballState.current.pos = p.createVector(
+        (w / 2) / SCALE,
+        (h / 4) / SCALE
+      );
       ballState.current.vel = p.createVector(0, 0);
 
       p.background(getBackgroundColor());

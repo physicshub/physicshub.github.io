@@ -44,13 +44,17 @@ export default function GoogleTranslator() {
   const translateElementRef = useRef(null);
   const scriptLoaded = useRef(false);
 
-  // Load Google Translate script
+  // Load Google Translate script (no localhost)
   useEffect(() => {
-    if (!scriptLoaded.current) {
+    if (
+      !scriptLoaded.current &&
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1"
+    ) {
       const addScript = () => {
         const script = document.createElement("script");
         script.src =
-          "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+          "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
         script.async = true;
         document.body.appendChild(script);
         scriptLoaded.current = true;
@@ -74,7 +78,6 @@ export default function GoogleTranslator() {
   // Language change function + globe animation
   const changeLanguage = (languageCode) => {
     if (languageCode === currentLanguage) return;
-
     setCurrentLanguage(languageCode);
 
     // Animation: cycle through icons
@@ -84,7 +87,6 @@ export default function GoogleTranslator() {
       frame++;
       if (frame > ICON_FRAMES.length) {
         clearInterval(interval);
-        // At the end show the final icon of the language
         setIcon(LANGUAGE_ICONS[languageCode] || LANGUAGE_ICONS.default);
       }
     }, 100); // frame speed (100ms → 0.6s total)
