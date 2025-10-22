@@ -8,6 +8,7 @@ import {
   faGift,
   faHandsHelping,
 } from "@fortawesome/free-solid-svg-icons";
+import { HashLink } from "react-router-hash-link";
 
 // Lazy load del componente ContributorsSection con ritardo artificiale (3s)
 const ContributorsSection = React.lazy(

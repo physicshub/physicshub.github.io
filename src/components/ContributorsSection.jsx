@@ -31,7 +31,7 @@ export default function ContributorsSection() {
 
   return (
     <div className="contributors-section" id="contributors">
-      <h2 className="title">Project Contributors</h2>
+      <h2 className="title">Project Contributors {`(${contributors.length})`}</h2>
       <div className="contributors-grid">
         {contributors.map((c) => (
           <div key={c.id} className="contributor-card">
