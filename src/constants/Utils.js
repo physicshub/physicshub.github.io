@@ -52,6 +52,17 @@ export function collideBoundary(pos, vel, bounds, radius, restitution) {
   return { pos: newPos, vel: newVel };
 }
 
+/**
+ * Converte coordinate in base alla scala e dimensioni canvas
+ */
+export function invertYAxis(h, y) {
+  const scaledH = h / SCALE;
+  if (h != null && y != null) {
+    return scaledH - y;
+  }
+  return undefined;
+}
+
 /* 
 // Aerodynamic drag force (quadratic)
 export function dragForce(vel, rho, Cd, A) {

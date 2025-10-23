@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 // --- Core Physics & Constants ---
 import { SCALE } from "../../constants/Config.js";
-import { toPixels, integrate, collideBoundary, toMeters } from "../../constants/Utils.js";
+import { toPixels, integrate, collideBoundary, toMeters, invertYAxis } from "../../constants/Utils.js";
 import { computeDelta, resetTime, isPaused, setPause } from "../../constants/Time.js";
 import { INITIAL_INPUTS, INPUT_FIELDS } from "../../data/configs/BouncingBall.js";
 import chapters from "../../data/chapters.js";
@@ -54,7 +54,7 @@ export function BouncingBall() {
 
     const speedMs = toMeters(vel.mag());
     const posXM = toMeters(pixelX);
-    const posYM = toMeters(pixelY);
+    const posYM = invertYAxis(canvasHeight, toMeters(pixelY));
 
     // Current height in meters (from ground)
     const currentHeightM = toMeters(canvasHeight - pixelY);
@@ -70,12 +70,16 @@ export function BouncingBall() {
       fallTime = Math.sqrt((2 * maxHeightRef.current) / gravity);
     }
 
+    // Work done by gravity: W = m * g * h
+    const work = inputsRef.current.mass * gravity * currentHeightM;
+
     return {
       velocity: `${speedMs.toFixed(2)} m/s`,
       acceleration: `${gravity.toFixed(2)} m/s²`,
       position: `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
       fallTime: `${fallTime.toFixed(2)} s`,
       maxHeight: `${maxHeightRef.current.toFixed(2)} m`,
+      work: `${work.toFixed(2)} J`,
     };
   };
 
