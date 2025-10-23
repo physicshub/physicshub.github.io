@@ -2,7 +2,7 @@
   "name": "physicshub",
   "homepage": "https://physicshub.github.io",
   "private": true,
-  "version": "2.7.2",
+  "version": "2.7.3",
   "type": "module",
   "scripts": {
     "dev": "vite & nodemon --watch src/routes.js --watch public/index.html --exec \"node scripts/sitemap-generator.js && node scripts/copy-404.js\"",

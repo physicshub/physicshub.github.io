@@ -26,11 +26,11 @@ import {
 } from "../../data/constants.js";
 
 export function SpringConnection() {
-  // Stato iniziale in unità SI (convertiti in px per la simulazione)
+  // State is in SI units and converted to px for the simulation
   const [inputs, setInputs] = useState({
     bobMass: kgToSimMass(10), // kg
     bobDamping: 1,
-    gravity: gravityTypes.find(g => g.label.includes("Earth")).value, // px/s²
+    gravity: gravityTypes.find(g => g.label.includes("Earth")).value, // m/s²
     springK: springK_SI_to_px(100), // N/m → N/px
     springRestLength: metersToPixels(0.5), // m → px
     minLength: metersToPixels(0.1), // m → px
@@ -46,13 +46,23 @@ export function SpringConnection() {
     inputsRef.current = inputs;
   }, [inputs]);
 
-  const handleInputChange = (name, converter) => (e) => {
+  // Handler for number-based inputs
+  const handleNumberChange = (name, converter) => (e) => {
     const val = +e.target.value;
     setInputs(prev => ({
       ...prev,
       [name]: converter ? converter(val) : val
     }));
   };
+
+  // FIX: Added a new handler specifically for string values (like colors)
+  const handleValueChange = (name) => (e) => {
+    setInputs(prev => ({
+      ...prev,
+      [name]: e.target.value
+    }));
+  };
+
 
   const bgColor = useRef([0, 0, 0]);
 
@@ -93,7 +103,6 @@ export function SpringConnection() {
         maxLength
       } = inputsRef.current;
 
-      // gravità già in px/s²
       const gravityPx = accelSI_to_pxSec(gravity);
       let Gravity = p.createVector(0, gravityPx);
       bob.applyForce(Gravity);
@@ -151,19 +160,19 @@ export function SpringConnection() {
       <div className="inputs-container">
         <NumberInput
           label="Bob Mass (kg)"
-          val={inputs.bobMass} // già in kg
+          val={inputs.bobMass}
           min={0.1}
           max={10}
           step={0.1}
-          onChange={handleInputChange("bobMass")}
+          onChange={handleNumberChange("bobMass")}
         />
         <NumberInput
           label="Bob Size (px)"
-          val={inputs.bobSize} // mostro in metri
+          val={inputs.bobSize}
           min={0.05}
           max={40}
           step={0.01}
-          onChange={handleInputChange("bobSize")}
+          onChange={handleNumberChange("bobSize")}
         />
         <NumberInput
           label="Damping Bob"
@@ -171,60 +180,61 @@ export function SpringConnection() {
           min={0}
           max={1}
           step={0.01}
-          onChange={handleInputChange("bobDamping")}
+          onChange={handleNumberChange("bobDamping")}
         />
         <SelectInput
           label="Gravity (m/s²)"
           options={gravityTypes}
           value={inputs.gravity}
-          onChange={handleInputChange("gravity")}
+          onChange={handleNumberChange("gravity")}
         />
         <NumberInput
           label="Spring constant k (N/m)"
-          val={springK_px_to_SI(inputs.springK)} // mostro in N/m
+          val={springK_px_to_SI(inputs.springK)}
           min={0.01}
           max={500}
           step={0.1}
-          onChange={handleInputChange("springK", springK_SI_to_px)}
+          onChange={handleNumberChange("springK", springK_SI_to_px)}
         />
         <NumberInput
           label="Spring Rest Length (m)"
-          val={pixelsToMeters(inputs.springRestLength)} // mostro in m
+          val={pixelsToMeters(inputs.springRestLength)}
           min={0.1}
           max={5}
           step={0.01}
-          onChange={handleInputChange("springRestLength", metersToPixels)}
+          onChange={handleNumberChange("springRestLength", metersToPixels)}
         />
         <NumberInput
           label="Min Length (m)"
-          val={pixelsToMeters(inputs.minLength)} // mostro in m
+          val={pixelsToMeters(inputs.minLength)}
           min={0}
           max={2}
           step={0.01}
-          onChange={handleInputChange("minLength", metersToPixels)}
+          onChange={handleNumberChange("minLength", metersToPixels)}
         />
         <NumberInput
           label="Max Length (m)"
-          val={pixelsToMeters(inputs.maxLength)} // mostro in m
+          val={pixelsToMeters(inputs.maxLength)}
           min={0.5}
           max={5}
           step={0.01}
-          onChange={handleInputChange("maxLength", metersToPixels)}
+          onChange={handleNumberChange("maxLength", metersToPixels)}
         />
+        {/* FIX: Using the new handleValueChange for colors */}
         <ColorInput
           label="Bob Color"
           val={inputs.bobColor}
-          onChange={e => handleInputChange("bobColor")(e)}
+          onChange={handleValueChange("bobColor")}
         />
         <ColorInput
           label="Anchor Color"
           val={inputs.anchorColor}
-          onChange={e => handleInputChange("anchorColor")(e)}
+          onChange={handleValueChange("anchorColor")}
         />
         <ColorInput
           label="Spring Color"
           val={inputs.springColor}
-          onChange={e => handleInputChange("springColor")(e)}
+          onChange={handleValueChange("springColor")}
         />
       </div>
 
