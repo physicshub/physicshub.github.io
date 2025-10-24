@@ -22,6 +22,16 @@ export const TheorySubheading: React.FC<Children> = ({ children }) => (
   <h3 className="theory-subheading">{children}</h3>
 );
 
+export const TheorySubtitle: React.FC<{ level?: number } & Children> = ({ level = 1, children }) => {
+  const sizes = [
+    "text-lg font-semibold mt-2 mb-1",
+    "text-base font-semibold mt-2 mb-1",
+    "text-sm font-normal mt-1 mb-1",
+  ];
+  const style = sizes[level - 1] || sizes[2];
+  return <h4 className={`theory-subtitle ${style}`}>{children}</h4>;
+};
+
 export const TheoryList: React.FC<{ items: React.ReactNode[]; ordered?: boolean }>= ({ items, ordered = false }) =>
   ordered ? (
     <ol className="theory-list">{items.map((it, i) => <li key={i}>{it}</li>)}</ol>
