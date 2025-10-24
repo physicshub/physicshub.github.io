@@ -1,4 +1,4 @@
-// configs/bouncingBall.js
+// src/data/configs/bouncingBall.js
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 export const INITIAL_INPUTS = {
