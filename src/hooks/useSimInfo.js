@@ -4,16 +4,12 @@ import { useRef, useState } from "react";
 /**
  * Generic hook to centralize simulation info updates.
  * - Handles throttling of updates
- * - Provides refs for per-bounce metrics (maxHeight, fallStartTime)
  * - Accepts a mapper function to compute the info object
+ * - Allows injection of custom refs (simulation-specific)
  */
-export default function useSimInfo(updateIntervalMs = 0) { // cooldown (used to see better the stats, before they get updated)
+export default function useSimInfo({updateIntervalMs = 0, customRefs = {}}) {
   const [simData, setSimData] = useState({});
   const lastInfoUpdateMs = useRef(0);
-
-  // Generic refs for per-bounce metrics
-  const maxHeightRef = useRef(0);
-  const fallStartTimeRef = useRef(0);
 
   /**
    * Centralized update function
@@ -26,7 +22,7 @@ export default function useSimInfo(updateIntervalMs = 0) { // cooldown (used to 
     const now = p.millis();
     if (now - lastInfoUpdateMs.current < updateIntervalMs) return;
 
-    const data = mapper(state, context, { maxHeightRef, fallStartTimeRef });
+    const data = mapper(state, context, customRefs);
     if (data) setSimData(data);
 
     lastInfoUpdateMs.current = now;
@@ -35,7 +31,6 @@ export default function useSimInfo(updateIntervalMs = 0) { // cooldown (used to 
   return {
     simData,
     updateSimInfo,
-    maxHeightRef,
-    fallStartTimeRef,
+    refs: customRefs,
   };
 }

@@ -1,4 +1,5 @@
 // src/data/configs/bouncingBall.js
+import { toPixels, toMeters, invertYAxis } from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 export const INITIAL_INPUTS = {
@@ -18,3 +19,68 @@ export const INPUT_FIELDS = [
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "ballColor", label: "Ball Color:", type: "color" },
 ];
+
+export const FORCES = [
+  {
+    key: "gravity",
+    color: "blue",
+    // computeFn riceve state, inputs, context
+    computeFn: ({ mass }, inputs, { canvasHeightMeters }) => {
+      return { x: 0, y: mass * inputs.gravity };
+    },
+  },
+  {
+    key: "normal",
+    color: "green",
+    computeFn: ({ mass, pos, radius }, inputs, { canvasHeightMeters }) => {
+      const bottomY = canvasHeightMeters;
+      const contact = pos.y + radius >= bottomY - 1e-9;
+      if (contact) {
+        return { x: 0, y: -mass * inputs.gravity };
+      }
+      return null; // se non c’è contatto, nessuna forza
+    },
+  },
+  // altre forze opzionali...
+];
+
+// Mapper specific for bouncing ball 
+// Computes velocity, acceleration, position, per-bounce maxHeight and fallTime
+export const SimInfoMapper = (state, context, refs) => {
+  const { pos, vel, mass } = state;
+  const { gravity, canvasHeight } = context;
+  const { maxHeightRef } = refs;
+
+  const pixelX = toPixels(pos.x);
+  const pixelY = toPixels(pos.y);
+
+  const speedMs = toMeters(vel.mag());
+  const posXM = toMeters(pixelX);
+  const posYM = invertYAxis(canvasHeight, toMeters(pixelY));
+
+  // Current height in meters (from ground)
+  const currentHeightM = toMeters(canvasHeight - pixelY);
+
+  // Update maxHeight for this bounce
+  if (currentHeightM > maxHeightRef.current) {
+    maxHeightRef.current = currentHeightM;
+  }
+
+  // Compute fallTime from maxHeight of this bounce (ideal free-fall time)
+  let fallTime = 0;
+  if (gravity > 0) {
+    fallTime = Math.sqrt((2 * maxHeightRef.current) / gravity);
+  }
+
+  // Work done by gravity: W = m * g * h
+  const work = mass * gravity * currentHeightM;
+
+  return {
+    velocity: `${speedMs.toFixed(2)} m/s`,
+    acceleration: `${gravity.toFixed(2)} m/s²`,
+    position: `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    fallTime: `${fallTime.toFixed(2)} s`,
+    maxHeight: `${maxHeightRef.current.toFixed(2)} m`,
+    work: `${work.toFixed(2)} J`,
+  };
+};
