@@ -4,6 +4,7 @@ import {
   TheorySection,
   TheoryParagraph,
   TheorySubheading,
+  TheorySubtitle,
   TheoryNote,
   TheoryList,
   TheoryCodeBlock,
@@ -30,6 +31,8 @@ export default function TheoryRenderer({ theory }: { theory: any }) {
                 return <TheoryParagraph key={j}>{b.text}</TheoryParagraph>;
               case "subheading":
                 return <TheorySubheading key={j}>{b.text}</TheorySubheading>;
+              case "subtitle":
+                return <TheorySubtitle key={j} level={b.level}>{b.text}</TheorySubtitle>;
               case "note":
                 return <TheoryNote key={j}>{b.text}</TheoryNote>;
               case "list":
