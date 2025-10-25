@@ -7,22 +7,33 @@ function Screen({ sketch }) {
   const p5Instance   = useRef(null)
 
   useEffect(() => {
-  if (p5Instance.current) {
-    p5Instance.current.remove()
-    p5Instance.current = null
-  }
-
-  p5Instance.current = new p5(sketch, containerRef.current)
-  p5Instance.current.frameRate(FPS_FOR_SIMULATIONS);
-
-
-  return () => {
+    // EN: Defensive cleanup in case dev StrictMode mounts twice
+    // IT: Pulizia difensiva nel caso StrictMode monti due volte in dev
     if (p5Instance.current) {
       p5Instance.current.remove()
       p5Instance.current = null
     }
-  }
-}, [sketch])
+    const container = containerRef.current
+    if (container) {
+      // Remove any leftover canvases
+      while (container.firstChild) container.removeChild(container.firstChild)
+    }
+
+    // Create fresh p5 instance
+    p5Instance.current = new p5(sketch, containerRef.current)
+    p5Instance.current.frameRate(FPS_FOR_SIMULATIONS)
+
+    return () => {
+      const c = containerRef.current
+      if (p5Instance.current) {
+        p5Instance.current.remove()
+        p5Instance.current = null
+      }
+      if (c) {
+        while (c.firstChild) c.removeChild(c.firstChild)
+      }
+    }
+  }, [sketch])
 
   return (
     <div
