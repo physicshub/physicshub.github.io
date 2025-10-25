@@ -52,9 +52,9 @@ export default function DynamicInputs({ config, values, onChange }) {
               key={field.name}
               {...commonProps}
               options={field.options}
-              value={Number(values[field.name])}
+              value={values[field.name]}
               placeholder={field.placeholder}
-              onChange={(e) => onChange(field.name, Number(e.target.value))}
+              onChange={(e) => onChange(field.name, e.target.value)}
             />
           );
         }
