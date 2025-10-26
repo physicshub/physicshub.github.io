@@ -1,113 +1,150 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import Screen from "../../components/Screen.jsx";
-import NumberInput from "../../components/inputs/NumberInput.jsx";
-import ColorInput from "../../components/inputs/ColorInput.jsx";
-import TopSim from "../../components/TopSim.jsx";
-import TheoryRenderer from "../../components/theory/TheoryRenderer";
-import chapters from "../../data/chapters.js";
+// src/pages/simulations/BallAcceleration.jsx
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import GradientBackground from "../../components/GradientBackground.jsx";
-import Stars from "../../components/Stars.jsx";
 
-import Ball from "../../components/classes/Ball.js";
+// --- Core Physics & Constants ---
+import { SCALE } from "../../constants/Config.js";
+import { toPixels, integrate } from "../../constants/Utils.js";
+import { computeDelta, resetTime, isPaused, setPause } from "../../constants/Time.js";
+import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../data/configs/BallAcceleration.js";
+import chapters from "../../data/chapters.js";
+
+// --- Reusable UI Components ---
+import SimulationLayout from "../../components/SimulationLayout.jsx";
+import P5Wrapper from "../../components/P5Wrapper.jsx";
+import DynamicInputs from "../../components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../../components/SimInfoPanel.jsx";
+
+// --- Hooks & Utils ---
+import useSimulationState from "../../hooks/useSimulationState.js";
+import useSimInfo from "../../hooks/useSimInfo.js";
+import getBackgroundColor from "../../utils/getBackgroundColor.js";
+import { drawBackground, drawForceVector } from "../../utils/drawUtils.js";
 
 export function BallAcceleration() {
-  const [inputs, setInputs] = useState({
-    maxspeed: 5,
-    size: 48,
-    acceleration: 0.1,
-    color: "#7f7f7f"
-  });
+  const location = useLocation();
+  const storageKey = location.pathname.replaceAll(/[/#]/g, "");
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const [resetVersion, setResetVersion] = useState(0);
 
-  const inputsRef = useRef(inputs);
-  useEffect(() => {
-    inputsRef.current = inputs;
-  }, [inputs]);
+  // Centralized sim info system
+  const { simData, updateSimInfo } = useSimInfo();
 
-  const handleInputChange = (name, value) => {
-    setInputs(prev => ({ ...prev, [name]: value }));
-  };
+  // Physics state
+  const ballState = useRef({ pos: null, vel: null });
 
-  const Sketch = useCallback(p => {
-    let ball;
-    let w, h;
+  const handleInputChange = useCallback((name, value) => {
+    setInputs((prev) => ({ ...prev, [name]: value }));
+  }, [setInputs]);
+
+  const theory = useMemo(
+    () => chapters.find((ch) => ch.link === location.pathname)?.theory,
+    [location.pathname]
+  );
+
+  const sketch = useCallback((p) => {
+    let trailLayer = null;
 
     p.setup = () => {
-      w = p._userNode.clientWidth;
-      h = p._userNode.clientHeight;
+      const { clientWidth: w, clientHeight: h } = p._userNode;
       p.createCanvas(w, h);
+      trailLayer = p.createGraphics(w, h);
+      trailLayer.clear();
 
-      // creo la palla in modalità "acceleration"
-      ball = new Ball(p, inputsRef.current, w, h, "acceleration");
+      // init ball
+      ballState.current.pos = p.createVector(w / 2 / SCALE, h / 2 / SCALE);
+      ballState.current.vel = p.createVector(0, 0);
+
+      p.background(getBackgroundColor());
     };
 
     p.draw = () => {
-      const screenEl = document.querySelector(".screen");
-      let bgColor = window.getComputedStyle(screenEl).backgroundColor.match(/\d+/g);
-      if (bgColor) {
-        p.background(...bgColor.map(Number));
-      } else {
-        p.background(0);
+      const { size, acceleration, maxspeed, color, trailEnabled } = inputsRef.current;
+      const { pos, vel } = ballState.current;
+      const dt = computeDelta(p);
+      if (!pos || !vel) return;
+
+      let dir = null;
+
+      // Physics update: accelerate toward mouse
+      if (dt > 0) {
+        const target = p.createVector(p.mouseX / SCALE, p.mouseY / SCALE);
+        dir = target.copy().sub(pos).normalize().mult(acceleration);
+        const newState = integrate(pos, vel, dir, dt);
+
+        // clamp speed
+        if (newState.vel.mag() > maxspeed) {
+          newState.vel.setMag(maxspeed);
+        }
+
+        ballState.current.pos = newState.pos;
+        ballState.current.vel = newState.vel;
       }
 
-      ball.setConfig(inputsRef.current);
-      // passo le coordinate del mouse come target
-      ball.update({ x: p.mouseX, y: p.mouseY });
+      drawBackground(p, getBackgroundColor(), trailEnabled, trailLayer);
+
+      const pixelX = toPixels(pos.x);
+      const pixelY = toPixels(pos.y);
+
+      // Disegno palla
+      trailLayer.noStroke();
+      trailLayer.fill(color);
+      trailLayer.circle(pixelX, pixelY, toPixels(size));
+
+      p.image(trailLayer, 0, 0);
+
+      // --- Disegno vettori come in BouncingBall ---
+      if (dir) {
+        // Accelerazione (rosso)
+        drawForceVector(p, pixelX, pixelY, dir.copy().mult(200), "red");
+      }
+      if (vel) {
+        // Velocità (blu)
+        drawForceVector(p, pixelX, pixelY, vel.copy().mult(20), "blue");
+      }
+
+      // Aggiornamento SimInfo
+      updateSimInfo(
+        p,
+        { pos, vel, acceleration, maxspeed },
+        { canvasHeight: p.height },
+        SimInfoMapper
+      );
     };
+
 
     p.windowResized = () => {
-      w = p._userNode.clientWidth;
-      h = p._userNode.clientHeight;
+      const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
-      ball.resetPosition();
     };
-  }, []);
+  }, [inputsRef]);
 
   return (
-    <>
-      <TopSim/>
-      <Stars color="var(--accent-color)" opacity={0.3}/>
-      <GradientBackground/>
-      <Screen sketch={Sketch} />
-      <div className="inputs-container">
-        <NumberInput
-          label="Ball Size:"
-          name="size"
-          val={inputs.size}
-          min={10}
-          max={200}
-          onChange={e => handleInputChange("size", Number(e.target.value))}
+    <SimulationLayout
+      resetVersion={resetVersion}
+      onReset={() => {
+        const wasPaused = isPaused();
+        resetTime();
+        if (wasPaused) setPause(true);
+        resetInputs(true);
+        setResetVersion((v) => v + 1);
+      }}
+      inputs={inputs}
+      simulation={location.pathname}
+      onLoad={(loadedInputs) => {
+        setInputs(loadedInputs);
+        setResetVersion((v) => v + 1);
+      }}
+      theory={theory}
+      dynamicInputs={
+        <DynamicInputs
+          config={INPUT_FIELDS}
+          values={inputs}
+          onChange={handleInputChange}
         />
-        <NumberInput
-          label="Max Speed:"
-          name="maxspeed"
-          val={inputs.maxspeed}
-          min={1}
-          max={20}
-          onChange={e => handleInputChange("maxspeed", Number(e.target.value))}
-        />
-        <NumberInput
-          label="Acceleration:"
-          name="acceleration"
-          val={inputs.acceleration}
-          min={0.001}
-          max={1}
-          step={0.001}
-          onChange={e => handleInputChange("acceleration", Number(e.target.value))}
-        />
-        <ColorInput
-          label="Ball Color:"
-          name="color"
-          value={inputs.color}
-          onChange={e => handleInputChange("color", e.target.value)}
-        />
-      </div>
-
-      <TheoryRenderer
-        theory={
-          chapters.find(ch => ch.link === useLocation().pathname)?.theory
-        }
-      />
-    </>
+      }
+    >
+      <P5Wrapper sketch={sketch} key={resetVersion} simInfos={<SimInfoPanel data={simData} />} />
+    </SimulationLayout>
   );
 }
