@@ -14,26 +14,45 @@ export const drawBackground = (p, bg, trailEnabled, trailLayer) => {
 
 /**
  * Draw any shape with hover glow.
- * @param {p5} p - p5 instance
+ * - Supports drawing on p5 main canvas or a p5.Graphics layer (e.g., trailLayer).
+ * - Applies glow only when hovering; otherwise draws normally.
+ *
+ * @param {p5} p - p5 instance (for cursor and fallback)
  * @param {boolean} isHover - hover state
- * @param {string} color - glow color
- * @param {Function} drawFn - function that draws the shape
- * @param {number} blur - glow blur radius
+ * @param {string} color - glow color (CSS string)
+ * @param {Function} drawFn - function that performs the actual shape drawing
+ * @param {number} blur - glow blur radius in pixels
+ * @param {p5 | p5.Graphics} layer - optional target to draw on; defaults to main canvas
  */
-export const drawGlow = (p, isHover, color, drawFn, blur = 20) => {
+export const drawGlow = (p, isHover, color, drawFn, blur = 20, layer = p) => {
+  // Update cursor feedback on the main canvas
   p.cursor(isHover ? "grab" : "default");
 
+  // Resolve drawing context based on target layer
+  const ctx = layer?.drawingContext || p.drawingContext;
+
+  // Safeguard if context is unavailable
+  if (!ctx) {
+    drawFn();
+    return;
+  }
+
+  // Apply glow only on hover
   if (isHover) {
-    const ctx = p.drawingContext;
     ctx.save();
+    // Shadow settings
     ctx.shadowBlur = blur;
     ctx.shadowColor = color;
+    // Draw with glow
     drawFn();
+    // Reset context
     ctx.restore();
   } else {
+    // Draw without glow
     drawFn();
   }
 };
+
 
 
 

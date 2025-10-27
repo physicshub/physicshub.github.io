@@ -1,7 +1,10 @@
+// src/components/classes/Pendulum.js
 // The Nature of Code
 // Daniel Shiffman
 // http://natureofcode.com
 // Edited by: @mattqdev
+
+import { EARTH_G_SI, SCALE } from "../../constants/Config";
 
 // Pendulum
 
@@ -25,10 +28,10 @@ export default class Pendulum {
 
     this.angleVelocity = 0.0;
     this.angleAcceleration = 0.0;
-    this.gravity = 0.4; // Arbitrary constant
-    this.damping = 0.995; // Arbitrary damping
-    this.size = 24.0; // Arbitrary ball radius
-    this.color
+    this.gravity = EARTH_G_SI; // Arbitrary constant
+    this.damping = 1; // Arbitrary damping
+    this.size = 24; // Arbitrary ball radius
+    this.color = "#7f7f7f";
   }
 
   // Function to update position
@@ -36,7 +39,7 @@ export default class Pendulum {
     const p = this.p;
     // As long as we aren't dragging the pendulum, let it swing!
     if (!this.dragging) {
-      this.angleAcceleration = ((-1 * this.gravity * 0.4) / this.r) * p.sin(this.angle); // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
+      this.angleAcceleration = (-1 * this.gravity / this.r) * p.sin(this.angle);
 
       this.angleVelocity += this.angleAcceleration; // Increment velocity
       this.angle += this.angleVelocity; // Increment angle
@@ -64,13 +67,24 @@ export default class Pendulum {
 
   // This checks to see if we clicked on the pendulum ball
   clicked(mx, my) {
+    console.log(mx, my);
+    console.log(this.bob.x, this.bob.y);
     const p = this.p;
 
-    let d = p.dist(mx, my, this.bob.x, this.bob.y);
+    // ignora click fuori dal canvas
+    if (mx < 0 || mx > p.width || my < 0 || my > p.height) {
+      return;
+    }
+
+    const d = p.dist(mx, my, this.bob.x, this.bob.y);
+    console.log(d);
+    console.log(this.size);
+    console.log(d < this.size)
     if (d < this.size) {
       this.dragging = true;
     }
   }
+
 
   // This tells us we are not longer clicking on the ball
   stopDragging() {
