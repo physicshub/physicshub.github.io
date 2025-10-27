@@ -42,13 +42,6 @@ export function collideBoundary(pos, vel, bounds, radius, restitution) {
     newVel.y = -Math.abs(newVel.y) * restitution;
   }
 
-  // Clamp to avoid micro-losses when restitution = 1
-  if (restitution === 1) {
-    const eps = 1e-12;
-    if (Math.abs(newVel.x) < eps) newVel.x = 0;
-    if (Math.abs(newVel.y) < eps) newVel.y = 0;
-  }
-
   return { pos: newPos, vel: newVel };
 }
 

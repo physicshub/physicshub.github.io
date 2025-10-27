@@ -1,3 +1,4 @@
+// src/pages/simulations/SimplePendulum.jsx
 import { useState, useCallback, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 

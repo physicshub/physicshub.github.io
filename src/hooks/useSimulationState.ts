@@ -21,14 +21,10 @@ export default function useSimulationState<T extends Record<string, any>>(
   // 🔎 Leggi parametri dall'URL
   const loadFromUrl = useCallback((): Partial<T> | null => {
     try {
-      // Prendi la parte dopo il "?" nell'hash
-      const hash = window.location.hash; // es: "#/BouncingBall?velocityX=4&..."
-      const queryIndex = hash.indexOf("?");
-      if (queryIndex === -1) return null;
+      const queryString = window.location.search; // es: "?velocityX=4&..."
+      if (!queryString) return null;
 
-      const queryString = hash.substring(queryIndex + 1);
       const params = new URLSearchParams(queryString);
-
       if ([...params.keys()].length === 0) return null;
 
       const parsed: Partial<T> = {};
@@ -43,7 +39,6 @@ export default function useSimulationState<T extends Record<string, any>>(
         }
       });
 
-
       return parsed;
     } catch (error) {
       console.warn("[useSimulationState] Errore parsing URL params:", error);
@@ -51,14 +46,12 @@ export default function useSimulationState<T extends Record<string, any>>(
     }
   }, []);
 
-
   // 🔎 Leggi da localStorage
   const loadFromStorage = useCallback((): T | null => {
     try {
       const saved = localStorage.getItem(storageKey);
       if (!saved) return null;
-      const parsed = JSON.parse(saved) as T;
-      return parsed;
+      return JSON.parse(saved) as T;
     } catch (error) {
       console.warn("[useSimulationState] Errore parsing localStorage:", error);
       return null;
@@ -69,7 +62,7 @@ export default function useSimulationState<T extends Record<string, any>>(
   const loadInputs = useCallback((): T => {
     const urlInputs = loadFromUrl();
     if (urlInputs) {
-      const merged = { ...initialInputs, ...urlInputs } as T;      return merged;
+      return { ...initialInputs, ...urlInputs } as T;
     }
 
     const storageInputs = loadFromStorage();
