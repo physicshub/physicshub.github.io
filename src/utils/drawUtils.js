@@ -2,14 +2,25 @@
 /**
  * Draw background or trail depending on flag.
  */
-export const drawBackground = (p, bg, trailEnabled, trailLayer) => {
-  if (trailEnabled) {
-    trailLayer.noStroke();
-    trailLayer.fill(bg[0], bg[1], bg[2], 40); // dissolvenza
-    trailLayer.rect(0, 0, p.width, p.height);
-  } else {
-    trailLayer.clear();
+export const drawBackground = (p, bg, trailEnabled) => {
+  p.colorMode && p.colorMode(p.RGB, 255);
+  const bgColor =
+    Array.isArray(bg) && bg.length >= 3
+      ? p.color(bg[0], bg[1], bg[2])
+      : p.color(0, 0, 0);
+
+  if (!trailEnabled) {
+    p.background(p.red(bgColor), p.green(bgColor), p.blue(bgColor));
+    return;
   }
+  const trailAlpha = 60;
+  p.push();
+  p.rectMode && p.rectMode(p.CORNER);
+  p.noStroke();
+  p.blendMode && p.blendMode(p.BLEND);
+  p.fill(p.red(bgColor), p.green(bgColor), p.blue(bgColor), trailAlpha);
+  p.rect(0, 0, p.width, p.height);
+  p.pop();
 };
 
 /**
