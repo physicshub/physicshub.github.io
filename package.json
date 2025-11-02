@@ -27,7 +27,7 @@
     "react-katex": "^3.1.0",
     "react-router-dom": "^7.9.4",
     "react-router-hash-link": "^2.4.3",
-    "react-syntax-highlighter": "^15.6.6",
+    "react-syntax-highlighter": "^16.1.0",
     "xml-formatter": "^3.6.7"
   },
   "devDependencies": {
