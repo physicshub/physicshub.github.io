@@ -67,8 +67,6 @@ export default class Pendulum {
 
   // This checks to see if we clicked on the pendulum ball
   clicked(mx, my) {
-    console.log(mx, my);
-    console.log(this.bob.x, this.bob.y);
     const p = this.p;
 
     // ignora click fuori dal canvas
@@ -77,9 +75,6 @@ export default class Pendulum {
     }
 
     const d = p.dist(mx, my, this.bob.x, this.bob.y);
-    console.log(d);
-    console.log(this.size);
-    console.log(d < this.size)
     if (d < this.size) {
       this.dragging = true;
     }
