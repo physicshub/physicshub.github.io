@@ -1969,33 +1969,34 @@ footer {
 
 /* Style for Controls in simlations (resume, play, stop, reset, speed) */
 
-.simulation-controls{
+.simulation-controls {
   position: relative;
-  width: 50%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: 0 1.5rem;
   background: var(--bg-gradient-rotated);
   border: 1px solid var(--accent-color);
   box-shadow: 0 0 8px var(--accent-color);
   border-radius: var(--border-radius);
   padding: 0.5rem 1rem;
   display: flex;
+  flex-wrap: nowrap; /* stay in one line */
   justify-content: center;
   align-items: center;
-  gap: clamp(10px, 1rem, 2rem);
-  width: fit-content;
-  height: fit-content;
-  max-width: 90vw;
-  max-height: 90vh;
+  gap: clamp(6px, 2vw, 1rem);
+  max-width: 100%;
+  overflow-x: auto; /* allow horizontal scroll if needed */
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
 }
 
-.simulation-controls button{
-  width: clamp(10px, 10%, 100px);
+.simulation-controls button {
+  flex: 0 1 auto; /* don't force equal width, allow shrink */
+  width: clamp(36px, 10vw, 60px); /* responsive sizing */
   aspect-ratio: 1.2 / 1;
 }
 
 .control-item {
   display: flex;
+  flex-wrap: nowrap; /* keep items in one row */
   gap: 0.25rem;
   justify-content: center;
 }
