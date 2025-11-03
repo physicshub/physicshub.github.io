@@ -2,22 +2,21 @@
 /**
  * Draw background or trail depending on flag.
  */
-export const drawBackground = (p, bg, trailEnabled) => {
-  p.colorMode && p.colorMode(p.RGB, 255);
-  const bgColor =
-    Array.isArray(bg) && bg.length >= 3
-      ? p.color(bg[0], bg[1], bg[2])
-      : p.color(0, 0, 0);
+export const drawBackground = (p, bg, trailEnabled, trailAlpha = 60) => {
+  p.colorMode(p.RGB, 255);
+
+  const bgColor = Array.isArray(bg) && bg.length >= 3
+    ? p.color(bg[0], bg[1], bg[2])
+    : p.color(0, 0, 0);
 
   if (!trailEnabled) {
-    p.background(p.red(bgColor), p.green(bgColor), p.blue(bgColor));
+    p.background(bgColor);
     return;
   }
-  const trailAlpha = 60;
+
   p.push();
-  p.rectMode && p.rectMode(p.CORNER);
+  p.rectMode(p.CORNER);
   p.noStroke();
-  p.blendMode && p.blendMode(p.BLEND);
   p.fill(p.red(bgColor), p.green(bgColor), p.blue(bgColor), trailAlpha);
   p.rect(0, 0, p.width, p.height);
   p.pop();
@@ -64,6 +63,49 @@ export const drawGlow = (p, isHover, color, drawFn, blur = 20, layer = p) => {
   }
 };
 
+
+
+/**
+ * Centralized drawing utility.
+ * - Handles background/trail
+ * - Handles glow around shapes
+ *
+ * @param {p5} p - p5 instance
+ * @param {Object} opts - configuration
+ * @param {Object} opts.background - { enabled, color, trailAlpha }
+ * @param {Object} opts.glow - { enabled, isHover, color, blur, drawFn, layer }
+ */
+export const drawScene = (p, opts) => {
+  const { background, glow } = opts;
+
+  // Background / trail
+  if (background?.enabled) {
+    const [r, g, b] = Array.isArray(background.color) ? background.color : [0, 0, 0];
+    if (!background.trailAlpha) {
+      p.background(r, g, b);
+    } else {
+      p.push();
+      p.noStroke();
+      p.fill(r, g, b, background.trailAlpha);
+      p.rect(0, 0, p.width, p.height);
+      p.pop();
+    }
+  }
+
+  // Glow
+  if (glow?.enabled && typeof glow.drawFn === "function") {
+    const ctx = (glow.layer || p).drawingContext;
+    if (glow.isHover) {
+      ctx.save();
+      ctx.shadowBlur = glow.blur ?? 20;
+      ctx.shadowColor = glow.color ?? "white";
+      glow.drawFn();
+      ctx.restore();
+    } else {
+      glow.drawFn();
+    }
+  }
+};
 
 
 

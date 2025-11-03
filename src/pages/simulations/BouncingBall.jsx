@@ -21,7 +21,6 @@ import useSimInfo from "../../hooks/useSimInfo.js";
 import getBackgroundColor from "../../utils/getBackgroundColor.js";
 import { drawBackground, drawGlow, drawForceVector, getActiveForces } from "../../utils/drawUtils.js";
 
-
 export function BouncingBall() {
   const location = useLocation();
   const storageKey = location.pathname.replaceAll(/[/#]/g, "");
@@ -31,9 +30,9 @@ export function BouncingBall() {
   // Centralized sim info system
   const maxHeightRef = useRef(0);
   const fallStartTimeRef = useRef(0);
-  const { simData, updateSimInfo } = useSimInfo({customRefs: { maxHeightRef, fallStartTimeRef }});
+  const { simData, updateSimInfo } = useSimInfo({ customRefs: { maxHeightRef, fallStartTimeRef } });
 
-  // Use a ref to hold the physics state (position, velocity) of the ball.
+  // Physics state of the ball
   const ballState = useRef({ pos: null, vel: null });
 
   const handleInputChange = useCallback((name, value) => {
@@ -50,15 +49,16 @@ export function BouncingBall() {
     const dragState = { active: false };
     const pixelToWorld = (n) => n / SCALE;
 
-    let trailLayer = null;
+    let vectorLayer;
 
     p.setup = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.createCanvas(w, h);
-      trailLayer = p.createGraphics(w, h); // layer dedicato alla palla
-      trailLayer.clear();
 
-      // Initialize ball state here
+      // Layer for vectors (always cleared each frame)
+      vectorLayer = p.createGraphics(w, h);
+
+      // Initialize ball state
       ballState.current.pos = p.createVector((w / 2) / SCALE, (h / 4) / SCALE);
       ballState.current.vel = p.createVector(0, 0);
 
@@ -72,8 +72,7 @@ export function BouncingBall() {
     p.mousePressed = () => {
       const { pos } = ballState.current;
       if (!pos) return;
-      const d = p.dist(toPixels(pos.x), toPixels(pos.y), p.mouseX, p.mouseY); // measure distance between ball and mouse 
-      // if you click on the ball, enter drag mode
+      const d = p.dist(toPixels(pos.x), toPixels(pos.y), p.mouseX, p.mouseY);
       if (d <= toPixels(inputsRef.current.size) / 2) {
         dragState.active = true;
       }
@@ -81,10 +80,8 @@ export function BouncingBall() {
 
     p.mouseDragged = () => {
       if (!dragState.active) return;
-      // update position directly with the mouse
       ballState.current.pos.x = pixelToWorld(p.mouseX);
       ballState.current.pos.y = pixelToWorld(p.mouseY);
-      // reset velocity
       ballState.current.vel.set(0, 0);
     };
 
@@ -93,13 +90,13 @@ export function BouncingBall() {
     };
 
     p.draw = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode;
+      const { clientHeight: h } = p._userNode;
       const { size, restitution, gravity, trailEnabled, ballColor, mass } = inputsRef.current;
       const { pos, vel } = ballState.current;
       const dt = computeDelta(p);
       if (!pos || !vel) return;
 
-      // if not dragging, update physics
+      // Physics update
       if (!dragState.active && dt > 0) {
         const acc = p.createVector(0, gravity);
         const newState = integrate(pos, vel, acc, dt);
@@ -111,7 +108,6 @@ export function BouncingBall() {
           restitution
         );
 
-        // If touch ground, reset per-bounce metrics
         if (collided.pos.y + (size / 2) >= h / SCALE) {
           maxHeightRef.current = 0;
           fallStartTimeRef.current = p.millis();
@@ -121,30 +117,29 @@ export function BouncingBall() {
         ballState.current.vel = collided.vel;
       }
 
-      // Background / trail (centralized)
-      drawBackground(p, getBackgroundColor(), trailEnabled, trailLayer);
+      // 1. Background / trail
+      drawBackground(p, getBackgroundColor(), trailEnabled, 60);
 
-      // Hover detection
+      // 2. Ball with hover glow
       const pixelX = toPixels(pos.x);
       const pixelY = toPixels(pos.y);
       const radius = toPixels(size) / 2;
       const isHover = p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= radius;
 
-      // Draw ball with hover glow (centralized)
       drawGlow(
         p,
         isHover,
         ballColor,
         () => {
-          trailLayer.noStroke();
-          trailLayer.fill(ballColor);
-          trailLayer.circle(pixelX, pixelY, toPixels(size));
+          p.noStroke();
+          p.fill(ballColor);
+          p.circle(pixelX, pixelY, toPixels(size));
         },
         20
       );
 
-      p.image(trailLayer, 0, 0);
-
+      // 3. Vectors on a separate cleared layer
+      vectorLayer.clear();
       const activeForces = getActiveForces(
         FORCES,
         { pos, vel, radius: size / 2, mass },
@@ -153,10 +148,11 @@ export function BouncingBall() {
       );
 
       for (const f of activeForces) {
-        drawForceVector(p, pixelX, pixelY, f.vec, f.color);
+        drawForceVector(vectorLayer, pixelX, pixelY, f.vec, f.color);
       }
+      p.image(vectorLayer, 0, 0);
 
-      // Centralized SimInfo update with mapper
+      // 4. Update sim info
       updateSimInfo(
         p,
         { pos, vel, mass },
@@ -168,6 +164,7 @@ export function BouncingBall() {
     p.windowResized = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
+      vectorLayer = p.createGraphics(w, h);
     };
   }, [inputsRef, maxHeightRef, fallStartTimeRef]);
 
@@ -196,7 +193,11 @@ export function BouncingBall() {
         />
       }
     >
-      <P5Wrapper sketch={sketch} key={resetVersion} simInfos={<SimInfoPanel data={simData} />} />
+      <P5Wrapper
+        sketch={sketch}
+        key={resetVersion}
+        simInfos={<SimInfoPanel data={simData} />}
+      />
     </SimulationLayout>
   );
 }
