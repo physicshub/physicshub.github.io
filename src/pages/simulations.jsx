@@ -19,7 +19,7 @@ export default function Simulations() {
   });
 
   return (
-    <main>
+    <main className='simulations-page'>
         {filteredChapters.map((chap) => (
           <Chapter
             key={chap.id}

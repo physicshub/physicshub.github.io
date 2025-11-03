@@ -305,11 +305,15 @@ header.open nav ul {
 
 main {
   flex: 1;
-  padding: 7rem 2rem 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 7.5rem;
+
+}
+
+main.simulations-page{
+  margin-bottom: 7.5rem;  
+  padding: 7rem 2rem 2rem;
 }
 
 /* Ensure white background for light mode */
