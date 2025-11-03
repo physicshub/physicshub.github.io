@@ -3,10 +3,10 @@ import { EARTH_G_SI, gravityTypes } from "../../constants/Config.js";
 
 // Valori iniziali della simulazione (SI)
 export const INITIAL_INPUTS = {
-  length: 1.75,          // (m)
-  size: 0.24,            // (m)
+  length: 2,          // (m)
+  size: 0.3,            // (m)
   gravity: EARTH_G_SI,   // (m/s²)
-  damping: 1,        // adimensionale
+  damping: 0.99,        // adimensionale
   color: "#7f7f7f",
   trailEnabled: true
 };

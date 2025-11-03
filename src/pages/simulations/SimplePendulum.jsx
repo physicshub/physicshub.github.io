@@ -11,7 +11,7 @@ import { SCALE } from "../../constants/Config.js";
 // --- Core Utils ---
 import { resetTime, isPaused, setPause } from "../../constants/Time.js";
 import getBackgroundColor from "../../utils/getBackgroundColor.js";
-import { drawBackground, drawGlow } from "../../utils/drawUtils.js";
+import { drawGlow } from "../../utils/drawUtils.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../../components/SimulationLayout.jsx";
@@ -65,20 +65,20 @@ export function SimplePendulum() {
       const pendulum = pendulumRef.current;
       if (!pendulum) return;
 
-      // Aggiorna proprietà
+      // Aggiorna proprietà dinamiche
       pendulum.damping = inputsRef.current.damping;
-      pendulum.size = inputsRef.current.size * SCALE;
+      pendulum.size    = inputsRef.current.size * SCALE;
       pendulum.gravity = inputsRef.current.gravity;
-      pendulum.color = inputsRef.current.color;
-      pendulum.r = inputsRef.current.length * SCALE;
+      pendulum.color   = inputsRef.current.color;
+      pendulum.r       = inputsRef.current.length * SCALE;
 
+      // 1) Fisica
       pendulum.update();
 
-      // Calcola posizione bob in pixel
-      const bobX = pendulum.pivot.x + pendulum.r * p.sin(pendulum.angle);
-      const bobY = pendulum.pivot.y + pendulum.r * p.cos(pendulum.angle);
+      // 2) Posizione bob aggiornata
+      const { x: bobX, y: bobY } = pendulum.getBobPosition();
 
-      // --- TrailLayer: sfondo + asta + bob senza glow ---
+      // 3) Trail: sfondo + asta + bob senza glow
       const bg = getBackgroundColor();
       const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
       if (!inputsRef.current.trailEnabled) {
@@ -99,11 +99,11 @@ export function SimplePendulum() {
       trailLayer.fill(pendulum.color);
       trailLayer.circle(bobX, bobY, pendulum.size * 2);
 
-      // --- Canvas principale: clear + composita trailLayer ---
+      // 4) Compositing
       p.clear();
       p.image(trailLayer, 0, 0);
 
-      // --- Glow solo sul bob (canvas principale) ---
+      // 5) Glow solo sul canvas principale
       const isHover = p.dist(bobX, bobY, p.mouseX, p.mouseY) <= pendulum.size;
       drawGlow(
         p,
@@ -118,10 +118,10 @@ export function SimplePendulum() {
         p
       );
 
-      // Dragging
+      // 6) Drag
       pendulum.drag();
 
-      // Update SimInfo
+      // 7) Update SimInfo
       updateSimInfo(
         p,
         { angle: pendulum.angle, angleVelocity: pendulum.angleVelocity, length: inputsRef.current.length },
@@ -130,6 +130,7 @@ export function SimplePendulum() {
       );
     };
 
+    // Mouse interactions
     p.mousePressed = () => {
       pendulumRef.current?.clicked(p.mouseX, p.mouseY);
     };
