@@ -960,7 +960,7 @@ footer {
   color: var(--text-color);
   background: var(--bg-color);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
