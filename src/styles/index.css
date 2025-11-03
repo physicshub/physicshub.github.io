@@ -1357,6 +1357,7 @@ footer {
   padding: 0.7rem;
   border-radius: var(--border-radius);
   pointer-events: auto; /* serve per cliccare i bottoni */
+  transition: padding 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
 /* Light theme simulation info panel */
@@ -1403,6 +1404,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: padding 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 .sim-info-panel.collapsed .sim-info-header {
   margin: 0.3rem 0;
