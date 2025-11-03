@@ -62,12 +62,10 @@ export function SimplePendulum() {
     };
 
     p.draw = () => {
-      drawBackground(p, getBackgroundColor(), inputsRef.current.trailEnabled, trailLayer);
-
       const pendulum = pendulumRef.current;
       if (!pendulum) return;
 
-      // Update properties
+      // Aggiorna proprietà
       pendulum.damping = inputsRef.current.damping;
       pendulum.size = inputsRef.current.size * SCALE;
       pendulum.gravity = inputsRef.current.gravity;
@@ -80,33 +78,50 @@ export function SimplePendulum() {
       const bobX = pendulum.pivot.x + pendulum.r * p.sin(pendulum.angle);
       const bobY = pendulum.pivot.y + pendulum.r * p.cos(pendulum.angle);
 
-      // Disegna l’asta sul trailLayer
+      // --- TrailLayer: sfondo + asta + bob senza glow ---
+      const bg = getBackgroundColor();
+      const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
+      if (!inputsRef.current.trailEnabled) {
+        trailLayer.background(r, g, b);
+      } else {
+        trailLayer.noStroke();
+        trailLayer.fill(r, g, b, 60);
+        trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+      }
+
+      // Disegna asta
       trailLayer.stroke(0);
       trailLayer.strokeWeight(2);
       trailLayer.line(pendulum.pivot.x, pendulum.pivot.y, bobX, bobY);
 
-      // Hover detection (usa coordinate pixel dirette)
-      const isHover = p.dist(bobX, bobY, p.mouseX, p.mouseY) <= pendulum.size;
+      // Disegna bob (senza glow)
+      trailLayer.noStroke();
+      trailLayer.fill(pendulum.color);
+      trailLayer.circle(bobX, bobY, pendulum.size * 2);
 
-      // Disegna bob con glow
+      // --- Canvas principale: clear + composita trailLayer ---
+      p.clear();
+      p.image(trailLayer, 0, 0);
+
+      // --- Glow solo sul bob (canvas principale) ---
+      const isHover = p.dist(bobX, bobY, p.mouseX, p.mouseY) <= pendulum.size;
       drawGlow(
         p,
         isHover,
         pendulum.color,
         () => {
-          trailLayer.noStroke();
-          trailLayer.fill(pendulum.color);
-          trailLayer.circle(bobX, bobY, pendulum.size * 2);
+          p.noStroke();
+          p.fill(pendulum.color);
+          p.circle(bobX, bobY, pendulum.size * 2);
         },
         20,
-        trailLayer
+        p
       );
 
-      // Mostra il layer
-      p.image(trailLayer, 0, 0);
-
+      // Dragging
       pendulum.drag();
 
+      // Update SimInfo
       updateSimInfo(
         p,
         { angle: pendulum.angle, angleVelocity: pendulum.angleVelocity, length: inputsRef.current.length },
@@ -114,7 +129,6 @@ export function SimplePendulum() {
         SimInfoMapper
       );
     };
-
 
     p.mousePressed = () => {
       pendulumRef.current?.clicked(p.mouseX, p.mouseY);

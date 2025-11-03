@@ -64,51 +64,6 @@ export const drawGlow = (p, isHover, color, drawFn, blur = 20, layer = p) => {
 };
 
 
-
-/**
- * Centralized drawing utility.
- * - Handles background/trail
- * - Handles glow around shapes
- *
- * @param {p5} p - p5 instance
- * @param {Object} opts - configuration
- * @param {Object} opts.background - { enabled, color, trailAlpha }
- * @param {Object} opts.glow - { enabled, isHover, color, blur, drawFn, layer }
- */
-export const drawScene = (p, opts) => {
-  const { background, glow } = opts;
-
-  // Background / trail
-  if (background?.enabled) {
-    const [r, g, b] = Array.isArray(background.color) ? background.color : [0, 0, 0];
-    if (!background.trailAlpha) {
-      p.background(r, g, b);
-    } else {
-      p.push();
-      p.noStroke();
-      p.fill(r, g, b, background.trailAlpha);
-      p.rect(0, 0, p.width, p.height);
-      p.pop();
-    }
-  }
-
-  // Glow
-  if (glow?.enabled && typeof glow.drawFn === "function") {
-    const ctx = (glow.layer || p).drawingContext;
-    if (glow.isHover) {
-      ctx.save();
-      ctx.shadowBlur = glow.blur ?? 20;
-      ctx.shadowColor = glow.color ?? "white";
-      glow.drawFn();
-      ctx.restore();
-    } else {
-      glow.drawFn();
-    }
-  }
-};
-
-
-
 // --- Force visualization constants ---
 const FORCE_PIXEL_SCALE = 10; // pixels per Newton (tune to your scene)
 // Minimum and maximum on-screen arrow length (in pixels) to keep vectors readable
@@ -189,4 +144,64 @@ export const getActiveForces = (forceDefs, state, inputs, context) => {
     }
   }
   return forces;
+};
+
+/**
+ * Gestisce trailLayer + palla + glow
+ *
+ * @param {p5} p - istanza p5 principale
+ * @param {p5.Graphics} trailLayer - layer dedicato alla trail
+ * @param {Object} opts - opzioni
+ * @param {Array|p5.Color} opts.bg - colore background [r,g,b] o p5.Color
+ * @param {boolean} opts.trailEnabled - se true applica dissolvenza
+ * @param {number} opts.trailAlpha - alpha per dissolvenza
+ * @param {number} opts.pixelX - posizione x palla in pixel
+ * @param {number} opts.pixelY - posizione y palla in pixel
+ * @param {number} opts.size - diametro palla in pixel
+ * @param {boolean} opts.isHover - stato hover
+ * @param {string} opts.ballColor - colore palla
+ */
+export const drawBallWithTrail = (
+  p,
+  trailLayer,
+  {
+    bg,
+    trailEnabled,
+    trailAlpha = 60,
+    pixelX,
+    pixelY,
+    size,
+    isHover,
+    ballColor,
+  }
+) => {
+  const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
+
+  // Aggiorna trailLayer
+  if (!trailEnabled) {
+    trailLayer.background(r, g, b);
+  } else {
+    trailLayer.noStroke();
+    trailLayer.fill(r, g, b, trailAlpha);
+    trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+  }
+
+  // Disegna palla sul trailLayer (senza glow)
+  trailLayer.noStroke();
+  trailLayer.fill(ballColor);
+  trailLayer.circle(pixelX, pixelY, size);
+
+  // Glow solo sul canvas principale
+  drawGlow(
+    p,
+    isHover,
+    ballColor,
+    () => {
+      p.noStroke();
+      p.fill(ballColor);
+      p.circle(pixelX, pixelY, size);
+    },
+    20,
+    p
+  );
 };

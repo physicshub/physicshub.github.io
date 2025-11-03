@@ -19,7 +19,7 @@ import SimInfoPanel from "../../components/SimInfoPanel.jsx";
 import useSimulationState from "../../hooks/useSimulationState.js";
 import useSimInfo from "../../hooks/useSimInfo.js";
 import getBackgroundColor from "../../utils/getBackgroundColor.js";
-import { drawBackground, drawForceVector } from "../../utils/drawUtils.js";
+import { drawBallWithTrail, drawForceVector } from "../../utils/drawUtils.js";
 
 export function BallGravity() {
   const location = useLocation();
@@ -105,18 +105,28 @@ export function BallGravity() {
         ballState.current.vel = collided.vel;
       }
 
-      // Background / trail
-      drawBackground(p, getBackgroundColor(), trailEnabled, trailLayer);
-
-      // Disegno palla
+      // Coordinate palla
       const pixelX = toPixels(pos.x);
       const pixelY = toPixels(pos.y);
-      trailLayer.noStroke();
-      trailLayer.fill(color);
-      trailLayer.circle(pixelX, pixelY, toPixels(size));
+      const isHover = p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= toPixels(size) / 2;
+
+      // --- Trail + palla + glow centralizzati ---
+      drawBallWithTrail(p, trailLayer, {
+        bg: getBackgroundColor(),
+        trailEnabled,
+        trailAlpha: 60,
+        pixelX,
+        pixelY,
+        size: toPixels(size),
+        isHover,
+        ballColor: color,
+      });
+
+      // Clear main canvas e composita trailLayer
+      p.clear();
       p.image(trailLayer, 0, 0);
 
-      // Vettori forze (come in BouncingBall): FORCES -> [{ vec, color }]
+      // --- Vettori forze (ridisegnati ogni frame, niente trail) ---
       const activeForces = FORCES
         .map(fDef => {
           const vec = fDef.computeFn(
@@ -124,10 +134,9 @@ export function BallGravity() {
             inputsRef.current,
             { canvasHeightMeters: p.height / SCALE }
           );
-          return vec ? { vec, color: fDef.color } : null; // qui aggiungi il colore
+          return vec ? { vec, color: fDef.color } : null;
         })
         .filter(Boolean);
-
 
       for (const f of activeForces) {
         drawForceVector(p, pixelX, pixelY, f.vec, f.color);

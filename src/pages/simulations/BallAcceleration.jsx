@@ -19,7 +19,7 @@ import SimInfoPanel from "../../components/SimInfoPanel.jsx";
 import useSimulationState from "../../hooks/useSimulationState.js";
 import useSimInfo from "../../hooks/useSimInfo.js";
 import getBackgroundColor from "../../utils/getBackgroundColor.js";
-import { drawBackground, drawForceVector } from "../../utils/drawUtils.js";
+import { drawBallWithTrail, drawForceVector } from "../../utils/drawUtils.js";
 
 export function BallAcceleration() {
   const location = useLocation();
@@ -81,26 +81,32 @@ export function BallAcceleration() {
         ballState.current.vel = newState.vel;
       }
 
-      drawBackground(p, getBackgroundColor(), trailEnabled, trailLayer);
-
       const pixelX = toPixels(pos.x);
       const pixelY = toPixels(pos.y);
+      const isHover = p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= toPixels(size) / 2;
 
-      // Disegno palla
-      trailLayer.noStroke();
-      trailLayer.fill(color);
-      trailLayer.circle(pixelX, pixelY, toPixels(size));
+      // --- Trail + palla + glow centralizzati ---
+      drawBallWithTrail(p, trailLayer, {
+        bg: getBackgroundColor(),
+        trailEnabled,
+        trailAlpha: 60,
+        pixelX,
+        pixelY,
+        size: toPixels(size),
+        isHover,
+        ballColor: color,
+      });
 
+      // Clear main canvas e composita trailLayer
+      p.clear();
       p.image(trailLayer, 0, 0);
 
-      // --- Disegno vettori come in BouncingBall ---
+      // --- Vettori (ridisegnati ogni frame, niente trail) ---
       if (dir) {
-        // Accelerazione (rosso)
-        drawForceVector(p, pixelX, pixelY, dir.copy().mult(200), "red");
+        drawForceVector(p, pixelX, pixelY, dir.copy().mult(200), "red"); // Accelerazione
       }
       if (vel) {
-        // Velocità (blu)
-        drawForceVector(p, pixelX, pixelY, vel.copy().mult(20), "blue");
+        drawForceVector(p, pixelX, pixelY, vel.copy().mult(20), "blue"); // Velocità
       }
 
       // Aggiornamento SimInfo
@@ -111,7 +117,6 @@ export function BallAcceleration() {
         SimInfoMapper
       );
     };
-
 
     p.windowResized = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
