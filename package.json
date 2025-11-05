@@ -5,12 +5,16 @@
   "version": "2.7.3",
   "type": "module",
   "scripts": {
-    "dev": "vite & nodemon --watch src/routes.js --watch public/index.html --exec \"node scripts/sitemap-generator.js && node scripts/copy-404.js\"",
-    "build": "vite build && node scripts/sitemap-generator.js && node scripts/copy-404.js",
-    "lint": "eslint .",
+    "dev": "vite & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:assets\"",
+    "build": "vite build && npm run generate:assets",
     "preview": "npm run build && vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "generate:sitemap": "node scripts/sitemap-generator.js",
+    "copy:404": "node scripts/copy-404.js",
+    "generate:assets": "npm run generate:sitemap && npm run copy:404",
+    "contributors": "ts-node scripts/contributors/contributors.ts",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -32,11 +36,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
+    "@types/node": "^24.10.0",
     "@types/p5": "^1.7.6",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.2.2",
     "@types/react-katex": "^3.0.4",
     "@vitejs/plugin-react": "^5.0.4",
+    "axios": "^1.13.2",
     "eslint": "^9.38.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
@@ -44,7 +50,10 @@
     "gh-pages": "^6.3.0",
     "globals": "^16.5.0",
     "nodemon": "^3.1.10",
+    "puppeteer": "^24.29.0",
     "sitemap": "^8.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.1.12"
   },
   "author": "MattQ",

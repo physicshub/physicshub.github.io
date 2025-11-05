@@ -63,6 +63,11 @@ Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/
 
 We recognize all types of contributions. This project follows the [all-contributors specification](https://github.com/all-contributors/all-contributors) and the [Emoji Key](https://allcontributors.org/docs/en/emoji-key) ✨ for contribution types. Instructions to add yourself or add contribution emojis to your name are [here](https://github.com/physicshub/physicshub.github.io/issues/25). You can also post an issue or comment on a pull request with the text: `@all-contributors please add @YOUR-USERNAME for THINGS` (where `THINGS` is a comma-separated list of entries from the [list of possible contribution types](https://github.com/all-contributors/all-contributors/blob/master/docs/emoji-key.md)) and our nice bot will add you.
 
+Contribution list sorted by amount of commits:
+[![Contributors](https://raw.githubusercontent.com/physicshub/physicshub.github.io/main/images/contributors.png)](https://github.com/physicshub/physicshub.github.io/graphs/contributors)
+
+
+Contribution list sorted by order of contribution:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->

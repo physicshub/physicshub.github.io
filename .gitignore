@@ -26,3 +26,6 @@ dist-ssr
 
 # VS Code Extension
 .VSCodeCounter
+
+# Ignore generated contributor HTML files
+src/scripts/contributors/*.html
