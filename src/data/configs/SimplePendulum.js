@@ -3,22 +3,48 @@ import { EARTH_G_SI, gravityTypes } from "../../constants/Config.js";
 
 // Valori iniziali della simulazione (SI)
 export const INITIAL_INPUTS = {
-  length: 2,          // (m)
-  size: 0.3,            // (m)
-  gravity: EARTH_G_SI,   // (m/s²)
-  damping: 0.99,        // adimensionale
+  length: 2, // (m)
+  size: 0.3, // (m)
+  gravity: EARTH_G_SI, // (m/s²)
+  damping: 0.99, // adimensionale
   color: "#7f7f7f",
-  trailEnabled: true
+  trailEnabled: true,
 };
 
 // Campi per DynamicInputs
 export const INPUT_FIELDS = [
-  { name: "length", label: "Pendulum Length (m):", type: "number", min: 0.5, max: 5, step: 0.1 },
-  { name: "size", label: "Bob Size (m):", type: "number", min: 0.05, max: 1, step: 0.05 },
-  { name: "gravity", label: "Gravity (m/s²):", type: "select", options: gravityTypes },
-  { name: "damping", label: "Damping:", type: "number", min: 0, max: 5, step: 0.001 },
-  { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
-  { name: "color", label: "Bob Color:", type: "color" }
+  {
+    name: "length",
+    label: "l - Lenght (m):",
+    type: "number",
+    min: 0.5,
+    max: 5,
+    step: 0.1,
+  }, // Lunghezza pendolo
+  {
+    name: "size",
+    label: "r - Ball radius (m):",
+    type: "number",
+    min: 0.05,
+    max: 1,
+    step: 0.05,
+  }, // Raggio bob
+  {
+    name: "gravity",
+    label: "g - Gravity (m/s²):",
+    type: "select",
+    options: gravityTypes,
+  }, // Accelerazione di gravità
+  {
+    name: "damping",
+    label: "ζ - Damping:",
+    type: "number",
+    min: 0,
+    max: 5,
+    step: 0.001,
+  }, // Coefficiente di smorzamento
+  { name: "trailEnabled", label: "Trail", type: "checkbox" },
+  { name: "color", label: "Bob Color:", type: "color" },
 ];
 
 // Mapper per SimInfoPanel
@@ -44,11 +70,13 @@ export const SimInfoMapper = (state, context) => {
   const totalEnergy = potentialEnergy + kineticEnergy;
 
   return {
-    angle: `${angle.toFixed(3)} rad (${angleDeg.toFixed(2)} °)`,
-    angularVelocity: `${angleVelocity.toFixed(3)} rad/s (${angVelDeg.toFixed(2)} °/s)`,
-    period: `${period.toFixed(2)} s`,
-    potentialEnergy: `${potentialEnergy.toFixed(3)} J`,
-    kineticEnergy: `${kineticEnergy.toFixed(3)} J`,
-    totalEnergy: `${totalEnergy.toFixed(3)} J`
+    "θ (angle)": `${angle.toFixed(3)} rad (${angleDeg.toFixed(2)} °)`,
+    "ω (angular vel.)": `${angleVelocity.toFixed(
+      3
+    )} rad/s (${angVelDeg.toFixed(2)} °/s)`,
+    "T (period)": `${period.toFixed(2)} s`,
+    "Eₚ (potential energy)": `${potentialEnergy.toFixed(3)} J`,
+    "Eₖ (kinetic energy)": `${kineticEnergy.toFixed(3)} J`,
+    "Eₜₒₜ (total energy)": `${totalEnergy.toFixed(3)} J`,
   };
 };

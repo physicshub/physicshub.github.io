@@ -53,7 +53,7 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "massKg",
-    label: "Mass (kg)",
+    label: "m - Mass (kg)",
     min: 0.1,
     step: 0.1,
     disabledCondition: (inputs) => !inputs.physicsEnabled

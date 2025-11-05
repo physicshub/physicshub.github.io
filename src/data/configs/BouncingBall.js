@@ -12,10 +12,10 @@ export const INITIAL_INPUTS = {
 };
 
 export const INPUT_FIELDS = [
-  { name: "mass", label: "Mass (kg):", type: "number", placeholder: "Insert mass..." },
-  { name: "size", label: "Ball Size (m):", type: "number", placeholder: "Insert ball size..." },
-  { name: "gravity", label: "Gravity (m/s²):", type: "select", options: gravityTypes },
-  { name: "restitution", label: "Restitution (0-1):", type: "number" },
+  { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass..." },
+  { name: "size", label: "r - Ball radius (m):", type: "number", placeholder: "Insert ball size..." },
+  { name: "gravity", label: "g - Gravity (m/s²):", type: "select", options: gravityTypes },
+  { name: "restitution", label: "ζ - Damping:", type: "number" },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "ballColor", label: "Ball Color:", type: "color" },
 ];
@@ -25,7 +25,7 @@ export const FORCES = [
     key: "gravity",
     color: "blue",
     // computeFn riceve state, inputs, context
-    computeFn: ({ mass }, inputs, { canvasHeightMeters }) => {
+    computeFn: ({ mass }, inputs) => {
       return { x: 0, y: mass * inputs.gravity };
     },
   },
@@ -75,11 +75,11 @@ export const SimInfoMapper = (state, context, refs) => {
   const work = mass * gravity * currentHeightM;
 
   return {
-    velocity: `${speedMs.toFixed(2)} m/s`,
-    acceleration: `${gravity.toFixed(2)} m/s²`,
-    position: `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
-    fallTime: `${fallTime.toFixed(2)} s`,
-    maxHeight: `${maxHeightRef.current.toFixed(2)} m`,
-    work: `${work.toFixed(2)} J`,
+    "v (velocity)": `${speedMs.toFixed(2)} m/s`,
+    "a (acceleration)": `${gravity.toFixed(2)} m/s²`,
+    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    "t (fall time)": `${fallTime.toFixed(2)} s`,
+    "hₘₐₓ (height max)": `${maxHeightRef.current.toFixed(2)} m`,
+    "W (work)": `${work.toFixed(2)} J`,
   };
 };

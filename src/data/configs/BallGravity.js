@@ -19,7 +19,7 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "mass",
-    label: "Mass (kg):",
+    label: "m - Mass (kg):",
     type: "number",
     min: 0.1,
     max: 20,
@@ -27,7 +27,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "size",
-    label: "Ball Size (m):",
+    label: "r - Ball radius (m):",
     type: "number",
     min: 0.1,
     max: 2,
@@ -35,13 +35,13 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "Gravity (m/s²):",
+    label: "g - Gravity (m/s²):",
     type: "select",
     options: gravityTypes,
   },
   {
     name: "wind",
-    label: "Wind (m/s²):",
+    label: "F - Wind (m/s²):",
     type: "number",
     min: 0,
     max: 10,
@@ -49,7 +49,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "frictionMu",
-    label: "Friction coefficient μ:",
+    label: "μ - Friction coefficient:",
     type: "number",
     min: 0,
     max: 1,
@@ -57,7 +57,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "restitution",
-    label: "Restitution (0-1):",
+    label: "ζ - Damping:",
     type: "number",
     min: 0,
     max: 1,
@@ -147,11 +147,11 @@ export const SimInfoMapper = (state, context, refs) => {
   const kineticEnergy = 0.5 * mass * Math.pow(speedMs, 2);
 
   return {
-    velocity: `${speedMs.toFixed(2)} m/s`,
-    acceleration: `${gravity.toFixed(2)} m/s²`,
-    position: `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
-    kineticEnergy: `${kineticEnergy.toFixed(2)} J`,
-    fallTime: `${fallTime.toFixed(2)} s`,
-    maxHeight: `${maxHeightRef.current.toFixed(2)} m`,
+    "v (velocity)": `${speedMs.toFixed(2)} m/s`,
+    "a (acceleration)": `${gravity.toFixed(2)} m/s²`,
+    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    "Eₖ (kinetic energy)": `${kineticEnergy.toFixed(2)} J`,
+    "t (fall time)": `${fallTime.toFixed(2)} s`,
+    "hₘₐₓ (height max)": `${maxHeightRef.current.toFixed(2)} m`,
   };
 };
