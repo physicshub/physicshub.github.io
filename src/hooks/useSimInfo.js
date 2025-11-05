@@ -1,5 +1,5 @@
 // src/hooks/useSimInfo.js
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 
 /**
  * Generic hook to centralize simulation info updates.
@@ -11,8 +11,11 @@ export default function useSimInfo(options = {}) {
   // Valori di default più sensati
   const {
     updateIntervalMs = 150, // 150ms invece di 0
-    customRefs = {}
+    customRefs
   } = options;
+  
+  // Stabilize customRefs to prevent unnecessary re-renders
+  const stableCustomRefs = useMemo(() => customRefs || {}, [customRefs]);
 
   const [simData, setSimData] = useState({});
   const lastInfoUpdateMs = useRef(0);
@@ -24,7 +27,7 @@ export default function useSimInfo(options = {}) {
    * @param {Object} context - extra context (gravity, canvasHeight, etc.)
    * @param {Function} mapper - function that maps state+context+refs -> simData object
    */
-  const updateSimInfo = (p, state, context, mapper) => {
+  const updateSimInfo = useCallback((p, state, context, mapper) => {
     // Aggiungi controlli di sicurezza
     if (!p || !mapper) return;
     
@@ -32,14 +35,14 @@ export default function useSimInfo(options = {}) {
     if (now - lastInfoUpdateMs.current < updateIntervalMs) return;
 
     try {
-      const data = mapper(state, context, customRefs);
+      const data = mapper(state, context, stableCustomRefs);
       if (data) setSimData(data);
     } catch (error) {
       console.warn('Error in sim info mapper:', error);
     }
 
     lastInfoUpdateMs.current = now;
-  };
+  }, [updateIntervalMs, stableCustomRefs]);
 
   return {
     simData,
