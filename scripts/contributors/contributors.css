@@ -1,4 +1,13 @@
 /* scripts/contributors/contributors.css */
+:root {
+  --contributors-per-row: 7;
+  --aspect-ratio: 2 / 2.5;
+}
+
+*{
+    margin: 0;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,15 +18,15 @@ ul {
   list-style: none;
   margin: 0;
   padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(var(--contributors-per-row), 1fr);
   gap: 10px;
-  justify-content: flex-start;
+  justify-items: center;
 }
 
 li {
-  width: 80px;
-  height: 120px;
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,25 +34,20 @@ li {
 }
 
 img {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  aspect-ratio: 1/1;
   border-radius: 8px;
   border: 2px solid #00b8b8;
   object-fit: cover;
 }
 
-/* Nome sotto l’immagine */
 h3 {
-  margin-top: 4px;
-  font-size: clamp(10px, 2vw, 12px);
   margin-top: 4px;
   font-size: clamp(10px, 2vw, 12px);
   text-align: center;
   color: #d6d6d6;
   max-width: 100%;
   white-space: nowrap;
-  overflow: nowrap;
   overflow: hidden;
-  text: hidden;
   text-overflow: ellipsis;
 }

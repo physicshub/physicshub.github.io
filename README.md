@@ -67,7 +67,7 @@ Contribution list sorted by amount of commits:
 [![Contributors](https://raw.githubusercontent.com/physicshub/physicshub.github.io/main/images/contributors.png)](https://github.com/physicshub/physicshub.github.io/graphs/contributors)
 
 
-Contribution list sorted by order of contribution:
+Contribution list sorted by order of contribution and based on what they did:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
