@@ -2,9 +2,9 @@
 import { invertYAxis } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
-  size: 0.5,             // diametro palla in pixel
+  size: 0.5,             // diametro palla in metri
   maxspeed: 5,          // velocità massima (m/s)
-  acceleration: 2,    // accelerazione costante verso il target
+  acceleration: 2,    // accelerazione costante verso il target (m/s²)
   color: "#7f7f7f",     // colore palla
   trailEnabled: true,
 };
@@ -42,7 +42,7 @@ export const INPUT_FIELDS = [
   }
 ];
 
-export const SimInfoMapper = (state, context, refs) => {
+export const SimInfoMapper = (state, context) => {
   const { pos, vel, acceleration, maxspeed } = state;
   const { canvasHeight } = context;
 

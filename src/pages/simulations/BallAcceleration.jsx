@@ -122,7 +122,7 @@ export function BallAcceleration() {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
     };
-  }, [inputsRef]);
+  }, [inputsRef, updateSimInfo]);
 
   return (
     <SimulationLayout
