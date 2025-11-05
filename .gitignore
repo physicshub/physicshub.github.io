@@ -28,4 +28,4 @@ dist-ssr
 .VSCodeCounter
 
 # Ignore generated contributor HTML files
-src/scripts/contributors/*.html
+scripts/contributors/*.html

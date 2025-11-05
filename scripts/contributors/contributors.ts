@@ -2,6 +2,7 @@
 // almost all the code is from the original repository: https://github.com/material-extensions/vscode-material-icon-theme
 // Credits to Philipp Kief and his contributors for the original code. 
 
+// scripts/contributors/contributors.ts
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import axios, { type AxiosRequestConfig } from 'axios';
@@ -73,7 +74,7 @@ const fetchContributors = (
 const createContributorsList = async (contributors: Contributor[]) => {
   const list = contributors
     .map((c) => {
-      return `<li title="${c.login}"><img src="${c.avatar_url}" alt="${c.login}"/></li>`;
+      return `<li title="${c.login}"><img src="${c.avatar_url}" alt="${c.login}"/><h3>${c.login}</h3></li>`;
     })
     .join('\n');
 
