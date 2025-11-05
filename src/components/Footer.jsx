@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faXTwitter, faGithub, faDiscord} from '@fortawesome/free-brands-svg-icons' 
 import { NavLink } from 'react-router-dom';
