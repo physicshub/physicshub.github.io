@@ -1,94 +1,107 @@
+// src/components/classes/Pendulum.js
 // The Nature of Code
 // Daniel Shiffman
 // http://natureofcode.com
 // Edited by: @mattqdev
 
-// Pendulum
+import { EARTH_G_SI, SCALE } from "../../constants/Config";
 
 // A Simple Pendulum Class
-
-// This constructor could be improved to allow a greater variety of pendulums
 export default class Pendulum {
-   /**
+  /**
    * @param {p5} p - Istanza di p5
-   * @param {number} x - Posizione iniziale X
-   * @param {number} y - Posizione iniziale Y
-   * @param {number} r - Pendulum Radius
+   * @param {number} x - Posizione iniziale X (pivot)
+   * @param {number} y - Posizione iniziale Y (pivot)
+   * @param {number} r - Lunghezza del pendolo in pixel
    */
   constructor(p, x, y, r) {
-    this.p = p
-    // Fill all variables
+    this.p = p;
     this.pivot = p.createVector(x, y);
-    this.bob = p.createVector();
     this.r = r;
-    this.angle = p.PI / 4;
 
+    this.angle = p.PI / 4; // angolo iniziale
     this.angleVelocity = 0.0;
     this.angleAcceleration = 0.0;
-    this.gravity = 0.4; // Arbitrary constant
-    this.damping = 0.995; // Arbitrary damping
-    this.size = 24.0; // Arbitrary ball radius
-    this.color
-  }
 
-  // Function to update position
-  update() {
-    const p = this.p;
-    // As long as we aren't dragging the pendulum, let it swing!
-    if (!this.dragging) {
-      this.angleAcceleration = ((-1 * this.gravity * 0.4) / this.r) * p.sin(this.angle); // Calculate acceleration (see: http://www.myphysicslab.com/pendulum1.html)
+    this.gravity = EARTH_G_SI;
+    this.damping = 1; // coefficiente di smorzamento
+    this.size = 24;   // raggio bob in pixel
+    this.color = "#7f7f7f";
 
-      this.angleVelocity += this.angleAcceleration; // Increment velocity
-      this.angle += this.angleVelocity; // Increment angle
-
-      this.angleVelocity *= this.damping; // Apply some damping
-    }
-  }
-
-  show() {
-    const p = this.p;
-
-    this.bob.set(this.r * p.sin(this.angle), this.r * p.cos(this.angle), 0); // Polar to cartesian conversion
-    this.bob.add(this.pivot); // Make sure the position is relative to the pendulum's origin
-
-    p.stroke(0);
-    p.strokeWeight(2);
-    // Draw the arm
-    p.line(this.pivot.x, this.pivot.y, this.bob.x, this.bob.y);
-    p.fill(this.color);
-    // Draw the ball
-    p.circle(this.bob.x, this.bob.y, this.size * 2);
-  }
-
-  // The methods below are for mouse interaction
-
-  // This checks to see if we clicked on the pendulum ball
-  clicked(mx, my) {
-    const p = this.p;
-
-    let d = p.dist(mx, my, this.bob.x, this.bob.y);
-    if (d < this.size) {
-      this.dragging = true;
-    }
-  }
-
-  // This tells us we are not longer clicking on the ball
-  stopDragging() {
-    this.angleVelocity = 0; // No velocity once you let go
     this.dragging = false;
   }
 
-  drag() {
+  /**
+   * Calcola la posizione corrente del bob in pixel
+   */
+  getBobPosition() {
     const p = this.p;
-    // If we are draging the ball, we calculate the angle between the
-    // pendulum origin and mouse position
-    // we assign that angle to the pendulum
+    const x = this.pivot.x + this.r * p.sin(this.angle);
+    const y = this.pivot.y + this.r * p.cos(this.angle);
+    return { x, y };
+  }
+
+  /**
+   * Aggiorna la dinamica del pendolo (solo se non in drag)
+   */
+  update() {
+    const p = this.p;
+    if (!this.dragging) {
+      this.angleAcceleration = (-1 * this.gravity / this.r) * p.sin(this.angle);
+      this.angleVelocity += this.angleAcceleration;
+      this.angle += this.angleVelocity;
+      this.angleVelocity *= this.damping;
+    }
+  }
+
+  /**
+   * Disegna il pendolo (asta + bob)
+   */
+  show() {
+    const p = this.p;
+    const { x, y } = this.getBobPosition();
+
+    p.stroke(0);
+    p.strokeWeight(2);
+    p.line(this.pivot.x, this.pivot.y, x, y);
+
+    p.fill(this.color);
+    p.circle(x, y, this.size * 2);
+  }
+
+  /**
+   * Controlla se il click è avvenuto vicino al bob
+   */
+  clicked(mx, my) {
+    const p = this.p;
+    if (mx < 0 || mx > p.width || my < 0 || my > p.height) return;
+
+    const { x, y } = this.getBobPosition();
+    const d = p.dist(mx, my, x, y);
+    if (d <= this.size) {
+      this.dragging = true;
+      this.angleVelocity = 0; // evita jitter durante il drag
+    }
+  }
+
+  /**
+   * Ferma il drag (solo se era attivo)
+   */
+  stopDragging() {
     if (this.dragging) {
-        let diff = this.p.createVector(
-            this.pivot.x - p.mouseX,
-            this.pivot.y - p.mouseY
-        ); // Difference between 2 points 
-      this.angle = p.atan2(-1 * diff.y, diff.x) - p.radians(90); // Angle relative to vertical axis
+      this.angleVelocity = 0;
+      this.dragging = false;
+    }
+  }
+
+  /**
+   * Aggiorna l'angolo in base alla posizione del mouse durante il drag
+   */
+  drag() {
+    if (this.dragging) {
+      const p = this.p;
+      const diff = p.createVector(this.pivot.x - p.mouseX, this.pivot.y - p.mouseY);
+      this.angle = p.atan2(-diff.y, diff.x) - p.radians(90);
     }
   }
 }

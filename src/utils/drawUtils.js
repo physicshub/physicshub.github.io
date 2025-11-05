@@ -2,39 +2,66 @@
 /**
  * Draw background or trail depending on flag.
  */
-export const drawBackground = (p, bg, trailEnabled, trailLayer) => {
-  if (trailEnabled) {
-    trailLayer.noStroke();
-    trailLayer.fill(bg[0], bg[1], bg[2], 40); // dissolvenza
-    trailLayer.rect(0, 0, p.width, p.height);
-  } else {
-    trailLayer.clear();
+export const drawBackground = (p, bg, trailEnabled, trailAlpha = 60) => {
+  p.colorMode(p.RGB, 255);
+
+  const bgColor = Array.isArray(bg) && bg.length >= 3
+    ? p.color(bg[0], bg[1], bg[2])
+    : p.color(0, 0, 0);
+
+  if (!trailEnabled) {
+    p.background(bgColor);
+    return;
   }
+
+  p.push();
+  p.rectMode(p.CORNER);
+  p.noStroke();
+  p.fill(p.red(bgColor), p.green(bgColor), p.blue(bgColor), trailAlpha);
+  p.rect(0, 0, p.width, p.height);
+  p.pop();
 };
 
 /**
  * Draw any shape with hover glow.
- * @param {p5} p - p5 instance
+ * - Supports drawing on p5 main canvas or a p5.Graphics layer (e.g., trailLayer).
+ * - Applies glow only when hovering; otherwise draws normally.
+ *
+ * @param {p5} p - p5 instance (for cursor and fallback)
  * @param {boolean} isHover - hover state
- * @param {string} color - glow color
- * @param {Function} drawFn - function that draws the shape
- * @param {number} blur - glow blur radius
+ * @param {string} color - glow color (CSS string)
+ * @param {Function} drawFn - function that performs the actual shape drawing
+ * @param {number} blur - glow blur radius in pixels
+ * @param {p5 | p5.Graphics} layer - optional target to draw on; defaults to main canvas
  */
-export const drawGlow = (p, isHover, color, drawFn, blur = 20) => {
+export const drawGlow = (p, isHover, color, drawFn, blur = 20, layer = p) => {
+  // Update cursor feedback on the main canvas
   p.cursor(isHover ? "grab" : "default");
 
+  // Resolve drawing context based on target layer
+  const ctx = layer?.drawingContext || p.drawingContext;
+
+  // Safeguard if context is unavailable
+  if (!ctx) {
+    drawFn();
+    return;
+  }
+
+  // Apply glow only on hover
   if (isHover) {
-    const ctx = p.drawingContext;
     ctx.save();
+    // Shadow settings
     ctx.shadowBlur = blur;
     ctx.shadowColor = color;
+    // Draw with glow
     drawFn();
+    // Reset context
     ctx.restore();
   } else {
+    // Draw without glow
     drawFn();
   }
 };
-
 
 
 // --- Force visualization constants ---
@@ -117,4 +144,64 @@ export const getActiveForces = (forceDefs, state, inputs, context) => {
     }
   }
   return forces;
+};
+
+/**
+ * Gestisce trailLayer + palla + glow
+ *
+ * @param {p5} p - istanza p5 principale
+ * @param {p5.Graphics} trailLayer - layer dedicato alla trail
+ * @param {Object} opts - opzioni
+ * @param {Array|p5.Color} opts.bg - colore background [r,g,b] o p5.Color
+ * @param {boolean} opts.trailEnabled - se true applica dissolvenza
+ * @param {number} opts.trailAlpha - alpha per dissolvenza
+ * @param {number} opts.pixelX - posizione x palla in pixel
+ * @param {number} opts.pixelY - posizione y palla in pixel
+ * @param {number} opts.size - diametro palla in pixel
+ * @param {boolean} opts.isHover - stato hover
+ * @param {string} opts.ballColor - colore palla
+ */
+export const drawBallWithTrail = (
+  p,
+  trailLayer,
+  {
+    bg,
+    trailEnabled,
+    trailAlpha = 60,
+    pixelX,
+    pixelY,
+    size,
+    isHover,
+    ballColor,
+  }
+) => {
+  const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
+
+  // Aggiorna trailLayer
+  if (!trailEnabled) {
+    trailLayer.background(r, g, b);
+  } else {
+    trailLayer.noStroke();
+    trailLayer.fill(r, g, b, trailAlpha);
+    trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+  }
+
+  // Disegna palla sul trailLayer (senza glow)
+  trailLayer.noStroke();
+  trailLayer.fill(ballColor);
+  trailLayer.circle(pixelX, pixelY, size);
+
+  // Glow solo sul canvas principale
+  drawGlow(
+    p,
+    isHover,
+    ballColor,
+    () => {
+      p.noStroke();
+      p.fill(ballColor);
+      p.circle(pixelX, pixelY, size);
+    },
+    20,
+    p
+  );
 };

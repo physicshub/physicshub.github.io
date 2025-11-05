@@ -1,49 +1,57 @@
 // src/data/configs/BallAcceleration.js
-// EN: Configuration and info mapping for the Ball Acceleration simulation
-// IT: Configurazione e mappatura informazioni per la simulazione Accelerazione della Palla
+import { invertYAxis } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
-  // EN: Ball visual size in pixels
-  // IT: Dimensione visiva della palla in pixel
-  size: 48,
-  // EN: Maximum speed in pixels per frame
-  // IT: Velocità massima in pixel per frame
-  maxspeed: 5,
-  // EN: Acceleration rate applied toward the target (mouse)
-  // IT: Tasso di accelerazione applicato verso il target (mouse)
-  acceleration: 0.1,
-  // EN: Ball color
-  // IT: Colore della palla
-  ballColor: "#7f7f7f",
+  size: 0.5,             // diametro palla in metri
+  maxspeed: 5,          // velocità massima (m/s)
+  acceleration: 2,    // accelerazione costante verso il target (m/s²)
+  color: "#7f7f7f",     // colore palla
+  trailEnabled: true,
 };
 
 export const INPUT_FIELDS = [
-  { name: "size", label: "Ball Size (px):", type: "number", placeholder: "Insert ball size..." },
-  { name: "maxspeed", label: "Max Speed (px/frame):", type: "number", placeholder: "Insert max speed..." },
-  { name: "acceleration", label: "Acceleration (px/frame²):", type: "number", placeholder: "Insert acceleration..." },
-  { name: "ballColor", label: "Ball Color:", type: "color" },
+  {
+    type: "number",
+    name: "size",
+    label: "Ball Size (m)",
+    min: 0,
+    max: 100,
+    step: 1
+  },
+  {
+    type: "number",
+    name: "maxspeed",
+    label: "Max Speed (m/s)",
+    min: 1,
+    max: 20,
+    step: 0.1
+  },
+  {
+    type: "number",
+    name: "acceleration",
+    label: "Acceleration (m/s²)",
+    min: 0.001,
+    max: 1,
+    step: 0.001
+  },
+  { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
+  {
+    type: "color",
+    name: "color",
+    label: "Ball Color"
+  }
 ];
 
-// EN: Mapper for the info panel: computes speed, acceleration magnitude, and distance to target
-// IT: Mapper per il pannello info: calcola velocità, modulo dell'accelerazione e distanza dal target
-export const SimInfoMapper = (state) => {
-  const { pos, vel, acc, target } = state;
-  const speed = Math.hypot(vel.x, vel.y); // px/frame
-  const accMag = Math.hypot(acc.x, acc.y); // px/frame²
-  const dist = target ? Math.hypot(target.x - pos.x, target.y - pos.y) : 0; // px
+export const SimInfoMapper = (state, context) => {
+  const { pos, vel, acceleration, maxspeed } = state;
+  const { canvasHeight } = context;
 
+  pos.y = invertYAxis(canvasHeight, pos.y);
   return {
-    // EN: Speed in px/frame; roughly proportional to visual motion per frame
-    // IT: Velocità in px/frame; approssimativamente proporzionale al moto visivo per frame
-    speed: `${speed.toFixed(2)} px/frame`,
-    // EN: Acceleration magnitude in px/frame²
-    // IT: Modulo accelerazione in px/frame²
-    acceleration: `${accMag.toFixed(3)} px/frame²`,
-    // EN: Distance to mouse target in pixels
-    // IT: Distanza dal target del mouse in pixel
-    distanceToTarget: `${dist.toFixed(1)} px`,
-    // EN: Position (x, y) in pixels
-    // IT: Posizione (x, y) in pixel
-    position: `(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}) px`,
+    "Position": pos ? `(${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}) m` : "-",
+    "Velocity XY": vel ? `(${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}) m/s` : "-",
+    "Velocity": vel ? vel.mag().toFixed(2) + " m/s" : "-",
+    "Acceleration": acceleration.toFixed(3) + " m/s²",
+    "Max Speed": maxspeed.toFixed(2) + " m/s"
   };
 };

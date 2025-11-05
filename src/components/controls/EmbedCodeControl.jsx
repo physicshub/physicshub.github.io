@@ -7,7 +7,7 @@ export default function EmbedCodeControl({ simulation, inputs, width = 600, heig
   // Build URL with query parameters
   const url = useMemo(() => {
     const params = new URLSearchParams(inputs).toString();
-    return `${window.location.origin}/#/${simulation}?${params}`;
+    return `${window.location.origin}/${simulation}?${params}`;
   }, [simulation, inputs]);
 
   // Generate embed code

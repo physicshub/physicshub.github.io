@@ -27,25 +27,25 @@
     "react-katex": "^3.1.0",
     "react-router-dom": "^7.9.4",
     "react-router-hash-link": "^2.4.3",
-    "react-syntax-highlighter": "^15.6.6",
+    "react-syntax-highlighter": "^16.1.0",
     "xml-formatter": "^3.6.7"
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
+    "@eslint/js": "^9.39.0",
     "@types/p5": "^1.7.6",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.2.2",
     "@types/react-katex": "^3.0.4",
     "@vitejs/plugin-react": "^5.0.4",
     "eslint": "^9.38.0",
-    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "fast-xml-parser": "^5.3.0",
     "gh-pages": "^6.3.0",
-    "globals": "^16.4.0",
+    "globals": "^16.5.0",
     "nodemon": "^3.1.10",
     "sitemap": "^8.0.1",
-    "vite": "^7.1.11"
+    "vite": "^7.1.12"
   },
   "author": "MattQ",
   "license": "MIT"

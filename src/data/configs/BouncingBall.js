@@ -41,7 +41,6 @@ export const FORCES = [
       return null; // se non c’è contatto, nessuna forza
     },
   },
-  // altre forze opzionali...
 ];
 
 // Mapper specific for bouncing ball 
