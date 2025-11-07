@@ -4,6 +4,14 @@ import { SCALE } from "./Config.js";
 export const toPixels = (meters) => meters * SCALE;
 export const toMeters = (pixels) => pixels / SCALE;
 
+// Accelerazione: m/s² → px/frame²
+export const accelSI_to_pxSec = (a_SI) => a_SI * SCALE; // a_SI * SCALE * Math.pow(SECONDS_PER_FRAME(p), 2);
+export const accelPxSec_to_SI = (a_px) => a_px / (SCALE); //a_px / SCALE * Math.pow(SECONDS_PER_FRAME(p), 2);
+
+// Costante elastica: N/m → N/pixel
+export const springK_SI_to_px = k_SI => k_SI / SCALE;
+export const springK_px_to_SI = k_px => k_px * SCALE;
+
 /**
  * Semi-implicit Euler (Euler-Cromer) integration.
  * Conserves energy better than explicit Euler.
