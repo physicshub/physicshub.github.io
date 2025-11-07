@@ -21,9 +21,9 @@ export default class Bob {
     this.dampingMode = "factor"; // "factor" (0..1) oppure "rate"
   }
 
-  update() {
+  update(dt) {
     const p = this.p;
-    const dt = p.deltaTime / 1000;
+    //const dt = p.deltaTime / 1000;
 
     // v += a * dt
     this.vel.add(this.acceleration.copy().mult(dt));

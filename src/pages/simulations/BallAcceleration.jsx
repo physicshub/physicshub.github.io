@@ -63,23 +63,22 @@ export function BallAcceleration() {
       const { pos, vel } = ballState.current;
       const dt = computeDelta(p);
       if (!pos || !vel) return;
+      if (dt < 0) return;
 
       let dir = null;
 
       // Physics update: accelerate toward mouse
-      if (dt > 0) {
-        const target = p.createVector(p.mouseX / SCALE, p.mouseY / SCALE);
-        dir = target.copy().sub(pos).normalize().mult(acceleration);
-        const newState = integrate(pos, vel, dir, dt);
+      const target = p.createVector(p.mouseX / SCALE, p.mouseY / SCALE);
+      dir = target.copy().sub(pos).normalize().mult(acceleration);
+      const newState = integrate(pos, vel, dir, dt);
 
-        // clamp speed
-        if (newState.vel.mag() > maxspeed) {
-          newState.vel.setMag(maxspeed);
-        }
-
-        ballState.current.pos = newState.pos;
-        ballState.current.vel = newState.vel;
+      // clamp speed
+      if (newState.vel.mag() > maxspeed) {
+        newState.vel.setMag(maxspeed);
       }
+
+      ballState.current.pos = newState.pos;
+      ballState.current.vel = newState.vel;
 
       const pixelX = toPixels(pos.x);
       const pixelY = toPixels(pos.y);

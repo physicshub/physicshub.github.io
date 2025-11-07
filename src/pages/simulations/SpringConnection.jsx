@@ -9,7 +9,7 @@ import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../data/configs/
 import chapters from "../../data/chapters.js";
 
 // --- Core Utils ---
-import { resetTime, isPaused, setPause } from "../../constants/Time.js";
+import { resetTime, isPaused, setPause, computeDelta } from "../../constants/Time.js";
 import { toPixels, accelSI_to_pxSec, springK_SI_to_px } from "../../constants/Utils.js";
 import getBackgroundColor from "../../utils/getBackgroundColor.js";
 
@@ -102,7 +102,7 @@ export function SpringConnection() {
       spring.anchorColor = anchorColor;
 
       // Update dinamica
-      bob.update();
+      bob.update(computeDelta(p));
       bob.handleDrag(p.mouseX, p.mouseY);
 
       spring.connect(bob);
