@@ -26,7 +26,8 @@ export default class Pendulum {
     this.gravity = EARTH_G_SI;
     this.damping = 1; // coefficiente di smorzamento
     this.size = 24;   // raggio bob in pixel
-    this.color = "#7f7f7f";
+    this.bobColor = "#7f7f7f";
+    this.stringColor = "#00e6e6";
 
     this.dragging = false;
   }
@@ -61,11 +62,11 @@ export default class Pendulum {
     const p = this.p;
     const { x, y } = this.getBobPosition();
 
-    p.stroke(0);
+    p.stroke(p.color(this.stringColor));
     p.strokeWeight(2);
     p.line(this.pivot.x, this.pivot.y, x, y);
 
-    p.fill(this.color);
+    p.fill(this.bobColor);
     p.circle(x, y, this.size * 2);
   }
 

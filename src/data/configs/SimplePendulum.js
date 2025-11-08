@@ -7,7 +7,8 @@ export const INITIAL_INPUTS = {
   size: 0.3, // (m)
   gravity: EARTH_G_SI, // (m/s²)
   damping: 0.99, // adimensionale
-  color: "#7f7f7f",
+  bobColor: "#7f7f7f",
+  stringColor: "#00e6e6",
   trailEnabled: true,
 };
 
@@ -44,7 +45,9 @@ export const INPUT_FIELDS = [
     step: 0.001,
   }, // Coefficiente di smorzamento
   { name: "trailEnabled", label: "Trail", type: "checkbox" },
-  { name: "color", label: "Bob Color:", type: "color" },
+  { name: "bobColor", label: "Bob Color:", type: "color" },
+  { name: "stringColor", label: "String Color:", type: "color" },
+
 ];
 
 // Mapper per SimInfoPanel

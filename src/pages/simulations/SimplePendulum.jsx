@@ -69,7 +69,8 @@ export function SimplePendulum() {
       pendulum.damping = inputsRef.current.damping;
       pendulum.size    = inputsRef.current.size * SCALE;
       pendulum.gravity = inputsRef.current.gravity;
-      pendulum.color   = inputsRef.current.color;
+      pendulum.bobColor   = inputsRef.current.bobColor;
+      pendulum.stringColor = inputsRef.current.stringColor;
       pendulum.r       = inputsRef.current.length * SCALE;
 
       // 1) Fisica
@@ -90,13 +91,13 @@ export function SimplePendulum() {
       }
 
       // Disegna asta
-      trailLayer.stroke(0);
+      trailLayer.stroke(p.color(pendulum.stringColor));
       trailLayer.strokeWeight(2);
       trailLayer.line(pendulum.pivot.x, pendulum.pivot.y, bobX, bobY);
 
       // Disegna bob (senza glow)
       trailLayer.noStroke();
-      trailLayer.fill(pendulum.color);
+      trailLayer.fill(pendulum.bobColor);
       trailLayer.circle(bobX, bobY, pendulum.size * 2);
 
       // 4) Compositing
@@ -108,10 +109,10 @@ export function SimplePendulum() {
       drawGlow(
         p,
         isHover,
-        pendulum.color,
+        pendulum.bobColor,
         () => {
           p.noStroke();
-          p.fill(pendulum.color);
+          p.fill(pendulum.bobColor);
           p.circle(bobX, bobY, pendulum.size * 2);
         },
         20,
