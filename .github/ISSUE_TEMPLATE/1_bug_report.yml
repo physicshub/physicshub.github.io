@@ -47,20 +47,6 @@ body:
       required: false
 
   - type: textarea
-    id: computer-info
-    attributes:
-      label: Computer information
-      description: |
-        Examples:
-          - **OS edition**: [e.g. Windows 11 Home]
-          - **Extension version**: [e.g. 5.6.0]
-          - **VSCode version**: [e.g. 1.91.1]
-      value: |
-          - **OS edition**:
-          - **Extension version**:
-          - **VSCode version**:
-
-  - type: textarea
     id: additional-context
     attributes:
       label: Additional context

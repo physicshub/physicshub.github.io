@@ -1,5 +1,6 @@
 name: 🌱 New Feature Request
 description: This template is for requesting a new feature be added.
+title: "[Feat]: "
 labels: [Feature Request]
 
 body:
