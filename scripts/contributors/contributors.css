@@ -51,3 +51,25 @@ h3 {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.container > div {
+  padding: 4px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: clamp(8px, 1.5vw, 10px);
+  font-weight: bold;
+  color: #ffffff;
+}
+.percentage {
+  background-color: #4fb407;
+}
+.commits {
+  background-color: #00b8b8;
+}

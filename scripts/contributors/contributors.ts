@@ -6,10 +6,11 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import axios, { type AxiosRequestConfig } from 'axios';
-import { writeToFile } from '../helpers/writeFile';
-import { green, red, yellow } from '../helpers/painter';
-import { createScreenshot } from '../helpers/screenshots';
-import type { Contributor } from './models/contributor';
+import { writeToFile } from '../helpers/writeFile.ts';
+import { green, red, yellow } from '../helpers/painter.ts';
+import { createScreenshot } from '../helpers/screenshots.ts';
+import type { Contributor } from './models/contributor.ts';
+import { getPercentagesContributor } from '../helpers/percentage.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -74,7 +75,19 @@ const fetchContributors = (
 const createContributorsList = async (contributors: Contributor[]) => {
   const list = contributors
     .map((c) => {
-      return `<li title="${c.login}"><img src="${c.avatar_url}" alt="${c.login}"/><h3>${c.login}</h3></li>`;
+      return `
+      <li title="${c.login}">
+        <img src="${c.avatar_url}" alt="${c.login}"/>
+        <h3>${c.login}</h3>
+        <div class="container">
+          <div class="commits">
+            <span>${c.contributions} commits</span>
+          </div>
+          <div class="percentage">
+            <span>${getPercentagesContributor(contributors, c)}</span>
+          </div>
+        </div>
+      </li>`;
     })
     .join('\n');
 
