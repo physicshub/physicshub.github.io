@@ -1,7 +1,7 @@
 // sitemap-generator.js
 import { SitemapStream, streamToPromise } from 'sitemap';
 import { writeFileSync } from 'fs';
-import { routes } from '../src/routes.js';
+import { routes } from '../routes.js';
 import xmlFormat from 'xml-formatter';
 
 const hostname = 'https://physicshub.github.io';

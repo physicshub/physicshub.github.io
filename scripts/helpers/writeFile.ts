@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { logger } from './logger.ts';
+import { logger } from './logger';
 
 /**
  * Write content to a file.

@@ -1,4 +1,33 @@
-# Logs
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ──────────────── Dependencies ────────────────
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ──────────────── Testing ────────────────
+/coverage
+
+# ──────────────── Next.js ────────────────
+/.next/
+/out/
+
+# ──────────────── Production ────────────────
+/build
+dist
+dist-ssr
+
+# ──────────────── Misc ────────────────
+.DS_Store
+*.pem
+*.local
+
+# ──────────────── Debug / Logs ────────────────
 logs
 *.log
 npm-debug.log*
@@ -6,26 +35,31 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ──────────────── Env files ────────────────
 .env
+.env*
 
-# Editor directories and files
+# ──────────────── Vercel ────────────────
+.vercel
+
+# ──────────────── TypeScript ────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ──────────────── Editor directories and files ────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-# VS Code Extension
+# ──────────────── VS Code Extension ────────────────
 .VSCodeCounter
 
-# Ignore generated contributor HTML files
+# ──────────────── Contributor generated files ────────────────
 scripts/contributors/*.html
