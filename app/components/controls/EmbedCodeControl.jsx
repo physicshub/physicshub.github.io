@@ -4,9 +4,16 @@ import { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
 
-export default function EmbedCodeControl({ simulation, inputs, width = 600, height = 400 }) {
+export default function EmbedCodeControl({
+  simulation,
+  inputs,
+  width = 600,
+  height = 400,
+}) {
   // Build URL with query parameters
   const url = useMemo(() => {
+    //useMemo hook grabs window immedialtely causing error during server side rendering
+    if (typeof window === "undefined") return "";
     const params = new URLSearchParams(inputs).toString();
     return `${window.location.origin}/${simulation}?${params}`;
   }, [simulation, inputs]);
@@ -20,8 +27,12 @@ export default function EmbedCodeControl({ simulation, inputs, width = 600, heig
   };
 
   return (
-    <button onClick={handleCopy} className="btn-glow" title="Copy embed code to clipboard">
-        <FontAwesomeIcon icon={faCode} />
+    <button
+      onClick={handleCopy}
+      className="btn-glow"
+      title="Copy embed code to clipboard"
+    >
+      <FontAwesomeIcon icon={faCode} />
     </button>
   );
 }
