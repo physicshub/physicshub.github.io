@@ -7,6 +7,7 @@ import { faShare } from "@fortawesome/free-solid-svg-icons";
 export default function ShareLinkControl({ simulation, inputs }) {
   // Build URL with query parameters
   const url = useMemo(() => {
+    if (typeof window === "undefined") return "";
     const params = new URLSearchParams(inputs).toString();
     return `${window.location.origin}/${simulation}?${params}`;
   }, [simulation, inputs]);
@@ -17,8 +18,12 @@ export default function ShareLinkControl({ simulation, inputs }) {
   };
 
   return (
-    <button onClick={handleCopy} className="btn-glow" title="Copy shareable link to clipboard">
-        <FontAwesomeIcon icon={faShare} />
+    <button
+      onClick={handleCopy}
+      className="btn-glow"
+      title="Copy shareable link to clipboard"
+    >
+      <FontAwesomeIcon icon={faShare} />
     </button>
   );
 }
