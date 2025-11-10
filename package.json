@@ -5,13 +5,12 @@
   "version": "2.7.3",
   "type": "module",
   "scripts": {
-    "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:assets\"",
-    "build": "next build && npm run generate:assets",
+    "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:sitemap\"",
+    "build": "next build && npm run generate:sitemap",
     "preview": "npm run build && next start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build && npm run generate:sitemap && npm run contributors",
+    "deploy": "npm run predeploy && gh-pages -d dist",
     "generate:sitemap": "node scripts/sitemap-generator.js",
-    "generate:assets": "npm run generate:sitemap",
     "contributors": "ts-node scripts/contributors/contributors.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix"
