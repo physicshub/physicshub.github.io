@@ -10,7 +10,7 @@ export default function P5Wrapper({ sketch, simInfos }) {
   useEffect(() => {
     let p5;
     (async () => {
-      const module = await import("p5");   // ✅ import dinamico
+      const module = await import("p5"); // ✅ import dinamico
       p5 = module.default;
 
       if (p5InstanceRef.current) {

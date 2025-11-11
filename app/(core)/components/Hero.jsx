@@ -13,9 +13,9 @@ const containerVariants = (rm) => ({
     opacity: 1,
     transition: {
       delayChildren: rm ? 0.1 : 0.6,
-      staggerChildren: rm ? 0.08 : 0.25
-    }
-  }
+      staggerChildren: rm ? 0.08 : 0.25,
+    },
+  },
 });
 
 // Fade-up variant for subtitles and CTAs
@@ -26,17 +26,26 @@ const fadeUp = (rm) => ({
     y: 0,
     transition: {
       duration: rm ? 0.5 : 1.2,
-      ease: [0.22, 1, 0.36, 1]
-    }
-  }
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
 });
 
 // Button interactions
 const buttonVariant = {
   hidden: { opacity: 0, y: 24, scale: 0.96 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 90, damping: 16 } },
-  hover: { scale: 1.04, boxShadow: "0 10px 30px rgba(0,0,0,0.18)", transition: { duration: 0.25 } },
-  tap: { scale: 0.98 }
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 90, damping: 16 },
+  },
+  hover: {
+    scale: 1.04,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+    transition: { duration: 0.25 },
+  },
+  tap: { scale: 0.98 },
 };
 
 // Text container for per-word staggering
@@ -46,15 +55,15 @@ const textContainer = (rm) => ({
     opacity: 1,
     transition: {
       delayChildren: rm ? 0.1 : 0.3,
-      staggerChildren: rm ? 0.04 : 0.12
-    }
-  }
+      staggerChildren: rm ? 0.04 : 0.12,
+    },
+  },
 });
 
 // Basic per-word fade-and-rise
 const wordVariant = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 // Glowing text-shadow animation for highlighted word in #00e6e6
@@ -64,10 +73,15 @@ const glowVariant = {
     textShadow: [
       "0px 0px 0px rgba(0,230,230,0)",
       "0px 0px 12px rgba(0,230,230,1)",
-      "0px 0px 0px rgba(0,230,230,0)"
+      "0px 0px 0px rgba(0,230,230,0)",
     ],
-    transition: { duration: 3, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }
-  }
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      repeatDelay: 3,
+      ease: "easeInOut",
+    },
+  },
 };
 
 export function Hero() {
@@ -81,7 +95,9 @@ export function Hero() {
     : 0;
 
   // Split heading into words
-  const titleWords = "PhysicsHub – Best website to learn physics easily.".split(" ");
+  const titleWords = "PhysicsHub – Best website to learn physics easily.".split(
+    " "
+  );
 
   return (
     <motion.div
@@ -92,7 +108,10 @@ export function Hero() {
       style={{ position: "relative", overflow: "hidden" }}
     >
       {/* Animated H1 with per-word glow on PhysicsHub */}
-      <motion.h1 className="ph-hero__title" variants={textContainer(reduceMotion)}>
+      <motion.h1
+        className="ph-hero__title"
+        variants={textContainer(reduceMotion)}
+      >
         {titleWords.map((word, idx) => {
           const isHighlight = word.includes("PhysicsHub");
           return (
@@ -109,7 +128,8 @@ export function Hero() {
 
       {/* Subtitle */}
       <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
-        Experience physics in real time, uncover the concepts behind the formulas, and instantly see how they apply to the real world.
+        Experience physics in real time, uncover the concepts behind the
+        formulas, and instantly see how they apply to the real world.
       </motion.p>
 
       {/* CTA buttons */}

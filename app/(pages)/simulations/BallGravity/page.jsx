@@ -5,23 +5,23 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
-import { SCALE } from "../../constants/Config.js";
-import { toPixels, integrate, collideBoundary } from "../../constants/Utils.js";
-import { computeDelta, resetTime, isPaused, setPause } from "../../constants/Time.js";
-import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../data/configs/BallGravity.js";
-import chapters from "../../data/chapters.js";
+import { SCALE } from "../../../(core)/constants/Config.js";
+import { toPixels, integrate, collideBoundary } from "../../../(core)/constants/Utils.js";
+import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
+import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../../(core)/data/configs/BallGravity.js";
+import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
-import SimulationLayout from "../../components/SimulationLayout.jsx";
-import P5Wrapper from "../../components/P5Wrapper.jsx";
-import DynamicInputs from "../../components/inputs/DynamicInputs.jsx";
-import SimInfoPanel from "../../components/SimInfoPanel.jsx";
+import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
-import useSimulationState from "../../hooks/useSimulationState";
-import useSimInfo from "../../hooks/useSimInfo";
-import getBackgroundColor from "../../utils/getBackgroundColor";
-import { drawBallWithTrail, drawForceVector } from "../../utils/drawUtils.js";
+import useSimulationState from "../../../(core)/hooks/useSimulationState";
+import useSimInfo from "../../../(core)/hooks/useSimInfo";
+import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
+import { drawBallWithTrail, drawForceVector } from "../../../(core)/utils/drawUtils.js";
 
 export default function BallGravity() {
   const location = usePathname();
