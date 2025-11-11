@@ -1,52 +1,52 @@
-import './styles/index.css';
-import './styles/theory.css';
-import './styles/landing.css';
+import "./(core)/styles/index.css";
+import "./(core)/styles/theory.css";
+import "./(core)/styles/landing.css";
 import "katex/dist/katex.min.css";
-import Script from 'next/script';
-import Layout from "./components/Layout.jsx";
+import Script from "next/script";
+import Layout from "./(core)/components/Layout.jsx";
 
 export const metadata = {
   metadataBase: new URL("https://physicshub.github.io"),
-  title: 'PhysicsHub – Free Physics Simulations',
+  title: "PhysicsHub – Free Physics Simulations",
   description:
-    'Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.',
+    "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
   keywords: [
-    'physics',
-    'science',
-    'education',
-    'portal',
-    'learning',
-    'research',
-    'simulations',
-    'free',
+    "physics",
+    "science",
+    "education",
+    "portal",
+    "learning",
+    "research",
+    "simulations",
+    "free",
   ],
-  authors: [{ name: 'mattqdev' }],
-  robots: 'index, follow',
+  authors: [{ name: "mattqdev" }],
+  robots: "index, follow",
   openGraph: {
-    type: 'website',
-    url: 'https://physicshub.github.io/',
-    title: 'Physics Portal – Free Physics Simulations',
+    type: "website",
+    url: "https://physicshub.github.io/",
+    title: "Physics Portal – Free Physics Simulations",
     description:
-      'Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.',
-    images: ['/Thumbnail.png'],
+      "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
+    images: ["/Thumbnail.png"],
   },
   twitter: {
-    card: 'summary_large_image',
-    url: 'https://physicshub.github.io/',
-    title: 'Physics Portal – Free Physics Simulations',
+    card: "summary_large_image",
+    url: "https://physicshub.github.io/",
+    title: "Physics Portal – Free Physics Simulations",
     description:
-      'Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.',
-    images: ['/Thumbnail.png'],
+      "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
+    images: ["/Thumbnail.png"],
   },
   icons: {
     icon: [
-      { url: '/Logo.ico', type: 'image/x-icon' },
-      { url: '/Logo.png', type: 'image/png' },
+      { url: "/Logo.ico", type: "image/x-icon" },
+      { url: "/Logo.png", type: "image/png" },
     ],
-    apple: '/Logo.png',
+    apple: "/Logo.png",
   },
   alternates: {
-    canonical: 'https://physicshub.github.io/',
+    canonical: "https://physicshub.github.io/",
   },
 };
 
@@ -97,7 +97,6 @@ export default function RootLayout({
   );
 }
 
-
 export const viewport = {
-  themeColor: '#ffffff',
+  themeColor: "#ffffff",
 };

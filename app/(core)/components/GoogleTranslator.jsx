@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";   // ✅ sostituisce useLocation
+import { usePathname } from "next/navigation"; // ✅ sostituisce useLocation
 import "../styles/translator.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -37,7 +37,7 @@ const LANGUAGE_ICONS = {
 };
 
 export default function GoogleTranslator() {
-  const pathname = usePathname();   // ✅
+  const pathname = usePathname(); // ✅
   const [currentLanguage, setCurrentLanguage] = useState("en");
   const [icon, setIcon] = useState(LANGUAGE_ICONS["en"]);
   const translateElementRef = useRef(null);
@@ -98,7 +98,7 @@ export default function GoogleTranslator() {
         changeLanguage(currentLanguage);
       }, 300);
     }
-  }, [pathname, currentLanguage]);   // ✅ usa pathname invece di location.pathname
+  }, [pathname, currentLanguage]); // ✅ usa pathname invece di location.pathname
 
   return (
     <div className="select-container translator-container">
