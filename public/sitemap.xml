@@ -21,32 +21,32 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/BouncingBall</loc>
+    <loc>https://physicshub.github.io/simulations/BouncingBall</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/VectorsOperations</loc>
+    <loc>https://physicshub.github.io/simulations/VectorsOperations</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/BallAcceleration</loc>
+    <loc>https://physicshub.github.io/simulations/BallAcceleration</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/BallGravity</loc>
+    <loc>https://physicshub.github.io/simulations/BallGravity</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/SpringConnection</loc>
+    <loc>https://physicshub.github.io/simulations/SpringConnection</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/SimplePendulum</loc>
+    <loc>https://physicshub.github.io/simulations/SimplePendulum</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
