@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width=40% height=40% />
+<img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width=40% height=40%  style="border-radius: 8px;" />
 <h1>PhysicsHub</h1>
 <h3><em>Best website to learn physics easily, with cool interactive simulations. </em></h3>
 <p>
@@ -23,7 +23,7 @@ Try PhysicsHub directly in your browser:
 🔗 **[Visit the Website](https://physicshub.github.io)**
 
 <p align="center">
-  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true" alt="PhysicsHub Screenshot" width="80%">
+  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true" alt="PhysicsHub Screenshot" width="80%" style="border-radius: 8px;" >
 </p>
 
 
@@ -44,12 +44,18 @@ Try PhysicsHub directly in your browser:
 6. Start the local development server <br>
    ```bash
    npm run dev
-7. Open your browser to http://localhost:3000 or http://localhost:5173/
+7. Open your browser to http://localhost:3000
 
 ## 🤝 Contributing
 
 We welcome contributions from the community!  
-Whether you want to **fix a bug**, **add a new simulation**, or **improve the UI/UX**, your help is appreciated.
+We welcome all kinds of contributions:
+- 🐛 **Report a bug**
+- 💡 **Suggest a new feature or simulation**
+- 🎨 **Improve the UI/UX**
+- 📝 **Write theory content**
+- 🔧 **Fix an existing issue**
+and more...
 
 Our project is **perfect for first-contribution!**
 
@@ -61,7 +67,7 @@ Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/
 
 ### 👥 Contributors
 
-We recognize all types of contributions. This project follows the [all-contributors specification](https://github.com/all-contributors/all-contributors) and the [Emoji Key](https://allcontributors.org/docs/en/emoji-key) ✨ for contribution types. Instructions to add yourself or add contribution emojis to your name are [here](https://github.com/physicshub/physicshub.github.io/issues/25). You can also post an issue or comment on a pull request with the text: `@all-contributors please add @YOUR-USERNAME for THINGS` (where `THINGS` is a comma-separated list of entries from the [list of possible contribution types](https://github.com/all-contributors/all-contributors/blob/master/docs/emoji-key.md)) and our nice bot will add you.
+We recognize all types of contributions. This project follows the [all-contributors specification](https://github.com/all-contributors/all-contributors) and the [Emoji Key](https://allcontributors.org/docs/en/emoji-key) ✨ for contribution types. Instructions to add yourself or add contribution emojis to your name are [here](https://github.com/physicshub/physicshub.github.io/issues/25). You can also post an issue or comment on a pull request with the text: `@all-contributors add @YOUR-USERNAME for THINGS` (where `THINGS` is a comma-separated list of entries from the [list of possible contribution types](https://github.com/all-contributors/all-contributors/blob/master/docs/emoji-key.md)) and all-contributors bot will add you.
 
 Contribution list sorted by amount of commits:
 [![Contributors](https://raw.githubusercontent.com/physicshub/physicshub.github.io/main/images/contributors.png)](https://github.com/physicshub/physicshub.github.io/graphs/contributors)
@@ -111,15 +117,24 @@ Contribution list sorted by order of contribution and based on what they did:
 
 ### 💖 Supporters
 
-No supporters yet
+PhysicsHub is and will always be free and open-source. If you find it helpful, consider supporting us to help fuel future development.
+
+> ⚠️ **Note:**
+>
+> Hello everyone,\
+> I am the owner of this project.
+>
+> If we were to receive a substantial amount of donations, or monthly donations, the project could have its own domain.
+> But if you have any idea of what to do with donation, we will be very happy to hear your opinions.
+> If you can't support us financially, just share the site and the project with anyone, in person or on social media.
 
 Become a supporter by donating on Ko-Fi:
-<br> 
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W41MA4Y1)
 
 ### 🌍 Community 
-Join us on Discord:
-<br>
+Have questions, ideas, or just want to chat about this website? Join our Discord server!
+
 [![](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
 
 

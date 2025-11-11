@@ -60,7 +60,7 @@ This guide will walk you through **setting up the project locally** and creating
    ```bash
    npm run dev
    ```
-   - Open your browser at `http://localhost:3000` or `http://localhost:5173` to see the site running locally.
+   - Open your browser at `http://localhost:3000` to see the site running locally.
 
 ---
 
@@ -72,6 +72,7 @@ This guide will walk you through **setting up the project locally** and creating
   - Fix bugs
   - Update documentation
 - Keep your code **clean, readable, and consistent** with the existing style.
+If you want to do some other things than these, ask to @mattqdev via discord or github issue.
 
 ---
 
@@ -136,8 +137,8 @@ The title of your pull request should follow the [conventional commit format](ht
 
 Here are some examples of conventional PR titles:
 
-- `feat: add new icons for Rust`
-- `fix: correct icon for .gitignore`
+- `feat: added a new simulation BouncingBall`
+- `fix: correct a bug when...`
 - `ci: add GitHub Actions for automated testing`
 
 Generating the changelog based on the commit messages saves time and helps to keep the changelog up-to-date. It also helps to understand the changes in the project.
@@ -153,9 +154,7 @@ Generating the changelog based on the commit messages saves time and helps to ke
   git commit -m "Fix: updated UI based on review"
   git push
   ```
-- Once approved:
-  - If you have write permissions → you can merge.
-  - If not → the maintainer will merge for you.
+Once approved the maintainer will merge for you.
 
 ---
 
