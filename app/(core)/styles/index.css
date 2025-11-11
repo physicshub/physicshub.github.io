@@ -2011,3 +2011,14 @@ footer {
   gap: 0.25rem;
   justify-content: center;
 }
+
+.footer-version {
+  font-size: 0.75rem;
+  color: #ffffff;               
+  background-color: #00b8b8;    
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-left: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* léger relief */
+}

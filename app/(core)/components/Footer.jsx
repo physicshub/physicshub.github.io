@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faXTwitter, faGithub, faDiscord} from '@fortawesome/free-brands-svg-icons' 
 import Link from 'next/link';
 import BackToTopButton from './BackToTop';
+import packageJson from '../../../package.json';
 
 const links = [
   { label: 'Home', to: '/', exact: true },
@@ -47,6 +48,7 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Credits to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for some simulations concepts.</p>
+        <span className="footer-version">v{packageJson.version}</span>
         <BackToTopButton/>
       </div>
     </footer>
