@@ -1,7 +1,9 @@
-import React from "react";
+// app/(core)/components/LandingPart.jsx
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
+import Popup from "./Popup";
 
 const containerVariants = (rm) => ({
   hidden: { opacity: 0 },
@@ -41,6 +43,19 @@ const defaultCTAs = [
     to: "/simulations",
     type: "primary",
     icon: faArrowRight
+    popup: { 
+      title: "New!",
+      description: "Check out our latest simulations added recently.",
+      buttons: [
+        {
+          label: "Join Discord",
+          onClick: () => {
+            window.open("https://discord.gg/hT68DTcwfD", "_blank");
+          },
+          type: "primary"
+        }
+      ]
+    }
   },
   {
     label: "Contribute",
@@ -69,6 +84,7 @@ export function LandingPart({
   stats = defaultStats,
 }) {
   const reduceMotion = useReducedMotion();
+  const [open, setOpen] = useState(false);
 
   return (
     <motion.div
@@ -93,13 +109,19 @@ export function LandingPart({
         {subtitle}
       </motion.p>
 
+      <Popup
+        isOpen={open}        
+        onClose={() => setOpen(false)}
+        popupContent={ctas.find(cta => cta.popup)?.popup}
+      />
+
       {/* CTA buttons */}
       <motion.div
         className="ph-hero__ctas"
         style={{ display: "flex", gap: ctaGap }}
         variants={fadeUp(reduceMotion)}
       >
-        {ctas.map(({ label, to, type, icon, target }, i) => {
+        {ctas.map(({ label, to, type, icon, target, popup }, i) => {
           const isExternal = /^https?:\/\//i.test(to) || to.startsWith("//");
 
           return (
@@ -108,6 +130,7 @@ export function LandingPart({
               variants={ctaVariant}
               whileHover="hover"
               whileTap="tap"
+              onClick={() => setOpen(true)}
             >
               {isExternal ? (
                 <a

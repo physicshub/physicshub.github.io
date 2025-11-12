@@ -58,7 +58,11 @@ export default function FullLandingPage() {
             label: "Join our Discord",
             to: "https://discord.gg/hT68DTcwfD",
             type: "ghost",
-            icon: faDiscord
+            icon: faDiscord,
+            popup: {
+              title: "Thank you for joining us!",
+              description: "We are excited to have you in our Discord community. Feel free to explore the channels, ask questions, and connect with other fans or contributors.",
+            }
           }
         ]}
         stats={[
