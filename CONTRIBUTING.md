@@ -78,11 +78,8 @@ If you want to do some other things than these, ask to @mattqdev via discord or 
 
 ### 3️⃣ Versioning
 
-- Open `package.json` and update the `"version"` field.
-- Follow **[Semantic Versioning](http://semver.org/)**:
-  - **MAJOR** → Breaking changes (e.g., `2.0.0`)
-  - **MINOR** → New features, backward-compatible (e.g., `1.4.0`)
-  - **PATCH** → Bug fixes or small improvements (e.g., `1.3.1`)
+- Versioning is now completely automatic, it uses semantic‑release github action since Nov 11, 2025 (see .github/workflows/release.yml for more details).
+- PLEASE DON'T TOUCH "VERSION" PARAMETER IN PACKAGE.json
 
 ---
 
