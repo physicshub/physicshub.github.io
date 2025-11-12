@@ -14,14 +14,14 @@ const links = [
 
 function Footer() {
   const year = new Date().getFullYear();
-  const scrollToTop = () =>
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+/*   const scrollToTop = () =>
+    window.scrollTo({ top: 0, behavior: 'smooth' }); */
 
   return (
     <footer>
       <div className="footer-content">
         <div className="footer-section footer-about">
-          <h3>PhysicsHub</h3>
+          <h3>PhysicsHub <span className="footer-version">v{packageJson.version}</span></h3>
           <p>A small web application to help student understand physics with cool interactive simulations and easily understandable theory.</p>
         </div>
         <div className="footer-section footer-links">
@@ -48,7 +48,6 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p>&copy; {year} @mattqdev. Released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>. Credits to <a href="https://p5js.org/">p5.js</a> and <a href="https://natureofcode.com/">Nature of Code</a> for some simulations concepts.</p>
-        <span className="footer-version">v{packageJson.version}</span>
         <BackToTopButton/>
       </div>
     </footer>

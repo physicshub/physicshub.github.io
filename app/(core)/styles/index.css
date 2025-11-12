@@ -479,6 +479,8 @@ footer {
 }
 
 .footer-content h3 {
+  display: flex;
+  align-items: center;
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
   color: var(--accent-color);
@@ -534,6 +536,7 @@ footer {
 }
 
 .footer-center{
+  justify-content: center;
   text-align: center;
 }
 
@@ -2015,10 +2018,11 @@ footer {
 .footer-version {
   font-size: 0.75rem;
   color: #ffffff;               
-  background-color: #00b8b8;    
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);    
   padding: 0.2rem 0.5rem;
   border-radius: 6px;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
   font-weight: 500;
   margin-left: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* léger relief */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* subtle shadow */
 }
