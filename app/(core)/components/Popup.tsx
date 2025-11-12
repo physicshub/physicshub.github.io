@@ -21,6 +21,49 @@ interface PopupProps {
   popupContent?: PopupContent;
 }
 
+/* Example usage:
+/* import React, { useState } from "react";
+import Popup from "./Popup";
+
+const ExamplePage = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <button className="btn btn-primary" onClick={() => setOpen(true)}>
+        Apri Popup
+      </button>
+
+      <Popup
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        popupContents={[
+          title: "Conferma Azione",
+          description: "Sei sicuro di voler procedere con questa azione?",
+          buttons: [
+            {
+              label: "Conferma",
+              onClick: () => {
+                alert("Confermato!");
+                setOpen(false);
+              },
+              type: "primary",
+            },
+            {
+              label: "Annulla",
+              onClick: () => setOpen(false),
+              type: "secondary",
+            },
+          ]
+        ]}
+      />
+    </div>
+  );
+};
+
+export default ExamplePage; */
+
+
 const Popup: React.FC<PopupProps> = ({ isOpen, onClose, popupContent }) => {
   const [visible, setVisible] = useState(false);
 
