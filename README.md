@@ -105,6 +105,7 @@ Contribution list sorted by order of contribution and based on what they did:
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/meet-shah820"><img src="https://avatars.githubusercontent.com/u/173499961?v=4?s=100" width="100px;" alt="meet-shah820"/><br /><sub><b>meet-shah820</b></sub></a><br /><a href="#code-meet-shah820" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/OleksandraKordonets"><img src="https://avatars.githubusercontent.com/u/170479081?v=4?s=100" width="100px;" alt="OleksandraKordonets"/><br /><sub><b>OleksandraKordonets</b></sub></a><br /><a href="#bug-OleksandraKordonets" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ismaillxxadil"><img src="https://avatars.githubusercontent.com/u/168589394?v=4?s=100" width="100px;" alt="ismail adil"/><br /><sub><b>ismail adil</b></sub></a><br /><a href="#bug-ismaillxxadil" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://codeurluce.github.io/Portfilio-lucien/"><img src="https://avatars.githubusercontent.com/u/96286635?v=4?s=100" width="100px;" alt="Lucien"/><br /><sub><b>Lucien</b></sub></a><br /><a href="#code-codeurluce" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
