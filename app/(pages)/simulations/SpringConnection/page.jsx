@@ -5,8 +5,8 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Classes & Config ---
-import Bob from "../../../(core)/components/classes/Bob.js";
-import Spring from "../../../(core)/components/classes/Spring.js";
+import Bob from "../../../(core)/physics/Bob";
+import Spring from "../../../(core)/physics/Spring";
 import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../../(core)/data/configs/SpringConnection.js";
 import chapters from "../../../(core)/data/chapters.js";
 

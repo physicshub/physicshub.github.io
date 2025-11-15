@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/hooks/useSimInfo.ts", "app/components/LandingPart.jsx"  ],
+, "app/hooks/useSimInfo.ts", "app/components/LandingPart.jsx", "app/(pages)/simulations/test/page.jsx"  ],
   "exclude": ["node_modules"]
 }

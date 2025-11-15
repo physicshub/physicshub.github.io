@@ -4,7 +4,7 @@
 // http://natureofcode.com
 // Edited by: @mattqdev
 
-import { EARTH_G_SI } from "../../constants/Config";
+import { EARTH_G_SI } from "../constants/Config";
 
 // A Simple Pendulum Class
 export default class Pendulum {

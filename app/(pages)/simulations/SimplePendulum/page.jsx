@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Classes & Config ---
-import Pendulum from "../../../(core)/components/classes/Pendulum.js";
+import Pendulum from "../../../(core)/physics/Pendulum.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,

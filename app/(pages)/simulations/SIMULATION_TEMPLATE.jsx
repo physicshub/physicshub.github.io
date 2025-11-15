@@ -2,78 +2,122 @@
 // This is a template file to use if you want create another brand new simulation.
 // THIS FILE IS INACTIVE RIGHT NOW, USE BouncingBall Simulation as a model to follow, It's right now the best and more optimized simulation
 // If you make some changes about code centralized that every simulation should use, add it here.
-// If you have questions, please ask on the Github repository opening an issue.
+// If you have any questions, please ask on the Github repository opening an issue.
 
-import { useState, useRef, useEffect, useCallback } from "react";
+"use client";
+import { useState, useCallback, useMemo } from "react";
+import { usePathname } from "next/navigation";
 
-import Screen from "../../(core)/components/Screen.jsx";
-import TopSim from "../../(core)/components/TopSim.jsx";
-import TheoryRenderer from "../../(core)/components/theory/TheoryRenderer";
-import chapters from "../../(core)/data/chapters.js";
-import { useLocation } from "react-router-dom";
-import GradientBackground from "../../(core)/components/GradientBackground.jsx";
-import Stars from "../../(core)/components/Stars.jsx";
+// --- Core Physics & Constants ---
+import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
+import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../../(core)/data/configs/test.js";
+import chapters from "../../../(core)/data/chapters.js";
 
-// Classes imports, example:
-// import Spring from "../../components/classes/Bob.js";
+// --- Reusable UI Components ---
+import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
 
-// Components Inputs imports, example:
-// import NumberInput from "../../components/inputs/NumberInput.jsx";
+// --- Hooks & Utils ---
+import useSimulationState from "../../../(core)/hooks/useSimulationState";
+import useSimInfo from "../../../(core)/hooks/useSimInfo";
+import { drawForceVector, getActiveForces } from "../../../(core)/utils/drawUtils.js";
 
-export function SIMULATIONNAME() {
-  const [inputs, setInputs] = useState({
-    //
-    // Inputs
-    //
-  });
+// --- Centralized Body classes ---
 
-  // Input handling
-  const inputsRef = useRef(inputs);
-  useEffect(() => {
-    inputsRef.current = inputs;
-  }, [inputs]);
+export default function Test() {
+  const location = usePathname();
+  const storageKey = location.replaceAll(/[/#]/g, "");
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const [resetVersion, setResetVersion] = useState(0);
 
-  const handleInputChange = (name, value) => {
-    setInputs((prev) => ({ ...prev, [name]: value }));
-  };
+  // Centralized sim info system
+  const { simData, updateSimInfo } = useSimInfo({  });
 
-  const bgColor = useRef([0, 0, 0]);
+  
 
-  const Sketch = useCallback((p) => {
-    p.setup = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode;
-      p.createCanvas(w, h);
-      const style = getComputedStyle(document.querySelector(".screen"));
-      const rgb = (style.backgroundColor.match(/\d+/g) || []).map(Number);
-      bgColor.current = rgb.length === 3 ? rgb : [0, 0, 0];
-    };
+  const handleInputChange = useCallback(
+    (name, value) => {
+      setInputs((prev) => ({ ...prev, [name]: value }));
+    },
+    [setInputs]
+  );
 
-    p.draw = () => {
-      p.background(...bgColor.current);
-      //
-      // Draw Code
-      //
-    };
+  const theory = useMemo(
+    () => chapters.find((ch) => ch.link === location)?.theory,
+    [location]
+  );
 
-    p.windowResized = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode;
-      p.resizeCanvas(w, h);
-    };
-  }, []);
+  const sketch = useCallback(
+    (p) => {
+
+      p.setup = () => {
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.createCanvas(w, h);
+
+        p.background(getBackgroundColor());
+      };
+
+      p.draw = () => {
+        const { } = inputsRef.current;
+        const dt = computeDelta(p);
+
+        // Vettori forze
+        const activeForces = getActiveForces(
+          FORCES,
+        );
+
+        for (const f of activeForces) {
+          drawForceVector(p, pixelX, pixelY, f.vec, f.color);
+        }
+
+        // Aggiorna sim info
+        updateSimInfo(
+          p,
+
+          SimInfoMapper
+        );
+      };
+
+      p.windowResized = () => {
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.resizeCanvas(w, h);
+      };
+    },
+    [inputsRef]
+  );
 
   return (
-    <>
-      <TopSim />
-      <Stars color="var(--accent-color)" opacity={0.3} />
-      <GradientBackground />
-      <Screen sketch={Sketch} />
-      <div className="inputs-container">// // Inputs Components //</div>
-
-      <TheoryRenderer
-        theory={
-          chapters.find((ch) => ch.link === useLocation().pathname)?.theory
-        }
+    <SimulationLayout
+      resetVersion={resetVersion}
+      onReset={() => {
+        const wasPaused = isPaused();
+        resetTime();
+        if (wasPaused) setPause(true);
+        resetInputs(true);
+        setResetVersion((v) => v + 1);
+      }}
+      inputs={inputs}
+      simulation={location}
+      onLoad={(loadedInputs) => {
+        setInputs(loadedInputs);
+        setResetVersion((v) => v + 1);
+      }}
+      theory={theory}
+      dynamicInputs={
+        <DynamicInputs
+          config={INPUT_FIELDS}
+          values={inputs}
+          onChange={handleInputChange}
+        />
+      }
+    >
+      <P5Wrapper
+        sketch={sketch}
+        key={resetVersion}
+        simInfos={<SimInfoPanel data={simData} />}
       />
-    </>
+    </SimulationLayout>
   );
 }

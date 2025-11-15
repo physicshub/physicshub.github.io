@@ -5,11 +5,10 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
-import { SCALE } from "../../../(core)/constants/Config.js";
-import { toPixels, integrate, collideBoundary } from "../../../(core)/constants/Utils.js";
 import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
 import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../../(core)/data/configs/BallGravity.js";
 import chapters from "../../../(core)/data/chapters.js";
+import { toMeters, toPixels } from "../../../(core)/constants/Utils.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
@@ -23,25 +22,28 @@ import useSimInfo from "../../../(core)/hooks/useSimInfo";
 import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
 import { drawBallWithTrail, drawForceVector } from "../../../(core)/utils/drawUtils.js";
 
+// --- Centralized Body class ---
+import Body from "../../../(core)/physics/Body";
+
 export default function BallGravity() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
   const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
   const [resetVersion, setResetVersion] = useState(0);
 
-  // Animazione vento (overlay)
+  // Overlay vento
   const [isBlowing, setIsBlowing] = useState(false);
   const isBlowingRef = useRef(isBlowing);
   useEffect(() => {
     isBlowingRef.current = isBlowing;
   }, [isBlowing]);
 
-  // Centralized sim info system
+  // Sim info
   const maxHeightRef = useRef(0);
   const { simData, updateSimInfo } = useSimInfo({ customRefs: { maxHeightRef } });
 
-  // Physics state
-  const ballState = useRef({ pos: null, vel: null });
+  // Corpo fisico
+  const bodyRef = useRef(null);
 
   const handleInputChange = useCallback((name, value) => {
     setInputs((prev) => ({ ...prev, [name]: value }));
@@ -58,83 +60,105 @@ export default function BallGravity() {
     p.setup = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.createCanvas(w, h);
+
       trailLayer = p.createGraphics(w, h);
+      trailLayer.pixelDensity(1);
       trailLayer.clear();
 
-      // init ball
-      ballState.current.pos = p.createVector(w / 2 / SCALE, h / 4 / SCALE);
-      ballState.current.vel = p.createVector(0, 0);
+      // Inizializza corpo (unità: metri)
+      bodyRef.current = new Body(
+        p,
+        {
+          mass: inputsRef.current.mass,
+          size: inputsRef.current.size,
+          gravity: inputsRef.current.gravity,
+          restitution: inputsRef.current.restitution,
+          frictionMu: inputsRef.current.frictionMu,
+          color: inputsRef.current.color,
+        },
+        p.createVector(toMeters(w / 2), toMeters(h / 4))
+      );
+
+      // Altezza iniziale dal suolo
+      const bottomM = toMeters(p.height);
+      maxHeightRef.current = bottomM - bodyRef.current.state.pos.y - bodyRef.current.params.size / 2;
 
       p.background(getBackgroundColor());
     };
 
     p.draw = () => {
-      const { size, mass, gravity, wind, frictionMu, restitution, color, trailEnabled } = inputsRef.current;
-      const { pos, vel } = ballState.current;
+      const { mass, gravity, wind, color, trailEnabled, size, restitution, frictionMu } = inputsRef.current;
       const dt = computeDelta(p);
-      if (!pos || !vel) return;
+      if (!bodyRef.current || dt <= 0) return;
 
-      if (dt > 0) {
-        // Accelerazioni/forze risultanti
-        let acc = p.createVector(0, gravity);
+      // Sincronizza i parametri del corpo con gli input correnti (reattività senza re-instanziare)
+      bodyRef.current.params.mass = mass;
+      bodyRef.current.params.gravity = gravity;
+      bodyRef.current.params.color = color;
+      bodyRef.current.params.restitution = Math.max(0, Math.min(1, restitution ?? bodyRef.current.params.restitution));
+      bodyRef.current.params.frictionMu = frictionMu;
 
-        // Vento quando premi il mouse (dipende dalla massa)
-        if (p.mouseIsPressed && wind > 0) {
-          acc.add(p.createVector(wind / mass, 0));
+      // Se cambia la size, aggiorna in modo coerente (mantieni il centro, evita salti visivi)
+      if (size !== bodyRef.current.params.size) {
+        const prevRadius = bodyRef.current.params.size / 2;
+        const newRadius = size / 2;
+        // Opzionale: correzione fine per evitare penetrazioni al cambio
+        const bottomM = toMeters(p.height);
+        const lowest = bodyRef.current.state.pos.y + newRadius;
+        if (lowest > bottomM) {
+          bodyRef.current.state.pos.y = bottomM - newRadius;
+          bodyRef.current.state.vel.y = Math.min(bodyRef.current.state.vel.y, 0);
         }
-
-        // Attrito (solo se a contatto col suolo e con velocità)
-        const bottomM = p.height / SCALE;
-        const onGround = pos.y + size / 2 >= bottomM - 1e-9;
-        if (onGround && vel.mag() > 0) {
-          const fric = vel.copy().mult(-1).setMag(frictionMu * gravity);
-          acc.add(fric);
-        }
-
-        // Integrazione
-        const newState = integrate(pos, vel, acc, dt);
-
-        // Collisione/rimbalzo
-        const collided = collideBoundary(
-          newState.pos,
-          newState.vel,
-          { w: p.width / SCALE, h: p.height / SCALE },
-          size / 2,
-          restitution
-        );
-
-        ballState.current.pos = collided.pos;
-        ballState.current.vel = collided.vel;
+        bodyRef.current.params.size = size;
       }
 
-      // Coordinate palla
+      // Vento come accelerazione (F = m * a → a = F/m). Qui 'wind' è forza in N.
+      let externalAcc = null;
+      if (p.mouseIsPressed && wind > 0) {
+        externalAcc = p.createVector(wind / mass, 0);
+      }
+
+      // Step fisico centralizzato (collisioni con bordi in metri)
+      bodyRef.current.step(p, dt, externalAcc);
+
+      const { pos, vel } = bodyRef.current.state;
+
+      // Rendering in pixel
       const pixelX = toPixels(pos.x);
       const pixelY = toPixels(pos.y);
-      const isHover = p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= toPixels(size) / 2;
+      const isHover = bodyRef.current.isHover(p);
 
-      // --- Trail + palla + glow centralizzati ---
+      // Aggiorna max height (metri dal suolo)
+      {
+        const bottomM = toMeters(p.height);
+        const hFromGround = bottomM - pos.y - bodyRef.current.params.size / 2;
+        if (hFromGround > maxHeightRef.current) {
+          maxHeightRef.current = hFromGround;
+        }
+      }
+
+      // Trail + palla
       drawBallWithTrail(p, trailLayer, {
         bg: getBackgroundColor(),
         trailEnabled,
         trailAlpha: 60,
         pixelX,
         pixelY,
-        size: toPixels(size),
+        size: toPixels(bodyRef.current.params.size),
         isHover,
-        ballColor: color,
+        ballColor: bodyRef.current.params.color,
       });
 
-      // Clear main canvas e composita trailLayer
       p.clear();
       p.image(trailLayer, 0, 0);
 
-      // --- Vettori forze (ridisegnati ogni frame, niente trail) ---
+      // Vettori forze (solo visuali)
       const activeForces = FORCES
-        .map(fDef => {
+        .map((fDef) => {
           const vec = fDef.computeFn(
-            { pos, vel, radius: size / 2, mass, isBlowing: isBlowingRef.current },
+            { pos, vel, radius: bodyRef.current.params.size / 2, mass, isBlowing: isBlowingRef.current },
             inputsRef.current,
-            { canvasHeightMeters: p.height / SCALE }
+            { canvasHeightMeters: toMeters(p.height) }
           );
           return vec ? { vec, color: fDef.color } : null;
         })
@@ -144,17 +168,34 @@ export default function BallGravity() {
         drawForceVector(p, pixelX, pixelY, f.vec, f.color);
       }
 
-      // Aggiornamento info
-      updateSimInfo(p, { pos, vel, mass }, { gravity, canvasHeight: p.height }, SimInfoMapper);
+      // Sim info (passa p per FPS, maxHeight per quota)
+      updateSimInfo(
+        p,
+        { pos, vel, mass },
+        { gravity, canvasHeight: p.height, p, maxHeight: maxHeightRef.current },
+        SimInfoMapper
+      );
     };
 
-    // Toggle animazione vento (overlay) in sync con press/release
     p.mousePressed = () => setIsBlowing(true);
     p.mouseReleased = () => setIsBlowing(false);
 
     p.windowResized = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
+
+      // Ricrea il layer del trail
+      trailLayer = p.createGraphics(w, h);
+      trailLayer.pixelDensity(1);
+      trailLayer.clear();
+
+      // Garantisci che il corpo resti dentro i nuovi bordi
+      if (bodyRef.current) {
+        const bottomM = toMeters(p.height);
+        const radius = bodyRef.current.params.size / 2;
+        bodyRef.current.state.pos.x = Math.min(Math.max(bodyRef.current.state.pos.x, radius), toMeters(p.width) - radius);
+        bodyRef.current.state.pos.y = Math.min(Math.max(bodyRef.current.state.pos.y, radius), toMeters(p.height) - radius);
+      }
     };
   }, [inputsRef]);
 
@@ -177,10 +218,9 @@ export default function BallGravity() {
       theory={theory}
       dynamicInputs={<DynamicInputs config={INPUT_FIELDS} values={inputs} onChange={handleInputChange} />}
     >
-      {/* Canvas + SimInfo */}
       <P5Wrapper sketch={sketch} key={resetVersion} simInfos={<SimInfoPanel data={simData} />} />
 
-      {/* Overlay vento (come prima), sovrapposto al canvas */}
+      {/* Overlay vento */}
       <div className={`wind-overlay ${isBlowing ? "blowing" : ""}`} aria-hidden="true">
         <svg className="wind-icon" viewBox="0 0 64 32" width="80" height="40">
           <path d="M2 10 Q18 5, 30 10 T62 10" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" />

@@ -13,7 +13,7 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "size",
-    label: "r - Ball radius (m)",
+    label: "d - Ball diameter (m)",
     min: 0,
     max: 100,
     step: 1,

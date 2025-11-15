@@ -27,7 +27,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "size",
-    label: "r - Ball radius (m):",
+    label: "d - Ball diameter (m):",
     type: "number",
     min: 0.1,
     max: 2,

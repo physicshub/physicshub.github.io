@@ -25,6 +25,7 @@ export default function ShareLinkControl({ simulation, inputs }) {
   const url = useMemo(() => {
     if (typeof window === "undefined") return "";
     const params = new URLSearchParams(inputs).toString();
+    console.log(simulation)
     return `${window.location.origin}/${simulation}?${params}`;
   }, [simulation, inputs]);
 
