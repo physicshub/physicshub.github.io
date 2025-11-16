@@ -20,7 +20,6 @@ Before requesting a review, please ensure that you have:
 - [ ] Ensured no ESLint or TypeScript warnings/errors remain
 - [ ] Updated documentation, comments, or in-code explanations where needed
 - [ ] Verified responsiveness across devices (desktop, tablet, mobile)
-- [ ] Updated version in package.json as specified on [CONTRIBUTING.md](CONTRIBUTING.md)
 - [ ] Followed the [CONTRIBUTING.md](CONTRIBUTING.md) guidelines
 
 ---
