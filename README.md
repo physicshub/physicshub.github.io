@@ -107,6 +107,9 @@ Contribution list sorted by order of contribution and based on what they did:
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ismaillxxadil"><img src="https://avatars.githubusercontent.com/u/168589394?v=4?s=100" width="100px;" alt="ismail adil"/><br /><sub><b>ismail adil</b></sub></a><br /><a href="#bug-ismaillxxadil" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://codeurluce.github.io/Portfilio-lucien/"><img src="https://avatars.githubusercontent.com/u/96286635?v=4?s=100" width="100px;" alt="Lucien"/><br /><sub><b>Lucien</b></sub></a><br /><a href="#code-codeurluce" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Talos0248"><img src="https://avatars.githubusercontent.com/u/68732421?v=4?s=100" width="100px;" alt="Talos0248"/><br /><sub><b>Talos0248</b></sub></a><br /><a href="#bug-Talos0248" title="Bug reports">🐛</a></td>
+    </tr>
   </tbody>
 </table>
 
