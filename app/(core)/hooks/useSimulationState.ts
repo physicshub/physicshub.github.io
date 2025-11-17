@@ -21,6 +21,8 @@ export default function useSimulationState<T extends Record<string, any>>(
 
   // 🔎 Leggi parametri dall'URL
   const loadFromUrl = useCallback((): Partial<T> | null => {
+    if (typeof window === "undefined") return null;
+
     try {
       const queryString = window.location.search; // es: "?velocityX=4&..."
       if (!queryString) return null;
@@ -49,8 +51,10 @@ export default function useSimulationState<T extends Record<string, any>>(
 
   // 🔎 Leggi da localStorage
   const loadFromStorage = useCallback((): T | null => {
+    if (typeof window === "undefined" || !("localStorage" in window)) return null;
+
     try {
-      const saved = localStorage.getItem(storageKey);
+      const saved = window.localStorage.getItem(storageKey);
       if (!saved) return null;
       return JSON.parse(saved) as T;
     } catch (error) {
@@ -76,8 +80,10 @@ export default function useSimulationState<T extends Record<string, any>>(
 
   // 🔒 Salva su localStorage
   const saveInputs = useCallback(() => {
+    if (typeof window === "undefined" || !("localStorage" in window)) return;
+
     try {
-      localStorage.setItem(storageKey, JSON.stringify(inputsRef.current));
+      window.localStorage.setItem(storageKey, JSON.stringify(inputsRef.current));
     } catch (error) {
       console.warn("[useSimulationState] Errore salvataggio localStorage:", error);
     }

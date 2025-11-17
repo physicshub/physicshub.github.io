@@ -2,7 +2,7 @@
 // Bob object, just like our regular Mover (location, velocity, acceleration, mass)
 // Edited by: @mattqdev
 
-import p5 from "p5";
+import type p5 from "p5";
 import { adjustColor } from "../utils/adjustColor";
 
 export type DampingMode = "factor" | "rate";

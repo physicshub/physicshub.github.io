@@ -6,7 +6,7 @@
 // Thank you: http://www.myphysicslab.com/spring2d.html
 // Edited by: @mattqdev
 
-import p5 from "p5";
+import type p5 from "p5";
 import Bob from "./Bob";
 import Body from "./Body";
 import { SCALE } from "../constants/Config.js";
@@ -35,7 +35,7 @@ export default class Spring {
   connect(obj: Bob | Body): void {
     if (obj instanceof Bob) {
       // Bob lavora in pixel
-      let force = p5.Vector.sub(obj.pos, this.anchor);
+      const force = obj.pos.copy().sub(this.anchor);
       const currentLength = force.mag();
       const stretch = currentLength - this.restLength;
       force.setMag(-this.k * stretch);
@@ -43,7 +43,7 @@ export default class Spring {
     } else {
       // Body lavora in metri, convertiamo anchor in metri
       const anchorMeters = this.anchor.copy().div(SCALE);
-      let force = p5.Vector.sub(obj.state.pos, anchorMeters);
+      const force = obj.state.pos.copy().sub(anchorMeters);
       const currentLength = force.mag();
       const stretch = currentLength - this.restLength;
       force.setMag(-this.k * stretch);
@@ -56,30 +56,30 @@ export default class Spring {
   constrainLength(body: Body, minlen: number, maxlen: number): void;
   constrainLength(obj: Bob | Body, minlen: number, maxlen: number): void {
     if (obj instanceof Bob) {
-      let direction = p5.Vector.sub(obj.pos, this.anchor);
+      const direction = obj.pos.copy().sub(this.anchor);
       const length = direction.mag();
 
       if (length < minlen) {
         direction.setMag(minlen);
-        obj.pos = p5.Vector.add(this.anchor, direction);
+        obj.pos = this.anchor.copy().add(direction);
         obj.vel.mult(0);
       } else if (length > maxlen) {
         direction.setMag(maxlen);
-        obj.pos = p5.Vector.add(this.anchor, direction);
+        obj.pos = this.anchor.copy().add(direction);
         obj.vel.mult(0);
       }
     } else {
       const anchorMeters = this.anchor.copy().div(SCALE);
-      let direction = p5.Vector.sub(obj.state.pos, anchorMeters);
+      const direction = obj.state.pos.copy().sub(anchorMeters);
       const length = direction.mag();
 
       if (length < minlen) {
         direction.setMag(minlen);
-        obj.state.pos = p5.Vector.add(anchorMeters, direction);
+        obj.state.pos = anchorMeters.copy().add(direction);
         obj.state.vel.mult(0);
       } else if (length > maxlen) {
         direction.setMag(maxlen);
-        obj.state.pos = p5.Vector.add(anchorMeters, direction);
+        obj.state.pos = anchorMeters.copy().add(direction);
         obj.state.vel.mult(0);
       }
     }

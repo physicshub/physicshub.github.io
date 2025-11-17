@@ -1,4 +1,4 @@
-import p5 from "p5";
+import type p5 from "p5";
 import { integrate, collideBoundary, toMeters, toPixels } from "../constants/Utils.js";
 import { EARTH_G_SI } from "../constants/Config.js";
 
@@ -40,12 +40,13 @@ export default class Body {
 
   /** Aggiorna la fisica del corpo */
   step(p: p5, dt: number, externalAcc?: p5.Vector) {
+    const createVector = (...args: Parameters<p5["createVector"]>) => p.createVector(...args);
     const { pos, vel, acc } = this.state;
     const { gravity, size, restitution, frictionMu } = this.params;
     const radius = size / 2;
 
     // Accelerazione base (gravità)
-    let totalAcc = acc.copy().add(p.createVector(0, gravity!));
+    let totalAcc = acc.copy().add(createVector(0, gravity!));
 
     // Accelerazione esterna (vento, mouse, ecc.)
     if (externalAcc) totalAcc.add(externalAcc);
