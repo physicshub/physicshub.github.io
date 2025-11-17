@@ -2,6 +2,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Skeleton from "../components/ContributorsSectionSkeleton.jsx";
+import { HashLink } from "react-router-hash-link";
 import {
   faUsers,
   faFileCode,

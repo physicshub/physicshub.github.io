@@ -1,0 +1,110 @@
+
+.portal {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: transparent !important;   /* ensure nothing leaks */
+  border: none !important;
+  outline: none !important;
+}
+
+
+.portal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* IMPORTANT FIX: Fully transparent with NO gradient */
+  background: rgba(0, 0, 0, 0) !important;
+
+  z-index: 9999;
+  overflow: hidden;
+
+  animation: fadeOut 0.3s ease forwards;
+  animation-delay: 1.9s;
+}
+
+
+.portal-core {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 230, 230, 0.45) 0%,
+    rgba(0, 230, 230, 0.18) 40%,
+    rgba(0, 230, 230, 0.05) 65%,
+    rgba(0, 230, 230, 0.0) 100%
+  );
+
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 800px;
+
+  border: none !important;
+  outline: none !important;
+}
+
+
+.portal-object {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #00e6e6;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00e6e6, 0 0 16px #00e6e6;
+}
+
+
+.portal-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent !important;
+  overflow: visible;
+  border: none !important;
+  outline: none !important;
+}
+
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes floatAround {
+  0% { transform: translate(0,0) rotate(0deg); }
+  25% { transform: translate(10px,-10px) rotate(45deg); }
+  50% { transform: translate(-10px,10px) rotate(90deg); }
+  75% { transform: translate(5px,-5px) rotate(135deg); }
+  100% { transform: translate(0,0) rotate(180deg); }
+}
+
+
+.warp-star {
+  position: absolute;
+  background: #00e6e6;
+  border-radius: 50%;
+}
+
+.warp-beam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 40vh;
+  background: linear-gradient(
+    0deg,
+    rgba(0,230,230,0) 0%,
+    rgba(0,230,230,0.7) 50%,
+    rgba(0,230,230,0) 100%
+  );
+  transform-origin: center bottom;
+}

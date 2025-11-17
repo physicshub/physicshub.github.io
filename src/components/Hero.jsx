@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import chaptersData from "../data/chapters.js";
 import { motion, useReducedMotion } from "framer-motion";
+
 
 // Container variant for staggered child animations
 const containerVariants = (rm) => ({
@@ -72,7 +73,22 @@ const glowVariant = {
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const navigate = useNavigate();
 
+    const goToSimulations = () => {
+    try {
+      if (window?.triggerPortal && typeof window.triggerPortal === "function") {
+        window.triggerPortal(() => navigate("/simulations"));
+      } else {
+        navigate("/simulations");
+      }
+    } catch (e) {
+      console.error("Portal navigation failed:", e);
+      navigate("/simulations");
+    }
+  };
+
+  
   // Compute chapters count
   const chaptersCount = Array.isArray(chaptersData)
     ? chaptersData.length
@@ -113,13 +129,21 @@ export function Hero() {
       </motion.p>
 
       {/* CTA buttons */}
+      
       <motion.div className="ph-hero__ctas" variants={fadeUp(reduceMotion)}>
         <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
-          <Link className="ph-btn ph-btn--primary main-btn" to="/simulations">
+          <button
+            className="ph-btn ph-btn--primary main-btn"
+            onClick={goToSimulations}
+            style={{ display: "flex", alignItems: "center", gap: 8, lineHeight: "28px", fontSize: "16px", cursor: "pointer" }}
+          >
             Go to Simulations
-            <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
-          </Link>
+            <FontAwesomeIcon icon={faArrowRight} />
+          </button>
         </motion.div>
+        
+
+
         <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
           <Link className="ph-btn ph-btn--ghost main-btn" to="/contribute">
             Contribute

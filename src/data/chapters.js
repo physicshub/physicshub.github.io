@@ -6,11 +6,11 @@ export default [
       name:"Bouncing Ball",
       desc:"Simulation of the ball bouncing off the walls.",
       link:"/BouncingBall",
+      
       tags:[
          TAGS.EASY,
          TAGS.PHYSICS,
          TAGS.COLLISION,
-         TAGS.ANIMATIONS
       ],
 
       theory:{
@@ -19,7 +19,8 @@ export default [
                title:"Introduction",
                blocks:[
                   {
-                        type:"paragraph",                        text:"This section demonstrates the physics behind the Bouncing Ball simulation."
+                        type:"paragraph",
+                        text:"This section demonstrates the physics behind the Bouncing Ball simulation."
                   },
                ]
             },
