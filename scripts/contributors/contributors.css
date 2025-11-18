@@ -59,17 +59,29 @@ h3 {
   gap: 6px;
   margin-top: 4px;
 }
-.container > div {
+.item{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+.item > div{
+  border-radius: 5px;
   padding: 4px;
-  border-radius: 8px;
   text-align: center;
   font-size: clamp(8px, 1.5vw, 10px);
   font-weight: bold;
   color: #ffffff;
 }
 .percentage {
-  background-color: #4fb407;
+  background-color: #818181;
 }
 .commits {
   background-color: #00b8b8;
+}
+.removed{
+  background-color: #b81900;
+}
+.added{
+  background-color: #03b800;
 }

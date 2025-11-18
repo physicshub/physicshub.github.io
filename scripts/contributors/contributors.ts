@@ -3,6 +3,7 @@
 // Credits to Philipp Kief and his contributors for the original code. 
 
 // scripts/contributors/contributors.ts
+import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import axios, { type AxiosRequestConfig } from 'axios';
@@ -10,7 +11,8 @@ import { writeToFile } from '../helpers/writeFile.ts';
 import { green, red, yellow } from '../helpers/painter.ts';
 import { createScreenshot } from '../helpers/screenshots.ts';
 import type { Contributor } from './models/contributor.ts';
-import { getPercentagesContributor } from '../helpers/percentage.ts';
+import { getPercentagesCommits, getPercentagesAdditions, getPercentagesDeletions } from '../helpers/percentage.ts';
+import { getRemoteStats } from '../helpers/gitStats.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,7 +35,7 @@ const parseLinkHeader = (linkHeader: string) => {
 };
 
 /**
- * Get all contributors from GitHub API.
+ * Get contributors from GitHub API (commits count only).
  */
 const fetchContributors = (
   page: string
@@ -72,28 +74,67 @@ const fetchContributors = (
   });
 };
 
+/**
+ * Create contributors list with stats from GitHub API.
+ */
 const createContributorsList = async (contributors: Contributor[]) => {
-  const list = contributors
-    .map((c) => {
-      return `
+  // prima raccogliamo tutte le stats remote in un array
+  const contributorsStats = await Promise.all(
+    contributors.map(async (c) => {
+      const stats = await getRemoteStats(c.login);
+      return {
+        login: c.login,
+        additions: stats.additions ?? 0,
+        deletions: stats.deletions ?? 0,
+        commits: stats.commits ?? 0,
+      };
+    })
+  );
+
+
+  const listItems = contributors.map((c) => {
+    const stats = contributorsStats.find((cs) => cs.login === c.login);
+
+    return `
       <li title="${c.login}">
         <img src="${c.avatar_url}" alt="${c.login}"/>
         <h3>${c.login}</h3>
         <div class="container">
-          <div class="commits">
-            <span>${c.contributions} commits</span>
-          </div>
-          <div class="percentage">
-            <span>${getPercentagesContributor(contributors, c)}</span>
-          </div>
+            <div class="item">
+              <div class="added">
+                <span>+ ${stats?.additions ?? "-"}</span>
+              </div>
+              <div class="percentage">
+                <span>${getPercentagesAdditions(contributorsStats, c.login)}</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="commits">
+                <span>${stats?.commits ?? "-"} commits</span>
+              </div>
+              <div class="percentage">
+                <span>${getPercentagesCommits(contributors, c)}</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="removed">
+                <span>- ${stats?.deletions ?? "-"}</span>
+              </div>
+              <div class="percentage">
+                <span>${getPercentagesDeletions(contributorsStats, c.login)}</span>
+              </div>
+            </div>
         </div>
       </li>`;
-    })
-    .join('\n');
+  });
 
   const htmlDoctype = '<!DOCTYPE html>';
   const styling = '<link rel="stylesheet" href="contributors.css">';
-  const generatedHtml = `${htmlDoctype}${styling}<ul>${list}</ul>`;
+  const generatedHtml = `${htmlDoctype}
+  <html>
+    <head>${styling}</head>
+    <body><ul>${listItems.join('\n')}</ul></body>
+  </html>`;
 
   const outputPath = join(__dirname, 'contributors.html');
   await writeToFile(outputPath, generatedHtml);
