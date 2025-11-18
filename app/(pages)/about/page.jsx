@@ -1,54 +1,94 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Button from "../../(core)/components/Button.jsx";
+import Button from "../../(core)/components/Button"; // Ensure path is correct for your project
 
-const stats = [
-  {
-    label: "Interactive labs",
-    value: "6+",
-    helper: "Classical mechanics, waves, and more coming soon.",
-  },
-  {
-    label: "Community contributors",
-    value: "20+",
-    helper: "Developers, educators, and curious learners.",
-  },
-  {
-    label: "Stars on GitHub",
-    value: "17+",
-    helper: "Open-source and growing fast.",
-  },
-];
+// Define the shape of our stats state (JSDoc for editor hints)
+/**
+ * @typedef {{ stars: number|string, contributors: number|string }} GitHubStats
+ */
 
+// Updated principles to be more technical/specific
 const buildPrinciples = [
-  "Live controls and theory sit side by side.",
-  "Light / dark mode ready for every simulation.",
-  "Accurate physics vetted with educators.",
-  "Documented configs for remixing and forks.",
+  "Live controls & theory side-by-side",
+  "Math-accurate physics engines",
+  "Light/Dark mode native support",
+  "Clean code structure for forking",
 ];
 
 export default function About() {
+  // Get the status from GitHub API
+  // I set default values to ensure the page looks good before data loads
+  const [ghStats, setGhStats] = useState({
+    stars: "17+", // Fallback value
+    contributors: "20+", // Fallback value
+  });
+  // Fetch data from GitHub API on component mount
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const repoRes = await fetch(
+          "https://api.github.com/repos/physicshub/physicshub.github.io"
+        );
+        const repoData = await repoRes.json();
+
+        const contribRes = await fetch(
+          "https://api.github.com/repos/physicshub/physicshub.github.io/contributors?per_page=100"
+        );
+        const contribData = await contribRes.json();
+
+        if (repoData.stargazers_count) {
+          setGhStats({
+            stars: repoData.stargazers_count,
+            contributors: Array.isArray(contribData)
+              ? contribData.length
+              : "20+",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch GitHub stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, [setGhStats]);
+
+  const stats = [
+    {
+      label: "Interactive Labs",
+      value: "6+",
+      helper: "Classical mechanics, waves, and thermodynamics.",
+    },
+    {
+      label: "GitHub Stars",
+      value: ghStats.stars,
+      helper: "Trusted by the open-source community.",
+    },
+    {
+      label: "Contributors",
+      value: ghStats.contributors,
+      helper: "Code committed by students & devs worldwide.",
+    },
+  ];
+
   return (
     <div className="page-container about-page">
       <section className="about-hero">
         <div className="about-hero__text">
           <p className="about-eyebrow">Open-source physics playground</p>
           <h1 className="title">
-            Stop memorizing formulas. Start visualizing them.
+            Stop memorizing formulas. <br /> Start visualizing them.
           </h1>
           <p>
-            <strong>PhysicsHub</strong> is an open-source platform where{" "}
-            <strong>students</strong>, <strong>teachers</strong>, and{" "}
-            <strong>enthusiasts</strong> explore scientific concepts in a{" "}
-            <strong>visual</strong> and <strong>intuitive</strong> way. Our
-            simulations blend playful experimentation with clear theory to close
-            the gap between complex concepts and engaging interactions.
+            <strong>PhysicsHub</strong> turns abstract equations into reactive
+            simulations. We are an open-source sandbox where students pull
+            levers, change variables, and immediately see how the math behaves.
           </p>
           <p>
-            Beyond the labs, PhysicsHub is a{" "}
-            <strong>collaborative space</strong>—anyone can co-create, review,
-            or translate new content. Check the contributing guide to see how
-            you can shape the roadmap.
+            Beyond the labs, this is a <strong>collaborative space</strong>.
+            Because we are open-source, you can inspect the code to see how
+            gravity works, fork a repo to build your own experiment, or fix a
+            bug in our optics engine.
           </p>
           <div className="about-cta">
             <Button link="/simulations" content="Explore simulations" />
@@ -57,6 +97,8 @@ export default function About() {
             </Link>
           </div>
         </div>
+
+        {/* Stats Grid */}
         <div className="about-stats-grid">
           {stats.map((stat) => (
             <div className="about-stat" key={stat.label}>
@@ -70,26 +112,34 @@ export default function About() {
 
       <section className="about-panels">
         <article className="about-panel">
-          <h2>Our mission</h2>
+          <h2>Why we built this</h2>
           <p>
-            Knowledge should be both <strong>free</strong> and{" "}
-            <strong>easy to understand</strong>. PhysicsHub exists to deliver an{" "}
-            <strong>educational tool</strong> that anyone can use, remix, and
-            share without limits.
+            Most high-quality physics software is locked behind paywalls or
+            stuck in old interfaces. PhysicsHub exists to deliver a modern,
+            performant, and <strong>completely free</strong> library that
+            belongs to the community, not a corporation.
           </p>
           <ul className="about-list">
-            <li>Explain advanced physics through visuals before formulas.</li>
-            <li>Remove paywalls and keep every simulation open-source.</li>
-            <li>Invite teachers, students, and hobbyists into the process.</li>
+            <li>
+              <strong>Visuals over Formulas:</strong> We prioritize interactive
+              canvases.
+            </li>
+            <li>
+              <strong>Zero Paywalls:</strong> No subscriptions, no ads, just
+              code.
+            </li>
+            <li>
+              <strong>Community Driven:</strong> Built by the people who use it.
+            </li>
           </ul>
         </article>
+
         <article className="about-panel">
-          <h2>How every simulation is crafted</h2>
+          <h2>Built for accuracy</h2>
           <p>
-            Every lab is guided by the belief that learning is most effective
-            when it&apos;s <strong>interactive</strong> and{" "}
-            <strong>enjoyable</strong>. We sweat the tiny details so the
-            experience stays smooth.
+            We don&apos;t just draw animations; we simulate the math. Every lab
+            runs on a real-time physics engine to ensure that what you see on
+            screen matches the reality of the equation.
           </p>
           <div className="about-chip-grid">
             {buildPrinciples.map((principle) => (
@@ -128,7 +178,7 @@ export default function About() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            here
+            on GitHub
           </a>
           .
         </p>
