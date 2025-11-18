@@ -57,8 +57,10 @@ export default function BallAcceleration() {
 
       // Inizializza corpo con parametri
       bodyRef.current = new Body(p, {
-        mass: inputsRef.current.mass ?? 1,
-        radius: inputsRef.current.size / 2,
+        mass: 1,
+        size: inputsRef.current.size,
+        gravity: 0,
+        frictionMu: 0,
         color: inputsRef.current.color,
       }, p.createVector(w / 2 / SCALE, h / 2 / SCALE));
 
@@ -74,10 +76,14 @@ export default function BallAcceleration() {
 
       // Accelerazione verso il mouse
       const target = p.createVector(p.mouseX / SCALE, p.mouseY / SCALE);
-      const dir = target.copy().sub(pos).normalize().mult(acceleration);
+      const offset = target.sub(pos);
+      let dir = p.createVector(0, 0);
+      if (offset.magSq() > 1e-8) {
+        dir = offset.copy().normalize().mult(acceleration);
+      }
 
       // Step fisico con forza esterna
-      bodyRef.current.step(p, dt, dir);
+      bodyRef.current.step(p, dt, dir.magSq() > 0 ? dir : undefined);
 
       // Clamp velocità
       if (bodyRef.current.state.vel.mag() > maxspeed) {
