@@ -2240,8 +2240,7 @@ footer {
   font-size: 0.75rem;
   color: #ffffff;               
   background: color-mix(in oklab, var(--accent-color), transparent 94%);    
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.8rem !important;
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
   font-weight: 500;
   margin-left: 1rem;
