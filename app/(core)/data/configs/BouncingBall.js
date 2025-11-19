@@ -38,7 +38,15 @@ export const FORCES = [
       if (contact) {
         return { x: 0, y: -mass * inputs.gravity };
       }
-      return null; // se non c’è contatto, nessuna forza
+      return null;
+    },
+  },
+  {
+    key: "velocity",
+    color: "red",
+    computeFn: ({ vel }) => {
+      if (!vel) return null;
+      return { x: vel.x, y: vel.y };
     },
   },
 ];
@@ -53,7 +61,7 @@ export const SimInfoMapper = (state, context, refs) => {
   const pixelX = toPixels(pos.x);
   const pixelY = toPixels(pos.y);
 
-  const speedMs = toMeters(vel.mag());
+  const speedMs = vel.mag();
   const posXM = toMeters(pixelX);
   const posYM = invertYAxis(canvasHeight, toMeters(pixelY));
 

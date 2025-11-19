@@ -2,7 +2,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMailBulk, faMailForward, faShare } from "@fortawesome/free-solid-svg-icons";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebook,
   faTwitter,
@@ -25,7 +25,6 @@ export default function ShareLinkControl({ simulation, inputs }) {
   const url = useMemo(() => {
     if (typeof window === "undefined") return "";
     const params = new URLSearchParams(inputs).toString();
-    console.log(simulation)
     return `${window.location.origin}/${simulation}?${params}`;
   }, [simulation, inputs]);
 

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation.js";
 // --- Core Physics & Constants ---
 import { SCALE } from "../../../(core)/constants/Config.js";
 import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
-import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../../(core)/data/configs/BallAcceleration.js";
+import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper, FORCES } from "../../../(core)/data/configs/BallAcceleration.js";
 import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
@@ -68,7 +68,7 @@ export default function BallAcceleration() {
     };
 
     p.draw = () => {
-      const { size, acceleration, maxspeed, color, trailEnabled } = inputsRef.current;
+      const { size, acc, maxspeed, color, trailEnabled } = inputsRef.current;
       const dt = computeDelta(p);
       if (!bodyRef.current || dt <= 0) return;
 
@@ -79,7 +79,7 @@ export default function BallAcceleration() {
       const offset = target.sub(pos);
       let dir = p.createVector(0, 0);
       if (offset.magSq() > 1e-8) {
-        dir = offset.copy().normalize().mult(acceleration);
+        dir = offset.copy().normalize().mult(acc);
       }
 
       // Step fisico con forza esterna
@@ -109,14 +109,31 @@ export default function BallAcceleration() {
       p.clear();
       p.image(trailLayer, 0, 0);
 
-      // --- Vettori ---
+/*       // --- Vettori ---
       drawForceVector(p, pixelX, pixelY, dir.copy().mult(200), "red"); // Accelerazione
-      drawForceVector(p, pixelX, pixelY, bodyRef.current.state.vel.copy().mult(20), "blue"); // Velocità
+      drawForceVector(p, pixelX, pixelY, bodyRef.current.state.vel.copy().mult(20), "blue"); // Velocità */
+
+      // Force vectors (only visual)
+      const activeForces = FORCES
+        .map((fDef) => {
+          const vec = fDef.computeFn(
+            { dir, vel },
+            inputsRef.current,
+            {  }
+          );
+          return vec ? { vec, color: fDef.color } : null;
+        })
+        .filter(Boolean);
+
+        console.log(activeForces)
+      for (const f of activeForces) {
+        drawForceVector(p, pixelX, pixelY, f.vec, f.color);
+      }
 
       // Aggiornamento SimInfo
       updateSimInfo(
         p,
-        { pos, vel, acceleration, maxspeed },
+        { pos, vel, acc, maxspeed },
         { canvasHeight: p.height },
         SimInfoMapper
       );
