@@ -1,7 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Button from "../../(core)/components/Button"; // Ensure path is correct for your project
+import Button from "../../(core)/components/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSliders,       
+  faSquareRootVariable, 
+  faMoon,        
+  faCodeBranch,  
+} from "@fortawesome/free-solid-svg-icons";
 
 // Define the shape of our stats state (JSDoc for editor hints)
 /**
@@ -10,18 +17,18 @@ import Button from "../../(core)/components/Button"; // Ensure path is correct f
 
 // Updated principles to be more technical/specific
 const buildPrinciples = [
-  "Live controls & theory side-by-side",
-  "Math-accurate physics engines",
-  "Light/Dark mode native support",
-  "Clean code structure for forking",
+  { icon: faSliders, text: "Live controls & theory side-by-side" },
+  { icon: faSquareRootVariable, text: "Math-accurate physics engines" },
+  { icon: faMoon, text: "Light/Dark mode native support" },
+  { icon: faCodeBranch, text: "Clean code structure for forking" },
 ];
 
 export default function About() {
   // Get the status from GitHub API
   // I set default values to ensure the page looks good before data loads
   const [ghStats, setGhStats] = useState({
-    stars: "17+", // Fallback value
-    contributors: "20+", // Fallback value
+    stars: "-", // Fallback value
+    contributors: "-", // Fallback value
   });
   // Fetch data from GitHub API on component mount
   useEffect(() => {
@@ -143,8 +150,8 @@ export default function About() {
           </p>
           <div className="about-chip-grid">
             {buildPrinciples.map((principle) => (
-              <span className="about-chip" key={principle}>
-                {principle}
+              <span className="about-chip" key={principle.text}>
+                <FontAwesomeIcon icon={principle.icon} /> {principle.text}
               </span>
             ))}
           </div>
