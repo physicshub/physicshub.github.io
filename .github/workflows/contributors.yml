@@ -25,7 +25,8 @@ jobs:
         run: npm ci
 
       - name: Run contributors script
-        run: npm run contributors
+        run: npx ts-node-esm scripts/contributors/contributors.ts
+
 
       - name: Commit and push changes
         run: |
