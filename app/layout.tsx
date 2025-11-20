@@ -48,6 +48,9 @@ export const metadata = {
   alternates: {
     canonical: "https://physicshub.github.io/",
   },
+  verification: {
+    google: "mZD-GZIQxWFBVVNpzrQ_V1Vmf8do93uwLkKfn10dJrA",
+  },
 };
 
 export default function RootLayout({
