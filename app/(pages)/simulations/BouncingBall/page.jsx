@@ -167,6 +167,9 @@ export default function BouncingBall() {
         const bg = getBackgroundColor();
         const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
         trailLayer.background(r, g, b);
+        /*trailLayer.fill(r,g,b,20);
+        trailLayer.noStroke();
+        trailLayer.rect(0,0,p.width,p.height);*/
       };
     },
     [inputsRef, maxHeightRef, fallStartTimeRef]
