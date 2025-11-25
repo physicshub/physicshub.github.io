@@ -44,8 +44,7 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
   };
 
   return (
-    <div className={`sim-info-panel ${!isPanelVisible ? "collapsed" : ""}`}
-   >
+    <div className={`sim-info-panel ${!isPanelVisible ? "collapsed" : ""}`}>
       <div className="sim-info-header">
         {/* Button collapse/expand */}
         <button
