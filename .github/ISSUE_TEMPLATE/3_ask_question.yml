@@ -4,12 +4,6 @@ title: "[Question]: "
 labels: ["question"]
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for reaching out!  
-        This template is for asking questions, requesting clarification, or seeking help with using or contributing to this project.
-
   - type: textarea
     id: question
     attributes:
@@ -20,8 +14,8 @@ body:
         - How do I configure X?
         - Can you clarify how Y works?
         - I'm not sure how to contribute to Z...
-    validations:
-      required: true
+      validations:
+        required: true
 
   - type: textarea
     id: context
