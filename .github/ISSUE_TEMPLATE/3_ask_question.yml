@@ -14,16 +14,16 @@ body:
         - How do I configure X?
         - Can you clarify how Y works?
         - I'm not sure how to contribute to Z...
-      validations:
-        required: true
+    validations:
+      required: true
 
   - type: textarea
     id: context
     attributes:
       label: Context
       description: Provide any context that might help us answer your question (e.g. what you tried, what you expected, related docs).
-      validations:
-        required: false
+    validations:
+      required: false
 
   - type: textarea
     id: environment
@@ -38,16 +38,16 @@ body:
           - **OS edition**:
           - **Tool/Extension version**:
           - **VSCode/Node version**:
-      validations:
-        required: false
+    validations:
+      required: false
 
   - type: textarea
     id: additional-info
     attributes:
       label: Additional Information
       description: Add any other details, links, or screenshots that might help.
-      validations:
-        required: false
+    validations:
+      required: false
 
   - type: checkboxes
     id: terms
