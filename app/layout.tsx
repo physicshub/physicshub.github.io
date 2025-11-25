@@ -4,8 +4,9 @@ import "./(core)/styles/landing.css";
 import "katex/dist/katex.min.css";
 import Script from "next/script";
 import Layout from "./(core)/components/Layout.jsx";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL("https://physicshub.github.io"),
   title: "PhysicsHub – Free Physics Simulations",
   description:
@@ -32,7 +33,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    url: "https://physicshub.github.io/",
+    site: "https://physicshub.github.io/",
     title: "Physics Portal – Free Physics Simulations",
     description:
       "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
@@ -44,9 +45,6 @@ export const metadata = {
       { url: "/Logo.png", type: "image/png" },
     ],
     apple: "/Logo.png",
-  },
-  alternates: {
-    canonical: "https://physicshub.github.io/",
   },
   verification: {
     google: "mZD-GZIQxWFBVVNpzrQ_V1Vmf8do93uwLkKfn10dJrA",
