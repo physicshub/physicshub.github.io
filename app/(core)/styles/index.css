@@ -11,11 +11,15 @@
   --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
   --border-radius: 10px;
   --stars-color: #ffffff;
+  --input-bg: rgba(0,70,70,0.6);
+  --input-border: rgb(0,230,230);
 }
 
 /* Light Theme Overrides */
 [data-theme='light'] {
   --bg-color: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #00b8b8;
   --text-color: #1a1a1a;
   --text-shadow-color: #00000082;
   --accent-color: #00b8b8;
@@ -823,9 +827,9 @@ footer {
 
 .input-text, .input-number, .input-slider{
   padding: 0.5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--input-border);
   border-radius: var(--border-radius);
-  background: var(--bg-color);
+  background-color: var(--input-bg);
   color: var(--text-color);
   outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -968,8 +972,8 @@ footer {
   padding: 0.5rem 2.5rem 0.5rem 0.75rem;
   font-size: 1rem;
   color: var(--text-color);
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: var(--border-radius);
   outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
