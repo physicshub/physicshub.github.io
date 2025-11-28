@@ -10,4 +10,5 @@ export const routes = [
   { path: '/simulations/BallGravity', component: 'BallGravity', changefreq: 'weekly', priority: 0.7 },
   { path: '/simulations/SpringConnection', component: 'SpringConnection', changefreq: 'weekly', priority: 0.7 },
   { path: '/simulations/SimplePendulum', component: 'SimplePendulum', changefreq: 'weekly', priority: 0.7 },
+  { path: '/simulations/ParabolicMotion', component: 'ParabolicMotion', changefreq: 'weekly', priority: 0.7 },
 ];
