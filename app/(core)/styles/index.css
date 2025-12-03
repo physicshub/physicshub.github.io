@@ -331,9 +331,9 @@ main.simulations-page{
   justify-content: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid transparent;
+  border: var(--glow-color) 1px solid transparent;
   border-radius: var(--border-radius);
-  box-shadow: 0 0 1rem 0 #04cdcd1a;
+  box-shadow: 0 0 4px var(--accent-color);
   transition: transform 0.3s, box-shadow 0.3s;
   padding: 0.5rem;
   color: var(--ph-fg);
@@ -359,7 +359,6 @@ main.simulations-page{
 
 .chapter-card-overlay{
   /* background: var(--card-bg); */
-  border: 1px solid transparent;
   background: color-mix(in oklab, var(--ph-accent), transparent 90%);
   border-radius: var(--border-radius);
   z-index: 2;
@@ -368,7 +367,18 @@ main.simulations-page{
   display: flex;
   flex-direction: column;
   padding: 1rem 1.5rem;
-  background-color: rgb(11,15,25);
+  background-color: var(--bg-color);
+  box-shadow: 0 0 12px var(--accent-color);
+}
+
+.chapter-card-overlay::after{
+  content: "";
+  opacity: .35;
+  background: radial-gradient(circle at 80% 0%, color-mix(in oklab, var(--accent-color), transparent 20%), transparent 60%);
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: var(--border-radius);
 }
 
 
