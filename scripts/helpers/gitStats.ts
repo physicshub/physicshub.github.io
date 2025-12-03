@@ -19,8 +19,8 @@ export const getRemoteStats = async (
   maxRetries = 10,
   delayMs = 5000
 ): Promise<ContributorStats> => {
-  if(!process.env.GITHUB_TOKEN){
-    console.log(red("GITHUB_TOKEN isn't defined. Define it on .env file"))
+  if(!process.env.GH_TOKEN){
+    console.log(red("GH_TOKEN isn't defined. Define it on .env file"))
     return { additions: null, deletions: null, commits: null };;
   }
 
@@ -32,8 +32,8 @@ export const getRemoteStats = async (
           headers: {
             accept: 'application/json',
             'User-Agent': 'Contributors script',
-            ...(process.env.GITHUB_TOKEN
-              ? { Authorization: `token ${process.env.GITHUB_TOKEN}` }
+            ...(process.env.GH_TOKEN
+              ? { Authorization: `token ${process.env.GH_TOKEN}` }
               : {}),
           },
         }
