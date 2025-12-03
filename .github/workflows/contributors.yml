@@ -26,6 +26,9 @@ jobs:
 
       - name: Run contributors script
         run: npm run contributors
+        env:
+          # Secret token with permissions to get contributors data
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 
       - name: Commit and push changes
