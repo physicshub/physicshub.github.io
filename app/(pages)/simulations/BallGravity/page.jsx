@@ -263,7 +263,6 @@ export default function BallGravity() {
         const wasPaused = isPaused();
         resetTime();
         if (wasPaused) setPause(true);
-        resetInputs(true);
         setResetVersion((v) => v + 1);
       }}
       inputs={inputs}

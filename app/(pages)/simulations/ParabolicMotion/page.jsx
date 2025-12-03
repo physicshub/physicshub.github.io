@@ -429,7 +429,6 @@ export default function ParabolicMotion() {
         const wasPaused = isPaused();
         resetTime();
         if (wasPaused) setPause(true);
-        resetInputs(true);
         needsRelaunchRef.current = true;
         setResetVersion((v) => v + 1);
       }}
