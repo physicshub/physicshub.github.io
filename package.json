@@ -11,7 +11,7 @@
     "predeploy": "npm run build && npm run contributors",
     "deploy": "gh-pages -d out",
     "generate:sitemap": "node scripts/sitemap-generator.js",
-    "contributors": "ts-node scripts/contributors/contributors.ts",
+    "contributors": "ts-node --esm scripts/contributors/contributors.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix"
   },
