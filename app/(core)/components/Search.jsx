@@ -1,7 +1,7 @@
 // app/components/Search.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faFilter, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Tag from "./Tag";
 import TAGS from "../data/tags";
 
@@ -103,8 +103,6 @@ export function Search({ onSearch }) {
                     {Object.values(TAGS).map((filter) => {
                         const tagName = filter.name;
                         const isSelected = selectedTags.includes(tagName);
-
-                        console.log(filter)
 
                         return (
                             <button

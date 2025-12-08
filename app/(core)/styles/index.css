@@ -1101,7 +1101,6 @@ footer {
 .select-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
 .select-label {
@@ -1114,6 +1113,7 @@ footer {
 .select-wrapper {
   position: relative;
   width: 100%;
+  display: inline-block;
 }
 
 .select-input {
