@@ -8,7 +8,7 @@
   --accent-color: #00e6e6;
   --glow-color: #fff;
   --card-bg: #111;
-  --border-color: #222;
+  --border-color: #00e6e637;
   --bg-gradient: linear-gradient(135deg, #0a0a0a, #141416);
   --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
   --border-radius: 10px;
@@ -2492,4 +2492,116 @@ ul {
   padding: 0 1rem;
   max-width: var(--max-content-width, 1200px);
   width: 100%;
+}
+
+/* Create a new Blog page */
+.create-blog-container {
+    max-width: 1100px;
+    margin: 7rem auto; 
+    padding: 0 1.5rem;
+}
+
+.top-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem; 
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.editor-title {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.blog-editor-area {
+    padding: 0;
+}
+
+.blog-editor-area .form-group {
+    margin-bottom: 1rem;
+}
+
+.blog-editor-area .title-group {
+    margin-bottom: 2rem;
+}
+
+.blog-editor-area label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.blog-editor-area input[type="text"],
+.blog-editor-area textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);    
+    background-color: var(--bg-color-light);
+    color: var(--text-color);
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.blog-editor-area input:focus,
+.blog-editor-area textarea:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,230,230,0.2); 
+}
+
+.blog-editor-area textarea {
+    resize: vertical;
+    min-height: 400px;
+}
+
+.json-editor {
+    font-family: 'Consolas', 'Courier New', monospace; 
+    font-size: 0.95rem;
+    white-space: pre-wrap; 
+}
+
+
+
+.tab-switcher {
+    display: flex;
+    margin-bottom: 0; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    background: transparent;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 2px solid transparent;
+    color: #888;
+    margin-bottom: -1px;
+}
+
+.tab-button.active {
+    color: var(--accent-color);
+    border-bottom: 2px solid var(--accent-color);
+    font-weight: 600;
+}
+
+.content-area {
+    padding-top: 1.5rem;
+}
+
+.preview-output {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--bg-color-light);
+    min-height: 400px;
 }

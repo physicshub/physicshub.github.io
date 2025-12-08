@@ -4,6 +4,7 @@ import { useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Blogs from "../../(core)/data/blogs.js";
 import { Search } from "../../(core)/components/Search.jsx";
+import { useRouter } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faThumbtack, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +13,7 @@ const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   const pinnedBlogs = Blogs.filter((chap) => chap.isPinned);
   const unpinnedBlogs = Blogs.filter((chap) => !chap.isPinned);
@@ -42,7 +44,7 @@ export default function Blog() {
   const finalChapters = [...filteredUnpinnedChapters];
 
   const handleCreateNewBlog = () => {
-    alert("Soon!");
+    router.push("/blog/create");
   };
 
   return (
