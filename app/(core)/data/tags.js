@@ -1,4 +1,4 @@
-export const TAGS = {
+const TAGS = {
   EASY: { 
     name: "Easy", 
     color: "green", 
@@ -52,3 +52,5 @@ export const TAGS = {
     color: "coral", 
   },
 };
+
+export default TAGS;

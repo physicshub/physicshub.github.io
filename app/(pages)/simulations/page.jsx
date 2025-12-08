@@ -5,19 +5,32 @@ import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from '../../(core)/components/Search';
 
+const getChapterTagNames = (tags) => tags.map(tag => tag.name.toLowerCase());
+
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredChapters = Chapters.filter((chap) => {
-    const term = searchTerm.toLowerCase();
+    const searchTerms = searchTerm
+      .toLowerCase()
+      .trim()
+      .split(/\s+/) 
+      .filter(term => term.length > 0);
 
-    const matchesName = chap.name.toLowerCase().includes(term);
+    if (searchTerms.length === 0) {
+      return true;
+    }
+    
+    const chapterTagNames = getChapterTagNames(chap.tags);
 
-    const matchesTags = chap.tags.some((tag) =>
-      tag.name.toLowerCase().includes(term)
-    );
+    const matchesAllTerms = searchTerms.every(term => {
+        const matchesName = chap.name.toLowerCase().includes(term);
+        const matchesTag = chapterTagNames.includes(term);
 
-    return matchesName || matchesTags;
+        return matchesName || matchesTag;
+    });
+
+    return matchesAllTerms;
   });
 
   return (

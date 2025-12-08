@@ -1,6 +1,6 @@
-function Tag(props) {
+function Tag({ tag = "", className = "" }) {
     return (
-        <span className={`tag tag-${props.level.color}`} key={props.id}>{props.level.name}</span>
+        <span className={`tag tag-${tag.color} ${className}`}>{tag.name}</span>
     );
 }
 

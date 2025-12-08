@@ -10,7 +10,7 @@ function Chapter(props) {
             <div className='chapter-card-overlay'>
                 <div className="chapter-card-tags-container">
                     {props.tags.map((tag, idx) => (
-                        <Tag level={tag} key={tag.id || idx} />
+                        <Tag tag={tag} key={tag.id || idx} />
                     ))}
                 </div>
                 <h2 className='text-2xl'>Chapter {props.id}: {props.name}</h2>
