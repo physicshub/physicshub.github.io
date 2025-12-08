@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
+import { Search } from '../../(core)/components/Search';
 
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,17 +21,20 @@ export default function Simulations() {
   });
 
   return (
-    <main className="simulations-page">
-      {filteredChapters.map((chap) => (
-        <Chapter
-          key={chap.id}
-          id={chap.id}
-          name={chap.name}
-          desc={chap.desc}
-          link={chap.link}
-          tags={chap.tags}
-        />
-      ))}
-    </main>
+    <div className="simulations-container">
+      <Search onSearch={setSearchTerm} />
+      <main className="simulations-page">
+        {filteredChapters.map((chap) => (
+          <Chapter
+            key={chap.id}
+            id={chap.id}
+            name={chap.name}
+            desc={chap.desc}
+            link={chap.link}
+            tags={chap.tags}
+          />
+        ))}
+      </main>
+    </div>
   );
 }

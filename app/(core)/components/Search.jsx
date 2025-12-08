@@ -18,6 +18,7 @@ export function Search({ onSearch }) {
       role="search"
       onSubmit={(e) => e.preventDefault()}
     >
+    <FontAwesomeIcon icon={faMagnifyingGlass} />
       <input
         type="search"
         name="query"
@@ -26,10 +27,6 @@ export function Search({ onSearch }) {
         value={value}
         onChange={handleChange}
       />
-      {/* Search button disabled due a width problem */}
-{/*       <button type="submit" aria-label="Submit Search">
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </button> */}
     </form>
   );
 }

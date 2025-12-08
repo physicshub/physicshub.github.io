@@ -231,7 +231,11 @@ nav a.active::after {
   border-radius: var(--border-radius);
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
-  width: fit-content;
+  color: var(--ph-fg);
+  background: 
+    color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: 
+    color-mix(in oklab, var(--accent-color), transparent 60%);
 }
 
 .search-container:focus-within {
@@ -240,7 +244,6 @@ nav a.active::after {
 }
 
 .search-container input {
-  background: var(--bg-color);
   border: none;
   padding: 0.5rem;
   color: var(--text-color);
@@ -253,23 +256,13 @@ nav a.active::after {
 }
 
 .search-container input:focus {
-  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
-  outline: var(--accent-color);
-  outline-color: var(--accent-color);
-  width: 20rem;
-} 
-
-.search-container button {
-  background: var(--accent-color);
-  padding: 0 0.75rem;
-  color: #000;
-  cursor: pointer;
-  transition: background 0.3s;
+  width: 20rem; 
 }
 
-.search-container button:hover {
-  background: var(--bg-color);
-  color: var(--accent-color);
+.search-container > svg {
+  align-self: center;
+  margin: 0 0.5rem;
+  color: var(--ph-fg-muted);
 }
 
 header.open nav ul {
@@ -314,19 +307,25 @@ header.open nav ul {
   }
 }
 
-
+.simulations-container{
+  display: flex;
+  flex-direction: column;
+  margin-top: 6.5rem;
+  align-items: center;
+  justify-content: center;
+}
 
 main {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
-
+  max-width: 100%;
 }
 
 main.simulations-page{
   margin-bottom: 7.5rem;  
-  padding: 7rem 2rem 2rem;
+  padding: 2rem;
 }
 
 /* Ensure white background for light mode */

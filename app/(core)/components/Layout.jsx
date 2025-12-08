@@ -6,11 +6,9 @@ import Stars from './Stars';
 import GradientBackground from './GradientBackground';
 
 export default function Layout({ children, showStars = false, showGradient = false, starColor = "AEE3FF", starOpacity = 0.4 }) {
-  const [searchTerm, setSearchTerm] = useState('');
-
   return (
     <>
-      <Header onSearch={setSearchTerm} />
+      <Header/>
       {showStars && <Stars color={starColor} opacity={starOpacity} zIndex={1} starDensity={0.005} />}
       {showGradient && <GradientBackground />}
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
