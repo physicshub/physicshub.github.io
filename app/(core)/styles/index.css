@@ -2483,3 +2483,13 @@ ul {
   border-bottom: 2px solid #eee;
   padding-bottom: 0.5rem;
 }
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  max-width: var(--max-content-width, 1200px);
+  width: 100%;
+}

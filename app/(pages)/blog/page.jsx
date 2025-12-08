@@ -3,37 +3,37 @@
 import { useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Blogs from "../../(core)/data/blogs.js";
-import { Search } from '../../(core)/components/Search.jsx';
+import { Search } from "../../(core)/components/Search.jsx";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faThumbtack } from "@fortawesome/free-solid-svg-icons"; // Icona per "pinnato"
+import { faList, faThumbtack, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-const getChapterTagNames = (tags) => tags.map(tag => tag.name.toLowerCase());
+const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const pinnedBlogs = Blogs.filter(chap => chap.isPinned);
-  const unpinnedBlogs = Blogs.filter(chap => !chap.isPinned);
+  const pinnedBlogs = Blogs.filter((chap) => chap.isPinned);
+  const unpinnedBlogs = Blogs.filter((chap) => !chap.isPinned);
 
   const filteredUnpinnedChapters = unpinnedBlogs.filter((chap) => {
     const searchTerms = searchTerm
       .toLowerCase()
       .trim()
-      .split(/\s+/) 
-      .filter(term => term.length > 0);
+      .split(/\s+/)
+      .filter((term) => term.length > 0);
 
     if (searchTerms.length === 0) {
       return true;
     }
-    
+
     const chapterTagNames = getChapterTagNames(chap.tags);
 
-    const matchesAllTerms = searchTerms.every(term => {
-        const matchesName = chap.name.toLowerCase().includes(term);
-        const matchesTag = chapterTagNames.includes(term);
+    const matchesAllTerms = searchTerms.every((term) => {
+      const matchesName = chap.name.toLowerCase().includes(term);
+      const matchesTag = chapterTagNames.includes(term);
 
-        return matchesName || matchesTag;
+      return matchesName || matchesTag;
     });
 
     return matchesAllTerms;
@@ -41,43 +41,63 @@ export default function Blog() {
 
   const finalChapters = [...filteredUnpinnedChapters];
 
+  const handleCreateNewBlog = () => {
+    alert("Soon!");
+  };
+
   return (
     <div className="simulations-container blogs-container">
-      <Search onSearch={setSearchTerm} />
-      
+      <div className="header-controls">
+        <Search
+          onSearch={setSearchTerm}
+          extraButton={
+            <button
+              onClick={handleCreateNewBlog}
+              className="ph-btn ph-btn--primary cursor-pointer"
+              aria-label="Create a new blog"
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              New Blog
+            </button>
+          }
+        />
+      </div>
+
       {pinnedBlogs.length > 0 && searchTerm === "" && (
         <section className="pinned-blogs-section">
-            <h2 className="blogs-header">
-                <FontAwesomeIcon icon={faThumbtack} className="pinned-icon" />
-                Pinned Blogs
-            </h2>
-            <div className="blogs-list">
-                {pinnedBlogs.map((chap) => (
-                    <Chapter
-                        key={chap.id}
-                        id={chap.id}
-                        name={chap.name}
-                        desc={chap.desc}
-                        link={chap.link}
-                        tags={chap.tags}
-                        isABlog={true}
-                    />
-                ))}
-            </div>
+          <h2 className="blogs-header">
+            <FontAwesomeIcon icon={faThumbtack} className="pinned-icon" />
+            Pinned Blogs
+          </h2>
+          <div className="blogs-list">
+            {pinnedBlogs.map((chap) => (
+              <Chapter
+                key={chap.id}
+                id={chap.id}
+                name={chap.name}
+                desc={chap.desc}
+                link={chap.link}
+                tags={chap.tags}
+                isABlog={true}
+              />
+            ))}
+          </div>
         </section>
       )}
 
       <main className="blogs-page">
         {searchTerm === "" ? (
-          <h2 className="blogs-header"><FontAwesomeIcon icon={faList}/> All the blogs</h2>
+          <h2 className="blogs-header">
+            <FontAwesomeIcon icon={faList} /> All the blogs
+          </h2>
         ) : (
           <h2 className="blogs-header">Search Results</h2>
         )}
-        
+
         <main className="blogs-list">
-          {finalChapters.map((chap) => (
+          {finalChapters.map((chap, i) => (
             <Chapter
-              key={chap.id}
+              key={i}
               id={chap.id}
               name={chap.name}
               desc={chap.desc}

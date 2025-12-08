@@ -15,7 +15,7 @@ const dispatchSearch = (onSearch, tags, text) => {
     onSearch?.(combinedQuery);
 };
 
-export function Search({ onSearch }) {
+export function Search({ onSearch, extraButton }) {
     const [searchText, setSearchText] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,6 +96,7 @@ export function Search({ onSearch }) {
                 >
                     <FontAwesomeIcon icon={faFilter} />
                 </button>
+                {extraButton}
             </div>
 
             <div className={`horizontal-menu-container ${isMenuOpen ? "open" : ""}`}>
