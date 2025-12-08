@@ -83,7 +83,7 @@ export default function About() {
       <section className="about-hero">
         <div className="about-hero__text">
           <p className="about-eyebrow">Open-source physics playground</p>
-          <h1 className="title">
+          <h1 className="title text-2xl">
             Stop memorizing formulas. <br /> Start visualizing them.
           </h1>
           <p>
@@ -119,7 +119,7 @@ export default function About() {
 
       <section className="about-panels">
         <article className="about-panel">
-          <h2>Why we built this</h2>
+          <h2 className="text-2xl">Why we built this</h2>
           <p>
             Most high-quality physics software is locked behind paywalls or
             stuck in old interfaces. PhysicsHub exists to deliver a modern,
@@ -142,7 +142,7 @@ export default function About() {
         </article>
 
         <article className="about-panel">
-          <h2>Built for accuracy</h2>
+          <h2 className="text-2xl">Built for accuracy</h2>
           <p>
             We don&apos;t just draw animations; we simulate the math. Every lab
             runs on a real-time physics engine to ensure that what you see on

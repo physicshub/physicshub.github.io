@@ -57,7 +57,7 @@ export default function Contribute() {
 
   return (
     <div className="contribution-page-container">
-      <h1 className="title">Contribute to PhysicsHub</h1>
+      <h1 className="title text-3xl">Contribute to PhysicsHub</h1>
       <p>
         PhysicsHub is an open-source project: anyone can help make it better by
         adding simulations, improving the code, or creating new educational

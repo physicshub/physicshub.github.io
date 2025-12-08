@@ -90,7 +90,7 @@
 .ph-hero__container {
   position: relative;
   max-width: 1100px;
-  padding: 0 3rem;
+  padding: 5rem 3rem;
   margin: 8rem 0rem;
   text-align: left;
   color: var(--ph-fg);

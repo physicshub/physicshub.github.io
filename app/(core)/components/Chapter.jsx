@@ -13,7 +13,7 @@ function Chapter(props) {
                         <Tag level={tag} key={tag.id || idx} />
                     ))}
                 </div>
-                <h2>Chapter {props.id}: {props.name}</h2>
+                <h2 className='text-2xl'>Chapter {props.id}: {props.name}</h2>
                 <p>{props.desc}</p>
                 <Link href={props.link}>Go to simulation
                     <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '10px' }}/>

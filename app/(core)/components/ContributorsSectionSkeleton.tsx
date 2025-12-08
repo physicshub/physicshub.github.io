@@ -45,7 +45,7 @@ export default function ContributorsSectionSkeleton({
       aria-live="polite"
     >
       <h2 className="title">{title}</h2>
-      <div className="contributors-grid">
+      <div className="contributors-grid animate-pulse">
         {placeholders.map((i) => (
           <ContributorCardSkeleton key={i} index={i} />
         ))}

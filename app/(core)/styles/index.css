@@ -1,4 +1,6 @@
 /* Stile globale */
+@import "tailwindcss";
+
 :root {
   --bg-color: #0b0f19; 
   --text-color: #e8eefb;
@@ -84,6 +86,12 @@ body {
 [data-theme='light'] body {
   background: #ffffff;
   background-color: #ffffff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 hr{
@@ -172,7 +180,7 @@ nav ul {
   list-style: none;
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: clamp(1rem, 3vw, 4rem);
 }
 
 nav a {
@@ -201,6 +209,7 @@ nav a.active::after {
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 25%;
 }
 
 .theme-toggle {
@@ -222,7 +231,7 @@ nav a.active::after {
   border-radius: var(--border-radius);
   overflow: hidden;
   transition: border-color 0.3s, box-shadow 0.3s;
-
+  width: fit-content;
 }
 
 .search-container:focus-within {
@@ -1543,8 +1552,9 @@ footer {
   height: 15rem;
   padding: 0.5rem;
   border-radius: var(--border-radius);
-  background: #33333340;
+  background: #00e6e614;
   animation: pulse 1.5s infinite;
+  border: #00e6e64b solid 1px;
 }
 
 /* Shimmer for skeleton */
