@@ -13,9 +13,9 @@ function Chapter(props) {
                         <Tag tag={tag} key={tag.id || idx} />
                     ))}
                 </div>
-                <h2 className='text-2xl'>Chapter {props.id}: {props.name}</h2>
+                <h2 className='text-2xl'>{props.isABlog ? `#${props.id} ${props.name}` : `Chapter ${props.id}: ${props.name}`}</h2>
                 <p>{props.desc}</p>
-                <Link href={props.link}>Go to simulation
+                <Link href={props.link}>{props.isABlog ? "Go to blog" :  "Go to simulation"}
                     <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '10px' }}/>
                 </Link>
             </div>

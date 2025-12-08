@@ -1,4 +1,4 @@
-// app/pages/simulations.jsx
+// app/(pages)/page.jsx
 "use client";
 import { useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";

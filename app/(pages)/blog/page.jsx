@@ -1,0 +1,97 @@
+// app/(pages)/blog/page.jsx
+"use client";
+import { useState } from "react";
+import Chapter from "../../(core)/components/Chapter.jsx";
+import Blogs from "../../(core)/data/blogs.js";
+import { Search } from '../../(core)/components/Search.jsx';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faList, faThumbtack } from "@fortawesome/free-solid-svg-icons"; // Icona per "pinnato"
+
+const getChapterTagNames = (tags) => tags.map(tag => tag.name.toLowerCase());
+
+export default function Blog() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const pinnedBlogs = Blogs.filter(chap => chap.isPinned);
+  const unpinnedBlogs = Blogs.filter(chap => !chap.isPinned);
+
+  const filteredUnpinnedChapters = unpinnedBlogs.filter((chap) => {
+    const searchTerms = searchTerm
+      .toLowerCase()
+      .trim()
+      .split(/\s+/) 
+      .filter(term => term.length > 0);
+
+    if (searchTerms.length === 0) {
+      return true;
+    }
+    
+    const chapterTagNames = getChapterTagNames(chap.tags);
+
+    const matchesAllTerms = searchTerms.every(term => {
+        const matchesName = chap.name.toLowerCase().includes(term);
+        const matchesTag = chapterTagNames.includes(term);
+
+        return matchesName || matchesTag;
+    });
+
+    return matchesAllTerms;
+  });
+
+  const finalChapters = [...filteredUnpinnedChapters];
+
+  return (
+    <div className="simulations-container blogs-container">
+      <Search onSearch={setSearchTerm} />
+      
+      {pinnedBlogs.length > 0 && searchTerm === "" && (
+        <section className="pinned-blogs-section">
+            <h2 className="blogs-header">
+                <FontAwesomeIcon icon={faThumbtack} className="pinned-icon" />
+                Pinned Blogs
+            </h2>
+            <div className="blogs-list">
+                {pinnedBlogs.map((chap) => (
+                    <Chapter
+                        key={chap.id}
+                        id={chap.id}
+                        name={chap.name}
+                        desc={chap.desc}
+                        link={chap.link}
+                        tags={chap.tags}
+                        isABlog={true}
+                    />
+                ))}
+            </div>
+        </section>
+      )}
+
+      <main className="blogs-page">
+        {searchTerm === "" ? (
+          <h2 className="blogs-header"><FontAwesomeIcon icon={faList}/> All the blogs</h2>
+        ) : (
+          <h2 className="blogs-header">Search Results</h2>
+        )}
+        
+        <main className="blogs-list">
+          {finalChapters.map((chap) => (
+            <Chapter
+              key={chap.id}
+              id={chap.id}
+              name={chap.name}
+              desc={chap.desc}
+              link={chap.link}
+              tags={chap.tags}
+              isABlog={true}
+            />
+          ))}
+
+          {finalChapters.length === 0 && searchTerm.length > 0 && (
+            <p className="no-results">Nothing found for "{searchTerm}".</p>
+          )}
+        </main>
+      </main>
+    </div>
+  );
+}

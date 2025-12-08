@@ -535,6 +535,10 @@ main.simulations-page {
   color: var(--accent-color);
   transition: background 0.3s, box-shadow 0.3s;
   margin-top: auto;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chapter-card-overlay > a:hover {
@@ -2415,4 +2419,67 @@ ul {
   font-weight: 500;
   margin-left: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* subtle shadow */
+}
+
+/* Blogs section page */
+.blogs-container{
+  display: flex;
+  padding: 0 3rem;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
+.blogs-page{
+  display: grid;
+  grid-template-columns: none;
+  width: 100%;
+}
+
+.blogs-page > section{
+  aspect-ratio: 2/1.2;
+}
+
+/* Stili per la sezione Pinned */
+.pinned-blogs-section {
+  width: 100%;
+  margin-top: 1.5rem ;
+  max-width: var(--max-content-width, 1200px);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pinned-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  width: 100%;
+}
+
+.pinned-icon {
+  margin-right: 0.5rem;
+  transform: rotate(-15deg);
+}
+
+.blogs-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.blogs-list > * {
+  aspect-ratio: 2 / 1.4; 
+}
+
+/* Style for headers */
+.blogs-header {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
 }
