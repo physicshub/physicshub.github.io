@@ -5,45 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faEye, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/navigation';
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx"; 
+import dynamic from 'next/dynamic';
+import { initialContentData } from "../../../(core)/data/initialContent";
 
-const initialContent = JSON.stringify({
-    "sections": [
-        {
-            "title": "Introduzione",
-            "blocks": [
-                {
-                    "type": "paragraph",
-                    "text": "Questo è un paragrafo di introduzione. Usiamo la proprietà 'text' per il testo."
-                },
-                {
-                    "type": "formula",
-                    "latex": "\\frac{d}{dx} \\left( \\int_{0}^{x} f(t) dt \\right) = f(x)",
-                    "inline": false
-                },
-                {
-                    "type": "paragraph",
-                    "text": "Le formule sono renderizzate dal componente TheoryFormula che usa KaTeX, gestendo il LaTeX."
-                },
-                {
-                    "type": "code",
-                    "code": "console.log('Ciao, Mondo!');",
-                    "language": "javascript"
-                }
-            ]
-        },
-        {
-            "title": "Sezione 2: Esempi",
-            "blocks": [
-                {
-                    "type": "callout",
-                    "calloutType": "tip",
-                    "title": "Suggerimento",
-                    "text": "Questa è una nota importante."
-                }
-            ]
-        }
-    ]
-}, null, 2);
+const DynamicJsonEditor = dynamic(
+    () => import("../../../(core)/components/JsonEditor.jsx"), 
+    { ssr: false } 
+);
+const initialContent = JSON.stringify(initialContentData, null, 2);
 
 const CustomPreviewRenderer = ({ jsonContent }) => {
     try {
@@ -86,7 +55,9 @@ export default function CreateBlogPage() {
     }, [title, jsonContent]);
 
     const handleTitleChange = (e) => setTitle(e.target.value);
-    const handleContentChange = (e) => setJsonContent(e.target.value);
+    const handleContentChange = (newValue) => {
+        setJsonContent(newValue); 
+    };
 
 
     return (
@@ -146,18 +117,13 @@ export default function CreateBlogPage() {
                     <div className="content-area">
                         {viewMode === 'JSON' ? (
                             <div className="form-group full-height">
-                                <textarea 
-                                    id="content" 
-                                    rows="20"
-                                    placeholder="Insert JSON/Latex content here..." 
+                                {/* 🌟 Usa il componente dinamico */}
+                                <DynamicJsonEditor 
                                     value={jsonContent}
                                     onChange={handleContentChange}
-                                    className="json-editor"
-                                    required
-                                ></textarea>
+                                />
                             </div>
                         ) : (
-                            // 🌟 Usa il CustomPreviewRenderer aggiornato
                             <CustomPreviewRenderer jsonContent={jsonContent} />
                         )}
                     </div>

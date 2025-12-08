@@ -2620,3 +2620,57 @@ ul {
     background-color: var(--bg-color-light);
     min-height: 400px;
 }
+
+/* JSON Editor style */
+/* STILI CRUCIALI PER RENDERE L'EDITOR MODIFICABILE */
+
+/* L'Editor (wrapper) gestisce il border e il min-height */
+/* E' il componente di react-simple-code-editor */
+.create-blog-container .blog-editor-area .form-group .Editor {
+    /* Assicura che il contenitore sia il riferimento per l'assoluto */
+    position: relative; 
+}
+
+/* 1. Stili per il textarea sovrapposto (deve essere invisibile ma cliccabile) */
+.json-editor-textarea {
+    /* Stili standard per l'input */
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    padding: inherit;
+    line-height: inherit;
+    
+    /* Manteniamo l'area di input sopra l'area di evidenziazione */
+    z-index: 1;
+    
+    /* 🌟 CRUCIALE: Rendi l'area di input invisibile ma interattiva */
+    color: transparent;
+    caret-color: white; /* O il colore del testo che preferisci */
+    background: transparent;
+    
+    /* Assicurati che l'altezza sia la stessa dell'editor (per lo scorrimento) */
+    min-height: 400px; 
+}
+
+/* 2. Assicurati che l'highlighting non sia cliccabile */
+.json-editor-textarea ~ pre {
+    user-select: none;
+    pointer-events: none;
+}
+
+/* 3. Correggi l'allineamento per i numeri di riga */
+/* Il padding a sinistra deve tenere conto della colonna dei numeri di riga. */
+/* Se usi SyntaxHighlighter, il suo padding interno è spesso 1em. */
+.theory-codeblock .token-line {
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+/* Correggi l'allineamento del testo nell'Editor per il padding dei numeri di riga */
+/* Potrebbe essere necessario sovrascrivere lo stile del contenitore dell'highlighting
+   per allinearlo al padding del textarea. */
+.create-blog-container .blog-editor-area .form-group .Editor .json-editor-textarea ~ pre {
+    /* Qui potresti dover regolare il padding-left per compensare i numeri di riga */
+    /* Ad esempio, se i numeri di riga occupano 3em di spazio: */
+    /* padding-left: 3em !important; */ 
+}
