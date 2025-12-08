@@ -1,3 +1,4 @@
+// app/(core)/components/theory/Typo.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faCheck, faInfoCircle, faExclamationTriangle, faLightbulb, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';

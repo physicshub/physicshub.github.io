@@ -1,4 +1,4 @@
-// components/theory/TheoryRenderer.tsx
+// app/(core)/components/theory/TheoryRenderer.tsx
 import React from "react";
 import {
   TheorySection,
@@ -15,8 +15,6 @@ import {
   TheoryImage,
   TheoryToggle
 } from "./Typo";
-
-import { BlockMath, InlineMath } from "react-katex";
 
 export default function TheoryRenderer({ theory }: { theory: any }) {
   if (!theory?.sections?.length) return null;

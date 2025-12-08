@@ -2598,6 +2598,21 @@ ul {
     padding-top: 1.5rem;
 }
 
+.preview-error {
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin-top: 1rem;  
+  color: #ff3333;
+  background-color: rgba(255, 51, 51, 0.1);
+  border: 1px solid #ff3333;  
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+  
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 .preview-output {
     padding: 1.5rem;
     border: 1px solid var(--border-color);

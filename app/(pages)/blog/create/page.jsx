@@ -4,41 +4,61 @@ import React, { useState, useCallback } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faEye, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/navigation';
+import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx"; 
 
 const initialContent = JSON.stringify({
-    title: "Intro al LaTeX",
-    blocks: [
+    "sections": [
         {
-            type: "paragraph",
-            content: "Questo è un paragrafo normale di introduzione."
+            "title": "Introduzione",
+            "blocks": [
+                {
+                    "type": "paragraph",
+                    "text": "Questo è un paragrafo di introduzione. Usiamo la proprietà 'text' per il testo."
+                },
+                {
+                    "type": "formula",
+                    "latex": "\\frac{d}{dx} \\left( \\int_{0}^{x} f(t) dt \\right) = f(x)",
+                    "inline": false
+                },
+                {
+                    "type": "paragraph",
+                    "text": "Le formule sono renderizzate dal componente TheoryFormula che usa KaTeX, gestendo il LaTeX."
+                },
+                {
+                    "type": "code",
+                    "code": "console.log('Ciao, Mondo!');",
+                    "language": "javascript"
+                }
+            ]
         },
         {
-            type: "equation",
-            content: "\\frac{d}{dx} \\left( \\int_{0}^{x} f(t) dt \\right) = f(x)" 
-        },
-        {
-            type: "paragraph",
-            content: "Il contenuto del blog sarà strutturato in JSON, dove ogni blocco definisce il tipo di elemento (testo, equazione, immagine, ecc.)."
+            "title": "Sezione 2: Esempi",
+            "blocks": [
+                {
+                    "type": "callout",
+                    "calloutType": "tip",
+                    "title": "Suggerimento",
+                    "text": "Questa è una nota importante."
+                }
+            ]
         }
     ]
-}, null, 2); 
+}, null, 2);
 
-const PreviewRenderer = ({ jsonContent }) => {
+const CustomPreviewRenderer = ({ jsonContent }) => {
     try {
         const data = JSON.parse(jsonContent);
+        
+        if (!data || !data.sections || !Array.isArray(data.sections)) {
+            return <div className="preview-error">Error: JSON structure must contain 'sections'.</div>;
+        }
+
         return (
             <div className="preview-output">
-                <h3>Content Preview</h3>
-                {data.blocks.map((block, index) => (
-                    <div key={index} className={`block-type-${block.type}`}>
-                        {block.type === 'paragraph' && <p>{block.content}</p>}
-                        {block.type === 'equation' && (
-                            <p style={{fontFamily: 'monospace', color: 'darkred'}}>{`[EQUATION LaTeX: ${block.content}]`}</p>
-                        )}
-                    </div>
-                ))}
+                <TheoryRenderer theory={data} />
             </div>
         );
+
     } catch (e) {
         return <div className="preview-error">Error parsing JSON: {e.message}</div>;
     }
@@ -55,7 +75,7 @@ function isJsonInvalid(str) {
 
 export default function CreateBlogPage() {
     const router = useRouter();
-    const [title, setTitle] = useState("Nuovo Articolo");
+    const [title, setTitle] = useState("New Blog Title");
     const [jsonContent, setJsonContent] = useState(initialContent);
     const [viewMode, setViewMode] = useState("JSON"); 
 
@@ -137,7 +157,8 @@ export default function CreateBlogPage() {
                                 ></textarea>
                             </div>
                         ) : (
-                            <PreviewRenderer jsonContent={jsonContent} />
+                            // 🌟 Usa il CustomPreviewRenderer aggiornato
+                            <CustomPreviewRenderer jsonContent={jsonContent} />
                         )}
                     </div>
                 </form>
