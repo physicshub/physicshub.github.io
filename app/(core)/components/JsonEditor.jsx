@@ -57,8 +57,8 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 
 
 const THEME_OPTIONS = [
-    { value: 'monokai', label: 'Monokai (Dark)' },
     { value: 'cobalt', label: 'Cobalt (Dark)' },
+    { value: 'monokai', label: 'Monokai (Dark)' },
     { value: 'tomorrow_night', label: 'Tomorrow Night (Dark)' },
     { value: 'twilight', label: 'Twilight (Dark)' },
     { value: 'dracula', label: 'Dracula (Dark)' },
@@ -79,7 +79,7 @@ const THEME_OPTIONS = [
 
 
 const JsonEditor = ({ value, onChange }) => {
-    const [selectedTheme, setSelectedTheme] = useState('monokai');
+    const [selectedTheme, setSelectedTheme] = useState('cobalt');
     
     const editorRef = useRef(null); 
 
