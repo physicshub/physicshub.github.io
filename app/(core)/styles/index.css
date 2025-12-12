@@ -2674,3 +2674,286 @@ ul {
     /* Ad esempio, se i numeri di riga occupano 3em di spazio: */
     /* padding-left: 3em !important; */ 
 }
+
+
+
+/* ======================================= */
+/* 1. STILI PER L'EDITOR GLOBALE E TITOLO  */
+/* ======================================= */
+
+.blog-main-title-editor {
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.main-blog-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    padding: 5px 10px;
+    margin: 0;
+    transition: background-color 0.2s;
+    line-height: 1.2;
+}
+
+
+/* ======================================= */
+/* 2. STILI PER LA BARRA AGGIUNGI BLOCCO   */
+/* ======================================= */
+
+.tab-switcher {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 20px;
+}
+
+.add-block-controls {
+    display: flex;
+    gap: 5px;
+    margin-left: auto; /* Sposta i bottoni a destra */
+    padding-left: 10px;
+}
+
+.add-block-btn {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.add-block-btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+
+/* ======================================= */
+/* 3. STILI PER EDITING E DRAG & DROP      */
+/* ======================================= */
+
+/* Stile per tutti gli elementi editabili in modalità editing */
+.editable-block {
+    outline: none;
+    cursor: text;
+    border-radius: 4px;
+    position: relative;
+    /* Evidenzia il blocco quando è attivo/focalizzato */
+}
+
+/* Evidenzia l'elemento quando focalizzato per l'editing */
+.editable-block:focus,
+.main-blog-title.editable-block:focus {
+    box-shadow: 0 0 0 2px var(--color-focus-ring);
+    background-color: var(--color-background-light); /* Colore leggero in background */
+}
+
+/* Wrapper per i blocchi trascinabili in TheoryRenderer */
+.sortable-block-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    transition: background-color 0.3s ease;
+}
+
+/* Area del contenuto all'interno del wrapper DND */
+.block-content-area {
+    flex-grow: 1;
+}
+
+/* Handle per trascinamento */
+.dnd-handle {
+    width: 20px;
+    padding: 5px 0;
+    cursor: grab;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0; /* Nascondi di default */
+    transition: opacity 0.2s;
+}
+
+/* Mostra l'handle e l'area di trascinamento quando si passa il mouse */
+.sortable-block-wrapper:hover .dnd-handle,
+.sortable-block-wrapper:focus-within .dnd-handle {
+    opacity: 1;
+}
+
+.dnd-handle:active {
+    cursor: grabbing;
+    color: var(--color-primary);
+}
+
+
+/* 1. Titolo di Sezione Editabile */
+.theory-title.editable-block {
+    padding: 5px 10px;
+}
+
+
+/* ======================================= */
+/* 4. STILI PER SWITCH CODE/FORMULA        */
+/* ======================================= */
+
+.theory-formula.editable-block,
+.theory-codeblock.editable-block {
+    border: 1px solid var(--color-border-dark);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.theory-formula.editable-block{
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.edit-switch-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.switch-btn {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 14px;
+}
+
+.switch-btn.active {
+    color: var(--color-primary);
+    font-weight: bold;
+    background-color: var(--color-background-light);
+}
+
+.switch-btn:hover:not(.active) {
+    background-color: var(--color-background-light);
+}
+
+/* Editor di Testo per LaTeX e Codice */
+.latex-editor-input,
+.code-editor-input {
+    width: 100%;
+    background-color: var(--color-background-dark);
+    color: var(--color-text-code);
+    border: 1px solid var(--color-border-dark);
+    padding: 10px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 15px;
+    resize: vertical;
+    min-height: 80px;
+    box-sizing: border-box;
+}
+
+/* Stili specifici per CodeBlock in modalità editing */
+.theory-codeblock .code-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theory-codeblock .code-actions .switch-btn.code-switch {
+    font-size: 16px;
+    padding: 4px 8px;
+}
+
+.theory-codeblock .code-actions .copy-btn {
+    margin-left: auto; /* Sposta il bottone copia a destra */
+}
+
+/* Assicurati che il SyntaxHighlighter sia ben visualizzato in Preview Mode */
+.theory-codeblock .preview-area > div {
+    margin: 0 !important; /* Rimuove margin o padding extra */
+}
+
+/* ======================================= */
+/* AGGIUNTE CSS PER ELIMINAZIONE E LINGUAGGIO */
+/* ======================================= */
+
+/* Modifica la struttura del wrapper DND per fare spazio ai controlli */
+.sortable-block-wrapper {
+    display: flex;
+    gap: 5px; /* Riduci il gap */
+    align-items: flex-start; /* Allinea in alto */
+}
+
+/* Contenitore per Handle e Delete Button */
+.dnd-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding-top: 10px; /* Allinea i controlli sopra il blocco */
+}
+
+/* Stile per il bottone di eliminazione */
+.delete-block-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-error);
+    border-radius: 4px;
+    padding: 3px 6px;
+    cursor: pointer;
+    opacity: 0; /* Nascondi di default */
+    transition: opacity 0.2s, background-color 0.2s;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.delete-block-btn:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* Mostra il bottone di eliminazione quando si passa il mouse sul blocco */
+.sortable-block-wrapper:hover .delete-block-btn,
+.sortable-block-wrapper:focus-within .delete-block-btn {
+    opacity: 1;
+}
+
+/* Modifica l'handle DND per essere più piccolo */
+.dnd-handle {
+    width: 20px;
+    padding: 3px 0;
+    cursor: grab;
+    /* ... (altri stili) ... */
+}
+
+/* Stile per l'input del linguaggio nel Code Block */
+.theory-codeblock .code-language-input {
+    background-color: var(--color-background-darker);
+    color: var(--color-text-code);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-family: monospace;
+    font-size: 14px;
+    width: 100px;
+}
+
+/* Allineamento finale dei bottoni di controllo */
+.theory-codeblock .code-actions {
+    justify-content: flex-start;
+}
+
+/* Assicura che i bottoni add-block siano solo icone e si adattino */
+.add-block-btn {
+    padding: 8px 10px; /* Aumenta il padding per l'icona */
+}
