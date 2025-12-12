@@ -12,6 +12,7 @@ import BackToTopButton from "./BackToTop";
 const links = [
   { label: "Home", to: "/", exact: true },
   { label: "Simulations", to: "/simulations" },
+  { label: "Blog", to: "/blog" },
   { label: "About", to: "/about" },
   { label: "Contribute", to: "/contribute" },
 ];
