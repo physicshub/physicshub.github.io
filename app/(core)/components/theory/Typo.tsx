@@ -21,30 +21,60 @@ interface EditableProps {
     fieldToUpdate?: string; 
 }
 
+// FUNZIONE PER PARSARE IL GRASSETTO **testo**
+const parseBoldText = (text: string): React.ReactNode[] => {
+    if (!text || typeof text !== 'string') return [text];
+
+    const parts: React.ReactNode[] = [];
+    // Regex che cattura **testo** ma evita sequenze di asterischi interne a **...**
+    const regex = /(\*\*([^\*]+)\*\*)/g; 
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        const fullMatch = match[1]; 
+        const content = match[2];  
+        const matchIndex = match.index;
+
+        // Aggiungi testo precedente
+        if (matchIndex > lastIndex) {
+            parts.push(text.substring(lastIndex, matchIndex));
+        }
+
+        // Aggiungi contenuto in grassetto
+        parts.push(<strong key={matchIndex}>{content}</strong>);
+        
+        lastIndex = matchIndex + fullMatch.length;
+    }
+
+    // Aggiungi testo rimanente
+    if (lastIndex < text.length) {
+        parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : [text];
+};
+
+
 // --- Hook per la logica comune di editing ---
 const useEditableBlock = (props: EditableProps, initialContent: string) => {
     const { isEditing, onContentUpdate, sectionIndex, blockIndex, fieldToUpdate } = props;
-    const [currentContent, setCurrentContent] = useState(initialContent);
-
-    useEffect(() => {
-        setCurrentContent(initialContent);
-    }, [initialContent]);
 
     const handleEditEnd = useCallback((e: React.FocusEvent<HTMLElement>) => {
-        // blockIndex = -1 è usato per i titoli di sezione (solo 'title')
         if (!isEditing || !onContentUpdate || sectionIndex === undefined || blockIndex === undefined || !fieldToUpdate) return;
         
         const newValue = e.target.innerText || e.target.textContent || '';
         
-        if (newValue !== currentContent) {
+        // Confrontiamo con la prop iniziale (dal JSON)
+        if (newValue !== initialContent) { 
             onContentUpdate(sectionIndex, blockIndex, fieldToUpdate, newValue);
         }
-    }, [isEditing, onContentUpdate, sectionIndex, blockIndex, fieldToUpdate, currentContent]);
+    }, [isEditing, onContentUpdate, sectionIndex, blockIndex, fieldToUpdate, initialContent]);
 
-    return { isEditable: isEditing, handleEditEnd, currentContent };
+    return { isEditable: isEditing, handleEditEnd };
 };
 
-// --- Componente Wrapper per elementi semplici di testo ---
+// --- Componente Wrapper Corretto per l'editing e il parsing ---
 const EditableWrapper: React.FC<EditableProps & Children & { as: keyof JSX.IntrinsicElements, className: string }> = ({ 
     children, 
     as: Tag, 
@@ -52,21 +82,32 @@ const EditableWrapper: React.FC<EditableProps & Children & { as: keyof JSX.Intri
     fieldToUpdate = 'text',
     ...props 
 }) => {
+    // Otteniamo il contenuto di riferimento (dal JSON)
     const initialContent = typeof children === 'string' ? children : '';
     const { isEditable, handleEditEnd } = useEditableBlock({ ...props, fieldToUpdate }, initialContent);
 
+    // In modalità editing
+    if (isEditable) {
+        return (
+            <Tag
+                className={`${className} editable-block`}
+                contentEditable="true" 
+                suppressContentEditableWarning={true}
+                onBlur={handleEditEnd}
+            >
+                {initialContent}
+            </Tag>
+        );
+    }
+    
+    // In modalità visualizzazione: Applichiamo il parsing del grassetto
     return (
-        <Tag
-            className={`${className} ${isEditable ? 'editable-block' : ''}`}
-            contentEditable={isEditable ? "true" : "false"} 
-            suppressContentEditableWarning={isEditable}
-            onBlur={isEditable ? handleEditEnd : undefined}
-        >
-            {children}
+        <Tag className={className}>
+            {parseBoldText(initialContent)} 
         </Tag>
     );
 };
-// --- Fine Wrapper per l'editing ---
+// --- Fine Wrapper Corretto ---
 
 
 // TheorySection (Gestione editing titolo sezione)
@@ -99,21 +140,21 @@ export const TheorySection: React.FC<{ title?: string; className?: string } & Ch
 };
 
 
-// TheoryParagraph
+// TheoryParagraph (Usa EditableWrapper)
 export const TheoryParagraph: React.FC<Children & EditableProps> = ({ children, ...props }) => (
   <EditableWrapper as="p" className="theory-paragraph" {...props}>
     {children}
   </EditableWrapper>
 );
 
-// TheorySubheading
+// TheorySubheading (Usa EditableWrapper)
 export const TheorySubheading: React.FC<Children & EditableProps> = ({ children, ...props }) => (
   <EditableWrapper as="h3" className="theory-subheading" {...props}>
     {children}
   </EditableWrapper>
 );
 
-// TheorySubtitle
+// TheorySubtitle (Usa EditableWrapper)
 export const TheorySubtitle: React.FC<{ level?: number } & Children & EditableProps> = ({ level = 1, children, ...props }) => {
   const sizes = [
     "text-lg font-semibold mt-2 mb-1",
@@ -137,12 +178,12 @@ export const TheoryList: React.FC<{ items: React.ReactNode[]; ordered?: boolean 
   );
 
 
-// TheoryFormula (Con switch Edit/Preview)
+// TheoryFormula 
 export const TheoryFormula: React.FC<{ latex: string; inline?: boolean } & EditableProps> = ({ latex, inline, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
   const [copied, setCopied] = useState(false);
   const liveRef = useRef<HTMLSpanElement | null>(null);
   
-  const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>('preview'); 
+  const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>('edit'); 
   
   const [currentLatex, setCurrentLatex] = useState(latex);
   useEffect(() => { setCurrentLatex(latex); }, [latex]);
@@ -210,7 +251,7 @@ export const TheoryFormula: React.FC<{ latex: string; inline?: boolean } & Edita
                   </div>
               ) : (
                   <div className="preview-area">
-                      {inline ? <InlineMath math={currentLatex} /> : <BlockMath math={currentLatex} />}
+                      {currentLatex ? (inline ? <InlineMath math={currentLatex} /> : <BlockMath math={currentLatex} />) : <div className="latex-placeholder">Empty Formula</div>}
                   </div>
               )}
               <span aria-live="polite" className="visually-hidden" ref={liveRef}></span>
@@ -229,19 +270,19 @@ export const TheoryFormula: React.FC<{ latex: string; inline?: boolean } & Edita
       >
         <FontAwesomeIcon icon={copied ? faCheck : faCopy} color="white" />
       </button>
-      {inline ? <InlineMath math={latex} /> : <BlockMath math={latex} />}
+      {latex ? (inline ? <InlineMath math={latex} /> : <BlockMath math={latex} />) : null}
       <span aria-live="polite" className="visually-hidden" ref={liveRef}></span>
     </div>
   );
 };
 
 
-// TheoryCodeBlock (Con switch Edit/Preview e cambio linguaggio)
+// TheoryCodeBlock 
 export const TheoryCodeBlock: React.FC<{ code: string; language?: string } & EditableProps> = ({ code, language = "", isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
   const [copied, setCopied] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   
-  const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>('preview');
+  const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>('edit');
   
   const [currentCode, setCurrentCode] = useState(code);
   const [currentLanguage, setCurrentLanguage] = useState(language);
@@ -371,17 +412,19 @@ export const TheoryCodeBlock: React.FC<{ code: string; language?: string } & Edi
   );
 };
 
-// TheoryNote
+// TheoryNote (Usa EditableWrapper)
 export const TheoryNote: React.FC<Children & EditableProps> = ({ children, ...props }) => (
   <div className="theory-note">
-     <EditableWrapper as="div" className="note-content" {...props}>
+     <EditableWrapper as="div" className="note-content" fieldToUpdate="text" {...props}>
         {children}
      </EditableWrapper>
   </div>
 );
 
-// TheoryCallout
+// TheoryCallout (Aggiornato con selettore tipo e grassetto corretto)
 export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; title?: string } & Children & EditableProps> = ({ type = 'info', title, children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
+  const CALLOUT_TYPES = ['info', 'warning', 'tip', 'success'];
+  
   const map = {
     info: { icon: faInfoCircle, cls: 'callout-info', label: 'Info' },
     warning: { icon: faExclamationTriangle, cls: 'callout-warning', label: 'Warning' },
@@ -390,51 +433,71 @@ export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; 
   } as any;
   const cfg = map[type] || map.info;
   
-  const isEditable = isEditing && onContentUpdate;
+  const isEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+  
+  // Gestione cambio tipo Callout
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      if (isEditable) {
+          onContentUpdate(sectionIndex, blockIndex, 'calloutType', e.target.value);
+      }
+  };
   
   const handleTitleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-      if (isEditable && sectionIndex !== undefined && blockIndex !== undefined && e.target.innerText !== title) {
+      if (isEditable && e.target.innerText !== title) {
           onContentUpdate(sectionIndex, blockIndex, 'title', e.target.innerText);
       }
   };
   
   const handleContentBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-      if (isEditable && sectionIndex !== undefined && blockIndex !== undefined) {
+      // Usiamo 'text' come fieldToUpdate per il contenuto del callout
+      if (isEditable) { 
           onContentUpdate(sectionIndex, blockIndex, 'text', e.target.innerText);
       }
   };
+  
+  // Contenuto Callout (il testo grezzo dalla prop children)
+  const content = typeof children === 'string' ? children : '';
+  
 
   return (
     <div className={["theory-callout", cfg.cls, isEditable ? 'editable-block' : ''].join(" ")} role="note">
       <div className="callout-icon"><FontAwesomeIcon icon={cfg.icon} /></div>
       <div className="callout-body">
-        {title && (
-            <div 
-                className="callout-title"
-                contentEditable={isEditable ? "true" : "false"}
-                suppressContentEditableWarning={isEditable}
-                onBlur={handleTitleBlur}
-            >
-                {title}
-            </div>
-        )}
+        <div className="callout-header-editor">
+            {isEditable && (
+                <select value={type} onChange={handleTypeChange} className="callout-type-selector">
+                    {CALLOUT_TYPES.map(t => <option key={t} value={t}>{t.toUpperCase()}</option>)}
+                </select>
+            )}
+            {title && (
+                <div 
+                    className="callout-title"
+                    contentEditable={isEditable ? "true" : "false"}
+                    suppressContentEditableWarning={isEditable}
+                    onBlur={handleTitleBlur}
+                >
+                    {title}
+                </div>
+            )}
+        </div>
         <div 
             className="callout-content"
             contentEditable={isEditable ? "true" : "false"}
             suppressContentEditableWarning={isEditable}
             onBlur={handleContentBlur}
         >
-            {children}
+            {isEditable ? content : parseBoldText(content)}
         </div>
       </div>
     </div>
   );
 };
 
-// TheoryExample
+// TheoryExample (Corretto per il grassetto)
 export const TheoryExample: React.FC<{ title?: string } & Children & EditableProps> = ({ title, children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     
     const isEditable = isEditing && onContentUpdate;
+    const content = typeof children === 'string' ? children : '';
 
     const handleTitleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         if (isEditable && sectionIndex !== undefined && blockIndex !== undefined && e.target.innerText !== title) {
@@ -465,7 +528,7 @@ export const TheoryExample: React.FC<{ title?: string } & Children & EditablePro
                 suppressContentEditableWarning={isEditable}
                 onBlur={handleContentBlur}
             >
-                {children}
+                {isEditable ? content : parseBoldText(content)}
             </div>
         </div>
     );
@@ -514,10 +577,11 @@ export const TheoryImage: React.FC<{ src: string; alt?: string; caption?: string
     );
 };
 
-// TheoryToggle
+// TheoryToggle (Corretto per il grassetto)
 export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProps> = ({ title = 'Details', children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
   const [open, setOpen] = useState(false);
   const isEditable = isEditing && onContentUpdate;
+  const content = typeof children === 'string' ? children : '';
 
   const handleTitleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
       if (isEditable && sectionIndex !== undefined && blockIndex !== undefined && e.target.innerText !== title) {
@@ -552,7 +616,7 @@ export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProp
         suppressContentEditableWarning={isEditable}
         onBlur={handleContentBlur}
       >
-        {children}
+        {isEditable ? content : parseBoldText(content)}
       </div>
     </div>
   );

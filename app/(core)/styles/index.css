@@ -2957,3 +2957,61 @@ ul {
 .add-block-btn {
     padding: 8px 10px; /* Aumenta il padding per l'icona */
 }
+
+/* ======================================= */
+/* AGGIUNTE CSS PER TUTTI I BOTTONI E CALLOUT TYPE */
+/* ======================================= */
+
+/* Aggiorna i bottoni per essere quadrati con le icone */
+.add-block-btn {
+    width: 38px; 
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Rimuove il padding per lasciare spazio all'icona */
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: none;
+    border-radius: 6px;
+    font-size: 16px; /* Dimensione base icona */
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.add-block-btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Stili per il Callout Type Selector (3) */
+.callout-header-editor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.callout-type-selector {
+    padding: 4px 8px;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 4px;
+    background-color: var(--color-background-dark);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.callout-title {
+    /* Assicura che il titolo editabile si espanda nel restante spazio */
+    flex-grow: 1; 
+}
+
+/* Stile per il testo in grassetto (2) */
+.theory-paragraph strong,
+.callout-content strong,
+.example-body strong,
+.toggle-panel strong {
+    font-weight: 700;
+    color: var(--color-strong); /* Usa un colore leggermente più scuro o il colore primario se definito */
+}

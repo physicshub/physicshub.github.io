@@ -1,21 +1,21 @@
-// app/(pages)/blog/create/page.jsx (MODIFICHE CHIAVE)
+// app/(pages)/blog/create/page.jsx
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from 'react'; // Aggiunto useEffect
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// AGGIORNAMENTO ICONE
+// AGGIORNAMENTO ICONE per tutti i tipi di blocco
 import { 
     faCode, faEye, faSave, faArrowLeft, faPlus, faEdit,
-    faParagraph, faHeading, faSquareRootAlt, faLightbulb 
-} from "@fortawesome/free-solid-svg-icons"; // AGGIUNTE NUOVE ICONE
+    faParagraph, faHeading, faSquareRootAlt, faListOl, 
+    faInfoCircle, faQuoteRight, faTable, faImage, faChevronCircleDown,
+    faTrashAlt, faGripVertical
+} from "@fortawesome/free-solid-svg-icons"; 
 import { useRouter } from 'next/navigation';
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx"; 
 import dynamic from 'next/dynamic';
 import { initialContentData } from "../../../(core)/data/initialContent";
 
-// --- Import per il Drag & Drop (MANTENUTO) ---
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-// ---------------------------------
 
 const DynamicJsonEditor = dynamic(
     () => import("../../../(core)/components/JsonEditor.jsx"), 
@@ -24,13 +24,20 @@ const DynamicJsonEditor = dynamic(
 const initialContent = JSON.stringify(initialContentData, null, 2);
 
 
-// --- Nuovi Block Type di esempio ---
+// --- Nuovi Block Type di esempio per tutti gli elementi ---
 const NEW_BLOCK_TEMPLATES = {
-    paragraph: { type: "paragraph", text: "New paragraph content..." },
+    paragraph: { type: "paragraph", text: "New paragraph content. Use **double asterisks** for bold." },
     subheading: { type: "subheading", text: "New Subheading Title" },
+    subtitle: { type: "subtitle", text: "New Subtitle Level 1", level: 1 },
     code: { type: "code", code: "console.log('Hello World!');", language: "javascript" },
-    formula: { type: "formula", latex: "\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}", inline: false },
+    formula: { type: "formula", latex: "\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}", inline: false },
     note: { type: "note", text: "New Note or important information." },
+    list: { type: "list", items: ["New Item 1", "New Item 2"], ordered: false },
+    callout: { type: "callout", calloutType: "info", title: "Information", text: "This is a new callout block." },
+    example: { type: "example", title: "Example Title", content: "Example content here." },
+    table: { type: "table", columns: ["Col1", "Col2"], data: [{ Col1: "Data 1", Col2: "Data 2" }] },
+    image: { type: "image", src: "https://via.placeholder.com/150", alt: "Placeholder Image", caption: "New Image Caption" },
+    toggle: { type: "toggle", title: "Toggle Details", content: "Hidden content visible on click." }
 };
 // -----------------------------------
 
@@ -43,6 +50,7 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
         try {
             const newData = JSON.parse(jsonContent);
             
+            // ... Logica per titolo globale e sezione mantenuta ...
             if (sectionIndex === -1 && field === 'title') {
                 newData.title = newValue;
             } 
@@ -54,11 +62,11 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
             else if (newData.sections[sectionIndex] && newData.sections[sectionIndex].blocks[blockIndex]) {
                 const block = newData.sections[sectionIndex].blocks[blockIndex];
                 
-                // Aggiornamento specifico (es. il linguaggio in un campo separato dal codice)
-                if (field === 'language') {
-                    block.language = newValue;
+                // Gestisce il cambio di tipo callout e linguaggio
+                if (field === 'language' || field === 'calloutType') {
+                    block[field] = newValue;
                 } else {
-                    block[field] = newValue; // Aggiorna il campo specifico
+                    block[field] = newValue;
                 }
             } else {
                 console.error("Update failed: Index or field not found.", { sectionIndex, blockIndex, field });
@@ -72,7 +80,7 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
         }
     }, [jsonContent, setJsonContent]);
 
-    // 1. Funzione per eliminare un elemento
+
     const handleDeleteBlock = useCallback((sectionIndex, blockIndex) => {
         if (!window.confirm("Are you sure you want to delete this block?")) return;
 
@@ -80,7 +88,6 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
             const newData = JSON.parse(jsonContent);
             
             if (newData.sections[sectionIndex] && newData.sections[sectionIndex].blocks[blockIndex]) {
-                // Rimuovi il blocco dall'array
                 newData.sections[sectionIndex].blocks.splice(blockIndex, 1);
                 setJsonContent(JSON.stringify(newData, null, 2));
             } else {
@@ -92,9 +99,7 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
     }, [jsonContent, setJsonContent]);
 
 
-    // Funzione per il Drag and Drop (DND) (MANTENUTA)
     const handleDragEnd = useCallback((event) => {
-        // ... (Logica DND mantenuta come prima) ...
         const { active, over } = event;
 
         if (active.id !== over.id) {
@@ -111,8 +116,6 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
             if (activeSec === overSec) {
                 const blocks = newData.sections[activeSec].blocks;
                 
-                // Requisito: Aggiungere l'utility arrayMove se si usa @dnd-kit/sortable 
-                // Qui assumiamo che sia stata aggiunta, o usiamo il metodo nativo splice
                 const movedItem = blocks.splice(activeBlock, 1)[0];
                 blocks.splice(overBlock, 0, movedItem);
 
@@ -151,7 +154,7 @@ const CustomPreviewRenderer = ({ jsonContent, setJsonContent }) => {
                         theory={data} 
                         isEditing={true} 
                         onContentUpdate={handleContentUpdate}
-                        onDeleteBlock={handleDeleteBlock} // PASSAGGIO NUOVA FUNZIONE
+                        onDeleteBlock={handleDeleteBlock} 
                         dndItems={data.sections.flatMap((sec, i) => 
                             sec.blocks.map((block, j) => `s${i}-b${j}`)
                         )}
@@ -195,15 +198,12 @@ export default function CreateBlogPage() {
     }, [jsonTitle]);
 
 
-    // 3. Funzione per aggiungere un nuovo elemento (blocco) - CORRETTA
     const handleAddBlock = useCallback((blockType) => {
         try {
             const newData = JSON.parse(jsonContent);
             const newBlock = NEW_BLOCK_TEMPLATES[blockType];
             
-            // Aggiungiamo sempre al blocco della PRIMA sezione esistente
             if (newData.sections.length > 0) {
-                // Aggiungi in cima alla prima sezione per renderlo subito visibile
                 newData.sections[0].blocks.unshift(newBlock); 
                 setJsonContent(JSON.stringify(newData, null, 2));
             } else {
@@ -241,7 +241,6 @@ export default function CreateBlogPage() {
     return (
         <div className="create-blog-container">
             
-            {/* ... Controlli top (Back, Title, Save) ... */}
             <div className="top-controls-bar">
                 <button 
                     onClick={() => router.back()} 
@@ -293,23 +292,44 @@ export default function CreateBlogPage() {
                             <FontAwesomeIcon icon={faEdit} /> Visual Editor
                         </button>
                         
-                        {/* 3. BOTTONI CON ICONE (CORREZIONE) */}
+                        {/* 1. BOTTONI PER TUTTI GLI ELEMENTI */}
                         {viewMode === 'Preview' && (
                             <div className="add-block-controls">
+                                {/* Elementi di testo base */}
                                 <button type="button" onClick={() => handleAddBlock('paragraph')} className="add-block-btn" title="Add Paragraph">
                                     <FontAwesomeIcon icon={faParagraph} />
                                 </button>
-                                <button type="button" onClick={() => handleAddBlock('subheading')} className="add-block-btn" title="Add Subheading">
+                                <button type="button" onClick={() => handleAddBlock('subheading')} className="add-block-btn" title="Add H3 Subheading">
                                     <FontAwesomeIcon icon={faHeading} />
                                 </button>
+                                <button type="button" onClick={() => handleAddBlock('subtitle')} className="add-block-btn" title="Add H4/H5 Subtitle">
+                                    <FontAwesomeIcon icon={faHeading} style={{ fontSize: '0.8em' }} />
+                                </button>
+                                {/* Contenuto Tecnico/Specializzato */}
                                 <button type="button" onClick={() => handleAddBlock('code')} className="add-block-btn" title="Add Code Block">
                                     <FontAwesomeIcon icon={faCode} />
                                 </button>
-                                <button type="button" onClick={() => handleAddBlock('formula')} className="add-block-btn" title="Add Formula">
+                                <button type="button" onClick={() => handleAddBlock('formula')} className="add-block-btn" title="Add Formula (LaTeX)">
                                     <FontAwesomeIcon icon={faSquareRootAlt} />
                                 </button>
-                                <button type="button" onClick={() => handleAddBlock('note')} className="add-block-btn" title="Add Note/Callout">
-                                    <FontAwesomeIcon icon={faLightbulb} />
+                                <button type="button" onClick={() => handleAddBlock('list')} className="add-block-btn" title="Add List">
+                                    <FontAwesomeIcon icon={faListOl} />
+                                </button>
+                                {/* Blocchi Strutturati */}
+                                <button type="button" onClick={() => handleAddBlock('callout')} className="add-block-btn" title="Add Callout/Note">
+                                    <FontAwesomeIcon icon={faInfoCircle} />
+                                </button>
+                                <button type="button" onClick={() => handleAddBlock('example')} className="add-block-btn" title="Add Example/Quote">
+                                    <FontAwesomeIcon icon={faQuoteRight} />
+                                </button>
+                                <button type="button" onClick={() => handleAddBlock('table')} className="add-block-btn" title="Add Table">
+                                    <FontAwesomeIcon icon={faTable} />
+                                </button>
+                                <button type="button" onClick={() => handleAddBlock('image')} className="add-block-btn" title="Add Image">
+                                    <FontAwesomeIcon icon={faImage} />
+                                </button>
+                                <button type="button" onClick={() => handleAddBlock('toggle')} className="add-block-btn" title="Add Toggle/Spoiler">
+                                    <FontAwesomeIcon icon={faChevronCircleDown} />
                                 </button>
                             </div>
                         )}
