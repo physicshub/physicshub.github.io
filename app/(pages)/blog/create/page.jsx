@@ -32,11 +32,16 @@ const NEW_BLOCK_TEMPLATES = {
     code: { type: "code", code: "console.log('Hello World!');", language: "javascript" },
     formula: { type: "formula", latex: "\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}", inline: false },
     note: { type: "note", text: "New Note or important information." },
-    list: { type: "list", items: ["New Item 1", "New Item 2"], ordered: false },
+    list: { type: "list", items: ["New Item 1", "New Item 2", "New Item 3"], ordered: false },
     callout: { type: "callout", calloutType: "info", title: "Information", text: "This is a new callout block." },
     example: { type: "example", title: "Example Title", content: "Example content here." },
-    table: { type: "table", columns: ["Col1", "Col2"], data: [{ Col1: "Data 1", Col2: "Data 2" }] },
-    image: { type: "image", src: "https://via.placeholder.com/150", alt: "Placeholder Image", caption: "New Image Caption" },
+    table: { 
+        type: "table", 
+        columns: ["Header 1", "Header 2"], 
+        data: [{ "Header 1": "Row 1 Col 1", "Header 2": "Row 1 Col 2" }, { "Header 1": "Row 2 Col 1", "Header 2": "Row 2 Col 2" }] 
+    },
+    image: { type: "image", src: "https://via.placeholder.com/200", alt: "Placeholder Image", caption: "New Image Caption" },
+    toggle: { type: "toggle", title: "Toggle Details", content: "Hidden content visible on click." },
     toggle: { type: "toggle", title: "Toggle Details", content: "Hidden content visible on click." }
 };
 // -----------------------------------
