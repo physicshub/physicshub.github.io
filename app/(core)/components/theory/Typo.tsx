@@ -1,5 +1,5 @@
 // app/(core)/components/theory/Typo.tsx
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo, HTMLAttributes, DetailedHTMLProps, ElementType } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faCopy, faCheck, faInfoCircle, faExclamationTriangle, faLightbulb, 
@@ -15,14 +15,19 @@ type Children = { children?: React.ReactNode };
 // --- Tipi per l'Editing ---
 interface EditableProps {
     isEditing?: boolean;
-    // Funzione per aggiornare il JSON: (sectionIndex, blockIndex, field, newValue)
     onContentUpdate?: (sectionIndex: number, blockIndex: number, field: string, newValue: string) => void;
     sectionIndex?: number;
     blockIndex?: number;
     fieldToUpdate?: string; 
 }
 
+// Correzione 2503, 2604, 2786:
+// Definiamo ElementTag come chiave dei tag HTML standard.
+type ElementTag = keyof JSX.IntrinsicElements;
+
+
 // FUNZIONE PER PARSARE IL GRASSETTO **testo**
+// ... (omesso per brevità, la funzione parseBoldText è la stessa) ...
 const parseBoldText = (text: string): React.ReactNode[] => {
     if (!text || typeof text !== 'string') return [text];
 
@@ -54,6 +59,7 @@ const parseBoldText = (text: string): React.ReactNode[] => {
 
 
 // --- Hook per la logica comune di editing ---
+// ... (omesso per brevità, useEditableBlock è lo stesso) ...
 const useEditableBlock = (props: EditableProps, initialContent: string) => {
     const { isEditing, onContentUpdate, sectionIndex, blockIndex, fieldToUpdate } = props;
 
@@ -70,23 +76,29 @@ const useEditableBlock = (props: EditableProps, initialContent: string) => {
     return { isEditable: isEditing, handleEditEnd };
 };
 
-// --- Componente Wrapper per l'editing e il parsing ---
-const EditableWrapper: React.FC<EditableProps & Children & { as: keyof JSX.IntrinsicElements, className: string }> = ({ 
+
+// --- Componente EditableWrapper (Corretto per 2604/2786) ---
+const EditableWrapper: React.FC<EditableProps & Children & { as: ElementTag, className: string }> = ({ 
     children, 
-    as: Tag, 
+    as, // Riceviamo 'as'
     className, 
     fieldToUpdate = 'text',
     ...props 
 }) => {
+    const Tag = as as React.ElementType; // Assegnamo a Tag forzandolo a React.ElementType (stringa tag HTML)
+
     const initialContent = typeof children === 'string' ? children : '';
     const { isEditable, handleEditEnd } = useEditableBlock({ ...props, fieldToUpdate }, initialContent);
 
+    const suppressWarning = !!(isEditable && props.onContentUpdate && props.sectionIndex !== undefined && props.blockIndex !== undefined);
+
     if (isEditable) {
+        // TypeScript ora riconosce Tag come un tag intrinseco (stringa) grazie a ElementType
         return (
             <Tag
                 className={`${className} editable-block`}
                 contentEditable="true" 
-                suppressContentEditableWarning={true}
+                suppressContentEditableWarning={suppressWarning} 
                 onBlur={handleEditEnd}
             >
                 {initialContent}
@@ -107,6 +119,7 @@ const EditableWrapper: React.FC<EditableProps & Children & { as: keyof JSX.Intri
 export const TheorySection: React.FC<{ title?: string; className?: string } & Children & EditableProps> = ({ title, children, className, isEditing, onContentUpdate, sectionIndex }) => {
   
   const isTitleEditable = isEditing && onContentUpdate && sectionIndex !== undefined;
+  const suppressWarning = isTitleEditable; 
 
   const handleTitleBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
       if (isTitleEditable && title !== e.target.innerText) {
@@ -120,7 +133,7 @@ export const TheorySection: React.FC<{ title?: string; className?: string } & Ch
           <h2 
               className={`theory-title ${isTitleEditable ? 'editable-block' : ''}`}
               contentEditable={isTitleEditable ? "true" : "false"}
-              suppressContentEditableWarning={isTitleEditable}
+              suppressContentEditableWarning={suppressWarning}
               onBlur={handleTitleBlur}
           >
               {title}
@@ -161,7 +174,8 @@ export const TheoryNote: React.FC<Children & EditableProps> = ({ children, ...pr
 );
 
 
-// TheoryList (AGGIORNATO: Editing in linea + Correzione TypeError)
+// TheoryList
+// ... (omesso per brevità, TheoryList è lo stesso) ...
 export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: boolean } & EditableProps>= ({ items: rawItems, ordered = false, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     
     // CORREZIONE: Normalizza rawItems a un array di stringhe
@@ -172,10 +186,8 @@ export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: b
         if (typeof rawItems === 'string') {
             try {
                 const parsed = JSON.parse(rawItems);
-                // Se riusciamo a parsare e otteniamo un array, usalo, altrimenti usa la stringa come elemento singolo
                 return Array.isArray(parsed) ? parsed : [rawItems];
             } catch (e) {
-                // Se fallisce il parsing JSON, usa la stringa come elemento singolo (caso iniziale non JSON)
                 return [rawItems]; 
             }
         }
@@ -185,6 +197,9 @@ export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: b
 
     const isBlockEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
 
+    // Correzione 2322
+    const suppressWarning = isBlockEditable; 
+
     // Quando si modifica un singolo elemento della lista
     const handleItemBlur = (e: React.FocusEvent<HTMLLIElement>, index: number) => {
         if (!isBlockEditable) return;
@@ -193,7 +208,6 @@ export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: b
         if (newText !== items[index]) {
             const newItems = [...items];
             newItems[index] = newText;
-            // Aggiorna l'intero array come stringa JSON
             onContentUpdate(sectionIndex, blockIndex, 'items', JSON.stringify(newItems)); 
         }
     };
@@ -215,7 +229,7 @@ export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: b
                         key={i}
                         className={isBlockEditable ? 'editable-block list-item-editor' : ''}
                         contentEditable={isBlockEditable ? "true" : "false"}
-                        suppressContentEditableWarning={true}
+                        suppressContentEditableWarning={suppressWarning} // Correzione 2322
                         onBlur={(e) => handleItemBlur(e as React.FocusEvent<HTMLLIElement>, i)}
                     >
                         {isBlockEditable ? it : parseBoldText(it)}
@@ -232,15 +246,15 @@ export const TheoryList: React.FC<{ items: string[] | string | null; ordered?: b
 };
 
 
-// TheoryFormula (AGGIORNATO: Stato default 'preview')
+// TheoryFormula
+// ... (omesso per brevità, TheoryFormula è lo stesso) ...
 export const TheoryFormula: React.FC<{ latex: string; inline?: boolean } & EditableProps> = ({ latex, inline, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
   const [copied, setCopied] = useState(false);
   const liveRef = useRef<HTMLSpanElement | null>(null);
   
-  // STATO DEFAULT IMPOSTATO SU 'preview'
   const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>(isEditing ? 'preview' : 'edit'); 
-  
   const [currentLatex, setCurrentLatex] = useState(latex);
+  
   useEffect(() => { setCurrentLatex(latex); }, [latex]);
   useEffect(() => { setLocalViewMode(isEditing ? 'preview' : 'edit'); }, [isEditing]);
   
@@ -324,12 +338,12 @@ export const TheoryFormula: React.FC<{ latex: string; inline?: boolean } & Edita
 };
 
 
-// TheoryCodeBlock (AGGIORNATO: Stato default 'preview')
+// TheoryCodeBlock
+// ... (omesso per brevità, TheoryCodeBlock è lo stesso) ...
 export const TheoryCodeBlock: React.FC<{ code: string; language?: string } & EditableProps> = ({ code, language = "", isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
   const [copied, setCopied] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   
-  // STATO DEFAULT IMPOSTATO SU 'preview'
   const [localViewMode, setLocalViewMode] = useState<'edit' | 'preview'>(isEditing ? 'preview' : 'edit');
   
   const [currentCode, setCurrentCode] = useState(code);
@@ -384,6 +398,7 @@ export const TheoryCodeBlock: React.FC<{ code: string; language?: string } & Edi
   
   if (isEditing) {
     const mode = isBlockEditable ? localViewMode : 'preview';
+    const suppressWarning = isBlockEditable; // Correzione 2322
       
     return (
         <div className={`theory-codeblock ${isBlockEditable ? 'editable-block' : ''}`}>
@@ -451,6 +466,7 @@ export const TheoryCodeBlock: React.FC<{ code: string; language?: string } & Edi
 
 
 // TheoryCallout
+// ... (omesso per brevità, TheoryCallout è lo stesso) ...
 export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; title?: string } & Children & EditableProps> = ({ type = 'info', title, children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     const CALLOUT_TYPES = ['info', 'warning', 'tip', 'success'];
     
@@ -463,6 +479,7 @@ export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; 
     const cfg = map[type] || map.info;
     
     const isEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+    const suppressWarning = isEditable; // Correzione 2322
     
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (isEditable) {
@@ -498,7 +515,7 @@ export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; 
                   <div 
                       className="callout-title"
                       contentEditable={isEditable ? "true" : "false"}
-                      suppressContentEditableWarning={isEditable}
+                      suppressContentEditableWarning={suppressWarning} // Correzione 2322
                       onBlur={handleTitleBlur}
                   >
                       {title}
@@ -508,7 +525,7 @@ export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; 
           <div 
               className="callout-content"
               contentEditable={isEditable ? "true" : "false"}
-              suppressContentEditableWarning={isEditable}
+              suppressContentEditableWarning={suppressWarning} // Correzione 2322
               onBlur={handleContentBlur}
           >
               {isEditable ? content : parseBoldText(content)}
@@ -519,18 +536,20 @@ export const TheoryCallout: React.FC<{ type?: 'info'|'warning'|'tip'|'success'; 
 };
 
 // TheoryExample
+// ... (omesso per brevità, TheoryExample è lo stesso) ...
 export const TheoryExample: React.FC<{ title?: string } & Children & EditableProps> = ({ title, children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     
-    const isEditable = isEditing && onContentUpdate;
+    const isEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+    const suppressWarning = isEditable; // Correzione 2322
     const content = typeof children === 'string' ? children : '';
 
     const handleTitleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        if (isEditable && sectionIndex !== undefined && blockIndex !== undefined && e.target.innerText !== title) {
+        if (isEditable && e.target.innerText !== title) {
             onContentUpdate(sectionIndex, blockIndex, 'title', e.target.innerText);
         }
     };
     const handleContentBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        if (isEditable && sectionIndex !== undefined && blockIndex !== undefined) {
+        if (isEditable) {
             onContentUpdate(sectionIndex, blockIndex, 'content', e.target.innerText);
         }
     };
@@ -541,7 +560,7 @@ export const TheoryExample: React.FC<{ title?: string } & Children & EditablePro
                 <div 
                     className="example-title"
                     contentEditable={isEditable ? "true" : "false"}
-                    suppressContentEditableWarning={isEditable}
+                    suppressContentEditableWarning={suppressWarning} // Correzione 2322
                     onBlur={handleTitleBlur}
                 >
                     {title}
@@ -550,7 +569,7 @@ export const TheoryExample: React.FC<{ title?: string } & Children & EditablePro
             <div 
                 className="example-body"
                 contentEditable={isEditable ? "true" : "false"}
-                suppressContentEditableWarning={isEditable}
+                suppressContentEditableWarning={suppressWarning} // Correzione 2322
                 onBlur={handleContentBlur}
             >
                 {isEditable ? content : parseBoldText(content)}
@@ -560,19 +579,21 @@ export const TheoryExample: React.FC<{ title?: string } & Children & EditablePro
 };
 
 // TheoryToggle
+// ... (omesso per brevità, TheoryToggle è lo stesso) ...
 export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProps> = ({ title = 'Details', children, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     const [open, setOpen] = useState(false);
-    const isEditable = isEditing && onContentUpdate;
+    const isEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+    const suppressWarning = isEditable; // Correzione 2322
     const content = typeof children === 'string' ? children : '';
   
     const handleTitleBlur = (e: React.FocusEvent<HTMLSpanElement>) => {
-        if (isEditable && sectionIndex !== undefined && blockIndex !== undefined && e.target.innerText !== title) {
+        if (isEditable && e.target.innerText !== title) {
             onContentUpdate(sectionIndex, blockIndex, 'title', e.target.innerText);
         }
     };
     
     const handleContentBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        if (isEditable && sectionIndex !== undefined && blockIndex !== undefined) {
+        if (isEditable) {
             onContentUpdate(sectionIndex, blockIndex, 'content', e.target.innerText);
         }
     };
@@ -583,7 +604,7 @@ export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProp
           <span 
               className="toggle-title"
               contentEditable={isEditable ? "true" : "false"}
-              suppressContentEditableWarning={isEditable}
+              suppressContentEditableWarning={suppressWarning} // Correzione 2322
               onBlur={handleTitleBlur}
           >
               {title}
@@ -595,7 +616,7 @@ export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProp
           style={{ maxHeight: open ? '1000px' : 0 }} 
           aria-hidden={!open}
           contentEditable={isEditable ? "true" : "false"}
-          suppressContentEditableWarning={isEditable}
+          suppressContentEditableWarning={suppressWarning} // Correzione 2322
           onBlur={handleContentBlur}
         >
           {isEditable ? content : parseBoldText(content)}
@@ -605,17 +626,18 @@ export const TheoryToggle: React.FC<{ title?: string } & Children & EditableProp
 };
 
 
-// TheoryTable (AGGIORNATO: Editing in linea di celle/header + bottoni Aggiungi)
+// TheoryTable
+// ... (omesso per brevità, TheoryTable è lo stesso) ...
 export const TheoryTable: React.FC<{ columns: string[]; data: Array<Record<string, any>> } & EditableProps> = ({ columns, data, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     
     const isBlockEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+    const suppressWarning = isBlockEditable; // Correzione 2322
 
     // Funzione generica per aggiornare le colonne e i dati
     const updateTable = useCallback((newColumns: string[], newData: Array<Record<string, any>>) => {
         if (!isBlockEditable) return;
         
         const newTableData = { columns: newColumns, data: newData };
-        // Invia l'intero oggetto come stringa JSON
         onContentUpdate(sectionIndex, blockIndex, 'tableData', JSON.stringify(newTableData));
     }, [isBlockEditable, onContentUpdate, sectionIndex, blockIndex]);
 
@@ -698,7 +720,7 @@ export const TheoryTable: React.FC<{ columns: string[]; data: Array<Record<strin
                             <th 
                                 key={i}
                                 contentEditable={isBlockEditable ? "true" : "false"}
-                                suppressContentEditableWarning={true}
+                                suppressContentEditableWarning={suppressWarning} // Correzione 2322
                                 onBlur={(e) => handleHeaderBlur(e as React.FocusEvent<HTMLElement>, i, c)}
                                 className={isBlockEditable ? 'editable-block' : ''}
                             >
@@ -714,7 +736,7 @@ export const TheoryTable: React.FC<{ columns: string[]; data: Array<Record<strin
                                 <td 
                                     key={i}
                                     contentEditable={isBlockEditable ? "true" : "false"}
-                                    suppressContentEditableWarning={true}
+                                    suppressContentEditableWarning={suppressWarning} // Correzione 2322
                                     onBlur={(e) => handleCellBlur(e as React.FocusEvent<HTMLElement>, r, c)}
                                     className={isBlockEditable ? 'editable-block' : ''}
                                 >
@@ -729,10 +751,12 @@ export const TheoryTable: React.FC<{ columns: string[]; data: Array<Record<strin
     );
 };
 
-// TheoryImage (AGGIORNATO: Input URL e Placeholder Upload)
+// TheoryImage
+// ... (omesso per brevità, TheoryImage è lo stesso) ...
 export const TheoryImage: React.FC<{ src: string; alt?: string; caption?: string } & EditableProps> = ({ src, alt = '', caption, isEditing, onContentUpdate, sectionIndex, blockIndex }) => {
     
     const isEditable = isEditing && onContentUpdate && sectionIndex !== undefined && blockIndex !== undefined;
+    const suppressWarning = isEditable; // Correzione 2322
     const [currentSrc, setCurrentSrc] = useState(src);
 
     useEffect(() => { setCurrentSrc(src); }, [src]);
@@ -759,7 +783,7 @@ export const TheoryImage: React.FC<{ src: string; alt?: string; caption?: string
         if (e.target.files && e.target.files.length > 0) {
              const file = e.target.files[0];
              alert(`Simulating upload for file: ${file.name}. Actual implementation requires backend logic.`);
-             // In una vera applicazione, qui ci sarebbe la logica di upload e l'onContentUpdate
+             // Qui andrebbe la logica per ottenere l'URL dopo il vero upload e chiamare onContentUpdate
         }
     };
 
@@ -801,7 +825,7 @@ export const TheoryImage: React.FC<{ src: string; alt?: string; caption?: string
                 {caption && (
                     <figcaption
                         contentEditable="true"
-                        suppressContentEditableWarning={true}
+                        suppressContentEditableWarning={suppressWarning} // Correzione 2322
                         onBlur={handleCaptionBlur}
                         className="editable-block"
                     >
