@@ -297,3 +297,5 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
         </div>
     );
 };
+
+export default TheorySection;
