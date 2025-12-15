@@ -15,6 +15,7 @@
   --stars-color: #ffffff;
   --input-bg: rgba(0, 70, 70, 0.6);
   --input-border: rgb(0, 230, 230);
+  --color-tooltip-bg: #004b4b83;
 }
 
 /* Light Theme Overrides */
@@ -31,6 +32,7 @@
   --bg-gradient: linear-gradient(135deg, #ffffff, #f8f9fa);
   --bg-gradient-rotated: linear-gradient(0, #ffffff, #f8f9fa);
   --stars-color: var(--accent-color);
+  --color-tooltip-bg: rgba(255, 255, 255, 0.9);
 }
 
 /* Remove all glow effects in light mode */
@@ -230,7 +232,7 @@ nav a.active::after {
 }
 
 .search-container {
-  display: flex; 
+  display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -371,8 +373,8 @@ nav a.active::after {
 .selected-tag-wrapper {
   display: flex;
   align-items: center;
-  margin: 0.2rem 0.2rem 0.2rem 0; 
-  padding: 0.1rem 0; 
+  margin: 0.2rem 0.2rem 0.2rem 0;
+  padding: 0.1rem 0;
   border-radius: var(--border-radius);
   background-color: var(--secondary-bg-color);
 }
@@ -2422,7 +2424,7 @@ ul {
 }
 
 /* Blogs section page */
-.blogs-container{
+.blogs-container {
   display: flex;
   padding: 0 3rem;
   align-items: center;
@@ -2431,20 +2433,20 @@ ul {
   margin-bottom: 4rem;
 }
 
-.blogs-page{
+.blogs-page {
   display: grid;
   grid-template-columns: none;
   width: 100%;
 }
 
-.blogs-page > section{
+.blogs-page > section {
   aspect-ratio: 2/1.2;
 }
 
 /* Stili per la sezione Pinned */
 .pinned-blogs-section {
   width: 100%;
-  margin-top: 1.5rem ;
+  margin-top: 1.5rem;
   max-width: var(--max-content-width, 1200px);
   margin-bottom: 2rem;
   padding-bottom: 1rem;
@@ -2472,7 +2474,7 @@ ul {
 }
 
 .blogs-list > * {
-  aspect-ratio: 2 / 1.4; 
+  aspect-ratio: 2 / 1.4;
 }
 
 /* Style for headers */
@@ -2496,136 +2498,128 @@ ul {
 
 /* Create a new Blog page */
 .create-blog-container {
-    max-width: 1100px;
-    margin: 7rem auto; 
-    padding: 0 1.5rem;
+  max-width: 1100px;
+  margin: 7rem auto;
+  padding: 0 1.5rem;
 }
 
 .top-controls-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem; 
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color); 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .editor-title {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  font-weight: 600;
 }
 
 .blog-editor-area {
-    padding: 0;
+  padding: 0;
 }
 
 .blog-editor-area .form-group {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .blog-editor-area .title-group {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .blog-editor-area label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    color: var(--text-color);
-    opacity: 0.8;
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 .blog-editor-area input[type="text"],
 .blog-editor-area textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);    
-    background-color: var(--bg-color-light);
-    color: var(--text-color);
-    font-size: 1rem;
-    line-height: 1.5;
-    transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color-light);
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .blog-editor-area input:focus,
 .blog-editor-area textarea:focus {
-    border-color: var(--accent-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0,230,230,0.2); 
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 230, 230, 0.2);
 }
 
 .blog-editor-area textarea {
-    resize: vertical;
-    min-height: 400px;
+  resize: vertical;
+  min-height: 400px;
 }
 
 .json-editor {
-    font-family: 'Consolas', 'Courier New', monospace; 
-    font-size: 0.95rem;
-    white-space: pre-wrap; 
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
 }
 
-
-
 .tab-switcher {
-    display: flex;
-    margin-bottom: 0; 
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab-button {
-    background: transparent;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: color 0.3s, border-bottom 0.3s;
-    border-bottom: 2px solid transparent;
-    color: #888;
-    margin-bottom: -1px;
+  background: transparent;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s, border-bottom 0.3s;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  margin-bottom: -1px;
 }
 
 .tab-button.active {
-    color: var(--accent-color);
-    border-bottom: 2px solid var(--accent-color);
-    font-weight: 600;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  font-weight: 600;
 }
 
 .content-area {
-    padding-top: 1.5rem;
+  padding-top: 1.5rem;
 }
 
 .preview-error {
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  margin-top: 1rem;  
+  margin-top: 1rem;
   color: #ff3333;
   background-color: rgba(255, 51, 51, 0.1);
-  border: 1px solid #ff3333;  
+  border: 1px solid #ff3333;
   font-weight: 600;
   font-size: 1rem;
   line-height: 1.4;
-  
+
   word-wrap: break-word;
   white-space: pre-wrap;
 }
 
 .preview-output {
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: var(--bg-color-light);
-    min-height: 400px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color-light);
+  min-height: 400px;
 }
-
-
-
-
-
-
 
 /* ============================================================================
    BLOG EDITOR STYLES - Improved & Organized
@@ -2636,371 +2630,365 @@ ul {
 /* ======================================= */
 
 .create-blog-container .blog-editor-area .form-group .Editor {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 /* Textarea invisibile ma interattivo */
 .json-editor-textarea {
-    box-sizing: border-box;
-    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 1rem;
-    
-    /* Layering */
-    position: relative;
-    z-index: 1;
-    
-    /* Trasparenza controllata */
-    color: transparent;
-    caret-color: var(--color-text-primary);
-    background: transparent;
-    border: none;
-    outline: none;
-    
-    /* Dimensioni */
-    width: 100%;
-    min-height: 400px;
-    resize: vertical;
-    
-    /* Scrolling sincronizzato */
-    overflow: auto;
+  box-sizing: border-box;
+  font-family: "Fira Code", "Monaco", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 1rem;
+
+  /* Layering */
+  position: relative;
+  z-index: 1;
+
+  /* Trasparenza controllata */
+  color: transparent;
+  caret-color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+
+  /* Dimensioni */
+  width: 100%;
+  min-height: 400px;
+  resize: vertical;
+
+  /* Scrolling sincronizzato */
+  overflow: auto;
 }
 
 /* Syntax highlighting background */
 .json-editor-textarea ~ pre {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 400px;
-    margin: 0;
-    padding: 1rem;
-    
-    /* Non interattivo */
-    pointer-events: none;
-    user-select: none;
-    
-    /* Styling */
-    background-color: var(--color-background-code, #1e1e1e);
-    border-radius: 8px;
-    overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 400px;
+  margin: 0;
+  padding: 1rem;
+
+  /* Non interattivo */
+  pointer-events: none;
+  user-select: none;
+
+  /* Styling */
+  background-color: var(--color-background-code, #1e1e1e);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 /* Allineamento numeri di riga */
 .json-editor-textarea ~ pre .token-line {
-    padding-right: 1rem;
-    padding-left: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
-
 
 /* ======================================= */
 /* 2. LAYOUT PRINCIPALE EDITOR            */
 /* ======================================= */
 
 .create-blog-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 5rem;
 }
 
 .top-controls-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    background-color: var(--color-background-light);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .editor-title {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .blog-editor-area {
-    background-color: var(--color-background);
-    border-radius: 8px;
-    padding: 20px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 20px;
 }
-
 
 /* ======================================= */
 /* 3. TITOLO BLOG EDITABILE               */
 /* ======================================= */
 
 .blog-main-title-editor {
-    margin-bottom: 30px;
-    padding: 15px 0;
-    border-bottom: 2px solid var(--color-border);
+  margin-bottom: 30px;
+  padding: 15px 0;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .main-blog-title {
-    font-size: clamp(2rem, 5vw, 2.5rem);
-    font-weight: 700;
-    color: var(--color-text-primary);
-    padding: 8px 12px;
-    margin: 0;
-    line-height: 1.2;
-    border-radius: 6px;
-    transition: box-shadow 0.2s, background-color 0.2s;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  margin: 0;
+  line-height: 1.2;
+  border-radius: 6px;
+  transition: box-shadow 0.2s, background-color 0.2s;
 }
 
 .main-blog-title.editable-block:hover {
-    background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
 }
 
 .main-blog-title.editable-block:focus {
-    box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
-    background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
-    outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
+  outline: none;
 }
-
 
 /* ======================================= */
 /* 4. TAB SWITCHER E TOOLBAR              */
 /* ======================================= */
 
 .tab-switcher {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--color-border);
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .tab-button {
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    background-color: var(--color-background-light);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .tab-button:hover:not(:disabled) {
-    background-color: var(--color-background-hover);
-    color: var(--color-text-primary);
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
 }
 
 .tab-button.active {
-    background-color: var(--color-primary);
-    color: white;
+  background-color: var(--color-primary);
+  color: white;
 }
 
 .tab-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
-
 
 /* ======================================= */
 /* 5. TOOLBAR AGGIUNGI BLOCCHI            */
 /* ======================================= */
 
 .add-block-controls {
-    display: flex;
-    gap: 6px;
-    margin-left: auto;
-    padding-left: 12px;
-    border-left: 1px solid var(--color-border);
-    flex-wrap: wrap;
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border);
+  flex-wrap: wrap;
 }
 
 .add-block-btn {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    
-    transition: all 0.2s;
-    position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+
+  transition: all 0.2s;
+  position: relative;
 }
 
 .add-block-btn:hover {
-    background-color: var(--color-primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .add-block-btn:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 /* Tooltip per i bottoni */
 .add-block-btn::after {
-    content: attr(title);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) scale(0.8);
-    padding: 6px 10px;
-    background-color: var(--color-tooltip-bg, rgba(0, 0, 0, 0.9));
-    color: white;
-    font-size: 12px;
-    white-space: nowrap;
-    border-radius: 4px;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.2s;
-    z-index: 1000;
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  padding: 6px 10px;
+  background-color: var(--color-tooltip-bg);
+  color: white;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 1000;
 }
 
 .add-block-btn:hover::after {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
 }
-
 
 /* ======================================= */
 /* 6. BLOCCHI EDITABILI - GENERALE        */
 /* ======================================= */
 
 .editable-block {
-    outline: none;
-    cursor: text;
-    border-radius: 6px;
-    position: relative;
-    transition: all 0.2s;
-    padding: 4px 8px;
-    margin: 2px 0;
+  outline: none;
+  cursor: text;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.2s;
+  padding: 4px 8px;
+  margin: 2px 0;
 }
 
 .editable-block:hover {
-    background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
 }
 
 .editable-block:focus {
-    box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
-    background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
 }
 
 .editable-block[contenteditable="true"]:empty::before {
-    content: attr(data-placeholder);
-    color: var(--color-text-placeholder, #999);
-    font-style: italic;
+  content: attr(data-placeholder);
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
 }
-
 
 /* ======================================= */
 /* 7. DRAG & DROP SYSTEM                  */
 /* ======================================= */
 
 .theory-block-wrapper {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 8px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    position: relative;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  position: relative;
 }
 
 .theory-block-wrapper:hover {
-    background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
 }
 
 .theory-block-wrapper.dragging {
-    opacity: 0.5;
-    background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+  opacity: 0.5;
+  background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
 }
 
 /* Controlli del blocco */
 .theory-block-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-    align-items: center;
-    padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  align-items: center;
+  padding-top: 4px;
 }
 
 .theory-block-wrapper:hover .theory-block-controls,
 .theory-block-wrapper:focus-within .theory-block-controls {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* Handle per trascinamento */
 .drag-handle {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
-    color: var(--color-text-secondary);
-    border-radius: 4px;
-    transition: all 0.2s;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .drag-handle:hover {
-    background-color: var(--color-background-light);
-    color: var(--color-primary);
+  background-color: var(--color-background-light);
+  color: var(--color-primary);
 }
 
 .drag-handle:active {
-    cursor: grabbing;
-    color: var(--color-primary-dark);
+  cursor: grabbing;
+  color: var(--color-primary-dark);
 }
 
 /* Bottoni azione blocco */
 .theory-block-controls button {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
 }
 
 .theory-block-controls button:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+  background-color: var(--color-background-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .theory-block-controls button[title*="Delete"]:hover {
-    border-color: var(--color-error, #ef4444);
-    color: var(--color-error, #ef4444);
-    background-color: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error, #ef4444);
+  color: var(--color-error, #ef4444);
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Contenuto del blocco */
 .theory-block-content {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
-
 
 /* ======================================= */
 /* 8. FORMULA & CODE BLOCK EDITING        */
@@ -3008,286 +2996,281 @@ ul {
 
 .theory-formula.editable-block,
 .theory-codeblock.editable-block {
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 16px;
-    background-color: var(--color-background-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: var(--color-background-light);
 }
 
 .theory-formula.editable-block {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* Switch bar per Edit/Preview */
 .edit-switch-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .switch-btn {
-    background: none;
-    border: none;
-    padding: 6px 12px;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .switch-btn:hover:not(.active) {
-    background-color: var(--color-background-hover);
-    color: var(--color-text-primary);
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
 }
 
 .switch-btn.active {
-    color: var(--color-primary);
-    font-weight: 600;
-    background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
 }
 
 /* Editor di testo per LaTeX e Codice */
 .latex-editor-input,
 .code-editor-input {
-    width: 100%;
-    background-color: var(--color-background-code, #1e1e1e);
-    color: var(--color-text-code, #d4d4d4);
-    border: 1px solid var(--color-border);
-    padding: 12px;
-    border-radius: 6px;
-    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    resize: vertical;
-    min-height: 100px;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
+  width: 100%;
+  background-color: var(--color-background-code, #1e1e1e);
+  color: var(--color-text-code, #d4d4d4);
+  border: 1px solid var(--color-border);
+  padding: 12px;
+  border-radius: 6px;
+  font-family: "Fira Code", "Monaco", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
 .latex-editor-input:focus,
 .code-editor-input:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
 }
 
 /* Area di preview */
 .preview-area {
-    min-height: 80px;
-    padding: 12px;
-    background-color: var(--color-background);
-    border-radius: 6px;
+  min-height: 80px;
+  padding: 12px;
+  background-color: var(--color-background);
+  border-radius: 6px;
 }
 
 .latex-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: var(--color-text-placeholder, #999);
-    font-style: italic;
-    padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
+  padding: 20px;
 }
 
 /* Code block actions */
 .code-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .code-language-input {
-    background-color: var(--color-background-darker, #0d0d0d);
-    color: var(--color-text-code, #d4d4d4);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-family: 'Fira Code', 'Monaco', monospace;
-    font-size: 13px;
-    width: 120px;
-    transition: border-color 0.2s;
+  background-color: var(--color-background-darker, #0d0d0d);
+  color: var(--color-text-code, #d4d4d4);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: "Fira Code", "Monaco", monospace;
+  font-size: 13px;
+  width: 120px;
+  transition: border-color 0.2s;
 }
 
 .code-language-input:focus {
-    border-color: var(--color-primary);
-    outline: none;
+  border-color: var(--color-primary);
+  outline: none;
 }
 
 .code-language-input:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .code-switch {
-    font-size: 16px;
-    padding: 4px 8px;
+  font-size: 16px;
+  padding: 4px 8px;
 }
 
 .copy-btn {
-    margin-left: auto;
-    background: none;
-    border: 1px solid var(--color-border);
-    padding: 4px 8px;
-    border-radius: 4px;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .copy-btn:hover {
-    background-color: var(--color-background-light);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+  background-color: var(--color-background-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
-
 
 /* ======================================= */
 /* 9. CALLOUT EDITING                     */
 /* ======================================= */
 
 .callout-header-editor {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
 .callout-type-selector {
-    padding: 5px 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background-color: var(--color-background-light);
-    color: var(--color-text-primary);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
 }
 
 .callout-type-selector:hover {
-    border-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .callout-type-selector:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
 }
 
 .callout-title {
-    flex-grow: 1;
-    font-weight: 600;
+  flex-grow: 1;
+  font-weight: 600;
 }
-
 
 /* ======================================= */
 /* 10. LIST EDITING                       */
 /* ======================================= */
 
 .theory-list-container {
-    margin: 12px 0;
+  margin: 12px 0;
 }
 
 .list-item-editor {
-    margin: 4px 0;
-    padding: 4px 8px;
-    border-radius: 4px;
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .add-item-btn {
-    margin-top: 8px;
-    padding: 6px 12px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-
 
 /* ======================================= */
 /* 11. TABLE EDITING                      */
 /* ======================================= */
 
 .theory-table-wrap {
-    margin: 16px 0;
+  margin: 16px 0;
 }
 
 .table-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .table-add-btn {
-    padding: 6px 12px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .theory-table th.editable-block,
 .theory-table td.editable-block {
-    min-width: 80px;
+  min-width: 80px;
 }
-
 
 /* ======================================= */
 /* 12. IMAGE EDITING                      */
 /* ======================================= */
 
 .image-editor-mode {
-    border: 2px dashed var(--color-border);
-    border-radius: 8px;
-    padding: 16px;
-    background-color: var(--color-background-light);
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--color-background-light);
 }
 
 .image-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .image-url-input {
-    flex: 1;
-    min-width: 200px;
-    padding: 8px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background-color: var(--color-background);
-    color: var(--color-text-primary);
-    font-size: 14px;
-    transition: border-color 0.2s;
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
 .image-url-input:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
 }
 
 .upload-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }
-
 
 /* ======================================= */
 /* 13. TEXT FORMATTING                    */
@@ -3298,114 +3281,111 @@ ul {
 .example-body strong,
 .toggle-panel strong,
 .theory-note strong {
-    font-weight: 700;
-    color: var(--color-strong, var(--color-text-primary));
+  font-weight: 700;
+  color: var(--color-strong, var(--color-text-primary));
 }
 
 /* Placeholder per elementi vuoti */
 [contenteditable="true"]:empty::before {
-    content: "Type something...";
-    color: var(--color-text-placeholder, #999);
-    font-style: italic;
+  content: "Type something...";
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
 }
-
 
 /* ======================================= */
 /* 14. RESPONSIVE DESIGN                  */
 /* ======================================= */
 
 @media (max-width: 768px) {
-    .create-blog-container {
-        padding: 10px;
-    }
-    
-    .top-controls-bar {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .add-block-controls {
-        margin-left: 0;
-        padding-left: 0;
-        border-left: none;
-        border-top: 1px solid var(--color-border);
-        padding-top: 12px;
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .tab-switcher {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .main-blog-title {
-        font-size: 1.75rem;
-    }
-    
-    .theory-block-wrapper {
-        gap: 4px;
-        padding: 4px;
-    }
-}
+  .create-blog-container {
+    padding: 10px;
+  }
 
+  .top-controls-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-block-controls {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-top: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tab-switcher {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-blog-title {
+    font-size: 1.75rem;
+  }
+
+  .theory-block-wrapper {
+    gap: 4px;
+    padding: 4px;
+  }
+}
 
 /* ======================================= */
 /* 15. ACCESSIBILITY                      */
 /* ======================================= */
 
 .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Focus visible per tastiera */
 *:focus-visible {
-    outline: 2px solid var(--color-focus-ring, rgba(59, 130, 246, 0.5));
-    outline-offset: 2px;
+  outline: 2px solid var(--color-focus-ring, rgba(59, 130, 246, 0.5));
+  outline-offset: 2px;
 }
 
 /* Riduci animazioni per chi preferisce */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-
 
 /* ======================================= */
 /* 16. DARK MODE ADJUSTMENTS              */
 /* ======================================= */
 
 [data-theme="dark"] .editable-block:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] .editable-block:focus {
-    background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .theory-block-wrapper:hover {
-    background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme="dark"] .latex-editor-input,
 [data-theme="dark"] .code-editor-input {
-    background-color: #0d1117;
-    color: #c9d1d9;
+  background-color: #0d1117;
+  color: #c9d1d9;
 }
 
 [data-theme="dark"] .image-editor-mode {
-    background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(255, 255, 255, 0.03);
 }
