@@ -1,90 +1,90 @@
-// app/(pages)/blog/data/initialContent.js
+// app/(core)/data/initialContent.js
 
 /**
- * Default structure for the blog post editor. 
- * This JSON structure is processed by the TheoryRenderer component.
+ * Quick start guide for the Visual Blog Editor
  */
 export const initialContentData = {
+    "title": "Visual Editor Guide",
     "sections": [
         {
-            "title": "Welcome to the JSON Blog Editor 🚀",
+            "title": "🎨 Getting Started",
             "blocks": [
                 {
                     "type": "paragraph",
-                    "text": "This editor uses a specific JSON structure that the TheoryRenderer transforms into a readable article. The content is divided into 'sections', and each section contains a list of 'blocks'."
-                },
-                {
-                    "type": "paragraph",
-                    "text": "Every block has a 'type' field that defines its nature (e.g., paragraph, formula, code, callout) and specific properties."
+                    "text": "Welcome! This is a **visual editor** where you can edit text directly, drag blocks to reorder them, and add content with one click."
                 },
                 {
                     "type": "callout",
                     "calloutType": "info",
-                    "title": "Key Rule",
-                    "text": "Always ensure your JSON is properly formatted! Even a single missing or extra comma can cause a parsing error."
+                    "title": "Two Modes",
+                    "text": "Switch between **Visual Editor** (easy editing) and **JSON Editor** (advanced) using the tabs above."
                 }
             ]
         },
         {
-            "title": "1. Standard Blocks (Text and Code)",
+            "title": "✏️ Editing Basics",
             "blocks": [
                 {
                     "type": "paragraph",
-                    "text": "For regular text, use the **\"paragraph\"** block type with the **\"text\"** property."
-                },
-                {
-                    "type": "code",
-                    "code": "const data = {\n    key: 'value',\n    another: 42\n};",
-                    "language": "javascript"
-                },
-                {
-                    "type": "paragraph",
-                    "text": "To insert a code block, set the **\"type\"** to **\"code\"** and specify the **\"language\"** property (e.g., javascript, python, css, json) for proper syntax highlighting."
-                }
-            ]
-        },
-        {
-            "title": "2. How to Write Mathematical Formulas (LaTeX)",
-            "blocks": [
-                {
-                    "type": "paragraph",
-                    "text": "To insert complex mathematical formulas, you must use the **\"formula\"** block type, which supports **LaTeX** syntax via the KaTeX library."
-                },
-                {
-                    "type": "paragraph",
-                    "text": "The formula block has two key properties:"
+                    "text": "**Click any text** to edit it. **Hover over blocks** to reveal controls: drag handle (⋮⋮), duplicate (⎘), and delete (×)."
                 },
                 {
                     "type": "callout",
                     "calloutType": "tip",
-                    "title": "Formula Structure",
-                    "text": "1. **\"latex\"**: Contains the LaTeX string of your equation.\n2. **\"inline\"**: A boolean. If **true**, the formula is displayed within the text flow. If **false** (recommended for long equations), it's a centered block."
-                },
+                    "title": "Text Formatting",
+                    "text": "Use **double asterisks** for bold: \\*\\*text\\*\\* becomes **text**"
+                }
+            ]
+        },
+        {
+            "title": "➕ Block Types",
+            "blocks": [
                 {
                     "type": "paragraph",
-                    "text": "### Block Formula Example (inline: false)"
+                    "text": "Use the **toolbar buttons** at the top to add blocks:"
+                },
+                {
+                    "type": "list",
+                    "items": [
+                        "**¶** Paragraph - Regular text",
+                        "**H** Heading - Section title",
+                        "**</>** Code - Syntax highlighted code",
+                        "**√** Formula - LaTeX math equations",
+                        "**≡** List - Bullet or numbered lists",
+                        "**ⓘ** Callout - Info, warning, tip, success boxes",
+                        "**⊞** Table - Editable data tables",
+                        "**⊡** Image - Images with captions"
+                    ],
+                    "ordered": false
+                }
+            ]
+        },
+        {
+            "title": "📝 Examples",
+            "blocks": [
+                {
+                    "type": "code",
+                    "code": "// Code with syntax highlighting\nconst hello = () => {\n  console.log('Hello!');\n};",
+                    "language": "javascript"
                 },
                 {
                     "type": "formula",
-                    "latex": "\\int_{a}^{b} f(x) \\, dx = F(b) - F(a)",
+                    "latex": "E = mc^2",
                     "inline": false
                 },
                 {
-                    "type": "paragraph",
-                    "text": "### Inline Formula Example (inline: true)"
+                    "type": "table",
+                    "columns": ["Feature", "Status"],
+                    "data": [
+                        { "Feature": "Direct Editing", "Status": "✓" },
+                        { "Feature": "Drag & Drop", "Status": "✓" }
+                    ]
                 },
                 {
-                    "type": "paragraph",
-                    "text": "The famous Euler's identity is given by:"
-                },
-                {
-                    "type": "formula",
-                    "latex": "e^{i\\pi} + 1 = 0",
-                    "inline": true
-                },
-                {
-                    "type": "paragraph",
-                    "text": "This allows you to mix text and mathematics effectively."
+                    "type": "callout",
+                    "calloutType": "success",
+                    "title": "Ready!",
+                    "text": "Delete this guide and start creating your content!"
                 }
             ]
         }

@@ -201,7 +201,7 @@ export default function CreateBlogPage() {
     const router = useRouter();
     const [title, setTitle] = useState("New Blog Title");
     const [jsonContent, setJsonContent] = useState(initialContent);
-    const [viewMode, setViewMode] = useState<"JSON" | "Preview">("JSON");
+    const [viewMode, setViewMode] = useState<"JSON" | "Preview">("Preview");
 
     const jsonTitle = useMemo(() => {
         try {
@@ -286,19 +286,18 @@ export default function CreateBlogPage() {
                     <div className="tab-switcher">
                         <button
                             type="button"
-                            className={`tab-button ${viewMode === 'JSON' ? 'active' : ''}`}
-                            onClick={() => setViewMode('JSON')}
-                        >
-                            <FontAwesomeIcon icon={faCode} /> JSON Editor
-                        </button>
-
-                        <button
-                            type="button"
                             className={`tab-button ${viewMode === 'Preview' ? 'active' : ''}`}
                             onClick={() => setViewMode('Preview')}
                             disabled={viewMode === 'Preview' && isJsonInvalid(jsonContent)}
                         >
                             <FontAwesomeIcon icon={faEdit} /> Visual Editor
+                        </button>
+                        <button
+                            type="button"
+                            className={`tab-button ${viewMode === 'JSON' ? 'active' : ''}`}
+                            onClick={() => setViewMode('JSON')}
+                        >
+                            <FontAwesomeIcon icon={faCode} /> JSON Editor
                         </button>
 
                         {viewMode === 'Preview' && (
