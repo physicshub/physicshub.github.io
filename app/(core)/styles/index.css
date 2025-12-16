@@ -584,8 +584,9 @@ main.simulations-page {
   font-size: 1rem;
   font-weight: 600;
   border-radius: 999px;
-  background: linear-gradient(135deg, #5eead4, #38bdf8);
-  color: #021014;
+  background: linear-gradient(135deg, #1fb6a6 0%, #1e6fbf 100%);
+
+  color: #e6fafa;
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -793,15 +794,27 @@ main.simulations-page {
 
 @keyframes glowPulse {
   0% {
-    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4), 0 0 30px rgba(0, 123, 255, 0.3), 0 0 60px rgba(0, 123, 255, 0.2);
+    box-shadow:
+      0 10px 20px rgba(45, 212, 191, 0.25),
+      0 0 30px rgba(56, 189, 248, 0.20),
+      0 0 50px rgba(30, 136, 216, 0.15);
   }
+
   50% {
-    box-shadow: 0 12px 25px rgba(0, 123, 255, 0.6), 0 0 40px rgba(0, 123, 255, 0.4), 0 0 80px rgba(0, 123, 255, 0.25);
+    box-shadow:
+      0 14px 28px rgba(45, 212, 191, 0.40),
+      0 0 45px rgba(56, 189, 248, 0.30),
+      0 0 80px rgba(30, 136, 216, 0.22);
   }
+
   100% {
-    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4), 0 0 30px rgba(0, 123, 255, 0.3), 0 0 40px rgba(0, 123, 255, 0.2);
+    box-shadow:
+      0 10px 20px rgba(45, 212, 191, 0.25),
+      0 0 30px rgba(56, 189, 248, 0.20),
+      0 0 50px rgba(30, 136, 216, 0.15);
   }
 }
+
 
 @keyframes shineSweep {
   0%{
