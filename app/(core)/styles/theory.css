@@ -1,58 +1,111 @@
-/* Theory styles section */
+/* ============================================================================
+   VARIABILI GLOBALI E TEMI
+   ============================================================================ */
+
+/* Variabili di Base (Assunte per Dark Mode se non specificato un tema) */
 :root {
-  --bg: rgba(255,255,255,0.04);
-  --muted: rgba(255,255,255,0.6);
-  --accent: #00e6e6;
-  --success: rgba(16,185,129,0.12);
-  --warning: rgba(245,158,11,0.08);
-  --info: rgba(59,130,246,0.08);
+  /* Colori Principali */
+  --success-color: #10b981; /* rgba(16,185,129) */
+  --warning-color: #f59e0b; /* rgba(245,158,11) */
+  --info-color: #3b82f6;    /* rgba(59,130,246) */
+  --tip-color: #8b5cf6;     /* Un viola/blu per 'Tip' */
+  --error-color: #ef4444;   /* Colore per Delete/Errori */
+  
+  /* Sfondi e Testi (Dark Mode Defaults) */
+  --bg: rgba(255, 255, 255, 0.04);
+  --bg-light: rgba(255, 255, 255, 0.02); /* Toggle, Table Header */
+  --bg-darker: #0d0d0d;                 /* Per input specifici dark mode */
+  --text-primary: #fff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-placeholder: #999;
+  --text-code: #d4d4d4;
+
+  /* Colori Interattivi */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --focus-ring: rgba(59, 130, 246, 0.5);
+  --primary-light: rgba(59, 130, 246, 0.1);
+  --tooltip-bg: rgba(0, 0, 0, 0.9);
+  
+  /* Sfondi per Callout/Note */
+  --bg-success: rgba(16, 185, 129, 0.12);
+  --bg-warning: rgba(245, 158, 11, 0.08);
+  --bg-info: rgba(59, 130, 246, 0.08);
+  --bg-note: rgba(255, 255, 0, 0.07);
+  
+  /* Variabili di Geometria */
   --radius: 8px;
+  --radius-sm: 6px;
+  --radius-xs: 4px;
+
+  /* Font */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+
+  --margin-element: 1.5rem;
 }
 
-/* Light Theme Overrides for Theory */
+/* Override Light Theme: Raggruppa tutte le variabili di Light Mode qui */
 [data-theme='light'] {
-  --bg: rgba(0,0,0,0.08);
-  --muted: rgba(0,0,0,0.7);
+  --bg: rgba(0, 0, 0, 0.08);
+  --bg-light: rgba(0, 0, 0, 0.04);
+  --bg-darker: #f0f0f0; /* Non usato ma per consistenza */
+  --text-primary: #333;
+  --text-muted: rgba(0, 0, 0, 0.7);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-code: #333;
+  --text-placeholder: #999;
+  --border-color: rgba(0, 0, 0, 0.15);
+  
+  /* Light mode: i background scuri non sono necessari per gli avvisi */
+  --bg-success: rgba(16, 185, 129, 0.1);
+  --bg-warning: rgba(245, 158, 11, 0.1);
+  --bg-info: rgba(59, 130, 246, 0.1);
+  --bg-note: rgba(255, 255, 0, 0.15);
+  
+  /* Colori per interazione in Light Mode */
+  --color-background-hover: rgba(0, 0, 0, 0.04);
+  --color-background-active: rgba(0, 0, 0, 0.08);
+  --color-background-code: #f7f7f7;
+  --color-text-primary: #333; /* Sovrascrive per l'editor */
 }
 
-/* Light theme specific overrides */
-[data-theme='light'] .theory-container {
-  border-top: 1px solid rgba(0,0,0,0.15);
+/* Regole globali: per coerenza, applichiamo gli stili hover qui */
+/* NOTA: Ho sostituito i colori hardcoded degli hover/focus con variabili */
+
+.editable-block:hover {
+  background-color: var(--color-background-hover, rgba(255, 255, 255, 0.02));
 }
 
-[data-theme='light'] .theory-formula code,
-[data-theme='light'] .theory-formula .formula-code {
-  color: #333;
+.editable-block:focus {
+  box-shadow: 0 0 0 2px var(--focus-ring, rgba(59, 130, 246, 0.3));
+  background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
 }
 
-[data-theme='light'] .theory-note {
-  color: #333;
-  background: rgba(255,255,0,0.15);
-  border-left: 3px solid rgba(255,255,0,0.8);
+.theory-block-wrapper:hover {
+  background-color: var(--color-background-hover, rgba(255, 255, 255, 0.03));
 }
 
-[data-theme='light'] .theory-table th {
-  background: rgba(0,0,0,0.08);
+/* Formula e Code Block Editing - Unificazione Stili */
+.theory-formula.editable-block,
+.theory-codeblock.editable-block {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: var(--bg); /* Usa il background principale come default */
 }
 
-[data-theme='light'] .theory-table td {
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
+/* ============================================================================
+   STILI DI TEORIA (THEORY STYLES SECTION)
+   ============================================================================ */
 
-[data-theme='light'] .theory-example {
-  border: 1px dashed rgba(0,0,0,0.15);
-}
-
-[data-theme='light'] .theory-toggle {
-  background: rgba(0,0,0,0.05);
-}
-
-/* Container e titoli */
+/* Container e titoli - Uso di rem/em più consistenti */
 .theory-container {
   margin: 2rem;
   padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid var(--border-color);
 }
+/* Sovrascrittura Light Mode per il container non più necessaria grazie alla variabile */
 
 .theory-section + .theory-section {
   margin-top: 1.5rem;
@@ -60,63 +113,74 @@
 
 .theory-title {
   font-size: 1.25rem;
-  margin: 0 0 .75rem;
-  color: var(--accent);
+  margin: 0 0 0.75rem;
+  color: var(--accent-color);
 }
 
 .theory-subheading {
   font-size: 1.1rem;
-  margin: 1rem 0 .25rem;
-  color: var(--muted);
+  margin: 1rem 0 0.25rem;
+  color: var(--text-muted);
 }
 
 .theory-paragraph {
   line-height: 1.7;
-  margin: .5rem 0;
-  color: var(--muted);
+  margin-left: var(--margin-element);
+  margin-top: 2rem;
+  color: var(--text-muted);
 }
 
 .theory-blocks > :not(:last-child) {
-  margin-bottom: .75rem;
+  margin-bottom: 0.75rem;
 }
 
 /* Formula */
 .theory-formula {
   position: relative;
-  margin: .75rem 0;
-  padding: .75rem 1rem;
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
   border-radius: var(--radius);
   background: var(--bg);
   overflow: auto;
   display: flex;
   align-items: center;
+  margin-left: var(--margin-element);
+}
+
+/* Raggruppo stili comuni ai copy-btn */
+.theory-formula .copy-btn,
+.copy-btn {
+  /* Stili base del bottone copia, estesi sotto per contesto */
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
 }
 
 .theory-formula .copy-btn {
   position: absolute;
   right: 8px;
   top: 8px;
-  background: none;
-  border: none;
-  padding: .4rem;
-  border-radius: 6px;
-  cursor: pointer;
-  opacity: .85;
-  transition: opacity .2s ease;
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
 }
 
-.theory-formula .copy-btn:hover {
+.theory-formula .copy-btn:hover,
+.copy-btn:hover {
   opacity: 1;
 }
 
+/* Codice nelle formule/inline */
 .theory-formula .formula-code,
 .theory-formula code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-  font-size: .95rem;
-  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-primary); /* Semplificato, usa la variabile base */
 }
 
-/* Copy feedback (se vuoi ancora usare uno span) */
+/* Copy feedback */
 .copied-msg {
   position: absolute;
   bottom: 4px;
@@ -127,47 +191,49 @@
 
 /* Note e liste */
 .theory-note {
-  margin: .75rem 0;
-  padding: .6rem .85rem;
-  background: rgba(255,255,0,0.07);
-  border-left: 3px solid rgba(255,255,0,0.6);
-  border-radius: 6px;
-  color: #fff;
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.85rem;
+  background: var(--bg-note); /* Usa variabile */
+  border-left: 3px solid rgba(255, 255, 0, 0.8); /* Potrebbe diventare una variabile */
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
 }
+/* Non sono più necessarie le sovrascritture light mode per note/formula/table */
 
 .theory-list {
-  margin: .5rem 1.25rem;
+  margin: 0.5rem 1.25rem;
   padding-left: 1rem;
 }
 
 .theory-list li {
-  margin: .35rem 0;
+  margin: 0.35rem 0;
 }
 
 /* Code block esteso */
 .theory-codeblock {
-  border-radius: 10px;
-  padding: .5rem;
+  border-radius: 10px; /* Mantengo 10px come da originale */
+  padding: 0.5rem;
+  margin-left: var(--margin-element);
 }
 
 .code-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 .25rem;
-  margin-bottom: .35rem;
+  padding: 0 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .code-lang {
-  font-size: .75rem;
-  opacity: .8;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .code-content {
   display: block;
-  padding: .65rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-  font-size: .9rem;
+  padding: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
   white-space: pre;
   overflow: auto;
 }
@@ -175,11 +241,12 @@
 /* Callout / avvisi */
 .theory-callout {
   display: flex;
-  gap: .75rem;
-  padding: .65rem;
-  border-radius: 8px;
+  gap: 0.75rem;
+  padding: 1rem !important;
+  border-radius: var(--radius);
   background: var(--bg);
   align-items: flex-start;
+  margin-left: var(--margin-element);
 }
 
 .callout-icon {
@@ -189,96 +256,106 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.callout-body { flex: 1; }
+.callout-body {
+  flex: 1;
+}
 
 .callout-title {
   font-weight: 600;
-  margin-bottom: .25rem;
+  margin-bottom: 0.25rem;
 }
 
-.callout-content { color: var(--muted); }
+.callout-content {
+  color: var(--text-muted);
+}
 
+/* Unificazione degli stili per i tipi di callout */
 .callout-info {
-  border-left: 4px solid rgba(59,130,246,0.9);
+  border-left: 4px solid var(--info-color);
+  background: var(--bg-info);
 }
 
 .callout-warning {
-  border-left: 4px solid rgba(245,158,11,0.95);
-  background: var(--warning);
+  border-left: 4px solid var(--warning-color);
+  background: var(--bg-warning);
 }
 
+/* Il tip usa la variabile info/blu nel codice originale. Manteniamo il blu. */
 .callout-tip {
-  border-left: 4px solid rgba(99,102,241,0.95);
-  background: var(--info);
+  border-left: 4px solid var(--tip-color); /* Aggiungo un blu/viola per 'Tip' */
+  background: var(--bg-info);
 }
 
 .callout-success {
-  border-left: 4px solid rgba(16,185,129,0.95);
-  background: var(--success);
+  border-left: 4px solid rgba(16, 185, 129, 0.95);
+  background: var(--bg-success);
 }
 
 /* Example */
 .theory-example {
-  border: 1px dashed rgba(255,255,255,0.06);
-  padding: .65rem;
-  border-radius: 8px;
+  border: 1px dashed var(--border-color); /* Usa la variabile */
+  padding: 0.65rem;
+  border-radius: var(--radius);
   background: transparent;
 }
 
 .example-title {
   font-weight: 600;
-  margin-bottom: .4rem;
+  margin-bottom: 0.4rem;
 }
 
-.example-body { color: var(--muted); }
+.example-body {
+  color: var(--text-muted);
+}
 
 /* Tabelle */
 .theory-table-wrap {
   overflow: auto;
-  border-radius: 8px;
-  margin: .75rem 0;
+  border-radius: var(--radius);
+  margin: 0.75rem 0;
 }
 
 .theory-table {
   width: 100%;
   border-collapse: collapse;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .theory-table th {
   text-align: left;
-  padding: .5rem;
-  background: rgba(255,255,255,0.03);
-  font-size: .85rem;
+  padding: 0.5rem;
+  background: var(--bg-light); /* Usa la variabile light */
+  font-size: 0.85rem;
 }
 
 .theory-table td {
-  padding: .6rem;
-  border-top: 1px solid rgba(255,255,255,0.03);
+  padding: 0.6rem;
+  border-top: 1px solid var(--bg); /* Usa il bg per il bordo leggero */
 }
+/* Non sono più necessarie le sovrascritture light mode per la table */
 
 /* Immagini */
 .theory-image img {
   max-width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   display: block;
 }
 
 .theory-image figcaption {
-  font-size: .85rem;
-  opacity: .8;
-  margin-top: .35rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 0.35rem;
 }
 
 /* Toggle/accordion */
 .theory-toggle {
-  border-radius: 8px;
-  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius);
+  background: var(--bg-light);
   overflow: hidden;
 }
 
@@ -287,26 +364,703 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .6rem;
+  padding: 0.6rem;
   border: 0;
   background: none;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 900;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .toggle-panel {
-  transition: max-height .25s ease, padding .25s;
+  transition: max-height 0.25s ease, padding 0.25s;
   overflow: hidden;
-  padding: 0 .6rem 0;
+  padding: 0 0.6rem 0;
 }
 
 .theory-toggle.open .toggle-panel {
-  padding: .6rem;
+  padding: 0.6rem;
 }
 
 /* Accessibilità e utilità */
+/* Raggruppato in ACCESSIBILITY */
+/* Il .copy-btn generico è stato integrato sopra */
+
+/* Responsive (THEORY) */
+@media (max-width: 640px) {
+  .theory-container {
+    margin: 1rem;
+    padding: 0.75rem;
+  }
+  .theory-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================================================
+   EDITOR STYLES
+   ============================================================================ */
+
+/* 1. JSON EDITOR (CODE MIRROR STYLE) - Uso delle variabili */
+.create-blog-container .blog-editor-area .form-group .Editor {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.json-editor-textarea {
+  box-sizing: border-box;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 1rem;
+  position: relative;
+  z-index: 1;
+  color: transparent;
+  caret-color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  min-height: 400px;
+  resize: vertical;
+  overflow: auto;
+}
+
+.json-editor-textarea ~ pre {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 400px;
+  margin: 0;
+  padding: 1rem;
+  pointer-events: none;
+  user-select: none;
+  background-color: var(--color-background-code, #1e1e1e); /* Usa la variabile */
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.json-editor-textarea ~ pre .token-line {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* 2. LAYOUT PRINCIPALE EDITOR */
+.create-blog-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 5rem;
+}
+
+.top-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: var(--bg); /* Usa bg principale */
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editor-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.blog-editor-area {
+  background-color: var(--bg); /* Usa bg principale */
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* Clear All Button - Raggruppamento stili comuni */
+.clear-all-btn-toolbar,
+.add-block-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.clear-all-btn-toolbar {
+  background-color: var(--error-color);
+  color: white;
+  margin-left: 12px;
+}
+
+.clear-all-btn-toolbar:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.clear-all-btn-toolbar:active {
+  transform: translateY(0);
+}
+
+/* Tooltip per clear all button - Usa le variabili */
+.clear-all-btn-toolbar::after,
+.add-block-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  padding: 6px 10px;
+  background-color: var(--tooltip-bg);
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: var(--radius-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 1000;
+}
+
+.clear-all-btn-toolbar:hover::after,
+.add-block-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* 3. TITOLO BLOG EDITABILE */
+.blog-main-title-editor {
+  margin-bottom: 30px;
+  padding: 15px 0;
+  border-bottom: 2px solid var(--border-color);
+}
+
+/* Blocco titolo sezione e titolo principale - Raggruppamento */
+.theory-section-title,
+.main-blog-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  border-radius: var(--radius-sm);
+  transition: box-shadow 0.2s, background-color 0.2s;
+}
+
+.theory-section-title {
+  font-size: 1.75rem;
+  color: var(--accent-color);
+  margin: 1.5rem 0 1rem 0;
+  padding: 8px 0;
+  line-height: 1.3;
+}
+
+.main-blog-title {
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  margin: 0;
+}
+
+/* Stili hover/focus per titoli ereditati da .editable-block */
+
+/* 4. TAB SWITCHER E TOOLBAR */
+.tab-switcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-light);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-button:hover:not(:disabled) {
+  background-color: var(--color-background-hover);
+  color: var(--text-primary);
+}
+
+.tab-button.active {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.tab-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 5. TOOLBAR AGGIUNGI BLOCCHI */
+.add-block-controls {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  padding-left: 12px;
+  border-left: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.add-block-btn {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.add-block-btn:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-block-btn:active {
+  transform: translateY(0);
+}
+
+/* Tooltip per i bottoni - Usato il raggruppamento sopra */
+
+/* 6. BLOCCHI EDITABILI - GENERALE - Uso delle variabili */
+.editable-block {
+  outline: none;
+  cursor: text;
+  border-radius: var(--radius-sm);
+  position: relative;
+  transition: all 0.2s;
+  padding: 4px 8px;
+  margin: 2px 0;
+}
+/* Hover e focus già definiti in alto con le variabili */
+
+.editable-block[contenteditable="true"]:empty::before,
+[contenteditable="true"]:empty::before { /* Raggruppato il placeholder generico */
+  content: attr(data-placeholder);
+  color: var(--text-placeholder);
+  font-style: italic;
+}
+
+/* 7. DRAG & DROP SYSTEM - Uso delle variabili */
+.theory-block-wrapper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: var(--radius);
+  transition: all 0.2s;
+  position: relative;
+}
+/* Hover già definito in alto */
+
+.theory-block-wrapper.dragging {
+  opacity: 0.5;
+  background-color: var(--primary-light);
+}
+
+.theory-block-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.theory-block-wrapper:hover .theory-block-controls,
+.theory-block-wrapper:focus-within .theory-block-controls {
+  opacity: 1;
+}
+
+.drag-handle {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--text-secondary);
+  border-radius: var(--radius-xs);
+  transition: all 0.2s;
+}
+
+.drag-handle:hover {
+  background-color: var(--bg-light);
+  color: var(--accent-color);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  color: var(--accent-color);
+}
+
+.theory-block-controls button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.theory-block-controls button:hover {
+  background-color: var(--bg-light);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.theory-block-controls button[title*="Delete"]:hover {
+  border-color: var(--error-color);
+  color: var(--error-color);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.theory-block-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 8. FORMULA & CODE BLOCK EDITING */
+
+.theory-formula.editable-block {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.edit-switch-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.switch-btn {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.switch-btn:hover:not(.active) {
+  background-color: var(--color-background-hover);
+  color: var(--text-primary);
+}
+
+.switch-btn.active {
+  color: var(--accent-color);
+  font-weight: 600;
+  background-color: var(--primary-light);
+}
+
+/* Editor di testo per LaTeX e Codice - Raggruppamento e variabili */
+.latex-editor-input,
+.code-editor-input {
+  width: 100%;
+  background-color: var(--color-background-code, #1e1e1e);
+  color: var(--text-code);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.latex-editor-input:focus,
+.code-editor-input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.preview-area {
+  min-height: 80px;
+  padding: 12px;
+  background-color: var(--bg);
+  border-radius: var(--radius-sm);
+  display: flex;
+}
+
+.latex-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-placeholder);
+  font-style: italic;
+  padding: 20px;
+}
+
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.code-language-input {
+  background-color: var(--bg-darker);
+  color: var(--text-code);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  width: 120px;
+  transition: border-color 0.2s;
+}
+
+.code-language-input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.code-language-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.code-switch {
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+/* Bottone copia specifico per editor */
+.code-actions .copy-btn {
+  margin-left: auto;
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  opacity: 1; /* Override opacità generale */
+}
+
+.code-actions .copy-btn:hover {
+  background-color: var(--bg-light);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* 9. CALLOUT EDITING */
+.callout-header-editor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.callout-type-selector {
+  padding: 5px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.callout-type-selector:hover {
+  border-color: var(--accent-color);
+}
+
+.callout-type-selector:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+/* 10. LIST EDITING */
+.theory-list-container {
+  margin: 12px 0;
+}
+
+.list-item-editor {
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+}
+
+.add-item-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Utilizza lo stile generico del tab-button o add-block-btn per coerenza se possibile */
+  background-color: var(--accent-color); /* Adotto il colore primario per 'Aggiungi' */
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* 11. TABLE EDITING */
+.theory-table-wrap {
+  margin: 2rem 0;
+  margin-left: var(--margin-element);
+}
+
+.table-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.table-add-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Stile bottone generico per 'Aggiungi' */
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theory-table th.editable-block,
+.theory-table td.editable-block {
+  min-width: 80px;
+}
+
+/* 12. IMAGE EDITING */
+.image-editor-mode {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  background-color: var(--bg-light);
+}
+
+.image-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.image-url-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.image-url-input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* 13. TEXT FORMATTING */
+/* Raggruppamento per evitare ripetizioni */
+.theory-paragraph strong,
+.callout-content strong,
+.example-body strong,
+.toggle-panel strong,
+.theory-note strong {
+  font-weight: 700;
+  color: var(--accent-color); /* Usa accent come colore strong */
+}
+
+/* Placeholder per elementi vuoti - Raggruppato in 6. */
+
+/* 14. RESPONSIVE DESIGN (EDITOR) */
+@media (max-width: 768px) {
+  .create-blog-container {
+    padding: 10px;
+  }
+
+  .top-controls-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-block-controls {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tab-switcher {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-blog-title {
+    font-size: 1.75rem;
+  }
+
+  .theory-block-wrapper {
+    gap: 4px;
+    padding: 4px;
+  }
+}
+
+/* 15. ACCESSIBILITY - Raggruppato e pulito */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -314,27 +1068,26 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border: 0;
+  border-width: 0;
 }
 
-/* Bottoni copia generici */
-.copy-btn {
-  background: none;
-  border: 0;
-  cursor: pointer;
-  font-size: 0.95rem;
-  opacity: 0.8;
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
-.copy-btn:hover { opacity: 1; }
-
-/* Responsive */
-@media (max-width: 640px) {
-  .theory-container {
-    margin: 1rem;
-    padding: .75rem;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  .theory-title { font-size: 1.1rem; }
 }
+
+/* 16. DARK MODE ADJUSTMENTS - Non più necessari grazie alle variabili! */
+/* Solo se necessario per eccezioni non coperte dalle variabili. */
+/* Ho spostato le uniche regole rimanenti nel blocco VARIABILI GLOBALI. */

@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCode, faEdit, faSave, faArrowLeft, faTrash,
     faParagraph, faHeading, faSquareRootAlt, faListOl,
-    faInfoCircle, faQuoteRight, faTable, faImage, faChevronCircleDown
+    faInfoCircle, faQuoteRight, faTable, faImage, faChevronCircleDown,
+    faEye
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/navigation';
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
@@ -45,8 +46,8 @@ const NEW_BLOCK_TEMPLATES = {
     toggle: { type: "toggle", title: "Toggle Details", content: "Hidden content visible on click." }
 };
 
-// Custom Preview Renderer
-const CustomPreviewRenderer: React.FC<{
+// --- COMPONENTE 1: VISUAL EDITOR (Modifica) ---
+const VisualEditorRenderer: React.FC<{
     jsonContent: string;
     setJsonContent: (content: string) => void;
 }> = ({ jsonContent, setJsonContent }) => {
@@ -168,7 +169,7 @@ const CustomPreviewRenderer: React.FC<{
                     >
                         <TheoryRenderer
                             theory={data}
-                            isEditing={true}
+                            isEditing={true} // Modalità Edit
                             onContentUpdate={handleContentUpdate}
                             onDeleteBlock={handleDeleteBlock}
                             onDuplicateBlock={handleDuplicateBlock}
@@ -176,6 +177,35 @@ const CustomPreviewRenderer: React.FC<{
                         />
                     </SortableContext>
                 </DndContext>
+            </div>
+        );
+    } catch (e) {
+        return <div className="preview-error">Error parsing JSON: {(e as Error).message}</div>;
+    }
+};
+
+// --- COMPONENTE 2: LIVE PREVIEW (Sola Lettura) ---
+const LivePreviewRenderer: React.FC<{
+    jsonContent: string;
+}> = ({ jsonContent }) => {
+    try {
+        const data = JSON.parse(jsonContent);
+
+        if (!data?.sections || !Array.isArray(data.sections)) {
+            return <div className="preview-error">Error: JSON structure must contain 'sections'.</div>;
+        }
+
+        return (
+            <div className="preview-output read-mode">
+                <h1 className="main-blog-title" style={{ marginBottom: '2rem' }}>
+                    {data.title || "Untitled Blog"}
+                </h1>
+                
+                <TheoryRenderer
+                    theory={data}
+                    isEditing={false} // Modalità Read-Only
+                    onContentUpdate={() => {}}
+                />
             </div>
         );
     } catch (e) {
@@ -198,7 +228,7 @@ export default function CreateBlogPage() {
     const router = useRouter();
     const [title, setTitle] = useState("New Blog Title");
     const [jsonContent, setJsonContent] = useState(initialContent);
-    const [viewMode, setViewMode] = useState<"JSON" | "Preview">("Preview");
+    const [viewMode, setViewMode] = useState<"Editor" | "JSON" | "Preview">("Editor");
 
     const jsonTitle = useMemo(() => {
         try {
@@ -228,7 +258,6 @@ export default function CreateBlogPage() {
         }
     }, [jsonContent]);
 
-    // UPDATED: Clear all blocks AND section titles
     const handleClearAllBlocks = useCallback(() => {
         if (!window.confirm("Delete ALL blocks and section titles? This cannot be undone!")) return;
 
@@ -298,9 +327,9 @@ export default function CreateBlogPage() {
                     <div className="tab-switcher">
                         <button
                             type="button"
-                            className={`tab-button ${viewMode === 'Preview' ? 'active' : ''}`}
-                            onClick={() => setViewMode('Preview')}
-                            disabled={viewMode === 'Preview' && isJsonInvalid(jsonContent)}
+                            className={`tab-button ${viewMode === 'Editor' ? 'active' : ''}`}
+                            onClick={() => setViewMode('Editor')}
+                            disabled={viewMode === 'Editor' && isJsonInvalid(jsonContent)}
                         >
                             <FontAwesomeIcon icon={faEdit} /> Visual Editor
                         </button>
@@ -311,8 +340,15 @@ export default function CreateBlogPage() {
                         >
                             <FontAwesomeIcon icon={faCode} /> JSON Editor
                         </button>
+                        <button
+                            type="button"
+                            className={`tab-button ${viewMode === 'Preview' ? 'active' : ''}`}
+                            onClick={() => setViewMode('Preview')}
+                        >
+                            <FontAwesomeIcon icon={faEye} /> Preview
+                        </button>
 
-                        {viewMode === 'Preview' && (
+                        {viewMode === 'Editor' && (
                             <>
                                 <div className="add-block-controls">
                                     <button type="button" onClick={() => handleAddBlock('paragraph')} className="add-block-btn" title="Add Paragraph">
@@ -366,17 +402,25 @@ export default function CreateBlogPage() {
                     </div>
 
                     <div className="content-area">
-                        {viewMode === 'JSON' ? (
+                        {viewMode === 'JSON' && (
                             <div className="form-group full-height">
                                 <DynamicJsonEditor
                                     value={jsonContent}
                                     onChange={setJsonContent}
                                 />
                             </div>
-                        ) : (
-                            <CustomPreviewRenderer
+                        )}
+
+                        {viewMode === 'Editor' && (
+                            <VisualEditorRenderer
                                 jsonContent={jsonContent}
                                 setJsonContent={setJsonContent}
+                            />
+                        )}
+
+                        {viewMode === 'Preview' && (
+                            <LivePreviewRenderer
+                                jsonContent={jsonContent}
                             />
                         )}
                     </div>
