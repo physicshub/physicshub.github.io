@@ -1,8 +1,8 @@
 {
   "name": "physicshub",
   "homepage": "https://physicshub.github.io",
+  "version": "0.0.0",
   "private": true,
-  "version": "2.7.3",
   "type": "module",
   "scripts": {
     "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:sitemap\"",

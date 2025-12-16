@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faXTwitter,
@@ -19,22 +18,10 @@ const links = [
 
 function Footer() {
   const year = new Date().getFullYear();
-  const [version, setVersion] = useState(null);
-
-  useEffect(() => {
-    async function fetchVersion() {
-      try {
-        const res = await fetch(
-          "https://api.github.com/repos/physicshub/physicshub.github.io/releases/latest"
-        );
-        const data = await res.json();
-        setVersion(data.tag_name);
-      } catch (err) {
-        console.error("Error to get tag version for the latest release:", err);
-      }
-    }
-    fetchVersion();
-  }, []);
+  
+  const version = process.env.NEXT_PUBLIC_APP_VERSION 
+    ? `v${process.env.NEXT_PUBLIC_APP_VERSION}` 
+    : "Loading..."; 
 
   return (
     <footer>
@@ -42,8 +29,13 @@ function Footer() {
         <div className="footer-section footer-about">
           <h3>
             PhysicsHub{" "}
-            <a className="ph-btn ph-btn--ghost footer-version" href="https://github.com/physicshub/physicshub.github.io/releases">
-              {version ? version : "loading..."}
+            <a 
+              className="ph-btn ph-btn--ghost footer-version" 
+              href="https://github.com/physicshub/physicshub.github.io/releases"
+              target="_blank" // È buona norma aprire i link esterni in una nuova scheda
+              rel="noopener noreferrer"
+            >
+              {version}
             </a>
           </h3>
           <p>

@@ -1,31 +1,82 @@
-name: Release
+name: Release and Build
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch: # Mantenuto per i test manuali
 
+# Imposta i permessi necessari per Semantic Release e GitHub Pages
 permissions:
-  contents: write
+  contents: write # Necessario per Semantic Release (crea commit/tag)
+  pages: write    # Necessario per la GitHub Pages deployment
+  id-token: write # Necessario per l'autenticazione OIDC (richiesto da actions/deploy-pages)
   issues: write
   pull-requests: write
+
+# Permette un solo deployment contemporaneo
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Definiamo un output per comunicare al job 'deploy' se una nuova release è stata pubblicata
+    outputs:
+      new_release_published: ${{ steps.semantic_release.outputs.new_release_published }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        # Il fetch-depth: 0 è essenziale per Semantic Release per analizzare la cronologia dei commit
+        with:
+          fetch-depth: 0 
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
+          cache: 'npm' # Usa il caching npm
 
       - name: Install dependencies
         run: npm ci
 
+      # 1. Semantic Release (Aggiorna package.json, crea Tag e Commit, pusha)
       - name: Semantic Release
+        id: semantic_release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npx semantic-release
+        
+      # 2. Configura le Pagine GitHub (Necessario prima della build)
+      - name: Setup Pages
+        # Esegui la configurazione SOLO se Semantic Release ha pubblicato una versione
+        if: steps.semantic_release.outputs.new_release_published == 'true'
+        uses: actions/configure-pages@v5
+
+      # 3. Build di Next.js (Ora usa il package.json aggiornato)
+      - name: Build with Next.js
+        if: steps.semantic_release.outputs.new_release_published == 'true'
+        run: npx next build
+
+      # 4. Carica l'Artifact della Build
+      - name: Upload artifact
+        if: steps.semantic_release.outputs.new_release_published == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+          
+  # Deployment job
+  deploy:
+    # Esegui il deploy SOLO se il job 'release' ha confermato una nuova pubblicazione
+    needs: release 
+    if: needs.release.outputs.new_release_published == 'true'
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
