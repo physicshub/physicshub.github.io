@@ -26,6 +26,7 @@ const NEW_BLOCK_TEMPLATES = {
     paragraph: { type: "paragraph", text: "New paragraph content. Use **double asterisks** for bold." },
     subheading: { type: "subheading", text: "New Subheading Title" },
     subtitle: { type: "subtitle", text: "New Subtitle Level 1", level: 1 },
+    sectionTitle: { type: "sectionTitle", text: "New Section Title" },
     code: { type: "code", code: "console.log('Hello World!');", language: "javascript" },
     formula: { type: "formula", latex: "\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}", inline: false },
     note: { type: "note", text: "New Note or important information." },
@@ -56,10 +57,6 @@ const CustomPreviewRenderer: React.FC<{
 
             if (sectionIndex === -1 && field === 'title') {
                 newData.title = newValue;
-            } else if (blockIndex === -1 && field === 'title') {
-                if (newData.sections[sectionIndex]) {
-                    newData.sections[sectionIndex].title = newValue;
-                }
             } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
                 const block = newData.sections[sectionIndex].blocks[blockIndex];
 
@@ -90,37 +87,6 @@ const CustomPreviewRenderer: React.FC<{
             }
         } catch (e) {
             console.error("Error deleting block:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    // NEW: Delete section title
-    const handleDeleteSectionTitle = useCallback((sectionIndex: number) => {
-        if (!window.confirm("Delete this section title?")) return;
-
-        try {
-            const newData = JSON.parse(jsonContent);
-            if (newData.sections[sectionIndex]) {
-                delete newData.sections[sectionIndex].title;
-                setJsonContent(JSON.stringify(newData, null, 2));
-            }
-        } catch (e) {
-            console.error("Error deleting section title:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    // NEW: Clear all blocks
-    const handleClearAllBlocks = useCallback(() => {
-        if (!window.confirm("Delete ALL blocks? This cannot be undone!")) return;
-
-        try {
-            const newData = JSON.parse(jsonContent);
-            newData.sections = newData.sections.map((section: any) => ({
-                ...section,
-                blocks: []
-            }));
-            setJsonContent(JSON.stringify(newData, null, 2));
-        } catch (e) {
-            console.error("Error clearing blocks:", e);
         }
     }, [jsonContent, setJsonContent]);
 
@@ -192,18 +158,6 @@ const CustomPreviewRenderer: React.FC<{
                     </h1>
                 </div>
 
-                {/* NEW: Clear All Blocks Button */}
-                <div className="editor-actions-bar">
-                    <button
-                        type="button"
-                        onClick={handleClearAllBlocks}
-                        className="clear-all-btn"
-                        title="Delete all blocks"
-                    >
-                        <FontAwesomeIcon icon={faTrash} /> Clear All Blocks
-                    </button>
-                </div>
-
                 <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
@@ -218,7 +172,6 @@ const CustomPreviewRenderer: React.FC<{
                             onContentUpdate={handleContentUpdate}
                             onDeleteBlock={handleDeleteBlock}
                             onDuplicateBlock={handleDuplicateBlock}
-                            onDeleteSectionTitle={handleDeleteSectionTitle}
                             dndItems={dndItems}
                         />
                     </SortableContext>
@@ -274,6 +227,21 @@ export default function CreateBlogPage() {
             console.error("Error adding block:", e);
         }
     }, [jsonContent]);
+
+    // UPDATED: Clear all blocks AND section titles
+    const handleClearAllBlocks = useCallback(() => {
+        if (!window.confirm("Delete ALL blocks and section titles? This cannot be undone!")) return;
+
+        try {
+            const newData = JSON.parse(jsonContent);
+            newData.sections = newData.sections.map((section: any) => ({
+                blocks: []
+            }));
+            setJsonContent(JSON.stringify(newData, null, 2));
+        } catch (e) {
+            console.error("Error clearing blocks:", e);
+        }
+    }, [jsonContent, setJsonContent]);
 
     const handleSave = useCallback(() => {
         console.log("Saving content:", jsonContent);
@@ -345,41 +313,55 @@ export default function CreateBlogPage() {
                         </button>
 
                         {viewMode === 'Preview' && (
-                            <div className="add-block-controls">
-                                <button type="button" onClick={() => handleAddBlock('paragraph')} className="add-block-btn" title="Add Paragraph">
-                                    <FontAwesomeIcon icon={faParagraph} />
+                            <>
+                                <div className="add-block-controls">
+                                    <button type="button" onClick={() => handleAddBlock('paragraph')} className="add-block-btn" title="Add Paragraph">
+                                        <FontAwesomeIcon icon={faParagraph} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('sectionTitle')} className="add-block-btn" title="Add Section Title">
+                                        <FontAwesomeIcon icon={faHeading} style={{ fontSize: '1.2em' }} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('subheading')} className="add-block-btn" title="Add H3 Subheading">
+                                        <FontAwesomeIcon icon={faHeading} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('subtitle')} className="add-block-btn" title="Add H4/H5 Subtitle">
+                                        <FontAwesomeIcon icon={faHeading} style={{ fontSize: '0.8em' }} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('code')} className="add-block-btn" title="Add Code Block">
+                                        <FontAwesomeIcon icon={faCode} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('formula')} className="add-block-btn" title="Add Formula (LaTeX)">
+                                        <FontAwesomeIcon icon={faSquareRootAlt} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('list')} className="add-block-btn" title="Add List">
+                                        <FontAwesomeIcon icon={faListOl} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('callout')} className="add-block-btn" title="Add Callout/Note">
+                                        <FontAwesomeIcon icon={faInfoCircle} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('example')} className="add-block-btn" title="Add Example/Quote">
+                                        <FontAwesomeIcon icon={faQuoteRight} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('table')} className="add-block-btn" title="Add Table">
+                                        <FontAwesomeIcon icon={faTable} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('image')} className="add-block-btn" title="Add Image">
+                                        <FontAwesomeIcon icon={faImage} />
+                                    </button>
+                                    <button type="button" onClick={() => handleAddBlock('toggle')} className="add-block-btn" title="Add Toggle/Spoiler">
+                                        <FontAwesomeIcon icon={faChevronCircleDown} />
+                                    </button>
+                                </div>
+                                
+                                <button
+                                    type="button"
+                                    onClick={handleClearAllBlocks}
+                                    className="clear-all-btn-toolbar"
+                                    title="Delete all blocks"
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
                                 </button>
-                                <button type="button" onClick={() => handleAddBlock('subheading')} className="add-block-btn" title="Add H3 Subheading">
-                                    <FontAwesomeIcon icon={faHeading} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('subtitle')} className="add-block-btn" title="Add H4/H5 Subtitle">
-                                    <FontAwesomeIcon icon={faHeading} style={{ fontSize: '0.8em' }} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('code')} className="add-block-btn" title="Add Code Block">
-                                    <FontAwesomeIcon icon={faCode} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('formula')} className="add-block-btn" title="Add Formula (LaTeX)">
-                                    <FontAwesomeIcon icon={faSquareRootAlt} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('list')} className="add-block-btn" title="Add List">
-                                    <FontAwesomeIcon icon={faListOl} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('callout')} className="add-block-btn" title="Add Callout/Note">
-                                    <FontAwesomeIcon icon={faInfoCircle} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('example')} className="add-block-btn" title="Add Example/Quote">
-                                    <FontAwesomeIcon icon={faQuoteRight} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('table')} className="add-block-btn" title="Add Table">
-                                    <FontAwesomeIcon icon={faTable} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('image')} className="add-block-btn" title="Add Image">
-                                    <FontAwesomeIcon icon={faImage} />
-                                </button>
-                                <button type="button" onClick={() => handleAddBlock('toggle')} className="add-block-btn" title="Add Toggle/Spoiler">
-                                    <FontAwesomeIcon icon={faChevronCircleDown} />
-                                </button>
-                            </div>
+                            </>
                         )}
                     </div>
 

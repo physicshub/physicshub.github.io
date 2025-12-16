@@ -2,8 +2,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faExclamationTriangle, faLightbulb, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { EditableProps, Children } from '../types.ts';
-import { parseBoldText } from '../utils.tsx';
+import { EditableProps, Children } from '../types';
+import { parseBoldText } from '../utils';
 
 interface TheoryCalloutProps extends EditableProps, Children {
     type?: 'info' | 'warning' | 'tip' | 'success';
@@ -71,7 +71,7 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
                             suppressContentEditableWarning={suppressWarning}
                             onBlur={handleTitleBlur}
                         >
-                            {title}
+                            {isEditable ? title : parseBoldText(title)}
                         </div>
                     )}
                 </div>

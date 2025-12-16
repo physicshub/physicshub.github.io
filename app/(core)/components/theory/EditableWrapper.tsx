@@ -1,7 +1,7 @@
 // app/(core)/components/theory/EditableWrapper.tsx
 import React from 'react';
 import { EditableProps, Children, ElementTag } from './types';
-import { parseBoldText, useEditableBlock } from './utils.tsx';
+import { parseBoldText, useEditableBlock } from './utils';
 
 interface EditableWrapperProps extends EditableProps, Children {
     as: ElementTag;
@@ -34,6 +34,7 @@ export const EditableWrapper: React.FC<EditableWrapperProps> = ({
         );
     }
 
+    // ALWAYS parse bold text in view mode
     return (
         <Tag className={className}>
             {parseBoldText(initialContent)}

@@ -7,8 +7,11 @@ export const initialContentData = {
     "title": "Visual Editor Guide",
     "sections": [
         {
-            "title": "🎨 Getting Started",
             "blocks": [
+                {
+                    "type": "sectionTitle",
+                    "text": "🎨 Getting Started"
+                },
                 {
                     "type": "paragraph",
                     "text": "Welcome! This is a **visual editor** where you can edit text directly, drag blocks to reorder them, and add content with one click."
@@ -22,8 +25,11 @@ export const initialContentData = {
             ]
         },
         {
-            "title": "✏️ Editing Basics",
             "blocks": [
+                {
+                    "type": "sectionTitle",
+                    "text": "✏️ Editing Basics"
+                },
                 {
                     "type": "paragraph",
                     "text": "**Click any text** to edit it. **Hover over blocks** to reveal controls: drag handle (⋮⋮), duplicate (⎘), and delete (×)."
@@ -37,8 +43,11 @@ export const initialContentData = {
             ]
         },
         {
-            "title": "➕ Block Types",
             "blocks": [
+                {
+                    "type": "sectionTitle",
+                    "text": "➕ Block Types"
+                },
                 {
                     "type": "paragraph",
                     "text": "Use the **toolbar buttons** at the top to add blocks:"
@@ -47,7 +56,8 @@ export const initialContentData = {
                     "type": "list",
                     "items": [
                         "**¶** Paragraph - Regular text",
-                        "**H** Heading - Section title",
+                        "**H** Section Title - Large section heading (H2)",
+                        "**H** Heading - Subsection title (H3)",
                         "**</>** Code - Syntax highlighted code",
                         "**√** Formula - LaTeX math equations",
                         "**≡** List - Bullet or numbered lists",
@@ -60,8 +70,11 @@ export const initialContentData = {
             ]
         },
         {
-            "title": "📝 Examples",
             "blocks": [
+                {
+                    "type": "sectionTitle",
+                    "text": "📝 Examples"
+                },
                 {
                     "type": "code",
                     "code": "// Code with syntax highlighting\nconst hello = () => {\n  console.log('Hello!');\n};",
@@ -77,7 +90,8 @@ export const initialContentData = {
                     "columns": ["Feature", "Status"],
                     "data": [
                         { "Feature": "Direct Editing", "Status": "✓" },
-                        { "Feature": "Drag & Drop", "Status": "✓" }
+                        { "Feature": "Drag & Drop", "Status": "✓" },
+                        { "Feature": "Bold Text", "Status": "✓" }
                     ]
                 },
                 {

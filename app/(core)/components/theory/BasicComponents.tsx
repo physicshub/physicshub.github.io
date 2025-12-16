@@ -1,67 +1,30 @@
 // app/(core)/components/theory/BasicComponents.tsx
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { EditableProps, Children } from './types';
 import { EditableWrapper } from './EditableWrapper';
 
-// TheorySection with deletable title
+// TheorySection - Now just a container without editable title
 export const TheorySection: React.FC<{ 
     title?: string; 
     className?: string;
-    onDeleteSectionTitle?: (sectionIndex: number) => void;
 } & Children & EditableProps> = ({
     title,
     children,
     className,
-    isEditing,
-    onContentUpdate,
-    onDeleteSectionTitle,
-    sectionIndex
 }) => {
-    const isTitleEditable = isEditing && onContentUpdate && sectionIndex !== undefined;
-    const suppressWarning = isTitleEditable;
-
-    const handleTitleBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
-        if (isTitleEditable && title !== e.target.innerText) {
-            onContentUpdate(sectionIndex, -1, 'title', e.target.innerText);
-        }
-    };
-
-    const handleDeleteTitle = () => {
-        if (onDeleteSectionTitle && sectionIndex !== undefined) {
-            onDeleteSectionTitle(sectionIndex);
-        }
-    };
-
     return (
         <section className={["theory-section", className].filter(Boolean).join(" ")}>
-            {title && (
-                <div className="section-title-wrapper">
-                    <h2
-                        className={`theory-title ${isTitleEditable ? 'editable-block' : ''}`}
-                        contentEditable={isTitleEditable}
-                        suppressContentEditableWarning={suppressWarning}
-                        onBlur={handleTitleBlur}
-                    >
-                        {title}
-                    </h2>
-                    {isEditing && onDeleteSectionTitle && (
-                        <button
-                            type="button"
-                            onClick={handleDeleteTitle}
-                            className="delete-section-title-btn"
-                            title="Delete section title"
-                        >
-                            <FontAwesomeIcon icon={faTimes} />
-                        </button>
-                    )}
-                </div>
-            )}
             <div className="theory-blocks">{children}</div>
         </section>
     );
 };
+
+// NEW: TheorySectionTitle - Treated as a regular block
+export const TheorySectionTitle: React.FC<Children & EditableProps> = ({ children, ...props }) => (
+    <EditableWrapper as="h2" className="theory-section-title" {...props}>
+        {children}
+    </EditableWrapper>
+);
 
 // TheoryParagraph
 export const TheoryParagraph: React.FC<Children & EditableProps> = ({ children, ...props }) => (

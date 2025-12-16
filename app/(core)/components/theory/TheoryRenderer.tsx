@@ -5,16 +5,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faClone, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 
-import { TheoryRendererProps, BlockData, BlockControlsProps, OnContentUpdate } from './types.ts';
-import { TheorySection } from './BasicComponents';
+import { TheoryRendererProps, BlockData, BlockControlsProps, OnContentUpdate } from './types';
+import { TheorySection, TheorySectionTitle } from './BasicComponents';
 import { TheoryParagraph, TheorySubheading, TheorySubtitle, TheoryNote } from './BasicComponents';
-import { TheoryList } from './elements/TheoryList.tsx';
-import { TheoryFormula } from './elements/TheoryFormula.tsx';
-import { TheoryCodeBlock } from './elements/TheoryCodeBlock.tsx';
-import { TheoryCallout } from './elements/TheoryCallout.tsx';
-import { TheoryExample, TheoryToggle } from './elements/TheoryToggle.tsx';
-import { TheoryTable } from './elements/TheoryTable.tsx';
-import { TheoryImage } from './elements/TheoryImage.tsx';
+import { TheoryList } from './elements/TheoryList';
+import { TheoryFormula } from './elements/TheoryFormula';
+import { TheoryCodeBlock } from './elements/TheoryCodeBlock';
+import { TheoryCallout } from './elements/TheoryCallout';
+import { TheoryExample, TheoryToggle } from './elements/TheoryToggle';
+import { TheoryTable } from './elements/TheoryTable';
+import { TheoryImage } from './elements/TheoryImage';
 
 // Block Editor Controls with Drag & Drop
 const BlockEditorControls: React.FC<BlockControlsProps> = ({
@@ -97,6 +97,9 @@ const renderBlock = (
     const commonProps = { isEditing, onContentUpdate, sectionIndex, blockIndex };
 
     switch (block.type) {
+        case 'sectionTitle':
+            return <TheorySectionTitle {...commonProps}>{block.text || ''}</TheorySectionTitle>;
+        
         case 'paragraph':
             return <TheoryParagraph {...commonProps}>{block.text || ''}</TheoryParagraph>;
         
@@ -202,7 +205,6 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
     onContentUpdate,
     onDeleteBlock,
     onDuplicateBlock,
-    onDeleteSectionTitle,
     dndItems = []
 }) => {
     if (!theory || !theory.sections || !Array.isArray(theory.sections)) {
@@ -212,14 +214,7 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
     return (
         <div className="theory-renderer">
             {theory.sections.map((section, i) => (
-                <TheorySection
-                    key={i}
-                    title={section.title}
-                    isEditing={isEditing}
-                    onContentUpdate={onContentUpdate}
-                    onDeleteSectionTitle={onDeleteSectionTitle}
-                    sectionIndex={i}
-                >
+                <TheorySection key={i}>
                     {section.blocks.map((block, j) => {
                         const blockId = `s${i}-b${j}`;
 
