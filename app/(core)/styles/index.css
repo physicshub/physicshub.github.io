@@ -17,6 +17,7 @@
   --input-border: rgb(0, 230, 230);
   --title-color: #e8eefb;
   --subtitle-color: #cfd6e3;
+  --color-tooltip-bg: #004b4b83;
 }
 
 /* Light Theme Overrides */
@@ -35,6 +36,7 @@
   --stars-color: var(--accent-color);
   --title-color: #003344;
   --subtitle-color: #005566;
+  --color-tooltip-bg: rgba(255, 255, 255, 0.9);
 }
 
 /* Remove all glow effects in light mode */
@@ -255,7 +257,7 @@ nav a:hover::after {
 }
 
 .search-container {
-  display: flex; 
+  display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -396,8 +398,8 @@ nav a:hover::after {
 .selected-tag-wrapper {
   display: flex;
   align-items: center;
-  margin: 0.2rem 0.2rem 0.2rem 0; 
-  padding: 0.1rem 0; 
+  margin: 0.2rem 0.2rem 0.2rem 0;
+  padding: 0.1rem 0;
   border-radius: var(--border-radius);
   background-color: var(--secondary-bg-color);
 }
@@ -2662,7 +2664,7 @@ ul {
 }
 
 /* Blogs section page */
-.blogs-container{
+.blogs-container {
   display: flex;
   padding: 0 3rem;
   align-items: center;
@@ -2671,20 +2673,20 @@ ul {
   margin-bottom: 4rem;
 }
 
-.blogs-page{
+.blogs-page {
   display: grid;
   grid-template-columns: none;
   width: 100%;
 }
 
-.blogs-page > section{
+.blogs-page > section {
   aspect-ratio: 2/1.2;
 }
 
 /* Stili per la sezione Pinned */
 .pinned-blogs-section {
   width: 100%;
-  margin-top: 1.5rem ;
+  margin-top: 1.5rem;
   max-width: var(--max-content-width, 1200px);
   margin-bottom: 2rem;
   padding-bottom: 1rem;
@@ -2712,7 +2714,7 @@ ul {
 }
 
 .blogs-list > * {
-  aspect-ratio: 2 / 1.4; 
+  aspect-ratio: 2 / 1.4;
 }
 
 /* Style for headers */
@@ -2736,522 +2738,894 @@ ul {
 
 /* Create a new Blog page */
 .create-blog-container {
-    max-width: 1100px;
-    margin: 7rem auto; 
-    padding: 0 1.5rem;
+  max-width: 1100px;
+  margin: 7rem auto;
+  padding: 0 1.5rem;
 }
 
 .top-controls-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem; 
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color); 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .editor-title {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  font-weight: 600;
 }
 
 .blog-editor-area {
-    padding: 0;
+  padding: 0;
 }
 
 .blog-editor-area .form-group {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .blog-editor-area .title-group {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .blog-editor-area label {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    color: var(--text-color);
-    opacity: 0.8;
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 .blog-editor-area input[type="text"],
 .blog-editor-area textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);    
-    background-color: var(--bg-color-light);
-    color: var(--text-color);
-    font-size: 1rem;
-    line-height: 1.5;
-    transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color-light);
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .blog-editor-area input:focus,
 .blog-editor-area textarea:focus {
-    border-color: var(--accent-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0,230,230,0.2); 
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 230, 230, 0.2);
 }
 
 .blog-editor-area textarea {
-    resize: vertical;
-    min-height: 400px;
+  resize: vertical;
+  min-height: 400px;
 }
 
 .json-editor {
-    font-family: 'Consolas', 'Courier New', monospace; 
-    font-size: 0.95rem;
-    white-space: pre-wrap; 
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
 }
 
-
-
 .tab-switcher {
-    display: flex;
-    margin-bottom: 0; 
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tab-button {
-    background: transparent;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: color 0.3s, border-bottom 0.3s;
-    border-bottom: 2px solid transparent;
-    color: #888;
-    margin-bottom: -1px;
+  background: transparent;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s, border-bottom 0.3s;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  margin-bottom: -1px;
 }
 
 .tab-button.active {
-    color: var(--accent-color);
-    border-bottom: 2px solid var(--accent-color);
-    font-weight: 600;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  font-weight: 600;
 }
 
 .content-area {
-    padding-top: 1.5rem;
+  padding-top: 1.5rem;
 }
 
 .preview-error {
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  margin-top: 1rem;  
+  margin-top: 1rem;
   color: #ff3333;
   background-color: rgba(255, 51, 51, 0.1);
-  border: 1px solid #ff3333;  
+  border: 1px solid #ff3333;
   font-weight: 600;
   font-size: 1rem;
   line-height: 1.4;
-  
+
   word-wrap: break-word;
   white-space: pre-wrap;
 }
 
 .preview-output {
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background-color: var(--bg-color-light);
-    min-height: 400px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color-light);
+  min-height: 400px;
 }
 
-/* JSON Editor style */
-/* STILI CRUCIALI PER RENDERE L'EDITOR MODIFICABILE */
-
-/* L'Editor (wrapper) gestisce il border e il min-height */
-/* E' il componente di react-simple-code-editor */
-.create-blog-container .blog-editor-area .form-group .Editor {
-    /* Assicura che il contenitore sia il riferimento per l'assoluto */
-    position: relative; 
-}
-
-/* 1. Stili per il textarea sovrapposto (deve essere invisibile ma cliccabile) */
-.json-editor-textarea {
-    /* Stili standard per l'input */
-    box-sizing: border-box;
-    font-family: inherit;
-    font-size: inherit;
-    padding: inherit;
-    line-height: inherit;
-    
-    /* Manteniamo l'area di input sopra l'area di evidenziazione */
-    z-index: 1;
-    
-    /* 🌟 CRUCIALE: Rendi l'area di input invisibile ma interattiva */
-    color: transparent;
-    caret-color: white; /* O il colore del testo che preferisci */
-    background: transparent;
-    
-    /* Assicurati che l'altezza sia la stessa dell'editor (per lo scorrimento) */
-    min-height: 400px; 
-}
-
-/* 2. Assicurati che l'highlighting non sia cliccabile */
-.json-editor-textarea ~ pre {
-    user-select: none;
-    pointer-events: none;
-}
-
-/* 3. Correggi l'allineamento per i numeri di riga */
-/* Il padding a sinistra deve tenere conto della colonna dei numeri di riga. */
-/* Se usi SyntaxHighlighter, il suo padding interno è spesso 1em. */
-.theory-codeblock .token-line {
-    padding-right: 1rem;
-    padding-left: 1rem;
-}
-
-/* Correggi l'allineamento del testo nell'Editor per il padding dei numeri di riga */
-/* Potrebbe essere necessario sovrascrivere lo stile del contenitore dell'highlighting
-   per allinearlo al padding del textarea. */
-.create-blog-container .blog-editor-area .form-group .Editor .json-editor-textarea ~ pre {
-    /* Qui potresti dover regolare il padding-left per compensare i numeri di riga */
-    /* Ad esempio, se i numeri di riga occupano 3em di spazio: */
-    /* padding-left: 3em !important; */ 
-}
-
-
+/* ============================================================================
+   BLOG EDITOR STYLES - Improved & Organized
+   ============================================================================ */
 
 /* ======================================= */
-/* 1. STILI PER L'EDITOR GLOBALE E TITOLO  */
+/* 1. JSON EDITOR (CODE MIRROR STYLE)     */
+/* ======================================= */
+
+.create-blog-container .blog-editor-area .form-group .Editor {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Textarea invisibile ma interattivo */
+.json-editor-textarea {
+  box-sizing: border-box;
+  font-family: "Fira Code", "Monaco", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 1rem;
+
+  /* Layering */
+  position: relative;
+  z-index: 1;
+
+  /* Trasparenza controllata */
+  color: transparent;
+  caret-color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+
+  /* Dimensioni */
+  width: 100%;
+  min-height: 400px;
+  resize: vertical;
+
+  /* Scrolling sincronizzato */
+  overflow: auto;
+}
+
+/* Syntax highlighting background */
+.json-editor-textarea ~ pre {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 400px;
+  margin: 0;
+  padding: 1rem;
+
+  /* Non interattivo */
+  pointer-events: none;
+  user-select: none;
+
+  /* Styling */
+  background-color: var(--color-background-code, #1e1e1e);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Allineamento numeri di riga */
+.json-editor-textarea ~ pre .token-line {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* ======================================= */
+/* 2. LAYOUT PRINCIPALE EDITOR            */
+/* ======================================= */
+
+.create-blog-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 5rem;
+}
+
+.top-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editor-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.blog-editor-area {
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* ======================================= */
+/* 3. TITOLO BLOG EDITABILE               */
 /* ======================================= */
 
 .blog-main-title-editor {
-    margin-bottom: 20px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-border);
+  margin-bottom: 30px;
+  padding: 15px 0;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .main-blog-title {
-    font-size: 2.5em;
-    font-weight: 700;
-    color: var(--color-text-primary);
-    padding: 5px 10px;
-    margin: 0;
-    transition: background-color 0.2s;
-    line-height: 1.2;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  margin: 0;
+  line-height: 1.2;
+  border-radius: 6px;
+  transition: box-shadow 0.2s, background-color 0.2s;
 }
 
+.main-blog-title.editable-block:hover {
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
+}
+
+.main-blog-title.editable-block:focus {
+  box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
+  outline: none;
+}
 
 /* ======================================= */
-/* 2. STILI PER LA BARRA AGGIUNGI BLOCCO   */
+/* 4. TAB SWITCHER E TOOLBAR              */
 /* ======================================= */
 
 .tab-switcher {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-border);
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
+.tab-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-button:hover:not(:disabled) {
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
+}
+
+.tab-button.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.tab-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ======================================= */
+/* 5. TOOLBAR AGGIUNGI BLOCCHI            */
+/* ======================================= */
+
 .add-block-controls {
-    display: flex;
-    gap: 5px;
-    margin-left: auto; /* Sposta i bottoni a destra */
-    padding-left: 10px;
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border);
+  flex-wrap: wrap;
 }
 
 .add-block-btn {
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    border: none;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+
+  transition: all 0.2s;
+  position: relative;
 }
 
 .add-block-btn:hover {
-    background-color: var(--color-primary-dark);
-    transform: translateY(-1px);
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+.add-block-btn:active {
+  transform: translateY(0);
+}
+
+/* Tooltip per i bottoni */
+.add-block-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  padding: 6px 10px;
+  background-color: var(--color-tooltip-bg);
+  color: white;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 1000;
+}
+
+.add-block-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
 
 /* ======================================= */
-/* 3. STILI PER EDITING E DRAG & DROP      */
+/* 6. BLOCCHI EDITABILI - GENERALE        */
 /* ======================================= */
 
-/* Stile per tutti gli elementi editabili in modalità editing */
 .editable-block {
-    outline: none;
-    cursor: text;
-    border-radius: 4px;
-    position: relative;
-    /* Evidenzia il blocco quando è attivo/focalizzato */
+  outline: none;
+  cursor: text;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.2s;
+  padding: 4px 8px;
+  margin: 2px 0;
 }
 
-/* Evidenzia l'elemento quando focalizzato per l'editing */
-.editable-block:focus,
-.main-blog-title.editable-block:focus {
-    box-shadow: 0 0 0 2px var(--color-focus-ring);
-    background-color: var(--color-background-light); /* Colore leggero in background */
+.editable-block:hover {
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
 }
 
-/* Wrapper per i blocchi trascinabili in TheoryRenderer */
-.sortable-block-wrapper {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding: 10px 0;
-    transition: background-color 0.3s ease;
+.editable-block:focus {
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+  background-color: var(--color-background-active, rgba(255, 255, 255, 0.05));
 }
 
-/* Area del contenuto all'interno del wrapper DND */
-.block-content-area {
-    flex-grow: 1;
+.editable-block[contenteditable="true"]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
+}
+
+/* ======================================= */
+/* 7. DRAG & DROP SYSTEM                  */
+/* ======================================= */
+
+.theory-block-wrapper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.theory-block-wrapper:hover {
+  background-color: var(--color-background-hover, rgba(0, 0, 0, 0.02));
+}
+
+.theory-block-wrapper.dragging {
+  opacity: 0.5;
+  background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+}
+
+/* Controlli del blocco */
+.theory-block-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.theory-block-wrapper:hover .theory-block-controls,
+.theory-block-wrapper:focus-within .theory-block-controls {
+  opacity: 1;
 }
 
 /* Handle per trascinamento */
-.dnd-handle {
-    width: 20px;
-    padding: 5px 0;
-    cursor: grab;
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0; /* Nascondi di default */
-    transition: opacity 0.2s;
+.drag-handle {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
-/* Mostra l'handle e l'area di trascinamento quando si passa il mouse */
-.sortable-block-wrapper:hover .dnd-handle,
-.sortable-block-wrapper:focus-within .dnd-handle {
-    opacity: 1;
+.drag-handle:hover {
+  background-color: var(--color-background-light);
+  color: var(--color-primary);
 }
 
-.dnd-handle:active {
-    cursor: grabbing;
-    color: var(--color-primary);
+.drag-handle:active {
+  cursor: grabbing;
+  color: var(--color-primary-dark);
 }
 
-
-/* 1. Titolo di Sezione Editabile */
-.theory-title.editable-block {
-    padding: 5px 10px;
+/* Bottoni azione blocco */
+.theory-block-controls button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
 }
 
+.theory-block-controls button:hover {
+  background-color: var(--color-background-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.theory-block-controls button[title*="Delete"]:hover {
+  border-color: var(--color-error, #ef4444);
+  color: var(--color-error, #ef4444);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Contenuto del blocco */
+.theory-block-content {
+  flex: 1;
+  min-width: 0;
+}
 
 /* ======================================= */
-/* 4. STILI PER SWITCH CODE/FORMULA        */
+/* 8. FORMULA & CODE BLOCK EDITING        */
 /* ======================================= */
 
 .theory-formula.editable-block,
 .theory-codeblock.editable-block {
-    border: 1px solid var(--color-border-dark);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: var(--color-background-light);
 }
 
-.theory-formula.editable-block{
+.theory-formula.editable-block {
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
+/* Switch bar per Edit/Preview */
 .edit-switch-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--color-border);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .switch-btn {
-    background: none;
-    border: none;
-    padding: 5px 10px;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s, color 0.2s;
-    font-size: 14px;
-}
-
-.switch-btn.active {
-    color: var(--color-primary);
-    font-weight: bold;
-    background-color: var(--color-background-light);
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .switch-btn:hover:not(.active) {
-    background-color: var(--color-background-light);
+  background-color: var(--color-background-hover);
+  color: var(--color-text-primary);
 }
 
-/* Editor di Testo per LaTeX e Codice */
+.switch-btn.active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: var(--color-primary-light, rgba(59, 130, 246, 0.1));
+}
+
+/* Editor di testo per LaTeX e Codice */
 .latex-editor-input,
 .code-editor-input {
-    width: 100%;
-    background-color: var(--color-background-dark);
-    color: var(--color-text-code);
-    border: 1px solid var(--color-border-dark);
-    padding: 10px;
-    border-radius: 6px;
-    font-family: monospace;
-    font-size: 15px;
-    resize: vertical;
-    min-height: 80px;
-    box-sizing: border-box;
+  width: 100%;
+  background-color: var(--color-background-code, #1e1e1e);
+  color: var(--color-text-code, #d4d4d4);
+  border: 1px solid var(--color-border);
+  padding: 12px;
+  border-radius: 6px;
+  font-family: "Fira Code", "Monaco", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
-/* Stili specifici per CodeBlock in modalità editing */
-.theory-codeblock .code-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.latex-editor-input:focus,
+.code-editor-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
 }
 
-.theory-codeblock .code-actions .switch-btn.code-switch {
-    font-size: 16px;
-    padding: 4px 8px;
+/* Area di preview */
+.preview-area {
+  min-height: 80px;
+  padding: 12px;
+  background-color: var(--color-background);
+  border-radius: 6px;
 }
 
-.theory-codeblock .code-actions .copy-btn {
-    margin-left: auto; /* Sposta il bottone copia a destra */
+.latex-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
+  padding: 20px;
 }
 
-/* Assicurati che il SyntaxHighlighter sia ben visualizzato in Preview Mode */
-.theory-codeblock .preview-area > div {
-    margin: 0 !important; /* Rimuove margin o padding extra */
+/* Code block actions */
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-/* ======================================= */
-/* AGGIUNTE CSS PER ELIMINAZIONE E LINGUAGGIO */
-/* ======================================= */
-
-/* Modifica la struttura del wrapper DND per fare spazio ai controlli */
-.sortable-block-wrapper {
-    display: flex;
-    gap: 5px; /* Riduci il gap */
-    align-items: flex-start; /* Allinea in alto */
+.code-language-input {
+  background-color: var(--color-background-darker, #0d0d0d);
+  color: var(--color-text-code, #d4d4d4);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: "Fira Code", "Monaco", monospace;
+  font-size: 13px;
+  width: 120px;
+  transition: border-color 0.2s;
 }
 
-/* Contenitore per Handle e Delete Button */
-.dnd-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    padding-top: 10px; /* Allinea i controlli sopra il blocco */
+.code-language-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
 }
 
-/* Stile per il bottone di eliminazione */
-.delete-block-btn {
-    background: none;
-    border: 1px solid var(--color-border);
-    color: var(--color-error);
-    border-radius: 4px;
-    padding: 3px 6px;
-    cursor: pointer;
-    opacity: 0; /* Nascondi di default */
-    transition: opacity 0.2s, background-color 0.2s;
-    font-size: 14px;
-    line-height: 1;
+.code-language-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.delete-block-btn:hover {
-    background-color: rgba(255, 0, 0, 0.1);
+.code-switch {
+  font-size: 16px;
+  padding: 4px 8px;
 }
 
-/* Mostra il bottone di eliminazione quando si passa il mouse sul blocco */
-.sortable-block-wrapper:hover .delete-block-btn,
-.sortable-block-wrapper:focus-within .delete-block-btn {
-    opacity: 1;
+.copy-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* Modifica l'handle DND per essere più piccolo */
-.dnd-handle {
-    width: 20px;
-    padding: 3px 0;
-    cursor: grab;
-    /* ... (altri stili) ... */
-}
-
-/* Stile per l'input del linguaggio nel Code Block */
-.theory-codeblock .code-language-input {
-    background-color: var(--color-background-darker);
-    color: var(--color-text-code);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 3px 6px;
-    font-family: monospace;
-    font-size: 14px;
-    width: 100px;
-}
-
-/* Allineamento finale dei bottoni di controllo */
-.theory-codeblock .code-actions {
-    justify-content: flex-start;
-}
-
-/* Assicura che i bottoni add-block siano solo icone e si adattino */
-.add-block-btn {
-    padding: 8px 10px; /* Aumenta il padding per l'icona */
+.copy-btn:hover {
+  background-color: var(--color-background-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 /* ======================================= */
-/* AGGIUNTE CSS PER TUTTI I BOTTONI E CALLOUT TYPE */
+/* 9. CALLOUT EDITING                     */
 /* ======================================= */
 
-/* Aggiorna i bottoni per essere quadrati con le icone */
-.add-block-btn {
-    width: 38px; 
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0; /* Rimuove il padding per lasciare spazio all'icona */
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    border: none;
-    border-radius: 6px;
-    font-size: 16px; /* Dimensione base icona */
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-.add-block-btn:hover {
-    background-color: var(--color-primary-dark);
-    transform: translateY(-1px);
-}
-
-/* Stili per il Callout Type Selector (3) */
 .callout-header-editor {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
 .callout-type-selector {
-    padding: 4px 8px;
-    border: 1px solid var(--color-border-dark);
-    border-radius: 4px;
-    background-color: var(--color-background-dark);
-    color: var(--color-text-primary);
-    font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.callout-type-selector:hover {
+  border-color: var(--color-primary);
+}
+
+.callout-type-selector:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
 }
 
 .callout-title {
-    /* Assicura che il titolo editabile si espanda nel restante spazio */
-    flex-grow: 1; 
+  flex-grow: 1;
+  font-weight: 600;
 }
 
-/* Stile per il testo in grassetto (2) */
+/* ======================================= */
+/* 10. LIST EDITING                       */
+/* ======================================= */
+
+.theory-list-container {
+  margin: 12px 0;
+}
+
+.list-item-editor {
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.add-item-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ======================================= */
+/* 11. TABLE EDITING                      */
+/* ======================================= */
+
+.theory-table-wrap {
+  margin: 16px 0;
+}
+
+.table-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.table-add-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theory-table th.editable-block,
+.theory-table td.editable-block {
+  min-width: 80px;
+}
+
+/* ======================================= */
+/* 12. IMAGE EDITING                      */
+/* ======================================= */
+
+.image-editor-mode {
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--color-background-light);
+}
+
+.image-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.image-url-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.image-url-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring, rgba(59, 130, 246, 0.3));
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* ======================================= */
+/* 13. TEXT FORMATTING                    */
+/* ======================================= */
+
 .theory-paragraph strong,
 .callout-content strong,
 .example-body strong,
-.toggle-panel strong {
-    font-weight: 700;
-    color: var(--color-strong); /* Usa un colore leggermente più scuro o il colore primario se definito */
+.toggle-panel strong,
+.theory-note strong {
+  font-weight: 700;
+  color: var(--color-strong, var(--color-text-primary));
+}
+
+/* Placeholder per elementi vuoti */
+[contenteditable="true"]:empty::before {
+  content: "Type something...";
+  color: var(--color-text-placeholder, #999);
+  font-style: italic;
+}
+
+/* ======================================= */
+/* 14. RESPONSIVE DESIGN                  */
+/* ======================================= */
+
+@media (max-width: 768px) {
+  .create-blog-container {
+    padding: 10px;
+  }
+
+  .top-controls-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-block-controls {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-top: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tab-switcher {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .main-blog-title {
+    font-size: 1.75rem;
+  }
+
+  .theory-block-wrapper {
+    gap: 4px;
+    padding: 4px;
+  }
+}
+
+/* ======================================= */
+/* 15. ACCESSIBILITY                      */
+/* ======================================= */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible per tastiera */
+*:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(59, 130, 246, 0.5));
+  outline-offset: 2px;
+}
+
+/* Riduci animazioni per chi preferisce */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ======================================= */
+/* 16. DARK MODE ADJUSTMENTS              */
+/* ======================================= */
+
+[data-theme="dark"] .editable-block:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .editable-block:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .theory-block-wrapper:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .latex-editor-input,
+[data-theme="dark"] .code-editor-input {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+[data-theme="dark"] .image-editor-mode {
+  background-color: rgba(255, 255, 255, 0.03);
 }
