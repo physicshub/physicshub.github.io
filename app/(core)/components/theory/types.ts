@@ -50,6 +50,7 @@ export interface JsonContent {
 export type OnContentUpdate = (sectionIndex: number, blockIndex: number, field: string, newValue: string) => void;
 export type OnDeleteBlock = (sectionIndex: number, blockIndex: number) => void;
 export type OnDuplicateBlock = (sectionIndex: number, blockIndex: number) => void;
+export type OnDeleteSectionTitle = (sectionIndex: number) => void;
 export type OnDropBlock = (dragIndex: number, dropIndex: number, dragSection: number, dropSection: number) => void;
 
 export interface BlockControlsProps {
@@ -68,5 +69,6 @@ export interface TheoryRendererProps {
     onContentUpdate: OnContentUpdate;
     onDeleteBlock?: OnDeleteBlock;
     onDuplicateBlock?: OnDuplicateBlock;
+    onDeleteSectionTitle?: OnDeleteSectionTitle;
     dndItems?: string[];
 }

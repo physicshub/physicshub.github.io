@@ -202,6 +202,7 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
     onContentUpdate,
     onDeleteBlock,
     onDuplicateBlock,
+    onDeleteSectionTitle,
     dndItems = []
 }) => {
     if (!theory || !theory.sections || !Array.isArray(theory.sections)) {
@@ -216,6 +217,7 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
                     title={section.title}
                     isEditing={isEditing}
                     onContentUpdate={onContentUpdate}
+                    onDeleteSectionTitle={onDeleteSectionTitle}
                     sectionIndex={i}
                 >
                     {section.blocks.map((block, j) => {

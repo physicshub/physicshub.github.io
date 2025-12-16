@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faCode, faEdit, faSave, faArrowLeft,
+    faCode, faEdit, faSave, faArrowLeft, faTrash,
     faParagraph, faHeading, faSquareRootAlt, faListOl,
     faInfoCircle, faQuoteRight, faTable, faImage, faChevronCircleDown
 } from "@fortawesome/free-solid-svg-icons";
@@ -93,6 +93,37 @@ const CustomPreviewRenderer: React.FC<{
         }
     }, [jsonContent, setJsonContent]);
 
+    // NEW: Delete section title
+    const handleDeleteSectionTitle = useCallback((sectionIndex: number) => {
+        if (!window.confirm("Delete this section title?")) return;
+
+        try {
+            const newData = JSON.parse(jsonContent);
+            if (newData.sections[sectionIndex]) {
+                delete newData.sections[sectionIndex].title;
+                setJsonContent(JSON.stringify(newData, null, 2));
+            }
+        } catch (e) {
+            console.error("Error deleting section title:", e);
+        }
+    }, [jsonContent, setJsonContent]);
+
+    // NEW: Clear all blocks
+    const handleClearAllBlocks = useCallback(() => {
+        if (!window.confirm("Delete ALL blocks? This cannot be undone!")) return;
+
+        try {
+            const newData = JSON.parse(jsonContent);
+            newData.sections = newData.sections.map((section: any) => ({
+                ...section,
+                blocks: []
+            }));
+            setJsonContent(JSON.stringify(newData, null, 2));
+        } catch (e) {
+            console.error("Error clearing blocks:", e);
+        }
+    }, [jsonContent, setJsonContent]);
+
     const handleDuplicateBlock = useCallback((sectionIndex: number, blockIndex: number) => {
         try {
             const newData = JSON.parse(jsonContent);
@@ -161,6 +192,18 @@ const CustomPreviewRenderer: React.FC<{
                     </h1>
                 </div>
 
+                {/* NEW: Clear All Blocks Button */}
+                <div className="editor-actions-bar">
+                    <button
+                        type="button"
+                        onClick={handleClearAllBlocks}
+                        className="clear-all-btn"
+                        title="Delete all blocks"
+                    >
+                        <FontAwesomeIcon icon={faTrash} /> Clear All Blocks
+                    </button>
+                </div>
+
                 <DndContext
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
@@ -175,6 +218,7 @@ const CustomPreviewRenderer: React.FC<{
                             onContentUpdate={handleContentUpdate}
                             onDeleteBlock={handleDeleteBlock}
                             onDuplicateBlock={handleDuplicateBlock}
+                            onDeleteSectionTitle={handleDeleteSectionTitle}
                             dndItems={dndItems}
                         />
                     </SortableContext>

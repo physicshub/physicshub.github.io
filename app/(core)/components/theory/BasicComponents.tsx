@@ -1,15 +1,22 @@
 // app/(core)/components/theory/BasicComponents.tsx
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { EditableProps, Children } from './types';
-import { EditableWrapper } from './EditableWrapper.tsx';
+import { EditableWrapper } from './EditableWrapper';
 
-// TheorySection
-export const TheorySection: React.FC<{ title?: string; className?: string } & Children & EditableProps> = ({
+// TheorySection with deletable title
+export const TheorySection: React.FC<{ 
+    title?: string; 
+    className?: string;
+    onDeleteSectionTitle?: (sectionIndex: number) => void;
+} & Children & EditableProps> = ({
     title,
     children,
     className,
     isEditing,
     onContentUpdate,
+    onDeleteSectionTitle,
     sectionIndex
 }) => {
     const isTitleEditable = isEditing && onContentUpdate && sectionIndex !== undefined;
@@ -21,17 +28,35 @@ export const TheorySection: React.FC<{ title?: string; className?: string } & Ch
         }
     };
 
+    const handleDeleteTitle = () => {
+        if (onDeleteSectionTitle && sectionIndex !== undefined) {
+            onDeleteSectionTitle(sectionIndex);
+        }
+    };
+
     return (
         <section className={["theory-section", className].filter(Boolean).join(" ")}>
             {title && (
-                <h2
-                    className={`theory-title ${isTitleEditable ? 'editable-block' : ''}`}
-                    contentEditable={isTitleEditable}
-                    suppressContentEditableWarning={suppressWarning}
-                    onBlur={handleTitleBlur}
-                >
-                    {title}
-                </h2>
+                <div className="section-title-wrapper">
+                    <h2
+                        className={`theory-title ${isTitleEditable ? 'editable-block' : ''}`}
+                        contentEditable={isTitleEditable}
+                        suppressContentEditableWarning={suppressWarning}
+                        onBlur={handleTitleBlur}
+                    >
+                        {title}
+                    </h2>
+                    {isEditing && onDeleteSectionTitle && (
+                        <button
+                            type="button"
+                            onClick={handleDeleteTitle}
+                            className="delete-section-title-btn"
+                            title="Delete section title"
+                        >
+                            <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                    )}
+                </div>
             )}
             <div className="theory-blocks">{children}</div>
         </section>

@@ -2700,6 +2700,41 @@ ul {
   margin-top: 5rem;
 }
 
+/* Clear All Blocks Button */
+.editor-actions-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+}
+
+.clear-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--color-error, #ef4444);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-all-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.clear-all-btn:active {
+  transform: translateY(0);
+}
+
 .top-controls-bar {
   display: flex;
   align-items: center;
@@ -2732,6 +2767,45 @@ ul {
   margin-bottom: 30px;
   padding: 15px 0;
   border-bottom: 2px solid var(--color-border);
+}
+
+/* Section Title with Delete Button */
+.section-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.section-title-wrapper:hover .delete-section-title-btn {
+  opacity: 1;
+}
+
+.delete-section-title-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-error, #ef4444);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.delete-section-title-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error, #ef4444);
+}
+
+.theory-title {
+  flex: 1;
 }
 
 .main-blog-title {
@@ -2834,7 +2908,7 @@ ul {
 .add-block-btn:hover {
   background-color: var(--color-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .add-block-btn:active {
@@ -2849,9 +2923,9 @@ ul {
   left: 50%;
   transform: translateX(-50%) scale(0.8);
   padding: 6px 10px;
-  background-color: var(--color-tooltip-bg);
+  background-color: var(--color-tooltip-bg, rgba(0, 0, 0, 0.9));
   color: white;
-  font-size: 0.7rem;
+  font-size: 12px;
   white-space: nowrap;
   border-radius: 4px;
   opacity: 0;
