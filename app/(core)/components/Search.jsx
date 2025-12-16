@@ -26,7 +26,6 @@ export function Search({ onSearch, extraButton }) {
 
     const handleTagToggle = useCallback((tagName) => {
         let newTags;
-        
         if (selectedTags.includes(tagName)) {
             newTags = selectedTags.filter(tag => tag !== tagName);
         } else {
@@ -99,8 +98,9 @@ export function Search({ onSearch, extraButton }) {
                 {extraButton}
             </div>
 
+            {/* Filters container */}
             <div className={`horizontal-menu-container ${isMenuOpen ? "open" : ""}`}>
-                <ul className="horizontal-menu">
+                <div className="horizontal-menu">
                     {Object.values(TAGS).map((filter) => {
                         const tagName = filter.name;
                         const isSelected = selectedTags.includes(tagName);
@@ -119,8 +119,9 @@ export function Search({ onSearch, extraButton }) {
                             </button>
                         );
                     })}
-                </ul>
+                </div>
             </div>
         </div>
     );
 }
+

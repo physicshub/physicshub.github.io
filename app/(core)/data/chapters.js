@@ -7,7 +7,7 @@ export default [
     desc: "Simulation of the ball bouncing off the walls.",
     link: "/simulations/BouncingBall",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
+    icon: "/icons/bouncingBall.png",
     theory: {
       sections: [
         {
@@ -149,6 +149,7 @@ function draw(){
     desc: "Vector Operations in real time.",
     link: "/simulations/VectorsOperations",
     tags: [TAGS.EASY, TAGS.MATH, TAGS.VECTORS, TAGS.PHYSICS],
+    icon: "/icons/vector.png",
     theory: {
       sections: [
         {
@@ -223,7 +224,7 @@ function draw(){
     desc: "Ball accelerating to the mouse direction.",
     link: "/simulations/BallAcceleration",
     tags: [TAGS.MEDIUM, TAGS.PHYSICS, TAGS.ACCELERATION],
-
+    icon: "/icons/acceleration.png",
     theory: {
       sections: [
         {
@@ -379,7 +380,7 @@ function draw(mouseX, mouseY){
     desc: "Ball fall and bounce on the ground.",
     link: "/simulations/BallGravity",
     tags: [TAGS.MEDIUM, TAGS.COLLISION, TAGS.PHYSICS, TAGS.GRAVITY],
-
+    icon: "/icons/gravity.png",
     theory: {
       sections: [
         {
@@ -538,7 +539,7 @@ function draw(){
     desc: "A Ball connected to a string.",
     link: "/simulations/SpringConnection",
     tags: [TAGS.ADVANCED, TAGS.PHYSICS, TAGS.OSCILLATIONS, TAGS.SPRINGS],
-
+    icon: "/icons/spring.png",
     theory: {
       sections: [
         {
@@ -698,6 +699,7 @@ function draw(dt){
     desc: "A Simple Pendulum system.",
     link: "/simulations/SimplePendulum",
     tags: [TAGS.MEDIUM, TAGS.OSCILLATIONS, TAGS.ENERGY, TAGS.PHYSICS],
+    icon: "/icons/pendulam.png",
     theory: {
       sections: [
         {
@@ -907,6 +909,7 @@ function draw(dt){
     desc: "Projectile motion under gravity.",
     link: "/simulations/ParabolicMotion",
     tags: [TAGS.MEDIUM, TAGS.PHYSICS, TAGS.GRAVITY, TAGS.ACCELERATION],
+    icon: "/icons/parabola.png",
     theory: {
       sections: [
         {
