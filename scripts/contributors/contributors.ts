@@ -1,5 +1,5 @@
 // Everything in this folder is used to generate the contributors image shown in the README.md, 
-// almost all the code is from the original repository: https://github.com/material-extensions/vscode-material-icon-theme
+// good part of the code is from the original repository: https://github.com/material-extensions/vscode-material-icon-theme
 // Credits to Philipp Kief and his contributors for the original code. 
 
 // scripts/contributors/contributors.ts
@@ -16,6 +16,15 @@ import { getRemoteStats } from '../helpers/gitStats.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+type ContributorStats = {
+    login: string;
+    additions: number;
+    deletions: number;
+    commits: number;
+    originalContributor?: Contributor; 
+};
+
 
 /**
  * Parse link header
@@ -76,23 +85,17 @@ const fetchContributors = (
 
 /**
  * Create contributors list with stats from GitHub API.
+ * @param contributors L'elenco dei contributori (già ordinato per additions)
+ * @param contributorsStats Le statistiche complete (additions, deletions, commits)
  */
-const createContributorsList = async (contributors: Contributor[]) => {
-  // prima raccogliamo tutte le stats remote in un array
-  const contributorsStats = await Promise.all(
-    contributors.map(async (c) => {
-      const stats = await getRemoteStats(c.login);
-      return {
-        login: c.login,
-        additions: stats.additions ?? 0,
-        deletions: stats.deletions ?? 0,
-        commits: stats.commits ?? 0,
-      };
-    })
-  );
-
-
+const createContributorsList = async (
+  contributors: Contributor[],
+  contributorsStats: ContributorStats[]
+) => {
+  // Le statistiche sono già state raccolte e l'ordinamento è avvenuto in init()
+  
   const listItems = contributors.map((c) => {
+    // Trova le statistiche corrispondenti al contributore corrente
     const stats = contributorsStats.find((cs) => cs.login === c.login);
 
     return `
@@ -145,7 +148,7 @@ const init = async () => {
   const contributorsList: Contributor[] = [];
   let page = '1';
 
-  // iterate over the pages of GitHub API
+  // 1. ITERA SULLE PAGINE DI GITHUB API PER RECUPERARE TUTTI I CONTRIBUOTRI
   while (page !== undefined) {
     const result = await fetchContributors(page);
     contributorsList.push(...result.contributorsOfPage);
@@ -164,9 +167,32 @@ const init = async () => {
     );
     throw Error();
   }
-  const outputPath = await createContributorsList(contributorsList);
 
-  // create the image
+  // 2. RACCOGLI TUTTE LE STATISTICHE REMOTE (ADDITIONS, DELETIONS, COMMITS)
+  console.log('> PhysicsHub:', yellow('Fetching remote stats for sorting by additions...'));
+  const contributorsStats: ContributorStats[] = await Promise.all(
+    contributorsList.map(async (c) => {
+      const stats = await getRemoteStats(c.login);
+      return {
+        login: c.login,
+        additions: stats.additions ?? 0,
+        deletions: stats.deletions ?? 0,
+        commits: stats.commits ?? 0,
+        originalContributor: c, // Mantiene l'oggetto originale
+      };
+    })
+  );
+
+  // 3. ORDINA LE STATISTICHE PER "ADDITIONS" IN ORDINE DISCENDENTE
+  contributorsStats.sort((a, b) => b.additions - a.additions);
+  
+  // 4. RICOSTRUISCI contributorsList USANDO L'ORDINE DELLE STATISTICHE (PER LE PERCENTUALI)
+  const sortedContributorsList: Contributor[] = contributorsStats.map(c => c.originalContributor as Contributor);
+  
+  // 5. CREA LA LISTA HTML PASSANDO LA LISTA ORDINATA E LE STATISTICHE COMPLETE
+  const outputPath = await createContributorsList(sortedContributorsList, contributorsStats);
+
+  // 6. CREA L'IMMAGINE
   console.log('> PhysicsHub:', yellow('Creating image...'));
   const fileName = 'contributors';
   createScreenshot(outputPath, fileName)
