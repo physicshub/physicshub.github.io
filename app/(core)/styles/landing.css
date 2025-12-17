@@ -224,3 +224,10 @@
 .ph-hero__info{
   color: var(--ph-fg-muted);
 }
+
+.ph-hero_scroll{
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  color: var(--ph-fg-muted)
+}

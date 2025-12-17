@@ -5,6 +5,7 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import chaptersData from "../data/chapters.js";
 import { motion, useReducedMotion } from "framer-motion";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 // Container variant for staggered child animations
 const containerVariants = (rm) => ({
@@ -28,6 +29,26 @@ const fadeUp = (rm) => ({
       duration: rm ? 0.5 : 1.2,
       ease: [0.22, 1, 0.36, 1],
     },
+  },
+});
+
+// Scroll down oscillations
+const scrollDownMotion = (rm) => ({
+  hidden: {
+    opacity: 0,
+    y: rm ? -15 : -20,
+  },
+  show: {
+    opacity: 1,
+    y: rm ? 0 : [-10, 15], // top -> down
+    transition: rm
+      ? { duration: 2.5 }
+      : {
+          duration: 1.5,      
+          repeat: Infinity,   
+          repeatType: "loop", 
+          ease: "linear",
+        },
   },
 });
 
@@ -152,6 +173,11 @@ export function Hero() {
       <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
         Currently {chaptersCount} chapters available.
       </motion.p>
+
+      {/*Scroll down text*/}
+        <motion.p className="ph-hero_scroll" variants={scrollDownMotion(reduceMotion)}>scroll down
+          <FontAwesomeIcon icon={faAngleDown} style={{marginLeft: 8}}/>
+        </motion.p>
     </motion.div>
   );
 }
