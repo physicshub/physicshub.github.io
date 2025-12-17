@@ -8,6 +8,8 @@ import HeroBackground from "./HeroBackground";
 import GradientBackground from "./GradientBackground.jsx";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe, faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import ScrollDown from './ScrollDown';
+
 
 export default function FullLandingPage() {
   const [stats, setStats] = useState({
@@ -50,6 +52,7 @@ export default function FullLandingPage() {
       <Comets count={12} speed={1} direction="down-right" color="#AEE3FF" opacity={0.3} zIndex={1} />
       <HeroBackground />
       <Hero />
+      <ScrollDown />
       <LandingPart
         title={`Join ${stats.serverName || "the community"}`}
         subtitle="Join other fans and contributors and talk with them!"
@@ -72,6 +75,6 @@ export default function FullLandingPage() {
           { label: "Now In VC:", value: stats.voiceActive ?? "—", icon: faMicrophone }
         ]}
       />
-    </section>
+    </section>    
   );
 }
