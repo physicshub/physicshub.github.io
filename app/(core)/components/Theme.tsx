@@ -1,19 +1,91 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { motion } from "motion/react";
 
 interface Props {
   mode: 'light' | 'dark';
   onToggle: () => void;
 }
 
-export function Theme({ mode, onToggle }: Props) {
+export const Theme = ({ mode, onToggle }: Props) => {
+  const isLight = mode === 'light';
+
   return (
     <button
-      className="theme-toggle"
-      onClick={onToggle}
-      aria-label="Toggle theme"
+        className={`grid size-11 place-items-center cursor-pointer rounded-xl bg-gradient-to-t shadow-lg ${isLight ? "from-[#f8fafc] to-[#f1f5f9] text-stone-950" : "from-[#020617] to-[#0F172A] text-stone-50"}`}
+        onClick={onToggle}
+        aria-label="Toggle theme"
+      >
+    <svg
+      viewBox="0 0 18 18"
+      style={{ transform: isLight ? "rotate(90deg)" : "rotate(40deg)" }}
+      className="size-6 overflow-visible transition-transform duration-500"
     >
-     <FontAwesomeIcon icon={mode === 'dark' ? faMoon : faSun} />
+      <mask id="moon-mask-main-nav">
+        <rect x="0" y="0" width="18" height="18" fill="#FFF" />
+        <motion.circle
+          animate={{ cx: isLight ? 25 : 10 }}
+          cy="2"
+          r="8"
+          fill="black"
+        />
+      </mask>
+      <motion.circle
+        cx="9"
+        cy="9"
+        fill="currentColor"
+        mask="url(#moon-mask-main-nav)"
+        animate={{ r: isLight ? 5 : 8 }}
+      />
+      <g>
+        <motion.circle
+          cx="17"
+          cy="9"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+        />
+        <motion.circle
+          cx="13"
+          cy="15.928203230275509"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+          transition={{ delay: isLight ? 0.05 : 0 }}
+        />
+        <motion.circle
+          cx="5.000000000000002"
+          cy="15.92820323027551"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+          transition={{ delay: isLight ? 0.1 : 0 }}
+        />
+        <motion.circle
+          cx="1"
+          cy="9.000000000000002"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+          transition={{ delay: isLight ? 0.15 : 0 }}
+        />
+        <motion.circle
+          cx="4.9999999999999964"
+          cy="2.071796769724492"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+          transition={{ delay: isLight ? 0.2 : 0 }}
+        />
+        <motion.circle
+          cx="13"
+          cy="2.0717967697244912"
+          r="1.5"
+          fill="currentColor"
+          animate={{ scale: isLight ? 1 : 0 }}
+          transition={{ delay: isLight ? 0.25 : 0 }}
+        />
+      </g>
+    </svg>
     </button>
   );
-}
+};
