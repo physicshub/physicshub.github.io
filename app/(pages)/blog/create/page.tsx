@@ -272,10 +272,35 @@ export default function CreateBlogPage() {
         }
     }, [jsonContent, setJsonContent]);
 
-    const handleSave = useCallback(() => {
-        console.log("Saving content:", jsonContent);
-        alert("Creating Blog soon! (Check console for data)");
-    }, [jsonContent]);
+    const [isPublishing, setIsPublishing] = useState(false);
+
+    const handleSave = useCallback(async () => {
+        setIsPublishing(true);
+        try {
+            const response = await fetch('/api/publish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: title,
+                    jsonContent: jsonContent
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Richiesta inviata con successo! Il blog sarà online dopo la revisione.");
+                router.push('/blog'); // Torna alla lista
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            console.error("Errore durante l'invio:", error);
+            alert("Errore durante la pubblicazione. Riprova più tardi.");
+        } finally {
+            setIsPublishing(false);
+        }
+    }, [jsonContent, title, router]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTitle = e.target.value;
