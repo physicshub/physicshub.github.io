@@ -17,16 +17,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release_and_build:
+  release:
     runs-on: ubuntu-latest
     outputs:
-      # Questa variabile dirà al job 'deploy' se procedere
-      new_release: ${{ steps.check_tag.outputs.new_release }}
+      # Cattura l'output generato dal plugin exec
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fondamentale per semantic-release e i tag
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -37,44 +37,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 1. Esegui la release
       - name: Semantic Release
         id: semantic
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          # Usa GH_TOKEN se è un PAT, o GITHUB_TOKEN per i permessi standard
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
-      # 2. Verifica se è stato creato un nuovo tag in questo specifico run
-      - name: Check if new release was created
-        id: check_tag
-        run: |
-          if [ $(git tag --points-at HEAD | wc -l) -gt 0 ]; then
-            echo "new_release=true" >> $GITHUB_OUTPUT
-          else
-            echo "new_release=false" >> $GITHUB_OUTPUT
-          fi
-
-      # 3. Configura Pages (solo se release fatta)
+      # Da qui in poi, gli step girano SOLO se è stata creata una release
       - name: Setup Pages
-        if: steps.check_tag.outputs.new_release == 'true'
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: actions/configure-pages@v5
 
-      # 4. Build (solo se release fatta)
       - name: Build with Next.js
-        if: steps.check_tag.outputs.new_release == 'true'
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: npx next build
 
-      # 5. Carica artifact (solo se release fatta)
       - name: Upload artifact
-        if: steps.check_tag.outputs.new_release == 'true'
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
   deploy:
-    needs: release_and_build
-    # Esegue il deploy solo se il job precedente conferma la nuova release
-    if: needs.release_and_build.outputs.new_release == 'true'
+    needs: release
+    if: needs.release.outputs.new_release_published == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
