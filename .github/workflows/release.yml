@@ -2,76 +2,79 @@ name: Release and Build
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch: # Mantenuto per i test manuali
+    branches: ["main"]
+  workflow_dispatch:
 
-# Imposta i permessi necessari per Semantic Release e GitHub Pages
 permissions:
-  contents: write # Necessario per Semantic Release (crea commit/tag)
-  pages: write    # Necessario per la GitHub Pages deployment
-  id-token: write # Necessario per l'autenticazione OIDC (richiesto da actions/deploy-pages)
+  contents: write
+  pages: write
+  id-token: write
   issues: write
   pull-requests: write
 
-# Permette un solo deployment contemporaneo
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  release:
+  release_and_build:
     runs-on: ubuntu-latest
-    # Definiamo un output per comunicare al job 'deploy' se una nuova release è stata pubblicata
     outputs:
-      new_release_published: ${{ steps.semantic_release.outputs.new_release_published }}
+      # Questa variabile dirà al job 'deploy' se procedere
+      new_release: ${{ steps.check_tag.outputs.new_release }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        # Il fetch-depth: 0 è essenziale per Semantic Release per analizzare la cronologia dei commit
         with:
-          fetch-depth: 0 
+          fetch-depth: 0 # Fondamentale per semantic-release e i tag
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: 'npm' # Usa il caching npm
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      # 1. Semantic Release (Aggiorna package.json, crea Tag e Commit, pusha)
+      # 1. Esegui la release
       - name: Semantic Release
-        id: semantic_release
+        id: semantic
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npx semantic-release
-        
-      # 2. Configura le Pagine GitHub (Necessario prima della build)
+
+      # 2. Verifica se è stato creato un nuovo tag in questo specifico run
+      - name: Check if new release was created
+        id: check_tag
+        run: |
+          if [ $(git tag --points-at HEAD | wc -l) -gt 0 ]; then
+            echo "new_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 3. Configura Pages (solo se release fatta)
       - name: Setup Pages
-        # Esegui la configurazione SOLO se Semantic Release ha pubblicato una versione
-        if: steps.semantic_release.outputs.new_release_published == 'true'
+        if: steps.check_tag.outputs.new_release == 'true'
         uses: actions/configure-pages@v5
 
-      # 3. Build di Next.js (Ora usa il package.json aggiornato)
+      # 4. Build (solo se release fatta)
       - name: Build with Next.js
-        if: steps.semantic_release.outputs.new_release_published == 'true'
+        if: steps.check_tag.outputs.new_release == 'true'
         run: npx next build
 
-      # 4. Carica l'Artifact della Build
+      # 5. Carica artifact (solo se release fatta)
       - name: Upload artifact
-        if: steps.semantic_release.outputs.new_release_published == 'true'
+        if: steps.check_tag.outputs.new_release == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
-          
-  # Deployment job
+
   deploy:
-    # Esegui il deploy SOLO se il job 'release' ha confermato una nuova pubblicazione
-    needs: release 
-    if: needs.release.outputs.new_release_published == 'true'
-    
+    needs: release_and_build
+    # Esegue il deploy solo se il job precedente conferma la nuova release
+    if: needs.release_and_build.outputs.new_release == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
