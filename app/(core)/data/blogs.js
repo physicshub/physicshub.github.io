@@ -5,7 +5,7 @@ export default [
     id: 1,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
@@ -56,7 +56,7 @@ export default [
     id: 2,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {
@@ -108,7 +108,7 @@ export default [
     id: 3,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}
@@ -117,7 +117,7 @@ export default [
     id: 4,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}
@@ -126,7 +126,7 @@ export default [
     id: 5,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}
@@ -135,7 +135,7 @@ export default [
     id: 3,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
@@ -145,7 +145,7 @@ export default [
     id: 4,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
@@ -155,7 +155,7 @@ export default [
     id: 5,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
@@ -165,7 +165,7 @@ export default [
     id: 3,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}
@@ -174,7 +174,7 @@ export default [
     id: 4,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}
@@ -183,7 +183,7 @@ export default [
     id: 5,
     name: "Blog Test",
     desc: "This is a blog example.",
-    link: "/blog/this-is-a-blog-example",
+    slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
     theory: {}

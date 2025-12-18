@@ -81,6 +81,7 @@ export default function Blog() {
                 link={chap.link}
                 tags={chap.tags}
                 isABlog={true}
+                slug={chap.slug}
               />
             ))}
           </div>
@@ -106,6 +107,7 @@ export default function Blog() {
               link={chap.link}
               tags={chap.tags}
               isABlog={true}
+              slug={chap.slug}
             />
           ))}
 

@@ -644,10 +644,10 @@ main.simulations-page {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  border: var(--glow-color) 1px solid transparent;
+  border: 0 solid transparent; 
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px var(--accent-color);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s, border-width 0.3s, border-color 0.3s;
   padding: 0.5rem;
   color: var(--ph-fg);
   height: 100%;
@@ -656,9 +656,10 @@ main.simulations-page {
 
 .chapter-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4), 0 0 30px rgba(0, 123, 255, 0.3), 0 0 60px rgba(0, 123, 255, 0.2);
+  border-color: var(--accent-color);
+  border-width: 1px;
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4), 0 0 30px rgba(0, 123, 255, 0.3);  
   animation: glowPulse 1s infinite alternate;
-  border-color: ver(--accent-color);
 }
 
 .chapter-card::before {
@@ -2714,7 +2715,7 @@ ul {
 }
 
 .blogs-list > * {
-  aspect-ratio: 2 / 1.4;
+  /* aspect-ratio: 2 / 1.4; */
 }
 
 /* Style for headers */

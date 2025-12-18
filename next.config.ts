@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   output: "export",
   
   env: {
-    // Creiamo una variabile accessibile lato client
     NEXT_PUBLIC_APP_VERSION: packageJson.version,
   },
 };

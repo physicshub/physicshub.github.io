@@ -1088,6 +1088,7 @@
   }
 }
 
-/* 16. DARK MODE ADJUSTMENTS - Non più necessari grazie alle variabili! */
-/* Solo se necessario per eccezioni non coperte dalle variabili. */
-/* Ho spostato le uniche regole rimanenti nel blocco VARIABILI GLOBALI. */
+.blog-container{
+  margin-top: 6rem;
+  padding: 2rem;
+}

@@ -36,7 +36,9 @@ function Chapter(props) {
                 <p>{props.desc}</p>
 
                 {/* Link */}
-                <Link href={props.link}>
+                <Link 
+                    href={props.isABlog ? `/blog/${props.slug}` : props.link}
+                >
                     {props.isABlog ? "Go to blog" : "Go to simulation"}
                     <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '10px' }}/>
                 </Link>
