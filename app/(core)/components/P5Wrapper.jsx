@@ -80,8 +80,10 @@ export default function P5Wrapper({ sketch, simInfos }) {
     }, [sketch]);
 
     return (
-        <div className="p5-wrapper">
-            <div ref={containerRef} className="screen" id="Screen">
+        <div className="p5-wrapper" style={{ position: 'relative' }}>
+            <div ref={containerRef} className="screen" id="Screen"></div>
+            {/* Render simInfos as a sibling so it doesn't sit inside the canvas container and intercept events */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
                 {simInfos ?? ""}
             </div>
         </div>
