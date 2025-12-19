@@ -4,7 +4,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
-import MagneticParticle from "../../../(core)/physics/MagneticField.js";
+import MagneticRod from "../../../(core)/physics/MagneticField.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
@@ -13,6 +13,7 @@ import {
 
 import chapters from "../../../(core)/data/chapters.js";
 import { SCALE } from "../../../(core)/constants/Config.js";
+import { toMeters } from "../../../(core)/constants/Utils.js";
 
 import {
   computeDelta,
@@ -54,178 +55,191 @@ export default function MagneticFieldPage() {
   const theory = useMemo(() => chapters.find((ch) => ch.link === location)?.theory, [location]);
 
   const sketch = useCallback((p) => {
-    let trailLayer = null;
-    let originX = 0;
-    let originY = 0;
+    // Magnetic rod visualization
+    let fieldLayer = null;
+    let rod = null;
+    const createScene = () => {
+      const { clientHeight: h, clientWidth: w } = p._userNode;
+      const cx = toMeters(w / 2);
+      const cy = toMeters((h - 50) / 2);
 
-    const createParticle = () => {
-      const { clientHeight: h } = p._userNode;
-      originX = 0;
-      originY = (h - 50) / SCALE;
+      rod = new MagneticRod(p, cx, cy, inputsRef.current.rodLength, inputsRef.current.angle, inputsRef.current.moment);
 
-      particleRef.current = new MagneticParticle(p, originX, originY, inputsRef.current.mass);
-      particleRef.current.charge = inputsRef.current.charge;
-      particleRef.current.radius = inputsRef.current.size / 2;
-      particleRef.current.color = inputsRef.current.particleColor;
-    };
-
-    const launchParticle = () => {
-      const particle = particleRef.current;
-      if (!particle) return;
-
-      const velocity = typeof inputsRef.current.initialVelocity === "number"
-        ? inputsRef.current.initialVelocity
-        : INITIAL_INPUTS.initialVelocity;
-      const launchAngle = typeof inputsRef.current.angle === "number"
-        ? inputsRef.current.angle
-        : INITIAL_INPUTS.angle;
-
-      timeRef.current = 0;
-
-      particle.launch(velocity, launchAngle);
-      setPause(false);
+      // Initialize sidebar inputs for rod position
+      try {
+        setInputs((prev) => ({ ...prev, rodX: Number(cx.toFixed(2)), rodY: Number(cy.toFixed(2)) }));
+      } catch (e) {}
     };
 
     p.setup = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.createCanvas(w, h);
-      trailLayer = p.createGraphics(w, h);
-      trailLayer.clear();
-
-      createParticle();
-      particleRef.current.stop();
-      setPause(true);
+      fieldLayer = p.createGraphics(w, h);
+      fieldLayer.clear();
+      createScene();
       p.background(getBackgroundColor());
+      setPause(true);
     };
 
     p.draw = () => {
-      const particle = particleRef.current;
-      if (!particle || !trailLayer) return;
+      const { clientWidth: w, clientHeight: h } = p._userNode;
+      if (!rod || !fieldLayer) return;
 
-      const dt = computeDelta(p);
+      // update rod parameters from inputs
+      rod.length = inputsRef.current.rodLength;
+      rod.moment = inputsRef.current.moment;
+      rod.setAngleDeg(inputsRef.current.angle);
 
-      if (dt && !particle.isDragging) {
-        particle.mass = inputsRef.current.mass;
-        particle.charge = inputsRef.current.charge;
-        particle.radius = inputsRef.current.size / 2;
-        particle.color = inputsRef.current.particleColor;
-
-        // Apply magnetic field
-        const Bz = inputsRef.current.B;
-        particle.applyMagneticField(Bz);
-
-        particle.update(dt);
-
-        timeRef.current += dt;
-      }
-
-      // Trail
+      // redraw field layer
+      fieldLayer.clear();
       const bg = getBackgroundColor();
-      const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-      if (!inputsRef.current.trailEnabled) {
-        trailLayer.background(r, g, b);
-      } else {
-        trailLayer.noStroke();
-        trailLayer.fill(r, g, b, 60);
-        trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+      const [br, bgc, bb] = Array.isArray(bg) ? bg : [0, 0, 0];
+      if (!inputsRef.current.trailEnabled) fieldLayer.background(br, bgc, bb);
+
+      // draw streamlines (cached for responsiveness) — fixed seeds
+      if (inputsRef.current.showFieldLines) {
+        const seeds = 24;
+        const seedR = 0.6;
+        const paramsKey = `${seeds}_${seedR}_${rod.moment}_${rod.length}_${inputsRef.current.angle}_${rod.pos.x.toFixed(3)}_${rod.pos.y.toFixed(3)}`;
+        if (fieldLayer._cachedKey !== paramsKey) {
+          fieldLayer._cachedKey = paramsKey;
+          fieldLayer._lines = [];
+          const maxSteps = 300;
+          const step = 0.04;
+          for (let i = 0; i < seeds; i++) {
+            const theta = (i / seeds) * Math.PI * 2;
+            const sx = rod.pos.x + seedR * Math.cos(theta);
+            const sy = rod.pos.y + seedR * Math.sin(theta);
+            const forward = rod.traceField(p.createVector(sx, sy), step, maxSteps);
+            const backward = rod.traceField(p.createVector(sx, sy), -step, maxSteps);
+            backward.reverse();
+            const pts = backward.concat([p.createVector(sx, sy)]).concat(forward);
+            fieldLayer._lines.push(pts);
+          }
+        }
+
+        fieldLayer.noFill();
+        fieldLayer.stroke(100, 200, 255, 160);
+        fieldLayer.strokeWeight(1);
+        const lines = fieldLayer._lines || [];
+        for (const drawPts of lines) {
+          fieldLayer.beginShape();
+          for (const pw of drawPts) {
+            fieldLayer.vertex(pw.x * SCALE, pw.y * SCALE);
+          }
+          fieldLayer.endShape();
+        }
       }
 
-      particle.show(trailLayer);
-
-      // Composite
+      // composite
       p.clear();
-      p.image(trailLayer, 0, 0);
+      p.image(fieldLayer, 0, 0);
 
-      // Ground strip for visual reference
+      // draw rod
+      rod.draw(p);
+
+      // draw right-hand rule indicator
+      const indicatorX = 60;
+      const indicatorY = 60;
+      p.push();
+      p.translate(indicatorX, indicatorY);
+      p.noFill();
+      p.stroke(180);
+      p.strokeWeight(2);
+      p.circle(0, 0, 48);
+      // arrow showing circulation (use rod.angle to orient)
+      p.push();
+      p.rotate(-rod.angle);
+      p.stroke(255, 200, 0);
+      p.strokeWeight(2);
+      p.noFill();
+      p.arc(0, 0, 40, 40, -Math.PI / 3, Math.PI / 3);
+      // arrow head
+      p.translate(20, -6);
+      p.rotate(Math.PI / 6);
+      p.fill(255, 200, 0);
+      p.noStroke();
+      p.triangle(0, 0, -6, 4, 6, 4);
+      p.pop();
+      // thumb (dipole moment) direction
+      p.stroke(200);
+      p.strokeWeight(3);
+      p.line(-30, 0, 30, 0);
+      p.strokeWeight(1);
+      p.pop();
+
+      // (test particle removed) focused on rod & field lines only
+
+      // UI ground strip
       p.fill(80, 150, 80);
       p.noStroke();
       p.rect(0, p.height - 50, p.width, 50);
 
-      // Glow
-      const partPos = particle.state.pos;
-      const partX = partPos.x * SCALE;
-      const partY = partPos.y * SCALE;
-      const partRadius = particle.radius * SCALE;
-
-      const isHover = p.dist(partX, partY, p.mouseX, p.mouseY) <= partRadius;
-      drawGlow(p, isHover, particle.color, () => {
-        p.noStroke();
-        p.fill(particle.color);
-        p.circle(partX, partY, partRadius * 2);
-      }, 20, p);
-
-      // Update SimInfo
-      updateSimInfo(
-        p,
-        {
-          pos: particle.state.pos,
-          vel: particle.state.vel,
-          mass: particle.mass,
-        },
-        {
-          B: inputsRef.current.B,
-          mass: inputsRef.current.mass,
-          charge: inputsRef.current.charge,
-        },
-        SimInfoMapper
-      );
+      // Update SimInfo: report rod-tip so s(x,y) updates with rotation
+      const tip = p.createVector(rod.pos.x + (rod.length / 2) * Math.cos(rod.angle), rod.pos.y - (rod.length / 2) * Math.sin(rod.angle));
+      updateSimInfo(p, { pos: tip, vel: p.createVector(0, 0) }, { moment: rod.moment, angle: (rod.angle * 180) / Math.PI }, SimInfoMapper);
     };
 
     p.mousePressed = () => {
-      const particle = particleRef.current;
-      if (particle?.clicked(p.mouseX, p.mouseY)) {
-        setPause(true);
+      const d = p.dist(p.mouseX, p.mouseY, rod.pos.x * SCALE, rod.pos.y * SCALE);
+      if (d < 40) {
+        const isShift = (p.keyIsDown && p.keyIsDown(p.SHIFT)) || (p.mouseEvent && p.mouseEvent.shiftKey);
+        if (isShift) {
+          rod.isTranslating = true;
+          const mxM = toMeters(p.mouseX);
+          const myM = toMeters(p.mouseY);
+          rod.dragOffset = p.createVector(rod.pos.x - mxM, rod.pos.y - myM);
+        } else {
+          rod.isDragging = true;
+        }
       }
     };
 
     p.mouseDragged = () => {
-      const particle = particleRef.current;
-      if (!particle || !particle.isDragging) return;
+      if (!rod) return;
+      // translation
+      if (rod.isTranslating) {
+        const mxM = toMeters(p.mouseX);
+        const myM = toMeters(p.mouseY);
+        rod.pos.set(mxM + (rod.dragOffset?.x || 0), myM + (rod.dragOffset?.y || 0));
+        // invalidate cached fieldlines so they recompute while dragging
+        if (fieldLayer) fieldLayer._cachedKey = null;
+        // update sidebar inputs for position
+        try {
+          setInputs((prev) => ({ ...prev, rodX: Number(rod.pos.x.toFixed(2)), rodY: Number(rod.pos.y.toFixed(2)) }));
+        } catch (e) {}
+        return;
+      }
 
-      particle.drag(p.mouseX, p.mouseY);
-
-      const launchVec = particle.getLaunchVector(originX, originY);
-      const velocity = launchVec.mag();
-      const rawAngle = p.degrees(-launchVec.heading());
-      const angle = rawAngle;
-
-      inputsRef.current.initialVelocity = velocity;
-      inputsRef.current.angle = angle;
-
-      const roundedVelocity = Number(velocity.toFixed(2));
-      const roundedAngle = Number(angle.toFixed(2));
-
-      setInputs((prev) => {
-        if (
-          Math.abs((prev.initialVelocity ?? 0) - roundedVelocity) < 0.01 &&
-          Math.abs((prev.angle ?? 0) - roundedAngle) < 0.01
-        ) {
-          return prev;
-        }
-        return {
-          ...prev,
-          initialVelocity: roundedVelocity,
-          angle: roundedAngle,
-        };
-      });
+      if (!rod.isDragging) return;
+      const mxM = toMeters(p.mouseX);
+      const myM = toMeters(p.mouseY);
+      const dx = mxM - rod.pos.x;
+      const dy = rod.pos.y - myM; // upward positive
+      const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+      setInputs((prev) => ({ ...prev, angle: Number(ang.toFixed(2)) }));
     };
 
     p.mouseReleased = () => {
-      const particle = particleRef.current;
-      if (!particle || !particle.isDragging) return;
-      particle.stopDragging();
-      launchParticle();
+      if (rod) {
+        rod.isDragging = false;
+        if (rod.isTranslating) {
+          rod.isTranslating = false;
+          // ensure final sidebar position saved
+          try {
+            setInputs((prev) => ({ ...prev, rodX: Number(rod.pos.x.toFixed(2)), rodY: Number(rod.pos.y.toFixed(2)) }));
+          } catch (e) {}
+        }
+      }
+      if (particleRef.current) particleRef.current.stopDragging();
     };
 
     p.windowResized = () => {
       const { clientWidth: w, clientHeight: h } = p._userNode;
       p.resizeCanvas(w, h);
-      trailLayer = p.createGraphics(w, h);
-      trailLayer.clear();
-      createParticle();
-      particleRef.current.stop();
-      setPause(true);
-      timeRef.current = 0;
+      fieldLayer = p.createGraphics(w, h);
+      fieldLayer.clear();
+      createScene();
     };
   }, [inputsRef, updateSimInfo, setInputs]);
 
