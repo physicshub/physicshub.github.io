@@ -144,6 +144,45 @@ function draw(){
     },
   },
   {
+    id: 8,
+    name: "Magnetic Field",
+    desc: "Charged particle motion in a uniform magnetic field (B out-of-plane).",
+    link: "/simulations/MagneticField",
+    tags: [TAGS.MEDIUM, TAGS.PHYSICS],
+    icon: "/icons/magnetic.png",
+    theory: {
+      sections: [
+        {
+          title: "Introduction",
+          blocks: [
+            {
+              type: "paragraph",
+              text: "A charged particle moving in a uniform magnetic field experiences the Lorentz force, producing circular motion when the velocity is perpendicular to the field. Use the draggable particle to set initial velocity and observe the resulting trajectory.",
+            },
+          ],
+        },
+        {
+          title: "Dipole field & right-hand rule",
+          blocks: [
+            {
+              type: "paragraph",
+              text: "A magnetic dipole (like a small bar magnet) produces a field that loops from the north to the south pole. Field lines emerge from the north side, curve through space, and return to the south side. Use the controls to change the dipole moment and orientation.",
+            },
+            {
+              type: "list",
+              ordered: false,
+              items: [
+                "Magnetic dipole field (far-field approximation): B(r) = (μ0/4π) [ (3 r̂ (m·r̂) - m) / r^3 ]",
+                "Right-hand rule: point your thumb along the dipole moment (m); your curled fingers show the circulation direction of the magnetic field.",
+                "Field lines are strongest near the poles and decay roughly as 1/r^3 in the far field.",
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     id: 2,
     name: "Vector Operations",
     desc: "Vector Operations in real time.",
