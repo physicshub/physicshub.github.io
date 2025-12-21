@@ -105,7 +105,7 @@ export function Hero() {
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       animate="show"
-      style={{ position: "relative", overflow: "hidden" }}
+      style={{ position: "relative", overflow: "hidden" }}    
     >
       {/* Animated H1 with per-word glow on PhysicsHub */}
       <motion.h1
