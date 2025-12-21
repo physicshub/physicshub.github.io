@@ -1,61 +1,118 @@
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-export default function ScrollDown() {
-  const [opacity, setOpacity] = useState(1);
+export default function ScrollIndicator() {
+  const [scrollY, setScrollY] = useState(0);
+  const [dotY, setDotY] = useState(0);
 
   useEffect(() => {
+    let rafId: number;
+
     const onScroll = () => {
-      const fadeStart = window.innerHeight * 0.9; // start fade after first viewport
-      const fadeEnd = document.body.scrollHeight - window.innerHeight; // fully faded at the end
-      if (window.scrollY < fadeStart) {
-        setOpacity(1);
-      } else if (window.scrollY > fadeEnd) {
-        setOpacity(0);
-      } else {
-        // linear fade
-        const newOpacity = 1 - (window.scrollY - fadeStart) / (fadeEnd - fadeStart);
-        setOpacity(newOpacity);
-      }
+      setScrollY(window.scrollY);
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    const animateDot = () => {
+      setDotY((prev) => {
+        // Target dot position (slow & clamped)
+        const target = Math.min(scrollY / 10, 18);
+        // Easing for smooth, slow movement
+        return prev + (target - prev) * 0.08;
+      });
 
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+      rafId = requestAnimationFrame(animateDot);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    animateDot();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [scrollY]);
+
+  const heroHeight =
+    typeof window !== "undefined" ? window.innerHeight : 800;
+
+  // Fade out after hero
+  const opacity =
+  scrollY < heroHeight
+    ? 1
+    : Math.max(1 - (scrollY - heroHeight) / 400, 0);
+
 
   return (
-    <button
-      aria-label="Scroll down"
-      onClick={() =>
-        window.scrollBy({
-          top: window.innerHeight,
-          behavior: 'smooth',
-        })
-      }
-      style={{ zIndex: 9999, opacity }}
-      className="
-        fixed left-1/2 bottom-6 -translate-x-1/2
-        w-14 h-14 rounded-full
-        bg-cyan-400 text-white border-2 border-cyan-400
-        shadow-xl shadow-emerald-300/40
-        cursor-pointer flex items-center justify-center
-        animate-bounce
-        hover:scale-115
-        transition-opacity duration-500
-        focus:outline-none
-      "
+    <div
+      style={{
+        position: "fixed",
+        left: "50%",
+        bottom: "32px",
+        transform: "translateX(-50%)",
+        zIndex: 1000,
+        opacity,
+        transition: "opacity 0.4s ease",
+        pointerEvents: opacity === 0 ? "none" : "auto",
+      }}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        viewBox="0 0 640 640"
-        fill="currentColor"
+      <button
+        aria-label="Scroll to explore"
+        onClick={() =>
+          window.scrollBy({
+            top: heroHeight,
+            behavior: "smooth",
+          })
+        }
+        style={{
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+        }}
       >
-        <path d="M297.4 558.6C309.9 571.1 330.2 571.1 342.7 558.6L502.7 398.6C515.2 386.1 515.2 365.8 502.7 353.3C490.2 340.8 469.9 340.8 457.4 353.3L352 458.7L352 88C352 70.3 337.7 56 320 56C302.3 56 288 70.3 288 88L288 458.7L182.6 353.3C170.1 340.8 149.8 340.8 137.3 353.3C124.8 365.8 124.8 386.1 137.3 398.6L297.3 558.6z" />
-      </svg>
-    </button>
+        {/* Mouse outline */}
+        <div
+          style={{
+            width: "28px",
+            height: "44px",
+            borderRadius: "16px",
+            border: "2px solid #00e6e6",
+            margin: "0 auto",
+            position: "relative",
+            boxShadow: "0 0 14px rgba(0,230,230,0.6)",
+          }}
+        >
+          {/* Smooth moving dot */}
+          <span
+            style={{
+              position: "absolute",
+              top: "8px",
+              left: "50%",
+              transform: `translate(-50%, ${dotY}px)`,
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              background: "#00e6e6",
+              boxShadow: "0 0 8px rgba(0,230,230,0.9)",
+              transition: "transform 0.3s ease-out",
+            }}
+          />
+        </div>
+
+        {/* Text */}
+        <div
+          style={{
+            marginTop: "10px",
+            fontSize: "11px",
+            letterSpacing: "0.18em",
+            color: "#00e6e6",
+            textAlign: "center",
+            fontWeight: 500,
+          }}
+        >
+          SCROLL TO EXPLORE
+        </div>
+      </button>
+    </div>
   );
 }
