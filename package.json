@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:sitemap\"",
+    "dev:local": "next dev",
     "build": "next build && npm run generate:sitemap",
     "preview": "npm run build && next start",
     "predeploy": "npm run build && npm run contributors",
