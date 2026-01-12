@@ -63,6 +63,7 @@ export default class Body {
     const newState = integrate(pos, vel, totalAcc, dt);
 
     // Collisione con i bordi
+    console.log(restitution)
     const collided = collideBoundary(
       newState.pos,
       newState.vel,

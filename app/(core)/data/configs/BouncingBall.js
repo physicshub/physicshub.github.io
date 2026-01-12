@@ -15,7 +15,7 @@ export const INPUT_FIELDS = [
   { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass..." },
   { name: "size", label: "d - Ball diameter (m):", type: "number", placeholder: "Insert ball size..." },
   { name: "gravity", label: "g - Gravity (m/s²):", type: "select", options: gravityTypes },
-  { name: "restitution", label: "ζ - Damping:", type: "number" },
+  { name: "restitution", label: "ζ - Damping:", type: "number", min: 0, max: 2, step: 0.1 },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "ballColor", label: "Ball Color:", type: "color" },
 ];
@@ -84,7 +84,7 @@ export const SimInfoMapper = (state, context, refs) => {
 
   return {
     "v (velocity)": `${speedMs.toFixed(2)} m/s`,
-    "a (acceleration)": `${gravity.toFixed(2)} m/s²`,
+    "a (acceleration)": `${Number(gravity).toFixed(2)} m/s²`,
     "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
     "t (fall time)": `${fallTime.toFixed(2)} s`,
     "hₘₐₓ (height max)": `${maxHeightRef.current.toFixed(2)} m`,

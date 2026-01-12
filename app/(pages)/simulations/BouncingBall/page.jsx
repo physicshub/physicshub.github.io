@@ -87,9 +87,14 @@ export default function BouncingBall() {
       };
 
       p.draw = () => {
-        const { size, gravity, trailEnabled, ballColor, mass } = inputsRef.current;
+        const { size, gravity, trailEnabled, ballColor, mass, restitution } = inputsRef.current;
         const dt = computeDelta(p);
         if (!bodyRef.current || dt <= 0) return;
+
+        // Update inputs
+        bodyRef.current.restitution = restitution;
+        bodyRef.current.gravity = gravity;
+        
 
         // Step fisico centralizzato
         if (!dragState.active) {

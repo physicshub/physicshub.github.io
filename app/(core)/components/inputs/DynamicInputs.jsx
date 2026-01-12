@@ -19,6 +19,9 @@ export default function DynamicInputs({ config, values, onChange }) {
               {...commonProps}
               val={values[field.name]}
               placeholder={field.placeholder}
+              min={field?.min}
+              max={field?.max}
+              step={field?.step}
               onChange={(e) => onChange(field.name, Number(e.target.value))}
             />
           );
