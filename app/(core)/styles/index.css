@@ -1993,9 +1993,17 @@ ul {
   font-size: 0.7rem;
   padding: 0.7rem;
   border-radius: var(--border-radius);
-  pointer-events: auto; /* serve per cliccare i bottoni */
+  /* Allow pointer events through the panel background so the underlying canvas
+     can still receive mouse input. Interactive children (buttons) keep pointer
+     events enabled. */
+  pointer-events: none;
   transition: padding 0.3s ease, width 0.3s ease, height 0.3s ease;
   overflow: auto;
+}
+
+/* Re-enable pointer events for interactive children inside the panel */
+.sim-info-panel * {
+  pointer-events: auto;
 }
 
 /* Light theme simulation info panel */
@@ -2173,12 +2181,17 @@ ul {
 }
 
 .contribution-card::before {
-  content: "";
+  /* Let pointer events pass through the panel background so the canvas below
+     can receive mouse input; keep controls inside the panel interactive. */
+  pointer-events: none; /* allow clicks to reach canvas */
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
+.sim-info-panel * {
+  pointer-events: auto;
+}
   background: linear-gradient(90deg, var(--accent-color), rgb(11, 188, 201));
   transform: scaleX(0);
   transition: transform 0.3s ease;
