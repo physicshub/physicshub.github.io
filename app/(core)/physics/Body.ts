@@ -45,8 +45,14 @@ export default class Body {
     const { gravity, size, restitution, frictionMu } = this.params;
     const radius = size / 2;
 
+    // ⚡ Validazione parametri critici
+    if (!gravity || !restitution || dt <= 0) {
+      console.warn('[Body.step] Invalid parameters:', { gravity, restitution, dt });
+      return;
+    }
+
     // Accelerazione base (gravità)
-    let totalAcc = acc.copy().add(createVector(0, gravity!));
+    let totalAcc = acc.copy().add(createVector(0, gravity));
 
     // Accelerazione esterna (vento, mouse, ecc.)
     if (externalAcc) totalAcc.add(externalAcc);
@@ -54,16 +60,16 @@ export default class Body {
     // Attrito dinamico se a contatto col suolo
     const bottomM = toMeters(p.height);
     const onGround = pos.y + radius >= bottomM - 1e-9;
-    if (onGround && vel.mag() > 0 && frictionMu > 0) {
-      const fric = vel.copy().mult(-1).setMag(frictionMu * gravity!);
+    if (onGround && vel.mag() > 0.01 && frictionMu > 0) {
+      const fricMag = Math.min(frictionMu * gravity, vel.mag() / dt);
+      const fric = vel.copy().normalize().mult(-fricMag);
       totalAcc.add(fric);
     }
 
     // Integrazione del moto
     const newState = integrate(pos, vel, totalAcc, dt);
 
-    // Collisione con i bordi
-    console.log(restitution)
+    // ⚡ FIX CRITICO: Collisione con i bordi (rimuovo console.log!)
     const collided = collideBoundary(
       newState.pos,
       newState.vel,
@@ -74,6 +80,11 @@ export default class Body {
 
     this.state.pos = collided.pos;
     this.state.vel = collided.vel;
+
+    // ⚡ FIX: Smorzamento velocità sotto soglia per stabilizzare
+    if (this.state.vel.mag() < 0.001) {
+      this.state.vel.mult(0);
+    }
 
     // Reset accelerazione accumulata
     this.state.acc.mult(0);

@@ -12,8 +12,8 @@ export const INITIAL_INPUTS = {
 };
 
 export const INPUT_FIELDS = [
-  { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass..." },
-  { name: "size", label: "d - Ball diameter (m):", type: "number", placeholder: "Insert ball size..." },
+  { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass...", min: 0 },
+  { name: "size", label: "d - Ball diameter (m):", type: "number", placeholder: "Insert ball size...", min: 0, step: 0.1 },
   { name: "gravity", label: "g - Gravity (m/s²):", type: "select", options: gravityTypes },
   { name: "restitution", label: "ζ - Damping:", type: "number", min: 0, max: 2, step: 0.1 },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
