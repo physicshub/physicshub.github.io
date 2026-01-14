@@ -45,8 +45,8 @@ export default class Body {
     const { gravity, size, restitution, frictionMu } = this.params;
     const radius = size / 2;
 
-    // ⚡ Validazione parametri critici
-    if (!gravity || !restitution || dt <= 0) {
+    // Controlla che siano numeri e che dt sia positivo
+    if (typeof gravity === 'undefined' || typeof restitution === 'undefined' || dt <= 0) {
       console.warn('[Body.step] Invalid parameters:', { gravity, restitution, dt });
       return;
     }

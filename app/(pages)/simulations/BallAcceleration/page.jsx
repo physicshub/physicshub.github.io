@@ -125,7 +125,6 @@ export default function BallAcceleration() {
         })
         .filter(Boolean);
 
-        console.log(activeForces)
       for (const f of activeForces) {
         drawForceVector(p, pixelX, pixelY, f.vec, f.color);
       }
