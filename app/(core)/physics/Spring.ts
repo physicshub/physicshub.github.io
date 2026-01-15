@@ -15,7 +15,7 @@ export default class Spring {
   private p: p5;
   anchor: p5.Vector;
   restLength: number;
-  k: number;           // costante elastica N/m
+  k: number; // costante elastica N/m
   color: string;
   anchorColor: string;
 

@@ -13,7 +13,7 @@ export function computeDelta(p) {
 
   const now = p.millis();
   const instanceId = p._instanceId || p._userNode?.id; // Identificatore unico per ogni sketch
-  
+
   // Se non abbiamo un lastMillis per questa istanza, inizializzalo
   if (!simulationInstances.has(instanceId)) {
     simulationInstances.set(instanceId, now);
@@ -22,7 +22,7 @@ export function computeDelta(p) {
 
   let lastInstanceMillis = simulationInstances.get(instanceId);
   let dt = (now - lastInstanceMillis) / 1000; // seconds
-  
+
   // Aggiorna lastMillis per questa istanza
   simulationInstances.set(instanceId, now);
 

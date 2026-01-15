@@ -1,7 +1,14 @@
 // app/components/SimInfoPanel.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faChevronDown, faChevronUp, faEye, faEyeSlash, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGear,
+  faChevronDown,
+  faChevronUp,
+  faEye,
+  faEyeSlash,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function SimInfoPanel({ data, cooldown = 100 }) {
   const [displayData, setDisplayData] = useState(data || {});
@@ -52,17 +59,21 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
           onClick={() => setIsPanelVisible((v) => !v)}
           title={isPanelVisible ? "Hide panel" : "Show panel"}
         >
-          <FontAwesomeIcon icon={isPanelVisible ? faChevronDown : faChevronUp} />
+          <FontAwesomeIcon
+            icon={isPanelVisible ? faChevronDown : faChevronUp}
+          />
         </button>
 
         {/* Button settings */}
-        {isPanelVisible && <button
-          className="sim-info-btn"
-          onClick={() => setSettingsMode((m) => !m)}
-          title="Toggle show/hide mode"
-        >
-          <FontAwesomeIcon icon={settingsMode ? faCheck : faGear} />
-        </button>}
+        {isPanelVisible && (
+          <button
+            className="sim-info-btn"
+            onClick={() => setSettingsMode((m) => !m)}
+            title="Toggle show/hide mode"
+          >
+            <FontAwesomeIcon icon={settingsMode ? faCheck : faGear} />
+          </button>
+        )}
       </div>
 
       {isPanelVisible && (

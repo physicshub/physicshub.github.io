@@ -103,7 +103,6 @@ export default [
     },
   },
 
-
   {
     id: 3,
     name: "Blog Test",
@@ -111,7 +110,7 @@ export default [
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
   {
     id: 4,
@@ -120,7 +119,7 @@ export default [
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
   {
     id: 5,
@@ -129,9 +128,9 @@ export default [
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
-    {
+  {
     id: 3,
     name: "Blog Test",
     desc: "This is a blog example.",
@@ -139,7 +138,7 @@ export default [
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
-    theory: {}
+    theory: {},
   },
   {
     id: 4,
@@ -149,7 +148,7 @@ export default [
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
-    theory: {}
+    theory: {},
   },
   {
     id: 5,
@@ -159,16 +158,16 @@ export default [
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     isPinned: true,
 
-    theory: {}
+    theory: {},
   },
-    {
+  {
     id: 3,
     name: "Blog Test",
     desc: "This is a blog example.",
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
   {
     id: 4,
@@ -177,7 +176,7 @@ export default [
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
   {
     id: 5,
@@ -186,6 +185,6 @@ export default [
     slug: "this-is-a-blog-example",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
 
-    theory: {}
+    theory: {},
   },
 ];

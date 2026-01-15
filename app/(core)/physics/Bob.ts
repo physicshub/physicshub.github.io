@@ -13,9 +13,9 @@ export default class Bob {
   vel: p5.Vector;
   acceleration: p5.Vector;
 
-  mass: number;        // kg
-  damping: number;     // fattore di smorzamento
-  size: number;        // diametro in px
+  mass: number; // kg
+  damping: number; // fattore di smorzamento
+  size: number; // diametro in px
   color: string;
 
   dragOffset: p5.Vector;

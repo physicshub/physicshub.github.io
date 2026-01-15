@@ -4,8 +4,8 @@
   --aspect-ratio: 2 / 2.5;
 }
 
-*{
-    margin: 0;
+* {
+  margin: 0;
 }
 
 body {
@@ -59,13 +59,13 @@ h3 {
   gap: 6px;
   margin-top: 4px;
 }
-.item{
+.item {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
 }
-.item > div{
+.item > div {
   border-radius: 5px;
   padding: 4px;
   text-align: center;
@@ -79,9 +79,9 @@ h3 {
 .commits {
   background-color: #00b8b8;
 }
-.removed{
+.removed {
   background-color: #b81900;
 }
-.added{
+.added {
   background-color: #03b800;
 }

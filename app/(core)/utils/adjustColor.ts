@@ -12,7 +12,10 @@ const hexToRgb = (hex: string): [number, number, number] | null => {
   const cleanHex = hex.replace(/^#/, "");
   const fullHex =
     cleanHex.length === 3
-      ? cleanHex.split("").map(ch => ch + ch).join("")
+      ? cleanHex
+          .split("")
+          .map((ch) => ch + ch)
+          .join("")
       : cleanHex;
 
   if (!/^[0-9a-fA-F]{6}$/.test(fullHex)) return null;

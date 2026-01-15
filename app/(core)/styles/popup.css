@@ -28,17 +28,16 @@
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
   border-radius: var(--border-radius);
   padding: 1.5rem;
-  
+
   width: 30rem;
   max-width: 70%;
   max-height: 80vh; /* non oltre l’altezza viewport */
   overflow-y: auto; /* scroll se i contenuti superano l’altezza */
-  
+
   transform: scale(0.8);
   opacity: 0;
   transition: all 0.3s ease;
 }
-
 
 .popup-container > h2 {
   margin-top: 0;

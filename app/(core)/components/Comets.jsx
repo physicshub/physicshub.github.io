@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useRef } from "react";
 
 export default function Comets({
@@ -38,7 +38,10 @@ export default function Comets({
     function hexToRgb(hex) {
       let m = hex.replace("#", "");
       if (m.length === 3) {
-        m = m.split("").map((c) => c + c).join("");
+        m = m
+          .split("")
+          .map((c) => c + c)
+          .join("");
       }
       const i = parseInt(m, 16);
       return {
@@ -98,10 +101,7 @@ export default function Comets({
       state.spawnTimer -= dt * 1000;
       if (state.comets.length < count && state.spawnTimer <= 0) {
         spawnComet();
-        state.spawnTimer = rand(
-          state.spawnIntervalMin,
-          state.spawnIntervalMax
-        );
+        state.spawnTimer = rand(state.spawnIntervalMin, state.spawnIntervalMax);
       }
 
       const now = performance.now();
@@ -131,12 +131,7 @@ export default function Comets({
         const tailX = c.x - dx;
         const tailY = c.y - dy;
 
-        const grad = ctx.createLinearGradient(
-          headX,
-          headY,
-          tailX,
-          tailY
-        );
+        const grad = ctx.createLinearGradient(headX, headY, tailX, tailY);
         grad.addColorStop(0, rgba(0.9));
         grad.addColorStop(0.4, rgba(0.5));
         grad.addColorStop(1, rgba(0));

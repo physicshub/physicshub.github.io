@@ -4,8 +4,7 @@ import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
 
-const getChapterTagNames = (tags) =>
-  tags.map((tag) => tag.name.toLowerCase());
+const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,9 +33,10 @@ export default function Simulations() {
       const progress = Math.min(timeElapsed / duration, 1);
 
       // Ease-in-out cubic for smooth natural feeling
-      const ease = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      const ease =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       window.scrollTo(0, start + distance * ease);
 
@@ -72,10 +72,14 @@ export default function Simulations() {
       <section className="simulations-hero">
         <h1>Interactive Physics Simulations</h1>
         <p>
-          Explore core physics concepts through real-time, interactive experiments
+          Explore core physics concepts through real-time, interactive
+          experiments
         </p>
 
-        <button className="ph-btn ph-btn--primary main-btn" onClick={scrollToContent}>
+        <button
+          className="ph-btn ph-btn--primary main-btn"
+          onClick={scrollToContent}
+        >
           Let's begin
         </button>
       </section>

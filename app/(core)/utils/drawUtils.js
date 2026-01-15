@@ -5,9 +5,10 @@
 export const drawBackground = (p, bg, trailEnabled, trailAlpha = 60) => {
   p.colorMode(p.RGB, 255);
 
-  const bgColor = Array.isArray(bg) && bg.length >= 3
-    ? p.color(bg[0], bg[1], bg[2])
-    : p.color(0, 0, 0);
+  const bgColor =
+    Array.isArray(bg) && bg.length >= 3
+      ? p.color(bg[0], bg[1], bg[2])
+      : p.color(0, 0, 0);
 
   if (!trailEnabled) {
     p.background(bgColor);
@@ -63,7 +64,6 @@ export const drawGlow = (p, isHover, color, drawFn, blur = 20, layer = p) => {
   }
 };
 
-
 // --- Force visualization constants ---
 const FORCE_PIXEL_SCALE = 10; // pixels per Newton (tune to your scene)
 // Minimum and maximum on-screen arrow length (in pixels) to keep vectors readable
@@ -79,7 +79,13 @@ const MAX_ARROW_PIXELS = 120;
  * @param {{x: number, y: number}} forceVec - force vector
  * @param {string} color - arrow color
  */
-export const drawForceVector = (p, originX, originY, forceVec, color = "red") => {
+export const drawForceVector = (
+  p,
+  originX,
+  originY,
+  forceVec,
+  color = "red"
+) => {
   const fx = forceVec.x;
   const fy = forceVec.y;
 
@@ -95,8 +101,8 @@ export const drawForceVector = (p, originX, originY, forceVec, color = "red") =>
   const uy = fy / mag;
 
   // Arrowhead geometry (in pixels)
-  const headLen = 12;   // length of the triangle head along the direction
-  const headWidth = 6;  // half-width of the triangle head
+  const headLen = 12; // length of the triangle head along the direction
+  const headWidth = 6; // half-width of the triangle head
 
   // End point (tip of the arrow)
   const tipX = originX + ux * pxLen;
@@ -122,7 +128,6 @@ export const drawForceVector = (p, originX, originY, forceVec, color = "red") =>
   p.triangle(0, 0, -headLen, headWidth, -headLen, -headWidth);
   p.pop();
 };
-
 
 /**
  * Generic force collector.

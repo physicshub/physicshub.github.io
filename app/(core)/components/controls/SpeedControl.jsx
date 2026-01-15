@@ -12,7 +12,11 @@ export default function SpeedControl() {
   };
 
   return (
-    <button onClick={handleClick} className="btn-glow" title="Change simulation speed">
+    <button
+      onClick={handleClick}
+      className="btn-glow"
+      title="Change simulation speed"
+    >
       {speeds[index]}x
     </button>
   );

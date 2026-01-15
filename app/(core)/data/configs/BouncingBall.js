@@ -12,10 +12,35 @@ export const INITIAL_INPUTS = {
 };
 
 export const INPUT_FIELDS = [
-  { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass...", min: 0 },
-  { name: "size", label: "d - Ball diameter (m):", type: "number", placeholder: "Insert ball size...", min: 0, step: 0.1 },
-  { name: "gravity", label: "g - Gravity (m/s²):", type: "select", options: gravityTypes },
-  { name: "restitution", label: "ζ - Damping:", type: "number", min: 0, max: 2, step: 0.1 },
+  {
+    name: "mass",
+    label: "m - Mass (kg):",
+    type: "number",
+    placeholder: "Insert mass...",
+    min: 0,
+  },
+  {
+    name: "size",
+    label: "d - Ball diameter (m):",
+    type: "number",
+    placeholder: "Insert ball size...",
+    min: 0,
+    step: 0.1,
+  },
+  {
+    name: "gravity",
+    label: "g - Gravity (m/s²):",
+    type: "select",
+    options: gravityTypes,
+  },
+  {
+    name: "restitution",
+    label: "ζ - Damping:",
+    type: "number",
+    min: 0,
+    max: 2,
+    step: 0.1,
+  },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "ballColor", label: "Ball Color:", type: "color" },
 ];
@@ -51,7 +76,7 @@ export const FORCES = [
   },
 ];
 
-// Mapper specific for bouncing ball 
+// Mapper specific for bouncing ball
 // Computes velocity, acceleration, position, per-bounce maxHeight and fallTime
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel, mass } = state;

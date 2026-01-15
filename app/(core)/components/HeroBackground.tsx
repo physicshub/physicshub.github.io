@@ -60,8 +60,7 @@ export default function HeroBackground() {
 
     // init particles
     const count = Math.floor(
-      (canvas.offsetWidth * canvas.offsetHeight) /
-        SIM_CONFIG.particleDensity
+      (canvas.offsetWidth * canvas.offsetHeight) / SIM_CONFIG.particleDensity
     );
     originalCount.current = count;
     const maxR = Math.min(canvas.offsetWidth, canvas.offsetHeight) / 2;
@@ -70,20 +69,16 @@ export default function HeroBackground() {
       a: Math.random() * Math.PI * 2,
       s:
         SIM_CONFIG.speedRange[0] +
-        Math.random() *
-          (SIM_CONFIG.speedRange[1] - SIM_CONFIG.speedRange[0]),
+        Math.random() * (SIM_CONFIG.speedRange[1] - SIM_CONFIG.speedRange[0]),
       wobble:
         SIM_CONFIG.wobbleRange[0] +
-        Math.random() *
-          (SIM_CONFIG.wobbleRange[1] - SIM_CONFIG.wobbleRange[0]),
+        Math.random() * (SIM_CONFIG.wobbleRange[1] - SIM_CONFIG.wobbleRange[0]),
       size:
         SIM_CONFIG.sizeRange[0] +
-        Math.random() *
-          (SIM_CONFIG.sizeRange[1] - SIM_CONFIG.sizeRange[0]),
+        Math.random() * (SIM_CONFIG.sizeRange[1] - SIM_CONFIG.sizeRange[0]),
       depth:
         SIM_CONFIG.depthRange[0] +
-        Math.random() *
-          (SIM_CONFIG.depthRange[1] - SIM_CONFIG.depthRange[0]),
+        Math.random() * (SIM_CONFIG.depthRange[1] - SIM_CONFIG.depthRange[0]),
     }));
 
     // mouse
@@ -129,7 +124,7 @@ export default function HeroBackground() {
 
       // sfondo + trail - theme aware
       const theme = document.body.dataset.theme;
-      if (theme === 'light') {
+      if (theme === "light") {
         ctx.fillStyle = `rgba(255, 255, 255, ${SIM_CONFIG.trailOpacity})`;
         ctx.fillRect(0, 0, w, h);
       } else {
@@ -139,15 +134,11 @@ export default function HeroBackground() {
       }
 
       // easing mouse
-      mouse.current.x +=
-        (mouse.current.tx - mouse.current.x) * 0.05;
-      mouse.current.y +=
-        (mouse.current.ty - mouse.current.y) * 0.05;
+      mouse.current.x += (mouse.current.tx - mouse.current.x) * 0.05;
+      mouse.current.y += (mouse.current.ty - mouse.current.y) * 0.05;
 
       // quante particelle disegnare
-      const drawCount = Math.floor(
-        originalCount.current * (1 - mf)
-      );
+      const drawCount = Math.floor(originalCount.current * (1 - mf));
 
       for (let i = 0; i < drawCount; i++) {
         const p = particlesRef.current[i];

@@ -9,7 +9,7 @@
   --ph-gap: 1rem;
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --ph-surface: #ffffff;
   --ph-fg: #1a1a1a;
   --ph-fg-muted: rgba(26, 26, 26, 0.65);
@@ -17,7 +17,7 @@
   --ph-ring: color-mix(in oklab, var(--accent-color), black 15%);
 }
 
-.ph-landing-page{
+.ph-landing-page {
   display: flex;
   flex-direction: column;
   gap: 4rem;
@@ -57,14 +57,14 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background-color: rgb(11,15,25, 0.6);
+  background-color: rgb(11, 15, 25, 0.6);
   opacity: 0.95;
   z-index: -10;
   border: none;
   outline: none;
 }
 
-[data-theme='light'] .ph-background {
+[data-theme="light"] .ph-background {
   background-color: rgba(255, 255, 255, 0.85);
 }
 
@@ -72,9 +72,13 @@
   position: absolute;
   inset: -13.5rem -12rem auto -12rem;
   height: 90rem;
-  background: radial-gradient(80% 60% at 50% 40%, color-mix(in oklab, var(--accent-color), transparent 45%), transparent 70%);
+  background: radial-gradient(
+    80% 60% at 50% 40%,
+    color-mix(in oklab, var(--accent-color), transparent 45%),
+    transparent 70%
+  );
   filter: blur(2rem);
-  opacity: .95;
+  opacity: 0.95;
   pointer-events: none;
 }
 
@@ -85,7 +89,6 @@
   height: 100%;
   z-index: -1;
 }
-
 
 .ph-hero__container {
   position: relative;
@@ -144,21 +147,34 @@
   text-decoration: none;
   font-weight: 600;
   border: 1px solid transparent;
-  transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, text-shadow 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease,
+    text-shadow 0.4s ease;
   will-change: transform;
   cursor: pointer;
 }
 
 .ph-btn--primary {
   color: white;
-  background: linear-gradient(180deg, var(--accent-color), color-mix(in oklab, var(--accent-color), black 12%));
-  box-shadow: 0 8px 24px color-mix(in oklab, var(--accent-color), transparent 75%);
+  background: linear-gradient(
+    180deg,
+    var(--accent-color),
+    color-mix(in oklab, var(--accent-color), black 12%)
+  );
+  box-shadow: 0 8px 24px
+    color-mix(in oklab, var(--accent-color), transparent 75%);
 }
 
 .ph-btn--primary:hover {
   transform: scale3d(1.03, 1.03, 1);
-  transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
-  box-shadow: 0 10px 28px color-mix(in oklab, var(--accent-color), transparent 68%);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease;
+  box-shadow: 0 10px 28px
+    color-mix(in oklab, var(--accent-color), transparent 68%);
 }
 
 .ph-btn--ghost {
@@ -168,12 +184,16 @@
 }
 
 .ph-btn--ghost:hover {
-  transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, text-shadow 0.4s ease;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease,
+    text-shadow 0.4s ease;
   background: color-mix(in oklab, var(--accent-color), transparent 86%);
   transform: translateY(-1px);
 }
 
-.main-btn{
+.main-btn {
   font-size: 1.1rem;
   --pad-x: 1.25rem;
   --pad-y: 0.85rem;
@@ -219,9 +239,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ph-hero__canvas { display: none; }
+  .ph-hero__canvas {
+    display: none;
+  }
 }
 
-.ph-hero__info{
+.ph-hero__info {
   color: var(--ph-fg-muted);
 }

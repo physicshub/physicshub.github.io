@@ -16,7 +16,6 @@ export default function SimulationLayout({
   children, // This will now ONLY be the canvas (P5Wrapper)
   dynamicInputs, // A new prop for the simulation-specific inputs
 }) {
-
   // Reset time on simulation change
   useEffect(() => {
     resetTime();
@@ -41,7 +40,7 @@ export default function SimulationLayout({
 
       {/* 3. Render the Dynamic Inputs */}
       {dynamicInputs}
-      
+
       <TheoryRenderer theory={theory} />
     </>
   );

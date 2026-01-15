@@ -16,7 +16,7 @@ export const INPUT_FIELDS = [
     name: "strokeWeight",
     label: "Vectors lines weight:",
     min: 1,
-    step: 1
+    step: 1,
   },
   {
     type: "select",
@@ -24,8 +24,8 @@ export const INPUT_FIELDS = [
     label: "Physics (Planck):",
     options: [
       { value: "false", label: "Off" },
-      { value: "true", label: "On" }
-    ]
+      { value: "true", label: "On" },
+    ],
   },
   {
     type: "select",
@@ -38,7 +38,7 @@ export const INPUT_FIELDS = [
       { value: "normalize", label: "Normalize (v̂)" },
       { value: "dot", label: "Dot Product (A·B)" },
       { value: "cross", label: "Cross Product 2D (A×B z)" },
-    ]
+    ],
   },
   {
     type: "select",
@@ -48,7 +48,8 @@ export const INPUT_FIELDS = [
       { value: "triangle", label: "Triangle" },
       { value: "parallelogram", label: "Parallelogram" },
     ],
-    showCondition: (inputs) => inputs.operation === "+" || inputs.operation === "-"
+    showCondition: (inputs) =>
+      inputs.operation === "+" || inputs.operation === "-",
   },
   {
     type: "number",
@@ -56,7 +57,7 @@ export const INPUT_FIELDS = [
     label: "m - Mass (kg)",
     min: 0.1,
     step: 0.1,
-    disabledCondition: (inputs) => !inputs.physicsEnabled
+    disabledCondition: (inputs) => !inputs.physicsEnabled,
   },
   {
     type: "number",
@@ -64,7 +65,7 @@ export const INPUT_FIELDS = [
     label: "Pixels per Newton",
     min: 1,
     step: 1,
-    disabledCondition: (inputs) => !inputs.physicsEnabled
+    disabledCondition: (inputs) => !inputs.physicsEnabled,
   },
   {
     type: "number",
@@ -73,11 +74,11 @@ export const INPUT_FIELDS = [
     min: -10,
     max: 10,
     step: 0.1,
-    disabledCondition: (inputs) => inputs.operation !== "x"
+    disabledCondition: (inputs) => inputs.operation !== "x",
   },
   {
     type: "color",
     name: "strokeColor",
-    label: "Vectors color:"
-  }
+    label: "Vectors color:",
+  },
 ];

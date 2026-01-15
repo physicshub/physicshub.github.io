@@ -51,7 +51,8 @@ export default function useSimulationState<T extends Record<string, any>>(
 
   // 🔎 Leggi da localStorage
   const loadFromStorage = useCallback((): T | null => {
-    if (typeof window === "undefined" || !("localStorage" in window)) return null;
+    if (typeof window === "undefined" || !("localStorage" in window))
+      return null;
 
     try {
       const saved = window.localStorage.getItem(storageKey);
@@ -83,9 +84,15 @@ export default function useSimulationState<T extends Record<string, any>>(
     if (typeof window === "undefined" || !("localStorage" in window)) return;
 
     try {
-      window.localStorage.setItem(storageKey, JSON.stringify(inputsRef.current));
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify(inputsRef.current)
+      );
     } catch (error) {
-      console.warn("[useSimulationState] Errore salvataggio localStorage:", error);
+      console.warn(
+        "[useSimulationState] Errore salvataggio localStorage:",
+        error
+      );
     }
   }, [storageKey]);
 

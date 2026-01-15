@@ -19,7 +19,7 @@ export default function useSimInfo<
   TState = any,
   TContext = any,
   TRefs extends Record<string, unknown> = Record<string, unknown>,
-  TData extends Record<string, unknown> = Record<string, unknown>
+  TData extends Record<string, unknown> = Record<string, unknown>,
 >(options: UseSimInfoOptions<TRefs> = {}) {
   const {
     updateIntervalMs = 150, // default 150ms
@@ -27,7 +27,10 @@ export default function useSimInfo<
   } = options;
 
   // Stabilizza i refs per evitare re-render inutili
-  const stableCustomRefs = useMemo(() => customRefs || ({} as TRefs), [customRefs]);
+  const stableCustomRefs = useMemo(
+    () => customRefs || ({} as TRefs),
+    [customRefs]
+  );
 
   const [simData, setSimData] = useState<TData | Record<string, unknown>>({});
   const lastInfoUpdateMs = useRef(0);

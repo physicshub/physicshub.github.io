@@ -4,7 +4,9 @@ import PropTypes from "prop-types";
 function ColorInput({ label, name, value, onChange }) {
   return (
     <div className="color-input-container">
-      <label htmlFor={name} className="color-input-label">{label}</label>
+      <label htmlFor={name} className="color-input-label">
+        {label}
+      </label>
       <input
         id={name}
         type="color"
@@ -21,11 +23,11 @@ ColorInput.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 };
 
 ColorInput.defaultProps = {
-  label: ""
+  label: "",
 };
 
 export default ColorInput;

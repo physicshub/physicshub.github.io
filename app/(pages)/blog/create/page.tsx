@@ -1,456 +1,625 @@
 // app/(pages)/blog/create/page.tsx
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faCode, faEdit, faSave, faArrowLeft, faTrash,
-    faParagraph, faHeading, faSquareRootAlt, faListOl,
-    faInfoCircle, faQuoteRight, faTable, faImage, faChevronCircleDown,
-    faEye
+  faCode,
+  faEdit,
+  faSave,
+  faArrowLeft,
+  faTrash,
+  faParagraph,
+  faHeading,
+  faSquareRootAlt,
+  faListOl,
+  faInfoCircle,
+  faQuoteRight,
+  faTable,
+  faImage,
+  faChevronCircleDown,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
-import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 
 const DynamicJsonEditor = dynamic(
-    () => import("../../../(core)/components/JsonEditor"),
-    { ssr: false }
+  () => import("../../../(core)/components/JsonEditor"),
+  { ssr: false }
 );
 
 const initialContent = JSON.stringify(initialContentData, null, 2);
 
 // Block Templates
 const NEW_BLOCK_TEMPLATES = {
-    paragraph: { type: "paragraph", text: "New paragraph content. Use **double asterisks** for bold." },
-    subheading: { type: "subheading", text: "New Subheading Title" },
-    subtitle: { type: "subtitle", text: "New Subtitle Level 1", level: 1 },
-    sectionTitle: { type: "sectionTitle", text: "New Section Title" },
-    code: { type: "code", code: "console.log('Hello World!');", language: "javascript" },
-    formula: { type: "formula", latex: "\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}", inline: false },
-    note: { type: "note", text: "New Note or important information." },
-    list: { type: "list", items: ["New Item 1", "New Item 2", "New Item 3"], ordered: false },
-    callout: { type: "callout", calloutType: "info", title: "Information", text: "This is a new callout block." },
-    example: { type: "example", title: "Example Title", content: "Example content here." },
-    table: {
-        type: "table",
-        columns: ["Header 1", "Header 2"],
-        data: [
-            { "Header 1": "Row 1 Col 1", "Header 2": "Row 1 Col 2" },
-            { "Header 1": "Row 2 Col 1", "Header 2": "Row 2 Col 2" }
-        ]
-    },
-    image: { type: "image", src: "https://via.placeholder.com/200", alt: "Placeholder Image", caption: "New Image Caption" },
-    toggle: { type: "toggle", title: "Toggle Details", content: "Hidden content visible on click." }
+  paragraph: {
+    type: "paragraph",
+    text: "New paragraph content. Use **double asterisks** for bold.",
+  },
+  subheading: { type: "subheading", text: "New Subheading Title" },
+  subtitle: { type: "subtitle", text: "New Subtitle Level 1", level: 1 },
+  sectionTitle: { type: "sectionTitle", text: "New Section Title" },
+  code: {
+    type: "code",
+    code: "console.log('Hello World!');",
+    language: "javascript",
+  },
+  formula: {
+    type: "formula",
+    latex: "\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}",
+    inline: false,
+  },
+  note: { type: "note", text: "New Note or important information." },
+  list: {
+    type: "list",
+    items: ["New Item 1", "New Item 2", "New Item 3"],
+    ordered: false,
+  },
+  callout: {
+    type: "callout",
+    calloutType: "info",
+    title: "Information",
+    text: "This is a new callout block.",
+  },
+  example: {
+    type: "example",
+    title: "Example Title",
+    content: "Example content here.",
+  },
+  table: {
+    type: "table",
+    columns: ["Header 1", "Header 2"],
+    data: [
+      { "Header 1": "Row 1 Col 1", "Header 2": "Row 1 Col 2" },
+      { "Header 1": "Row 2 Col 1", "Header 2": "Row 2 Col 2" },
+    ],
+  },
+  image: {
+    type: "image",
+    src: "https://via.placeholder.com/200",
+    alt: "Placeholder Image",
+    caption: "New Image Caption",
+  },
+  toggle: {
+    type: "toggle",
+    title: "Toggle Details",
+    content: "Hidden content visible on click.",
+  },
 };
 
 // --- COMPONENTE 1: VISUAL EDITOR (Modifica) ---
 const VisualEditorRenderer: React.FC<{
-    jsonContent: string;
-    setJsonContent: (content: string) => void;
+  jsonContent: string;
+  setJsonContent: (content: string) => void;
 }> = ({ jsonContent, setJsonContent }) => {
+  const handleContentUpdate = useCallback(
+    (
+      sectionIndex: number,
+      blockIndex: number,
+      field: string,
+      newValue: string
+    ) => {
+      try {
+        const newData = JSON.parse(jsonContent);
 
-    const handleContentUpdate = useCallback((sectionIndex: number, blockIndex: number, field: string, newValue: string) => {
-        try {
-            const newData = JSON.parse(jsonContent);
+        if (sectionIndex === -1 && field === "title") {
+          newData.title = newValue;
+        } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
+          const block = newData.sections[sectionIndex].blocks[blockIndex];
 
-            if (sectionIndex === -1 && field === 'title') {
-                newData.title = newValue;
-            } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
-                const block = newData.sections[sectionIndex].blocks[blockIndex];
-
-                if (field === 'tableData') {
-                    const tableData = JSON.parse(newValue);
-                    block.columns = tableData.columns;
-                    block.data = tableData.data;
-                } else {
-                    block[field] = newValue;
-                }
-            }
-
-            setJsonContent(JSON.stringify(newData, null, 2));
-        } catch (e) {
-            console.error("Error updating JSON:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    const handleDeleteBlock = useCallback((sectionIndex: number, blockIndex: number) => {
-        if (!window.confirm("Are you sure you want to delete this block?")) return;
-
-        try {
-            const newData = JSON.parse(jsonContent);
-
-            if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
-                newData.sections[sectionIndex].blocks.splice(blockIndex, 1);
-                setJsonContent(JSON.stringify(newData, null, 2));
-            }
-        } catch (e) {
-            console.error("Error deleting block:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    const handleDuplicateBlock = useCallback((sectionIndex: number, blockIndex: number) => {
-        try {
-            const newData = JSON.parse(jsonContent);
-
-            if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
-                const blockToDuplicate = newData.sections[sectionIndex].blocks[blockIndex];
-                const duplicatedBlock = JSON.parse(JSON.stringify(blockToDuplicate));
-                newData.sections[sectionIndex].blocks.splice(blockIndex + 1, 0, duplicatedBlock);
-                setJsonContent(JSON.stringify(newData, null, 2));
-            }
-        } catch (e) {
-            console.error("Error duplicating block:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    const handleDragEnd = useCallback((event: DragEndEvent) => {
-        const { active, over } = event;
-
-        if (!over || active.id === over.id) return;
-
-        try {
-            const newData = JSON.parse(jsonContent);
-
-            const activeMatch = String(active.id).match(/^s(\d+)-b(\d+)$/);
-            const overMatch = String(over.id).match(/^s(\d+)-b(\d+)$/);
-
-            if (!activeMatch || !overMatch) return;
-
-            const activeSec = parseInt(activeMatch[1]);
-            const activeBlock = parseInt(activeMatch[2]);
-            const overSec = parseInt(overMatch[1]);
-            const overBlock = parseInt(overMatch[2]);
-
-            if (activeSec === overSec) {
-                const blocks = newData.sections[activeSec].blocks;
-                const reorderedBlocks = arrayMove(blocks, activeBlock, overBlock);
-                newData.sections[activeSec].blocks = reorderedBlocks;
-                setJsonContent(JSON.stringify(newData, null, 2));
-            }
-        } catch (e) {
-            console.error("Error in drag operation:", e);
-        }
-    }, [jsonContent, setJsonContent]);
-
-    try {
-        const data = JSON.parse(jsonContent);
-
-        if (!data?.sections || !Array.isArray(data.sections)) {
-            return <div className="preview-error">Error: JSON structure must contain 'sections'.</div>;
+          if (field === "tableData") {
+            const tableData = JSON.parse(newValue);
+            block.columns = tableData.columns;
+            block.data = tableData.data;
+          } else {
+            block[field] = newValue;
+          }
         }
 
-        const dndItems = data.sections.flatMap((sec: any, i: number) =>
-            sec.blocks.map((_: any, j: number) => `s${i}-b${j}`)
-        );
+        setJsonContent(JSON.stringify(newData, null, 2));
+      } catch (e) {
+        console.error("Error updating JSON:", e);
+      }
+    },
+    [jsonContent, setJsonContent]
+  );
 
-        return (
-            <div className="preview-output edit-mode">
-                <div className="blog-main-title-editor">
-                    <h1
-                        contentEditable
-                        suppressContentEditableWarning
-                        onBlur={(e) => handleContentUpdate(-1, -1, 'title', e.currentTarget.innerText)}
-                        className="main-blog-title editable-block"
-                    >
-                        {data.title || "Untitled Blog"}
-                    </h1>
-                </div>
+  const handleDeleteBlock = useCallback(
+    (sectionIndex: number, blockIndex: number) => {
+      if (!window.confirm("Are you sure you want to delete this block?"))
+        return;
 
-                <DndContext
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                >
-                    <SortableContext
-                        items={dndItems}
-                        strategy={verticalListSortingStrategy}
-                    >
-                        <TheoryRenderer
-                            theory={data}
-                            isEditing={true} // Modalità Edit
-                            onContentUpdate={handleContentUpdate}
-                            onDeleteBlock={handleDeleteBlock}
-                            onDuplicateBlock={handleDuplicateBlock}
-                            dndItems={dndItems}
-                        />
-                    </SortableContext>
-                </DndContext>
-            </div>
-        );
-    } catch (e) {
-        return <div className="preview-error">Error parsing JSON: {(e as Error).message}</div>;
+      try {
+        const newData = JSON.parse(jsonContent);
+
+        if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
+          newData.sections[sectionIndex].blocks.splice(blockIndex, 1);
+          setJsonContent(JSON.stringify(newData, null, 2));
+        }
+      } catch (e) {
+        console.error("Error deleting block:", e);
+      }
+    },
+    [jsonContent, setJsonContent]
+  );
+
+  const handleDuplicateBlock = useCallback(
+    (sectionIndex: number, blockIndex: number) => {
+      try {
+        const newData = JSON.parse(jsonContent);
+
+        if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
+          const blockToDuplicate =
+            newData.sections[sectionIndex].blocks[blockIndex];
+          const duplicatedBlock = JSON.parse(JSON.stringify(blockToDuplicate));
+          newData.sections[sectionIndex].blocks.splice(
+            blockIndex + 1,
+            0,
+            duplicatedBlock
+          );
+          setJsonContent(JSON.stringify(newData, null, 2));
+        }
+      } catch (e) {
+        console.error("Error duplicating block:", e);
+      }
+    },
+    [jsonContent, setJsonContent]
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      if (!over || active.id === over.id) return;
+
+      try {
+        const newData = JSON.parse(jsonContent);
+
+        const activeMatch = String(active.id).match(/^s(\d+)-b(\d+)$/);
+        const overMatch = String(over.id).match(/^s(\d+)-b(\d+)$/);
+
+        if (!activeMatch || !overMatch) return;
+
+        const activeSec = parseInt(activeMatch[1]);
+        const activeBlock = parseInt(activeMatch[2]);
+        const overSec = parseInt(overMatch[1]);
+        const overBlock = parseInt(overMatch[2]);
+
+        if (activeSec === overSec) {
+          const blocks = newData.sections[activeSec].blocks;
+          const reorderedBlocks = arrayMove(blocks, activeBlock, overBlock);
+          newData.sections[activeSec].blocks = reorderedBlocks;
+          setJsonContent(JSON.stringify(newData, null, 2));
+        }
+      } catch (e) {
+        console.error("Error in drag operation:", e);
+      }
+    },
+    [jsonContent, setJsonContent]
+  );
+
+  try {
+    const data = JSON.parse(jsonContent);
+
+    if (!data?.sections || !Array.isArray(data.sections)) {
+      return (
+        <div className="preview-error">
+          Error: JSON structure must contain 'sections'.
+        </div>
+      );
     }
+
+    const dndItems = data.sections.flatMap((sec: any, i: number) =>
+      sec.blocks.map((_: any, j: number) => `s${i}-b${j}`)
+    );
+
+    return (
+      <div className="preview-output edit-mode">
+        <div className="blog-main-title-editor">
+          <h1
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={(e) =>
+              handleContentUpdate(-1, -1, "title", e.currentTarget.innerText)
+            }
+            className="main-blog-title editable-block"
+          >
+            {data.title || "Untitled Blog"}
+          </h1>
+        </div>
+
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={dndItems}
+            strategy={verticalListSortingStrategy}
+          >
+            <TheoryRenderer
+              theory={data}
+              isEditing={true} // Modalità Edit
+              onContentUpdate={handleContentUpdate}
+              onDeleteBlock={handleDeleteBlock}
+              onDuplicateBlock={handleDuplicateBlock}
+              dndItems={dndItems}
+            />
+          </SortableContext>
+        </DndContext>
+      </div>
+    );
+  } catch (e) {
+    return (
+      <div className="preview-error">
+        Error parsing JSON: {(e as Error).message}
+      </div>
+    );
+  }
 };
 
 // --- COMPONENTE 2: LIVE PREVIEW (Sola Lettura) ---
 const LivePreviewRenderer: React.FC<{
-    jsonContent: string;
+  jsonContent: string;
 }> = ({ jsonContent }) => {
-    try {
-        const data = JSON.parse(jsonContent);
+  try {
+    const data = JSON.parse(jsonContent);
 
-        if (!data?.sections || !Array.isArray(data.sections)) {
-            return <div className="preview-error">Error: JSON structure must contain 'sections'.</div>;
-        }
-
-        return (
-            <div className="preview-output read-mode">
-                <h1 className="main-blog-title" style={{ marginBottom: '2rem' }}>
-                    {data.title || "Untitled Blog"}
-                </h1>
-                
-                <TheoryRenderer
-                    theory={data}
-                    isEditing={false} // Modalità Read-Only
-                    onContentUpdate={() => {}}
-                />
-            </div>
-        );
-    } catch (e) {
-        return <div className="preview-error">Error parsing JSON: {(e as Error).message}</div>;
+    if (!data?.sections || !Array.isArray(data.sections)) {
+      return (
+        <div className="preview-error">
+          Error: JSON structure must contain 'sections'.
+        </div>
+      );
     }
+
+    return (
+      <div className="preview-output read-mode">
+        <h1 className="main-blog-title" style={{ marginBottom: "2rem" }}>
+          {data.title || "Untitled Blog"}
+        </h1>
+
+        <TheoryRenderer
+          theory={data}
+          isEditing={false} // Modalità Read-Only
+          onContentUpdate={() => {}}
+        />
+      </div>
+    );
+  } catch (e) {
+    return (
+      <div className="preview-error">
+        Error parsing JSON: {(e as Error).message}
+      </div>
+    );
+  }
 };
 
 // Utility function
 const isJsonInvalid = (str: string): boolean => {
-    try {
-        JSON.parse(str);
-        return false;
-    } catch (e) {
-        return true;
-    }
+  try {
+    JSON.parse(str);
+    return false;
+  } catch (e) {
+    return true;
+  }
 };
 
 // Main Component
 export default function CreateBlogPage() {
-    const router = useRouter();
-    const [title, setTitle] = useState("New Blog Title");
-    const [jsonContent, setJsonContent] = useState(initialContent);
-    const [viewMode, setViewMode] = useState<"Editor" | "JSON" | "Preview">("Editor");
+  const router = useRouter();
+  const [title, setTitle] = useState("New Blog Title");
+  const [jsonContent, setJsonContent] = useState(initialContent);
+  const [viewMode, setViewMode] = useState<"Editor" | "JSON" | "Preview">(
+    "Editor"
+  );
 
-    const jsonTitle = useMemo(() => {
-        try {
-            return JSON.parse(jsonContent).title || "New Blog Title";
-        } catch (e) {
-            return "New Blog Title";
+  const jsonTitle = useMemo(() => {
+    try {
+      return JSON.parse(jsonContent).title || "New Blog Title";
+    } catch (e) {
+      return "New Blog Title";
+    }
+  }, [jsonContent]);
+
+  useEffect(() => {
+    setTitle(jsonTitle);
+  }, [jsonTitle]);
+
+  const handleAddBlock = useCallback(
+    (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
+      try {
+        const newData = JSON.parse(jsonContent);
+        const newBlock = NEW_BLOCK_TEMPLATES[blockType];
+
+        if (newData.sections.length > 0) {
+          newData.sections[0].blocks.unshift(newBlock);
+          setJsonContent(JSON.stringify(newData, null, 2));
+        } else {
+          alert("Please ensure at least one section exists to add a block.");
         }
-    }, [jsonContent]);
+      } catch (e) {
+        console.error("Error adding block:", e);
+      }
+    },
+    [jsonContent]
+  );
 
-    useEffect(() => {
-        setTitle(jsonTitle);
-    }, [jsonTitle]);
+  const handleClearAllBlocks = useCallback(() => {
+    if (
+      !window.confirm(
+        "Delete ALL blocks and section titles? This cannot be undone!"
+      )
+    )
+      return;
 
-    const handleAddBlock = useCallback((blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
-        try {
-            const newData = JSON.parse(jsonContent);
-            const newBlock = NEW_BLOCK_TEMPLATES[blockType];
+    try {
+      const newData = JSON.parse(jsonContent);
+      newData.sections = newData.sections.map((section: any) => ({
+        blocks: [],
+      }));
+      setJsonContent(JSON.stringify(newData, null, 2));
+    } catch (e) {
+      console.error("Error clearing blocks:", e);
+    }
+  }, [jsonContent, setJsonContent]);
 
-            if (newData.sections.length > 0) {
-                newData.sections[0].blocks.unshift(newBlock);
-                setJsonContent(JSON.stringify(newData, null, 2));
-            } else {
-                alert("Please ensure at least one section exists to add a block.");
-            }
-        } catch (e) {
-            console.error("Error adding block:", e);
-        }
-    }, [jsonContent]);
+  const [isPublishing, setIsPublishing] = useState(false);
 
-    const handleClearAllBlocks = useCallback(() => {
-        if (!window.confirm("Delete ALL blocks and section titles? This cannot be undone!")) return;
+  const handleSave = useCallback(async () => {
+    setIsPublishing(true);
+    try {
+      const response = await fetch("/api/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title,
+          jsonContent: jsonContent,
+        }),
+      });
 
-        try {
-            const newData = JSON.parse(jsonContent);
-            newData.sections = newData.sections.map((section: any) => ({
-                blocks: []
-            }));
-            setJsonContent(JSON.stringify(newData, null, 2));
-        } catch (e) {
-            console.error("Error clearing blocks:", e);
-        }
-    }, [jsonContent, setJsonContent]);
+      const result = await response.json();
 
-    const [isPublishing, setIsPublishing] = useState(false);
+      if (result.success) {
+        alert(
+          "Richiesta inviata con successo! Il blog sarà online dopo la revisione."
+        );
+        router.push("/blog"); // Torna alla lista
+      } else {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error("Errore durante l'invio:", error);
+      alert("Errore durante la pubblicazione. Riprova più tardi.");
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [jsonContent, title, router]);
 
-    const handleSave = useCallback(async () => {
-        setIsPublishing(true);
-        try {
-            const response = await fetch('/api/publish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: title,
-                    jsonContent: jsonContent
-                }),
-            });
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
 
-            const result = await response.json();
+    try {
+      const newData = JSON.parse(jsonContent);
+      newData.title = newTitle;
+      setJsonContent(JSON.stringify(newData, null, 2));
+    } catch (e) {
+      console.error("Failed to update JSON title:", e);
+    }
+  };
 
-            if (result.success) {
-                alert("Richiesta inviata con successo! Il blog sarà online dopo la revisione.");
-                router.push('/blog'); // Torna alla lista
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            console.error("Errore durante l'invio:", error);
-            alert("Errore durante la pubblicazione. Riprova più tardi.");
-        } finally {
-            setIsPublishing(false);
-        }
-    }, [jsonContent, title, router]);
+  return (
+    <div className="create-blog-container">
+      <div className="top-controls-bar">
+        <button
+          onClick={() => router.back()}
+          className="btn-glow back-to-home__link"
+          aria-label="Back to Blog List"
+        >
+          <FontAwesomeIcon icon={faArrowLeft} /> Back
+        </button>
+        <h1 className="editor-title">New Blog</h1>
+        <button
+          onClick={handleSave}
+          className="ph-btn ph-btn--primary cursor-pointer save-button-top"
+          type="button"
+        >
+          <FontAwesomeIcon icon={faSave} /> Save
+        </button>
+      </div>
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newTitle = e.target.value;
-        setTitle(newTitle);
+      <main className="blog-editor-area">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+        >
+          <div className="form-group title-group">
+            <label htmlFor="title">Title:</label>
+            <input
+              id="title"
+              type="text"
+              placeholder="Title for your blog..."
+              value={title}
+              onChange={handleTitleChange}
+              required
+            />
+          </div>
 
-        try {
-            const newData = JSON.parse(jsonContent);
-            newData.title = newTitle;
-            setJsonContent(JSON.stringify(newData, null, 2));
-        } catch (e) {
-            console.error("Failed to update JSON title:", e);
-        }
-    };
+          <div className="tab-switcher">
+            <button
+              type="button"
+              className={`tab-button ${viewMode === "Editor" ? "active" : ""}`}
+              onClick={() => setViewMode("Editor")}
+              disabled={viewMode === "Editor" && isJsonInvalid(jsonContent)}
+            >
+              <FontAwesomeIcon icon={faEdit} /> Visual Editor
+            </button>
+            <button
+              type="button"
+              className={`tab-button ${viewMode === "JSON" ? "active" : ""}`}
+              onClick={() => setViewMode("JSON")}
+            >
+              <FontAwesomeIcon icon={faCode} /> JSON Editor
+            </button>
+            <button
+              type="button"
+              className={`tab-button ${viewMode === "Preview" ? "active" : ""}`}
+              onClick={() => setViewMode("Preview")}
+            >
+              <FontAwesomeIcon icon={faEye} /> Preview
+            </button>
 
-    return (
-        <div className="create-blog-container">
-            <div className="top-controls-bar">
-                <button
-                    onClick={() => router.back()}
-                    className="btn-glow back-to-home__link"
-                    aria-label="Back to Blog List"
-                >
-                    <FontAwesomeIcon icon={faArrowLeft} /> Back
-                </button>
-                <h1 className="editor-title">New Blog</h1>
-                <button
-                    onClick={handleSave}
-                    className="ph-btn ph-btn--primary cursor-pointer save-button-top"
+            {viewMode === "Editor" && (
+              <>
+                <div className="add-block-controls">
+                  <button
                     type="button"
+                    onClick={() => handleAddBlock("paragraph")}
+                    className="add-block-btn"
+                    title="Add Paragraph"
+                  >
+                    <FontAwesomeIcon icon={faParagraph} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("sectionTitle")}
+                    className="add-block-btn"
+                    title="Add Section Title"
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeading}
+                      style={{ fontSize: "1.2em" }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("subheading")}
+                    className="add-block-btn"
+                    title="Add H3 Subheading"
+                  >
+                    <FontAwesomeIcon icon={faHeading} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("subtitle")}
+                    className="add-block-btn"
+                    title="Add H4/H5 Subtitle"
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeading}
+                      style={{ fontSize: "0.8em" }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("code")}
+                    className="add-block-btn"
+                    title="Add Code Block"
+                  >
+                    <FontAwesomeIcon icon={faCode} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("formula")}
+                    className="add-block-btn"
+                    title="Add Formula (LaTeX)"
+                  >
+                    <FontAwesomeIcon icon={faSquareRootAlt} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("list")}
+                    className="add-block-btn"
+                    title="Add List"
+                  >
+                    <FontAwesomeIcon icon={faListOl} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("callout")}
+                    className="add-block-btn"
+                    title="Add Callout/Note"
+                  >
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("example")}
+                    className="add-block-btn"
+                    title="Add Example/Quote"
+                  >
+                    <FontAwesomeIcon icon={faQuoteRight} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("table")}
+                    className="add-block-btn"
+                    title="Add Table"
+                  >
+                    <FontAwesomeIcon icon={faTable} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("image")}
+                    className="add-block-btn"
+                    title="Add Image"
+                  >
+                    <FontAwesomeIcon icon={faImage} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("toggle")}
+                    className="add-block-btn"
+                    title="Add Toggle/Spoiler"
+                  >
+                    <FontAwesomeIcon icon={faChevronCircleDown} />
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleClearAllBlocks}
+                  className="clear-all-btn-toolbar"
+                  title="Delete all blocks"
                 >
-                    <FontAwesomeIcon icon={faSave} /> Save
+                  <FontAwesomeIcon icon={faTrash} />
                 </button>
-            </div>
+              </>
+            )}
+          </div>
 
-            <main className="blog-editor-area">
-                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-                    <div className="form-group title-group">
-                        <label htmlFor="title">Title:</label>
-                        <input
-                            id="title"
-                            type="text"
-                            placeholder="Title for your blog..."
-                            value={title}
-                            onChange={handleTitleChange}
-                            required
-                        />
-                    </div>
+          <div className="content-area">
+            {viewMode === "JSON" && (
+              <div className="form-group full-height">
+                <DynamicJsonEditor
+                  value={jsonContent}
+                  onChange={setJsonContent}
+                />
+              </div>
+            )}
 
-                    <div className="tab-switcher">
-                        <button
-                            type="button"
-                            className={`tab-button ${viewMode === 'Editor' ? 'active' : ''}`}
-                            onClick={() => setViewMode('Editor')}
-                            disabled={viewMode === 'Editor' && isJsonInvalid(jsonContent)}
-                        >
-                            <FontAwesomeIcon icon={faEdit} /> Visual Editor
-                        </button>
-                        <button
-                            type="button"
-                            className={`tab-button ${viewMode === 'JSON' ? 'active' : ''}`}
-                            onClick={() => setViewMode('JSON')}
-                        >
-                            <FontAwesomeIcon icon={faCode} /> JSON Editor
-                        </button>
-                        <button
-                            type="button"
-                            className={`tab-button ${viewMode === 'Preview' ? 'active' : ''}`}
-                            onClick={() => setViewMode('Preview')}
-                        >
-                            <FontAwesomeIcon icon={faEye} /> Preview
-                        </button>
+            {viewMode === "Editor" && (
+              <VisualEditorRenderer
+                jsonContent={jsonContent}
+                setJsonContent={setJsonContent}
+              />
+            )}
 
-                        {viewMode === 'Editor' && (
-                            <>
-                                <div className="add-block-controls">
-                                    <button type="button" onClick={() => handleAddBlock('paragraph')} className="add-block-btn" title="Add Paragraph">
-                                        <FontAwesomeIcon icon={faParagraph} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('sectionTitle')} className="add-block-btn" title="Add Section Title">
-                                        <FontAwesomeIcon icon={faHeading} style={{ fontSize: '1.2em' }} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('subheading')} className="add-block-btn" title="Add H3 Subheading">
-                                        <FontAwesomeIcon icon={faHeading} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('subtitle')} className="add-block-btn" title="Add H4/H5 Subtitle">
-                                        <FontAwesomeIcon icon={faHeading} style={{ fontSize: '0.8em' }} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('code')} className="add-block-btn" title="Add Code Block">
-                                        <FontAwesomeIcon icon={faCode} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('formula')} className="add-block-btn" title="Add Formula (LaTeX)">
-                                        <FontAwesomeIcon icon={faSquareRootAlt} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('list')} className="add-block-btn" title="Add List">
-                                        <FontAwesomeIcon icon={faListOl} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('callout')} className="add-block-btn" title="Add Callout/Note">
-                                        <FontAwesomeIcon icon={faInfoCircle} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('example')} className="add-block-btn" title="Add Example/Quote">
-                                        <FontAwesomeIcon icon={faQuoteRight} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('table')} className="add-block-btn" title="Add Table">
-                                        <FontAwesomeIcon icon={faTable} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('image')} className="add-block-btn" title="Add Image">
-                                        <FontAwesomeIcon icon={faImage} />
-                                    </button>
-                                    <button type="button" onClick={() => handleAddBlock('toggle')} className="add-block-btn" title="Add Toggle/Spoiler">
-                                        <FontAwesomeIcon icon={faChevronCircleDown} />
-                                    </button>
-                                </div>
-                                
-                                <button
-                                    type="button"
-                                    onClick={handleClearAllBlocks}
-                                    className="clear-all-btn-toolbar"
-                                    title="Delete all blocks"
-                                >
-                                    <FontAwesomeIcon icon={faTrash} />
-                                </button>
-                            </>
-                        )}
-                    </div>
-
-                    <div className="content-area">
-                        {viewMode === 'JSON' && (
-                            <div className="form-group full-height">
-                                <DynamicJsonEditor
-                                    value={jsonContent}
-                                    onChange={setJsonContent}
-                                />
-                            </div>
-                        )}
-
-                        {viewMode === 'Editor' && (
-                            <VisualEditorRenderer
-                                jsonContent={jsonContent}
-                                setJsonContent={setJsonContent}
-                            />
-                        )}
-
-                        {viewMode === 'Preview' && (
-                            <LivePreviewRenderer
-                                jsonContent={jsonContent}
-                            />
-                        )}
-                    </div>
-                </form>
-            </main>
-        </div>
-    );
+            {viewMode === "Preview" && (
+              <LivePreviewRenderer jsonContent={jsonContent} />
+            )}
+          </div>
+        </form>
+      </main>
+    </div>
+  );
 }

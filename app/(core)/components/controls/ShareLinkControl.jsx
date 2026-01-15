@@ -16,7 +16,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import Popup from "../Popup";
 
-
 export default function ShareLinkControl({ simulation, inputs }) {
   const [open, setOpen] = useState(false);
   const DEFAULT_SHARE_MESSAGE = `Check out this simulation on PhysicsHub, it's ${simulation}! `;
@@ -69,7 +68,7 @@ export default function ShareLinkControl({ simulation, inputs }) {
       label: <FontAwesomeIcon icon={faInstagram} />,
       href: `https://www.instagram.com/`, // Instagram non ha un vero sharer URL, si apre la homepage
       type: "primary",
-    }
+    },
   ];
 
   return (
@@ -96,7 +95,7 @@ export default function ShareLinkControl({ simulation, inputs }) {
                 window.open(social.href, "_blank", "noopener,noreferrer");
               },
               type: social.type,
-            }))
+            })),
           ],
         }}
       />

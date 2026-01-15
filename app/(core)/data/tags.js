@@ -1,55 +1,55 @@
 const TAGS = {
-  EASY: { 
-    name: "Easy", 
-    color: "green", 
+  EASY: {
+    name: "Easy",
+    color: "green",
   },
-  PHYSICS: { 
-    name: "Physics", 
-    color: "cyan", 
+  PHYSICS: {
+    name: "Physics",
+    color: "cyan",
   },
-  COLLISION: { 
-    name: "Collision", 
-    color: "bluesky", 
+  COLLISION: {
+    name: "Collision",
+    color: "bluesky",
   },
-  ANIMATIONS: { 
-    name: "Animations", 
-    color: "purple", 
+  ANIMATIONS: {
+    name: "Animations",
+    color: "purple",
   },
-  MEDIUM: { 
-    name: "Medium", 
-    color: "lightorange", 
+  MEDIUM: {
+    name: "Medium",
+    color: "lightorange",
   },
-  MATH: { 
-    name: "Math", 
-    color: "green", 
+  MATH: {
+    name: "Math",
+    color: "green",
   },
-  VECTORS: { 
-    name: "Vectors", 
-    color: "lightorange", 
+  VECTORS: {
+    name: "Vectors",
+    color: "lightorange",
   },
-  ADVANCED: { 
-    name: "Advanced", 
-    color: "red", 
+  ADVANCED: {
+    name: "Advanced",
+    color: "red",
   },
-  ACCELERATION: { 
-    name: "Acceleration", 
-    color: "cyan", 
+  ACCELERATION: {
+    name: "Acceleration",
+    color: "cyan",
   },
-  GRAVITY: { 
-    name: "Gravity", 
-    color: "grey", 
+  GRAVITY: {
+    name: "Gravity",
+    color: "grey",
   },
-  OSCILLATIONS: { 
-    name: "Oscillations", 
-    color: "pink", 
+  OSCILLATIONS: {
+    name: "Oscillations",
+    color: "pink",
   },
-  SPRINGS: { 
-    name: "Springs", 
-    color: "orange", 
+  SPRINGS: {
+    name: "Springs",
+    color: "orange",
   },
-  ENERGY: { 
-    name: "Energy", 
-    color: "coral", 
+  ENERGY: {
+    name: "Energy",
+    color: "coral",
   },
 };
 

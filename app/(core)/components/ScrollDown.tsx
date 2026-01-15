@@ -33,15 +33,11 @@ export default function ScrollIndicator() {
     };
   }, [scrollY]);
 
-  const heroHeight =
-    typeof window !== "undefined" ? window.innerHeight : 800;
+  const heroHeight = typeof window !== "undefined" ? window.innerHeight : 800;
 
   // Fade out after hero
   const opacity =
-  scrollY < heroHeight
-    ? 1
-    : Math.max(1 - (scrollY - heroHeight) / 400, 0);
-
+    scrollY < heroHeight ? 1 : Math.max(1 - (scrollY - heroHeight) / 400, 0);
 
   return (
     <div

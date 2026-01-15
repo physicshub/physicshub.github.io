@@ -25,7 +25,7 @@ export default class Pendulum {
 
     this.gravity = EARTH_G_SI;
     this.damping = 1; // coefficiente di smorzamento
-    this.size = 24;   // raggio bob in pixel
+    this.size = 24; // raggio bob in pixel
     this.bobColor = "#7f7f7f";
     this.stringColor = "#00e6e6";
 
@@ -48,7 +48,8 @@ export default class Pendulum {
   update() {
     const p = this.p;
     if (!this.dragging) {
-      this.angleAcceleration = (-1 * this.gravity / this.r) * p.sin(this.angle);
+      this.angleAcceleration =
+        ((-1 * this.gravity) / this.r) * p.sin(this.angle);
       this.angleVelocity += this.angleAcceleration;
       this.angle += this.angleVelocity;
       this.angleVelocity *= this.damping;
@@ -101,7 +102,10 @@ export default class Pendulum {
   drag() {
     if (this.dragging) {
       const p = this.p;
-      const diff = p.createVector(this.pivot.x - p.mouseX, this.pivot.y - p.mouseY);
+      const diff = p.createVector(
+        this.pivot.x - p.mouseX,
+        this.pivot.y - p.mouseY
+      );
       this.angle = p.atan2(-diff.y, diff.x) - p.radians(90);
     }
   }

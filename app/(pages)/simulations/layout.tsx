@@ -4,6 +4,10 @@
 export const dynamic = "force-dynamic";
 export const ssr = false;
 
-export default function SimulationsLayout({ children }: { children: React.ReactNode }) {
+export default function SimulationsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }

@@ -6,8 +6,19 @@ import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
 import { toMeters, toPixels } from "../../../(core)/constants/Utils.js";
-import { computeDelta, resetTime, isPaused, setPause, cleanupInstance } from "../../../(core)/constants/Time.js";
-import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../../(core)/data/configs/BouncingBall.js";
+import {
+  computeDelta,
+  resetTime,
+  isPaused,
+  setPause,
+  cleanupInstance,
+} from "../../../(core)/constants/Time.js";
+import {
+  INITIAL_INPUTS,
+  INPUT_FIELDS,
+  FORCES,
+  SimInfoMapper,
+} from "../../../(core)/data/configs/BouncingBall.js";
 import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
@@ -20,7 +31,11 @@ import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
 import useSimulationState from "../../../(core)/hooks/useSimulationState";
 import useSimInfo from "../../../(core)/hooks/useSimInfo";
 import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
-import { drawBallWithTrail, drawForceVector, getActiveForces } from "../../../(core)/utils/drawUtils.js";
+import {
+  drawBallWithTrail,
+  drawForceVector,
+  getActiveForces,
+} from "../../../(core)/utils/drawUtils.js";
 
 // --- Centralized Body class ---
 import Body from "../../../(core)/physics/Body";
@@ -28,7 +43,10 @@ import Body from "../../../(core)/physics/Body";
 export default function BouncingBall() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+    INITIAL_INPUTS,
+    storageKey
+  );
   const [resetVersion, setResetVersion] = useState(0);
 
   // Centralized sim info system
@@ -40,7 +58,7 @@ export default function BouncingBall() {
 
   // Corpo fisico riusabile
   const bodyRef = useRef(null);
-  
+
   // Ref per tracking ultimo update dei parametri
   const lastParamsRef = useRef({
     mass: INITIAL_INPUTS.mass,
@@ -115,7 +133,7 @@ export default function BouncingBall() {
 
           isSetupComplete = true;
         } catch (error) {
-          console.error('[BouncingBall] Setup error:', error);
+          console.error("[BouncingBall] Setup error:", error);
         }
       };
 
@@ -127,13 +145,14 @@ export default function BouncingBall() {
 
         try {
           const currentInputs = inputsRef.current;
-          const { size, gravity, trailEnabled, ballColor, mass, restitution } = currentInputs;
-          
+          const { size, gravity, trailEnabled, ballColor, mass, restitution } =
+            currentInputs;
+
           const dt = computeDelta(p);
           if (dt <= 0) return;
 
           // ⚡ FIX: Aggiorna TUTTI i parametri del body
-          const paramsChanged = 
+          const paramsChanged =
             lastParamsRef.current.mass !== mass ||
             lastParamsRef.current.size !== size ||
             lastParamsRef.current.gravity !== gravity ||
@@ -149,8 +168,10 @@ export default function BouncingBall() {
             lastParamsRef.current = { mass, size, gravity, restitution };
 
             // Reset maxHeight quando cambiano parametri significativi
-            if (lastParamsRef.current.gravity !== gravity || 
-                lastParamsRef.current.restitution !== restitution) {
+            if (
+              lastParamsRef.current.gravity !== gravity ||
+              lastParamsRef.current.restitution !== restitution
+            ) {
               maxHeightRef.current = 0;
             }
           }
@@ -164,7 +185,8 @@ export default function BouncingBall() {
           const pixelX = toPixels(pos.x);
           const pixelY = toPixels(pos.y);
           const radiusPx = toPixels(size / 2);
-          const isHover = p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= radiusPx;
+          const isHover =
+            p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= radiusPx;
 
           // ⚡ FIX: Trail management con safety check
           if (trailEnabled && trailLayer) {
@@ -186,7 +208,7 @@ export default function BouncingBall() {
             const bg = getBackgroundColor();
             const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
             p.background(r, g, b);
-            
+
             p.fill(ballColor);
             p.noStroke();
             if (isHover) {
@@ -218,14 +240,14 @@ export default function BouncingBall() {
             SimInfoMapper
           );
         } catch (error) {
-          console.error('[BouncingBall] Draw error:', error);
+          console.error("[BouncingBall] Draw error:", error);
         }
       };
 
       // ⚡ Dragging migliorato
       p.mousePressed = () => {
         if (!bodyRef.current) return;
-        
+
         const { pos } = bodyRef.current.state;
         const d = p.dist(toPixels(pos.x), toPixels(pos.y), p.mouseX, p.mouseY);
         if (d <= toPixels(inputsRef.current.size / 2)) {
@@ -237,22 +259,24 @@ export default function BouncingBall() {
 
       p.mouseDragged = () => {
         if (!dragState.active || !bodyRef.current) return;
-        
+
         const newX = toMeters(p.mouseX);
         const newY = toMeters(p.mouseY);
-        
+
         bodyRef.current.state.pos.x = newX;
         bodyRef.current.state.pos.y = newY;
-        
+
         // Calcola velocità dal movimento del mouse
-        const dx = (p.mouseX - dragState.lastX) / Math.max(p.deltaTime, 1) * 16.67;
-        const dy = (p.mouseY - dragState.lastY) / Math.max(p.deltaTime, 1) * 16.67;
-        
+        const dx =
+          ((p.mouseX - dragState.lastX) / Math.max(p.deltaTime, 1)) * 16.67;
+        const dy =
+          ((p.mouseY - dragState.lastY) / Math.max(p.deltaTime, 1)) * 16.67;
+
         bodyRef.current.state.vel.set(toMeters(dx), toMeters(dy));
-        
+
         dragState.lastX = p.mouseX;
         dragState.lastY = p.mouseY;
-        
+
         maxHeightRef.current = 0;
       };
 
@@ -272,7 +296,7 @@ export default function BouncingBall() {
 
           trailLayer = p.createGraphics(w, h);
           trailLayer.pixelDensity(p.pixelDensity());
-          
+
           const bg = getBackgroundColor();
           const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
           trailLayer.background(r, g, b);
@@ -282,17 +306,17 @@ export default function BouncingBall() {
             const { pos } = bodyRef.current.state;
             const { size } = bodyRef.current.params;
             const radius = size / 2;
-            
+
             const maxX = toMeters(w) - radius;
             const maxY = toMeters(h) - radius;
-            
+
             if (pos.x > maxX) pos.x = maxX;
             if (pos.y > maxY) pos.y = maxY;
             if (pos.x < radius) pos.x = radius;
             if (pos.y < radius) pos.y = radius;
           }
         } catch (error) {
-          console.error('[BouncingBall] Resize error:', error);
+          console.error("[BouncingBall] Resize error:", error);
         }
       };
 
@@ -322,10 +346,10 @@ export default function BouncingBall() {
   const handleReset = useCallback(() => {
     const wasPaused = isPaused();
     resetTime();
-    
+
     maxHeightRef.current = 0;
     fallStartTimeRef.current = 0;
-    
+
     setTimeout(() => {
       if (wasPaused) setPause(true);
       setResetVersion((v) => v + 1);

@@ -35,9 +35,9 @@ body:
           - **Tool/Extension version**: [e.g. 5.6.0]
           - **VSCode/Node version**: [if applicable]
       value: |
-          - **OS edition**:
-          - **Tool/Extension version**:
-          - **VSCode/Node version**:
+        - **OS edition**:
+        - **Tool/Extension version**:
+        - **VSCode/Node version**:
     validations:
       required: false
 

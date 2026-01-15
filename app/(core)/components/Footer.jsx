@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import BackToTopButton from "./BackToTop";
-import { useFeedback } from "../context/FeedbackProvider"; 
+import { useFeedback } from "../context/FeedbackProvider";
 import { faBug, faBugs } from "@fortawesome/free-solid-svg-icons";
 
 const links = [
@@ -20,13 +20,13 @@ const links = [
 
 function Footer() {
   const year = new Date().getFullYear();
-  
+
   // 2. Inizializza l'hook per ottenere la funzione openFeedback
   const { openFeedback } = useFeedback();
 
-  const version = process.env.NEXT_PUBLIC_APP_VERSION 
-    ? `v${process.env.NEXT_PUBLIC_APP_VERSION}` 
-    : "Loading..."; 
+  const version = process.env.NEXT_PUBLIC_APP_VERSION
+    ? `v${process.env.NEXT_PUBLIC_APP_VERSION}`
+    : "Loading...";
 
   return (
     <footer>
@@ -34,8 +34,8 @@ function Footer() {
         <div className="footer-section footer-about">
           <h3>
             PhysicsHub{" "}
-            <a 
-              className="ph-btn ph-btn--ghost footer-version" 
+            <a
+              className="ph-btn ph-btn--ghost footer-version"
               href="https://github.com/physicshub/physicshub.github.io/releases"
               target="_blank"
               rel="noopener noreferrer"
@@ -80,7 +80,11 @@ function Footer() {
             <a href="https://x.com/mattqdev" aria-label="XTwitter">
               <FontAwesomeIcon icon={faXTwitter} />
             </a>
-            <a aria-label="Report Bug" onClick={openFeedback} style={{ cursor: "pointer" }}>
+            <a
+              aria-label="Report Bug"
+              onClick={openFeedback}
+              style={{ cursor: "pointer" }}
+            >
               <FontAwesomeIcon icon={faBug} />
             </a>
           </div>

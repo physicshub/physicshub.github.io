@@ -3,17 +3,17 @@ import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 // Initial values (SI)
 export const INITIAL_INPUTS = {
-  bobMass: 0.2,             // kg
-  bobDamping: 0.99,         // damping factor (dimensionless)
-  gravity: EARTH_G_SI,      // m/s²
-  springK: 200,             // N/m
-  springRestLength: 0,    // m
-  minLength: 0.2,           // m
-  maxLength: 3.5,           // m
+  bobMass: 0.2, // kg
+  bobDamping: 0.99, // damping factor (dimensionless)
+  gravity: EARTH_G_SI, // m/s²
+  springK: 200, // N/m
+  springRestLength: 0, // m
+  minLength: 0.2, // m
+  maxLength: 3.5, // m
   bobColor: "#7f7f7f",
   anchorColor: "#7f7f7f",
   springColor: "#00e6e6",
-  bobSize: 0.5,             // m (diameter)
+  bobSize: 0.5, // m (diameter)
 };
 
 // Fields for DynamicInputs

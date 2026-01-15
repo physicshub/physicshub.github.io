@@ -1,28 +1,25 @@
 // app/components/Header.jsx
-"use client"
-import { useState, useCallback } from 'react';
-import { Logo } from './Logo';
-import NavMenu from './Nav';
-import { Theme } from './Theme';
-import { useSticky } from '../hooks/useSticky';
-import { useTheme } from '../hooks/useTheme';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHamburger } from '@fortawesome/free-solid-svg-icons';
-import GoogleTranslator from './GoogleTranslator.jsx';
+"use client";
+import { useState, useCallback } from "react";
+import { Logo } from "./Logo";
+import NavMenu from "./Nav";
+import { Theme } from "./Theme";
+import { useSticky } from "../hooks/useSticky";
+import { useTheme } from "../hooks/useTheme";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHamburger } from "@fortawesome/free-solid-svg-icons";
+import GoogleTranslator from "./GoogleTranslator.jsx";
 
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const isSticky = useSticky(50);
   const { mode, toggleMode } = useTheme();
 
-  const handleMenuToggle = useCallback(
-    () => setMenuOpen((open) => !open),
-    []
-  );
+  const handleMenuToggle = useCallback(() => setMenuOpen((open) => !open), []);
 
   return (
     <header
-      className={`header ${isSticky ? 'sticky' : ''} ${isMenuOpen ? 'open' : ''}`.trim()}
+      className={`header ${isSticky ? "sticky" : ""} ${isMenuOpen ? "open" : ""}`.trim()}
     >
       <div className="header-inner">
         <Logo />
@@ -39,11 +36,10 @@ export default function Header() {
         <NavMenu isOpen={isMenuOpen} />
 
         <div className="controls">
-          <GoogleTranslator/>
-          <Theme mode={mode} onToggle={toggleMode} />            
+          <GoogleTranslator />
+          <Theme mode={mode} onToggle={toggleMode} />
         </div>
       </div>
     </header>
   );
 }
-

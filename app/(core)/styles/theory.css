@@ -7,14 +7,14 @@
   /* Colori Principali */
   --success-color: #10b981; /* rgba(16,185,129) */
   --warning-color: #f59e0b; /* rgba(245,158,11) */
-  --info-color: #3b82f6;    /* rgba(59,130,246) */
-  --tip-color: #8b5cf6;     /* Un viola/blu per 'Tip' */
-  --error-color: #ef4444;   /* Colore per Delete/Errori */
-  
+  --info-color: #3b82f6; /* rgba(59,130,246) */
+  --tip-color: #8b5cf6; /* Un viola/blu per 'Tip' */
+  --error-color: #ef4444; /* Colore per Delete/Errori */
+
   /* Sfondi e Testi (Dark Mode Defaults) */
   --bg: rgba(255, 255, 255, 0.04);
   --bg-light: rgba(255, 255, 255, 0.02); /* Toggle, Table Header */
-  --bg-darker: #0d0d0d;                 /* Per input specifici dark mode */
+  --bg-darker: #0d0d0d; /* Per input specifici dark mode */
   --text-primary: #fff;
   --text-muted: rgba(255, 255, 255, 0.6);
   --text-secondary: rgba(255, 255, 255, 0.75);
@@ -26,26 +26,27 @@
   --focus-ring: rgba(59, 130, 246, 0.5);
   --primary-light: rgba(59, 130, 246, 0.1);
   --tooltip-bg: rgba(0, 0, 0, 0.9);
-  
+
   /* Sfondi per Callout/Note */
   --bg-success: rgba(16, 185, 129, 0.12);
   --bg-warning: rgba(245, 158, 11, 0.08);
   --bg-info: rgba(59, 130, 246, 0.08);
   --bg-note: rgba(255, 255, 0, 0.07);
-  
+
   /* Variabili di Geometria */
   --radius: 8px;
   --radius-sm: 6px;
   --radius-xs: 4px;
 
   /* Font */
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
 
   --margin-element: 1.5rem;
 }
 
 /* Override Light Theme: Raggruppa tutte le variabili di Light Mode qui */
-[data-theme='light'] {
+[data-theme="light"] {
   --bg: rgba(0, 0, 0, 0.08);
   --bg-light: rgba(0, 0, 0, 0.04);
   --bg-darker: #f0f0f0; /* Non usato ma per consistenza */
@@ -55,13 +56,13 @@
   --text-code: #333;
   --text-placeholder: #999;
   --border-color: rgba(0, 0, 0, 0.15);
-  
+
   /* Light mode: i background scuri non sono necessari per gli avvisi */
   --bg-success: rgba(16, 185, 129, 0.1);
   --bg-warning: rgba(245, 158, 11, 0.1);
   --bg-info: rgba(59, 130, 246, 0.1);
   --bg-note: rgba(255, 255, 0, 0.15);
-  
+
   /* Colori per interazione in Light Mode */
   --color-background-hover: rgba(0, 0, 0, 0.04);
   --color-background-active: rgba(0, 0, 0, 0.08);
@@ -374,7 +375,9 @@
 }
 
 .toggle-panel {
-  transition: max-height 0.25s ease, padding 0.25s;
+  transition:
+    max-height 0.25s ease,
+    padding 0.25s;
   overflow: hidden;
   padding: 0 0.6rem 0;
 }
@@ -438,7 +441,10 @@
   padding: 1rem;
   pointer-events: none;
   user-select: none;
-  background-color: var(--color-background-code, #1e1e1e); /* Usa la variabile */
+  background-color: var(
+    --color-background-code,
+    #1e1e1e
+  ); /* Usa la variabile */
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -553,7 +559,9 @@
   color: var(--text-primary);
   line-height: 1.2;
   border-radius: var(--radius-sm);
-  transition: box-shadow 0.2s, background-color 0.2s;
+  transition:
+    box-shadow 0.2s,
+    background-color 0.2s;
 }
 
 .theory-section-title {
@@ -652,7 +660,8 @@
 /* Hover e focus già definiti in alto con le variabili */
 
 .editable-block[contenteditable="true"]:empty::before,
-[contenteditable="true"]:empty::before { /* Raggruppato il placeholder generico */
+[contenteditable="true"]:empty::before {
+  /* Raggruppato il placeholder generico */
   content: attr(data-placeholder);
   color: var(--text-placeholder);
   font-style: italic;
@@ -931,7 +940,9 @@
   align-items: center;
   gap: 6px;
   /* Utilizza lo stile generico del tab-button o add-block-btn per coerenza se possibile */
-  background-color: var(--accent-color); /* Adotto il colore primario per 'Aggiungi' */
+  background-color: var(
+    --accent-color
+  ); /* Adotto il colore primario per 'Aggiungi' */
   color: white;
   border: none;
   border-radius: var(--radius-sm);
@@ -1088,7 +1099,7 @@
   }
 }
 
-.blog-container{
+.blog-container {
   margin-top: 6rem;
   padding: 2rem;
 }

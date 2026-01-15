@@ -24,7 +24,9 @@ function ContributorCardSkeleton({ index }: { index: number }) {
       aria-label="Loading contributor"
     >
       <div className="skeleton-avatar shimmer mb-3 animate-pulse-strong" />
-      <div className={`skeleton-line shimmer mb-2 ${width1} animate-pulse-strong`} />
+      <div
+        className={`skeleton-line shimmer mb-2 ${width1} animate-pulse-strong`}
+      />
       <div className={`skeleton-line shimmer ${width2} animate-pulse-strong`} />
     </div>
   );

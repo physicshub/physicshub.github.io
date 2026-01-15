@@ -60,7 +60,6 @@ export const FORCES = [
   },
 ];
 
-
 export const SimInfoMapper = (state, context) => {
   const { pos, vel, acc, maxspeed } = state;
   const { canvasHeight } = context;

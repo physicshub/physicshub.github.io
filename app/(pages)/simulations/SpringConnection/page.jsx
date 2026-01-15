@@ -7,12 +7,25 @@ import { usePathname } from "next/navigation.js";
 // --- Core Classes & Config ---
 import Bob from "../../../(core)/physics/Bob";
 import Spring from "../../../(core)/physics/Spring";
-import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../../(core)/data/configs/SpringConnection.js";
+import {
+  INITIAL_INPUTS,
+  INPUT_FIELDS,
+  SimInfoMapper,
+} from "../../../(core)/data/configs/SpringConnection.js";
 import chapters from "../../../(core)/data/chapters.js";
 
 // --- Core Utils ---
-import { resetTime, isPaused, setPause, computeDelta } from "../../../(core)/constants/Time.js";
-import { toPixels, accelSI_to_pxSec, springK_SI_to_px } from "../../../(core)/constants/Utils.js";
+import {
+  resetTime,
+  isPaused,
+  setPause,
+  computeDelta,
+} from "../../../(core)/constants/Time.js";
+import {
+  toPixels,
+  accelSI_to_pxSec,
+  springK_SI_to_px,
+} from "../../../(core)/constants/Utils.js";
 import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
 
 // --- Reusable UI Components ---
@@ -28,7 +41,10 @@ import useSimInfo from "../../../(core)/hooks/useSimInfo";
 export default function SpringConnection() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+    INITIAL_INPUTS,
+    storageKey
+  );
   const [resetVersion, setResetVersion] = useState(0);
 
   // Centralized sim info
@@ -38,120 +54,139 @@ export default function SpringConnection() {
   const springRef = useRef(null);
   const bobRef = useRef(null);
 
-  const handleInputChange = useCallback((name, value) => {
-    setInputs((prev) => ({ ...prev, [name]: value }));
-  }, [setInputs]);
+  const handleInputChange = useCallback(
+    (name, value) => {
+      setInputs((prev) => ({ ...prev, [name]: value }));
+    },
+    [setInputs]
+  );
 
   const theory = useMemo(
     () => chapters.find((ch) => ch.link === location)?.theory,
     [location]
   );
 
-  const sketch = useCallback((p) => {
-    p.setup = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode;
-      p.createCanvas(w, h);
+  const sketch = useCallback(
+    (p) => {
+      p.setup = () => {
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.createCanvas(w, h);
 
-      // Anchor al centro in alto
-      springRef.current = new Spring(p, w / 2, 50, toPixels(inputsRef.current.springRestLength));
-      springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
+        // Anchor al centro in alto
+        springRef.current = new Spring(
+          p,
+          w / 2,
+          50,
+          toPixels(inputsRef.current.springRestLength)
+        );
+        springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
 
-      // Bob inizializzato più in basso
-      bobRef.current = new Bob(p, w / 2, 250);
-      bobRef.current.mass = inputsRef.current.bobMass;
-      bobRef.current.damping = inputsRef.current.bobDamping;
-      // size in metri → convertito in pixel
-      bobRef.current.size = toPixels(inputsRef.current.bobSize);
-      bobRef.current.color = inputsRef.current.bobColor;
-    };
+        // Bob inizializzato più in basso
+        bobRef.current = new Bob(p, w / 2, 250);
+        bobRef.current.mass = inputsRef.current.bobMass;
+        bobRef.current.damping = inputsRef.current.bobDamping;
+        // size in metri → convertito in pixel
+        bobRef.current.size = toPixels(inputsRef.current.bobSize);
+        bobRef.current.color = inputsRef.current.bobColor;
+      };
 
-    p.draw = () => {
-      const {
-        gravity,
-        springK,
-        springRestLength,
-        bobMass,
-        bobDamping,
-        bobSize,
-        bobColor,
-        springColor,
-        anchorColor,
-        minLength,
-        maxLength,
-      } = inputsRef.current;
+      p.draw = () => {
+        const {
+          gravity,
+          springK,
+          springRestLength,
+          bobMass,
+          bobDamping,
+          bobSize,
+          bobColor,
+          springColor,
+          anchorColor,
+          minLength,
+          maxLength,
+        } = inputsRef.current;
 
-      const spring = springRef.current;
-      const bob = bobRef.current;
-      if (!spring || !bob) return;
+        const spring = springRef.current;
+        const bob = bobRef.current;
+        if (!spring || !bob) return;
 
-      // Background
-      const bg = getBackgroundColor();
-      const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-      p.background(r, g, b);
+        // Background
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
+        p.background(r, g, b);
 
-      // Forza di gravità (in pixel/s²)
-      const GravityForce = p.createVector(0, accelSI_to_pxSec(gravity) * bob.mass);
-      bob.applyForce(GravityForce);
+        // Forza di gravità (in pixel/s²)
+        const GravityForce = p.createVector(
+          0,
+          accelSI_to_pxSec(gravity) * bob.mass
+        );
+        bob.applyForce(GravityForce);
 
-      // Aggiorna proprietà
-      spring.k = springK_SI_to_px(springK);
-      spring.restLength = toPixels(springRestLength);
-      bob.mass = bobMass;
-      bob.damping = bobDamping;
-      bob.size = toPixels(bobSize);
-      bob.color = bobColor;
-      spring.color = springColor;
-      spring.anchorColor = anchorColor;
+        // Aggiorna proprietà
+        spring.k = springK_SI_to_px(springK);
+        spring.restLength = toPixels(springRestLength);
+        bob.mass = bobMass;
+        bob.damping = bobDamping;
+        bob.size = toPixels(bobSize);
+        bob.color = bobColor;
+        spring.color = springColor;
+        spring.anchorColor = anchorColor;
 
-      // Update dinamica
-      bob.update(computeDelta(p));
-      bob.handleDrag(p.mouseX, p.mouseY);
+        // Update dinamica
+        bob.update(computeDelta(p));
+        bob.handleDrag(p.mouseX, p.mouseY);
 
-      spring.connect(bob);
-      spring.constrainLength(bob, toPixels(minLength), toPixels(maxLength));
+        spring.connect(bob);
+        spring.constrainLength(bob, toPixels(minLength), toPixels(maxLength));
 
-      // Disegno
-      spring.showLine(bob);
-      bob.show();
-      spring.show();
+        // Disegno
+        spring.showLine(bob);
+        bob.show();
+        spring.show();
 
-      // Update SimInfo (in metri)
-      updateSimInfo(
-        p,
-        {
-          pos: bob.pos, // in pixel, convertito nel mapper
-          vel: bob.vel,
-          mass: bob.mass,
-          k: spring.k,
-          restLength: springRestLength, // già in metri
-        },
-        { gravity, canvasHeight: p.height },
-        SimInfoMapper
-      );
-    };
+        // Update SimInfo (in metri)
+        updateSimInfo(
+          p,
+          {
+            pos: bob.pos, // in pixel, convertito nel mapper
+            vel: bob.vel,
+            mass: bob.mass,
+            k: spring.k,
+            restLength: springRestLength, // già in metri
+          },
+          { gravity, canvasHeight: p.height },
+          SimInfoMapper
+        );
+      };
 
-    p.mousePressed = () => {
-      bobRef.current?.handleClick(p.mouseX, p.mouseY);
-    };
+      p.mousePressed = () => {
+        bobRef.current?.handleClick(p.mouseX, p.mouseY);
+      };
 
-    p.mouseReleased = () => {
-      bobRef.current?.stopDragging();
-    };
+      p.mouseReleased = () => {
+        bobRef.current?.stopDragging();
+      };
 
-    p.windowResized = () => {
-      const { clientWidth: w, clientHeight: h } = p._userNode;
-      p.resizeCanvas(w, h);
+      p.windowResized = () => {
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.resizeCanvas(w, h);
 
-      springRef.current = new Spring(p, w / 2, 50, toPixels(inputsRef.current.springRestLength));
-      springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
+        springRef.current = new Spring(
+          p,
+          w / 2,
+          50,
+          toPixels(inputsRef.current.springRestLength)
+        );
+        springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
 
-      bobRef.current = new Bob(p, w / 2, 250);
-      bobRef.current.mass = inputsRef.current.bobMass;
-      bobRef.current.damping = inputsRef.current.bobDamping;
-      bobRef.current.size = toPixels(inputsRef.current.bobSize);
-      bobRef.current.color = inputsRef.current.bobColor;
-    };
-  }, [inputsRef, updateSimInfo]);
+        bobRef.current = new Bob(p, w / 2, 250);
+        bobRef.current.mass = inputsRef.current.bobMass;
+        bobRef.current.damping = inputsRef.current.bobDamping;
+        bobRef.current.size = toPixels(inputsRef.current.bobSize);
+        bobRef.current.color = inputsRef.current.bobColor;
+      };
+    },
+    [inputsRef, updateSimInfo]
+  );
 
   return (
     <SimulationLayout
@@ -177,7 +212,11 @@ export default function SpringConnection() {
         />
       }
     >
-      <P5Wrapper sketch={sketch} key={resetVersion} simInfos={<SimInfoPanel data={simData} />} />
+      <P5Wrapper
+        sketch={sketch}
+        key={resetVersion}
+        simInfos={<SimInfoPanel data={simData} />}
+      />
     </SimulationLayout>
   );
 }

@@ -12,7 +12,11 @@ export default function PlayPauseButton() {
   };
 
   return (
-    <button onClick={handleClick} className="btn-glow" title="Play/Pause simulation">
+    <button
+      onClick={handleClick}
+      className="btn-glow"
+      title="Play/Pause simulation"
+    >
       <FontAwesomeIcon icon={paused ? faPlay : faPause} />
     </button>
   );

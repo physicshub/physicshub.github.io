@@ -12,7 +12,7 @@ export function useSticky(threshold: number = 50): boolean {
     const handleScroll = () => {
       // Avoid unnecessary state updates
       const shouldBeSticky = window.scrollY > threshold;
-      setIsSticky(prev => (prev !== shouldBeSticky ? shouldBeSticky : prev));
+      setIsSticky((prev) => (prev !== shouldBeSticky ? shouldBeSticky : prev));
     };
 
     // Run once on mount to set initial state

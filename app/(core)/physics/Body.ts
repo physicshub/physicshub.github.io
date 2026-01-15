@@ -1,20 +1,25 @@
 import type p5 from "p5";
-import { integrate, collideBoundary, toMeters, toPixels } from "../constants/Utils.js";
+import {
+  integrate,
+  collideBoundary,
+  toMeters,
+  toPixels,
+} from "../constants/Utils.js";
 import { EARTH_G_SI } from "../constants/Config.js";
 
 export interface BodyParams {
-  mass: number;          // kg
-  size: number;          // diametro in metri
-  color?: string;        // colore di rendering
-  gravity?: number;      // accelerazione verticale (m/s^2)
-  restitution?: number;  // coefficiente di rimbalzo [0-1]
-  frictionMu: number;    // coefficiente di attrito dinamico
+  mass: number; // kg
+  size: number; // diametro in metri
+  color?: string; // colore di rendering
+  gravity?: number; // accelerazione verticale (m/s^2)
+  restitution?: number; // coefficiente di rimbalzo [0-1]
+  frictionMu: number; // coefficiente di attrito dinamico
 }
 
 export interface BodyState {
-  pos: p5.Vector;        // posizione in metri
-  vel: p5.Vector;        // velocità in m/s
-  acc: p5.Vector;        // accelerazione in m/s^2
+  pos: p5.Vector; // posizione in metri
+  vel: p5.Vector; // velocità in m/s
+  acc: p5.Vector; // accelerazione in m/s^2
 }
 
 export default class Body {
@@ -40,14 +45,23 @@ export default class Body {
 
   /** Aggiorna la fisica del corpo */
   step(p: p5, dt: number, externalAcc?: p5.Vector) {
-    const createVector = (...args: Parameters<p5["createVector"]>) => p.createVector(...args);
+    const createVector = (...args: Parameters<p5["createVector"]>) =>
+      p.createVector(...args);
     const { pos, vel, acc } = this.state;
     const { gravity, size, restitution, frictionMu } = this.params;
     const radius = size / 2;
 
     // Controlla che siano numeri e che dt sia positivo
-    if (typeof gravity === 'undefined' || typeof restitution === 'undefined' || dt <= 0) {
-      console.warn('[Body.step] Invalid parameters:', { gravity, restitution, dt });
+    if (
+      typeof gravity === "undefined" ||
+      typeof restitution === "undefined" ||
+      dt <= 0
+    ) {
+      console.warn("[Body.step] Invalid parameters:", {
+        gravity,
+        restitution,
+        dt,
+      });
       return;
     }
 

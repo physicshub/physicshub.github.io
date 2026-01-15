@@ -10,10 +10,10 @@ on:
 jobs:
   update-contributors:
     runs-on: ubuntu-latest
-    
+
     # AGGIUNTO: Concede i permessi di scrittura al token per eseguire il push.
     permissions:
-      contents: write 
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -23,8 +23,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps

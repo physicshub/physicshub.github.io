@@ -16,7 +16,6 @@
 
 A small web application to help student understand physics with cool interactive simulations and easily understandable theory.
 
-
 ## 🌐 Live Demo
 
 Try PhysicsHub directly in your browser:  
@@ -26,41 +25,43 @@ Try PhysicsHub directly in your browser:
   <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true" alt="PhysicsHub Screenshot" width="80%" style="border-radius: 8px;" >
 </p>
 
-
 ## 🛠️ Steps to run it locally
 
 1. Clone the repository to your computer <br>
-   ``` bash
+   ```bash
    git clone https://github.com/physicshub/physicshub.github.io.git
+   ```
 2. Navigate to the app directory <br>
-   ``` bash
+   ```bash
    cd physicshub.github.io
+   ```
 3. Install the necessary dependencies <br>
    ```bash
     npm install
     # or
     yarn install
-    ```
-6. Start the local development server <br>
+   ```
+4. Start the local development server <br>
    ```bash
    npm run dev
-7. Open your browser to http://localhost:3000
+   ```
+5. Open your browser to http://localhost:3000
 
 ## 🤝 Contributing
 
 We welcome contributions from the community!  
 We welcome all kinds of contributions:
+
 - 🐛 **Report a bug**
 - 💡 **Suggest a new feature or simulation**
 - 🎨 **Improve the UI/UX**
 - 📝 **Write theory content**
 - 🔧 **Fix an existing issue**
-and more...
+  and more...
 
 Our project is **perfect for first-contribution!**
 
-Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md) for starting now!
-
+Check the [**_FULL GUIDE_**](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md) for starting now!
 
 <br>
 <hr>
@@ -71,7 +72,6 @@ We recognize all types of contributions. This project follows the [all-contribut
 
 Contribution list sorted by additions:
 [![Contributors](https://raw.githubusercontent.com/physicshub/physicshub.github.io/main/images/contributors.png)](https://github.com/physicshub/physicshub.github.io/graphs/contributors)
-
 
 Contribution list sorted by order of contribution and based on what they did:
 
@@ -119,7 +119,6 @@ Contribution list sorted by order of contribution and based on what they did:
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-
 ### 💖 Supporters
 
 PhysicsHub is and will always be free and open-source. If you find it helpful, consider supporting us to help fuel future development.
@@ -137,11 +136,11 @@ Become a supporter by donating on Ko-Fi:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W41MA4Y1)
 
-### 🌍 Community 
+### 🌍 Community
+
 Have questions, ideas, or just want to chat about this website? Join our Discord server!
 
 [![](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
-
 
 ### 📜 License
 

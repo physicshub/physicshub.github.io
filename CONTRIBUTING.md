@@ -1,26 +1,26 @@
 # 📚 Full Guide for Contributors
+
 > **Please read carefully — every section is important!**
 
-
-
 ## 🎯 Our Mission
+
 PhysicsHub exists to help **students** understand physics through **interactive simulations** and **clear explanations**.  
 It will **always** be:
+
 - Easy to use
 - Free and open to all
 - Focused on improving physics learning
 
-
-
 ## 🤝 Contributing
+
 We welcome contributions from everyone.  
 There are **no overly strict rules**, but please:
+
 - Respect the project's mission
 - Keep the code clean and maintainable
 - Use your experience to set a good example for others
 
 You are free to **rewrite or improve** parts of the code if you believe it benefits the project.
-
 
 ## 🔄 Pull Request Process — Step-by-Step (Beginner Friendly)
 
@@ -40,16 +40,19 @@ This guide will walk you through **setting up the project locally** and creating
    - Click the **Fork** button (top right) to create a copy of the repository under your account.
 
 2. **Clone your fork to your computer**
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/physicshub.github.io.git
    ```
 
 3. **Navigate into the project folder**
+
    ```bash
    cd physicshub.github.io
    ```
 
 4. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -60,6 +63,7 @@ This guide will walk you through **setting up the project locally** and creating
    ```bash
    npm run dev
    ```
+
    - Open your browser at `http://localhost:3000` to see the site running locally.
 
 ---
@@ -72,7 +76,7 @@ This guide will walk you through **setting up the project locally** and creating
   - Fix bugs
   - Update documentation
 - Keep your code **clean, readable, and consistent** with the existing style.
-If you want to do some other things than these, ask to @mattqdev via discord or github issue.
+  If you want to do some other things than these, ask to @mattqdev via discord or github issue.
 
 ---
 
@@ -86,6 +90,7 @@ If you want to do some other things than these, ask to @mattqdev via discord or 
 ### 4️⃣ UI Changes
 
 If you made **significant changes** to the interface:
+
 1. Take screenshots of the updated UI.
 2. Create a folder in:
    ```
@@ -130,7 +135,7 @@ If you made **significant changes** to the interface:
    base repository: physicshub/physicshub.github.io
    base: main
    ```
-The title of your pull request should follow the [conventional commit format](https://www.conventionalcommits.org/en/v1.0.0/). When a pull request is merged to the main branch, all changes are going to be squashed into a single commit. The message of this commit will be the title of the pull request. And for every release, the commit messages are used to generate the changelog.
+   The title of your pull request should follow the [conventional commit format](https://www.conventionalcommits.org/en/v1.0.0/). When a pull request is merged to the main branch, all changes are going to be squashed into a single commit. The message of this commit will be the title of the pull request. And for every release, the commit messages are used to generate the changelog.
 
 Here are some examples of conventional PR titles:
 
@@ -139,7 +144,6 @@ Here are some examples of conventional PR titles:
 - `ci: add GitHub Actions for automated testing`
 
 Generating the changelog based on the commit messages saves time and helps to keep the changelog up-to-date. It also helps to understand the changes in the project.
-
 
 ---
 
@@ -151,31 +155,31 @@ Generating the changelog based on the commit messages saves time and helps to ke
   git commit -m "Fix: updated UI based on review"
   git push
   ```
-Once approved the maintainer will merge for you.
+  Once approved the maintainer will merge for you.
 
 ---
 
 ### 8️⃣ Adding you to contributors
 
-- When the merge is approved and done, you can add you to the contributors section in the README.md 
+- When the merge is approved and done, you can add you to the contributors section in the README.md
 - To know how to do it check the contributors section in the README.md or [here](https://github.com/physicshub/physicshub.github.io/issues/25).
 
 ---
 
-
 ## 🏛 Our Pledge
+
 We pledge to maintain an **open, welcoming, and harassment-free** environment for everyone, regardless of:
+
 - Age, body size, disability, ethnicity
 - Gender identity/expression
 - Level of experience, nationality
 - Personal appearance, race, religion
 - Sexual identity/orientation
 
-
-
 ## ✅ Standards of Conduct
 
 ### Positive Behaviors
+
 - Use inclusive language
 - Respect different viewpoints
 - Accept constructive criticism gracefully
@@ -183,34 +187,33 @@ We pledge to maintain an **open, welcoming, and harassment-free** environment fo
 - Show empathy towards others
 
 ### Unacceptable Behaviors
+
 - Sexualized language or imagery
 - Trolling, insults, or personal/political attacks
 - Harassment (public or private)
 - Publishing private information without consent
 - Any conduct inappropriate in a professional setting
 
-
-
 ## 📌 Responsibilities
+
 - Maintainers clarify acceptable behavior
 - Maintainers may remove or reject contributions that violate the Code of Conduct
 - Maintainers may ban contributors for harmful behavior
 
-
-
 ## 🌍 Scope
+
 This Code of Conduct applies:
+
 - In all project spaces
 - In public spaces when representing the project
 
-
-
 ## 🚨 Enforcement
+
 Report unacceptable behavior or just ask anything here:
+
 - **Discord**: [Join here](https://discord.gg/hT68DTcwfD)
 - **Email**: mattqdevv@gmail.com
 
-
 ## 📜 Attribution
-Adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/4/), version 1.4.
 
+Adapted from the [Contributor Covenant](http://contributor-covenant.org/version/1/4/), version 1.4.

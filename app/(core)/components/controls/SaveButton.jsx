@@ -8,7 +8,13 @@ export default function SaveButton({ inputs, simulation }) {
     alert("Inputs value saved in local memory for " + simulation + "!");
   };
 
-  return <button onClick={handleSave} className="btn-glow" title="Save inputs to local memory">
-    <FontAwesomeIcon icon={faSave} />
-  </button>;
+  return (
+    <button
+      onClick={handleSave}
+      className="btn-glow"
+      title="Save inputs to local memory"
+    >
+      <FontAwesomeIcon icon={faSave} />
+    </button>
+  );
 }

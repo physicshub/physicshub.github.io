@@ -62,7 +62,8 @@ export const FeedbackProvider = ({
         onClose={() => setIsOpen(false)}
         popupContent={{
           title: "Feedback",
-          description: "Help us improve PhysicsHub: rate your experience and share with us your thoughts!",
+          description:
+            "Help us improve PhysicsHub: rate your experience and share with us your thoughts!",
           buttons: [
             { label: "Send Feedback", onClick: handleSubmit, type: "primary" },
           ],

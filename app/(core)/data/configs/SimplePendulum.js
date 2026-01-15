@@ -47,7 +47,6 @@ export const INPUT_FIELDS = [
   { name: "trailEnabled", label: "Trail", type: "checkbox" },
   { name: "bobColor", label: "Bob Color:", type: "color" },
   { name: "stringColor", label: "String Color:", type: "color" },
-
 ];
 
 // Mapper per SimInfoPanel

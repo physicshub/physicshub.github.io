@@ -17,17 +17,61 @@ export const INITIAL_INPUTS = {
 };
 
 export const INPUT_FIELDS = [
-  { name: "v0", label: "v₀ - Launch speed (m/s):", type: "number", placeholder: "Insert speed..." },
-  { name: "angle", label: "θ - Launch angle (°):", type: "number", placeholder: "Insert angle..." },
-  { name: "h0", label: "h₀ - Start height (m):", type: "number", placeholder: "Insert height..." },
-  { name: "mass", label: "m - Mass (kg):", type: "number", placeholder: "Insert mass..." },
-  { name: "size", label: "d - Ball diameter (m):", type: "number", placeholder: "Insert diameter..." },
-  { name: "gravity", label: "g - Gravity (m/s²):", type: "select", options: gravityTypes },
-  { name: "dragCoeff", label: "c_d - Linear drag (1/s):", type: "number", placeholder: "Insert drag coeff..." },
-  { name: "wind", label: "a_w - Wind accel (m/s²):", type: "number", placeholder: "Insert wind accel..." },
+  {
+    name: "v0",
+    label: "v₀ - Launch speed (m/s):",
+    type: "number",
+    placeholder: "Insert speed...",
+  },
+  {
+    name: "angle",
+    label: "θ - Launch angle (°):",
+    type: "number",
+    placeholder: "Insert angle...",
+  },
+  {
+    name: "h0",
+    label: "h₀ - Start height (m):",
+    type: "number",
+    placeholder: "Insert height...",
+  },
+  {
+    name: "mass",
+    label: "m - Mass (kg):",
+    type: "number",
+    placeholder: "Insert mass...",
+  },
+  {
+    name: "size",
+    label: "d - Ball diameter (m):",
+    type: "number",
+    placeholder: "Insert diameter...",
+  },
+  {
+    name: "gravity",
+    label: "g - Gravity (m/s²):",
+    type: "select",
+    options: gravityTypes,
+  },
+  {
+    name: "dragCoeff",
+    label: "c_d - Linear drag (1/s):",
+    type: "number",
+    placeholder: "Insert drag coeff...",
+  },
+  {
+    name: "wind",
+    label: "a_w - Wind accel (m/s²):",
+    type: "number",
+    placeholder: "Insert wind accel...",
+  },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "showGuides", label: "Show predicted guides", type: "checkbox" },
-  { name: "showVectors", label: "Show force & velocity vectors", type: "checkbox" },
+  {
+    name: "showVectors",
+    label: "Show force & velocity vectors",
+    type: "checkbox",
+  },
   { name: "ballColor", label: "Ball color:", type: "color" },
 ];
 
@@ -46,7 +90,9 @@ export const FORCES = [
     computeFn: ({ vel }, inputs) => {
       const coeff = Math.max(0, inputs.dragCoeff || 0);
       if (!coeff || !vel) return null;
-      const dragVec = vel.copy ? vel.copy().mult(-inputs.mass * coeff) : { x: 0, y: 0 };
+      const dragVec = vel.copy
+        ? vel.copy().mult(-inputs.mass * coeff)
+        : { x: 0, y: 0 };
       return dragVec;
     },
   },
@@ -68,12 +114,7 @@ export const FORCES = [
   },
 ];
 
-export const computeProjectileAnalytics = ({
-  v0,
-  angleDeg,
-  h0,
-  gravity,
-}) => {
+export const computeProjectileAnalytics = ({ v0, angleDeg, h0, gravity }) => {
   const speed = Math.max(0, v0);
   const g = Math.abs(gravity ?? EARTH_G_SI);
   const rad = ((angleDeg ?? 0) * Math.PI) / 180;
@@ -112,11 +153,7 @@ export const computeProjectileAnalytics = ({
 
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel } = state;
-  const {
-    canvasHeightMeters,
-    elapsedTime,
-    radius,
-  } = context;
+  const { canvasHeightMeters, elapsedTime, radius } = context;
   const launchMeta = refs?.launchMetadataRef?.current;
   const analytics = launchMeta?.stats;
 
@@ -128,8 +165,8 @@ export const SimInfoMapper = (state, context, refs) => {
 
   const info = {
     "v (speed)": `${currentSpeed.toFixed(2)} m/s`,
-    "vₓ": `${vx.toFixed(2)} m/s`,
-    "vᵧ": `${(-vy).toFixed(2)} m/s`,
+    vₓ: `${vx.toFixed(2)} m/s`,
+    vᵧ: `${(-vy).toFixed(2)} m/s`,
     "h (height)": `${heightFromGround.toFixed(2)} m`,
   };
 
@@ -142,7 +179,10 @@ export const SimInfoMapper = (state, context, refs) => {
     if (isFinite(analytics.flightTime)) {
       info["t (elapsed)"] = `${elapsedTime.toFixed(2)} s`;
       info["tₜₒf (time of flight)"] = `${analytics.flightTime.toFixed(2)} s`;
-      const progress = analytics.flightTime > 0 ? Math.min(elapsedTime / analytics.flightTime, 1) : 0;
+      const progress =
+        analytics.flightTime > 0
+          ? Math.min(elapsedTime / analytics.flightTime, 1)
+          : 0;
       info["flight %"] = `${(progress * 100).toFixed(0)} %`;
       info["R (predicted range)"] = `${analytics.range.toFixed(2)} m`;
       info["hₐₚₑₓ"] = `${analytics.apexHeight.toFixed(2)} m`;
@@ -155,4 +195,3 @@ export const SimInfoMapper = (state, context, refs) => {
 
   return info;
 };
-

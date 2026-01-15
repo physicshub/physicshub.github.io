@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useRef } from "react";
 
 export default function Stars({
@@ -69,10 +69,10 @@ export default function Stars({
       stars = Array.from({ length: count }).map(() => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        r: rand(0.4, 1.1),               // radius
-        baseAlpha: rand(0.25, 0.8),      // base opacity
-        twinkleSpeed: rand(0.5, 2.2),    // twinkle frequency
-        phase: rand(0, Math.PI * 2),     // phase offset for sine wave
+        r: rand(0.4, 1.1), // radius
+        baseAlpha: rand(0.25, 0.8), // base opacity
+        twinkleSpeed: rand(0.5, 2.2), // twinkle frequency
+        phase: rand(0, Math.PI * 2), // phase offset for sine wave
       }));
     }
 
@@ -99,7 +99,8 @@ export default function Stars({
       stars.forEach((star) => {
         // Compute twinkle factor with sine wave
         const alpha =
-          star.baseAlpha * (0.6 + 0.4 * Math.sin(star.phase + timeSeconds * star.twinkleSpeed));
+          star.baseAlpha *
+          (0.6 + 0.4 * Math.sin(star.phase + timeSeconds * star.twinkleSpeed));
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         ctx.fillStyle = rgba(Math.max(0, Math.min(1, alpha)));

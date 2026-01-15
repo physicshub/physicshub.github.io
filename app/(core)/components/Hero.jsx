@@ -91,8 +91,8 @@ export function Hero() {
   const chaptersCount = Array.isArray(chaptersData)
     ? chaptersData.length
     : chaptersData && typeof chaptersData === "object"
-    ? Object.keys(chaptersData).length
-    : 0;
+      ? Object.keys(chaptersData).length
+      : 0;
 
   // Split heading into words
   const titleWords = "PhysicsHub – Best website to learn physics easily.".split(
@@ -105,7 +105,7 @@ export function Hero() {
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       animate="show"
-      style={{ position: "relative", overflow: "hidden" }}    
+      style={{ position: "relative", overflow: "hidden" }}
     >
       {/* Animated H1 with per-word glow on PhysicsHub */}
       <motion.h1

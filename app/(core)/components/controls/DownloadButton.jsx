@@ -41,7 +41,11 @@ export default function DownloadButton({ inputs, simulation }) {
             "If the download does not start automatically, please click on 'Download'.",
           buttons: [
             {
-              label: <span><FontAwesomeIcon icon={faDownload} /> Download</span>,
+              label: (
+                <span>
+                  <FontAwesomeIcon icon={faDownload} /> Download
+                </span>
+              ),
               onClick: () => handleDownload(),
               type: "primary",
             },

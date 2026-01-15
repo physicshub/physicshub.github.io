@@ -1,12 +1,12 @@
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from "node:events";
 
-export type LogLevel = 'info' | 'error' | 'debug';
+export type LogLevel = "info" | "error" | "debug";
 const loggerEmitter = new EventEmitter({
   captureRejections: true,
 });
 
 // Key for log events
-export const LOG_EVENT_KEY = 'physicshub-logger-event';
+export const LOG_EVENT_KEY = "physicshub-logger-event";
 
 // Mapping log levels to numeric values for comparison
 const logLevelValues: { [Key in LogLevel]: number } = {
@@ -34,9 +34,9 @@ const createLogger = () => {
   };
 
   return {
-    info: (message: unknown) => emitLogEvent('info', message),
-    error: (message: unknown) => emitLogEvent('error', message),
-    debug: (message: unknown) => emitLogEvent('debug', message),
+    info: (message: unknown) => emitLogEvent("info", message),
+    error: (message: unknown) => emitLogEvent("error", message),
+    debug: (message: unknown) => emitLogEvent("debug", message),
   };
 };
 

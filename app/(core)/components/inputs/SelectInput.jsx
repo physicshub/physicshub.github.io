@@ -2,14 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function SelectInput({ 
-  label, 
-  name, 
-  options,
-  value, 
-  onChange, 
-  placeholder
-}) {
+function SelectInput({ label, name, options, value, onChange, placeholder }) {
   return (
     <div className="select-container">
       {label && (
@@ -30,13 +23,15 @@ function SelectInput({
               {placeholder}
             </option>
           )}
-          {options.map(opt => (
+          {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        <span className="select-arrow" aria-hidden="true">▾</span>
+        <span className="select-arrow" aria-hidden="true">
+          ▾
+        </span>
       </div>
     </div>
   );
@@ -50,12 +45,12 @@ SelectInput.propTypes = {
   ).isRequired,
   value: PropTypes.any,
   onChange: PropTypes.func.isRequired,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
 };
 
 SelectInput.defaultProps = {
   label: "",
-  placeholder: ""
+  placeholder: "",
 };
 
 export default SelectInput;

@@ -139,7 +139,10 @@ header {
   text-align: center;
   border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
-  transition: padding 0.3s, box-shadow 0.3s, top 0.3s;
+  transition:
+    padding 0.3s,
+    box-shadow 0.3s,
+    top 0.3s;
   z-index: 2000;
 }
 
@@ -165,7 +168,9 @@ header.sticky {
   position: relative;
   border-radius: 10%;
   height: 3rem;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .logo img:hover {
@@ -216,17 +221,18 @@ nav a:hover::after {
   width: 100%;
 }
 
-.nav-underline{
+.nav-underline {
   position: absolute;
   bottom: -3px; /* adjust distance below text */
   left: 0;
   height: 2px;
   background: var(--accent-color);
   border-radius: 2px;
-  transition: left 0.3s ease, width 0.3s ease; /* smooth slide */
+  transition:
+    left 0.3s ease,
+    width 0.3s ease; /* smooth slide */
   z-index: 100;
 }
-
 
 .controls {
   display: flex;
@@ -241,7 +247,9 @@ nav a:hover::after {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   overflow: hidden;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
   color: var(--ph-fg);
   background: color-mix(in oklab, var(--accent-color), transparent 92%);
   border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
@@ -297,7 +305,9 @@ nav a:hover::after {
   padding: 0.5rem;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background 0.3s, border-color 0.3s;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
   height: 100%;
   display: flex;
   align-items: center;
@@ -395,7 +405,9 @@ nav a:hover::after {
   font-size: 0.8em;
   line-height: 1;
   opacity: 0.7;
-  transition: transform 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
   margin-right: 0.5rem;
 }
 
@@ -410,7 +422,6 @@ header.open nav ul {
 }
 
 /* Responsive */
-
 
 @media (max-width: 840px) {
   .menu-toggle {
@@ -450,13 +461,13 @@ header.open nav ul {
   /* Horizontal filters container */
   .horizontal-menu-container {
     width: 100%;
-    display: none;          /* hidden by default */
+    display: none; /* hidden by default */
     margin-bottom: 8.5rem;
     overflow: visible;
   }
 
   .horizontal-menu-container.open {
-    display: block;         /* show when filter button clicked */
+    display: block; /* show when filter button clicked */
   }
 
   .horizontal-menu {
@@ -464,7 +475,7 @@ header.open nav ul {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     width: 100%;
-    white-space: normal;     /* allow wrapping to multiple rows */
+    white-space: normal; /* allow wrapping to multiple rows */
     overflow: visible;
   }
 
@@ -476,7 +487,6 @@ header.open nav ul {
     margin-bottom: 0;
   }
 }
-
 
 .simulations-container {
   display: flex;
@@ -500,7 +510,7 @@ main.simulations-page {
   margin-inline: auto;
 }
 
-.simulations-header{
+.simulations-header {
   max-width: 1200px;
   margin: 3rem auto 2.5rem;
   padding: 0 1rem;
@@ -560,16 +570,56 @@ main.simulations-page {
 }
 
 /* Random positions, delays, and speed for natural effect */
-.wind-streak.streak0 { left: 5%; animation-duration: 1.3s; animation-delay: 0s; }
-.wind-streak.streak1 { left: 15%; animation-duration: 1.5s; animation-delay: 0.1s; }
-.wind-streak.streak2 { left: 25%; animation-duration: 1.4s; animation-delay: 0.2s; }
-.wind-streak.streak3 { left: 35%; animation-duration: 1.6s; animation-delay: 0.05s; }
-.wind-streak.streak4 { left: 45%; animation-duration: 1.3s; animation-delay: 0.15s; }
-.wind-streak.streak5 { left: 55%; animation-duration: 1.45s; animation-delay: 0.1s; }
-.wind-streak.streak6 { left: 65%; animation-duration: 1.5s; animation-delay: 0.2s; }
-.wind-streak.streak7 { left: 75%; animation-duration: 1.6s; animation-delay: 0s; }
-.wind-streak.streak8 { left: 85%; animation-duration: 1.4s; animation-delay: 0.12s; }
-.wind-streak.streak9 { left: 95%; animation-duration: 1.5s; animation-delay: 0.05s; }
+.wind-streak.streak0 {
+  left: 5%;
+  animation-duration: 1.3s;
+  animation-delay: 0s;
+}
+.wind-streak.streak1 {
+  left: 15%;
+  animation-duration: 1.5s;
+  animation-delay: 0.1s;
+}
+.wind-streak.streak2 {
+  left: 25%;
+  animation-duration: 1.4s;
+  animation-delay: 0.2s;
+}
+.wind-streak.streak3 {
+  left: 35%;
+  animation-duration: 1.6s;
+  animation-delay: 0.05s;
+}
+.wind-streak.streak4 {
+  left: 45%;
+  animation-duration: 1.3s;
+  animation-delay: 0.15s;
+}
+.wind-streak.streak5 {
+  left: 55%;
+  animation-duration: 1.45s;
+  animation-delay: 0.1s;
+}
+.wind-streak.streak6 {
+  left: 65%;
+  animation-duration: 1.5s;
+  animation-delay: 0.2s;
+}
+.wind-streak.streak7 {
+  left: 75%;
+  animation-duration: 1.6s;
+  animation-delay: 0s;
+}
+.wind-streak.streak8 {
+  left: 85%;
+  animation-duration: 1.4s;
+  animation-delay: 0.12s;
+}
+.wind-streak.streak9 {
+  left: 95%;
+  animation-duration: 1.5s;
+  animation-delay: 0.05s;
+}
 
 @keyframes wind-float {
   0% {
@@ -584,9 +634,6 @@ main.simulations-page {
     opacity: 0;
   }
 }
-
-
-
 
 /* Ensure white background for light mode */
 [data-theme="light"] main {
@@ -604,10 +651,14 @@ main.simulations-page {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  border: 0 solid transparent; 
+  border: 0 solid transparent;
   border-radius: var(--border-radius);
   box-shadow: 0 0 4px var(--accent-color);
-  transition: transform 0.3s, box-shadow 0.3s, border-width 0.3s, border-color 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    border-width 0.3s,
+    border-color 0.3s;
   padding: 0.5rem;
   color: var(--ph-fg);
   height: 100%;
@@ -618,7 +669,9 @@ main.simulations-page {
   transform: translateY(-5px);
   border-color: var(--accent-color);
   border-width: 1px;
-  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4), 0 0 30px rgba(0, 123, 255, 0.3);  
+  box-shadow:
+    0 10px 20px rgba(0, 123, 255, 0.4),
+    0 0 30px rgba(0, 123, 255, 0.3);
   animation: glowPulse 1s infinite alternate;
 }
 
@@ -639,14 +692,19 @@ main.simulations-page {
   z-index: 0;
 }
 
-.chapter-card::after{
+.chapter-card::after {
   content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 0.4) 50%,rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
   transform: skewX(-20deg);
   pointer-events: none;
   z-index: 1;
@@ -699,7 +757,9 @@ main.simulations-page {
   border-radius: var(--border-radius);
   text-align: center;
   color: var(--accent-color);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
   margin-top: auto;
   white-space: nowrap;
   display: inline-flex;
@@ -759,38 +819,37 @@ main.simulations-page {
   0% {
     box-shadow:
       0 10px 20px rgba(45, 212, 191, 0.25),
-      0 0 30px rgba(56, 189, 248, 0.20),
+      0 0 30px rgba(56, 189, 248, 0.2),
       0 0 50px rgba(30, 136, 216, 0.15);
   }
 
   50% {
     box-shadow:
-      0 14px 28px rgba(45, 212, 191, 0.40),
-      0 0 45px rgba(56, 189, 248, 0.30),
+      0 14px 28px rgba(45, 212, 191, 0.4),
+      0 0 45px rgba(56, 189, 248, 0.3),
       0 0 80px rgba(30, 136, 216, 0.22);
   }
 
   100% {
     box-shadow:
       0 10px 20px rgba(45, 212, 191, 0.25),
-      0 0 30px rgba(56, 189, 248, 0.20),
+      0 0 30px rgba(56, 189, 248, 0.2),
       0 0 50px rgba(30, 136, 216, 0.15);
   }
 }
 
-
 @keyframes shineSweep {
-  0%{
+  0% {
     left: -100%;
   }
-  65%{
+  65% {
     left: 120%;
   }
-  80%{
+  80% {
     left: 120%;
     opacity: 0;
   }
-  100%{
+  100% {
     left: -100%;
     opacity: 0;
   }
@@ -878,12 +937,16 @@ footer {
   width: 0.7em;
   height: 0.7em;
   border-radius: 50%;
-  transition: box-shadow 0.3s, background 0.3s;
+  transition:
+    box-shadow 0.3s,
+    background 0.3s;
 }
 
 .footer-links a {
   color: var(--accent-color);
-  transition: color 0.3s, text-shadow 0.3s;
+  transition:
+    color 0.3s,
+    text-shadow 0.3s;
 }
 
 .footer-links a:hover {
@@ -911,7 +974,9 @@ footer {
 
 .footer-socials a > * {
   transform: scale(1) rotateY(0deg);
-  transition: transform 0.3s, text-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    text-shadow 0.3s;
 }
 
 .footer-socials a:hover > * {
@@ -957,7 +1022,10 @@ footer {
   opacity: 0;
   bottom: -20px;
   pointer-events: none; /* non cliccabile quando invisibile */
-  transition: transform 0.3s, opacity 0.4s ease, bottom 0.4s ease;
+  transition:
+    transform 0.3s,
+    opacity 0.4s ease,
+    bottom 0.4s ease;
   z-index: 1000;
 }
 
@@ -1025,7 +1093,9 @@ footer {
   color: var(--accent-color);
   text-shadow: 0 0 4px var(--glow-color);
   background: rgba(0, 230, 230, 0);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -1047,7 +1117,9 @@ footer {
     transparent 50%
   );
   opacity: 0;
-  transition: opacity 0.5s, transform 0.5s;
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
   transform: scale(0);
 }
 
@@ -1190,7 +1262,9 @@ footer {
   background-color: var(--input-bg);
   color: var(--text-color);
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .input-text:focus,
@@ -1229,7 +1303,9 @@ footer {
   border: 2px solid #000;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   margin-top: -5px;
 }
 
@@ -1272,7 +1348,9 @@ footer {
   background: var(--border-color);
   border-radius: 1rem;
   margin-right: 0.75rem;
-  transition: background 0.3s, box-shadow 0.3s;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
 }
 
 .checkbox-toggle::after {
@@ -1283,7 +1361,9 @@ footer {
   margin: 0 0.2rem;
   background: var(--accent-color);
   border-radius: 1rem;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .checkbox-input:checked + .checkbox-label .checkbox-toggle {
@@ -1331,7 +1411,9 @@ footer {
   border: 1px solid var(--input-border);
   border-radius: var(--border-radius);
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .select-input:focus {
@@ -1372,7 +1454,10 @@ footer {
   font-family: inherit;
   text-shadow: 0 0 4px var(--accent-color);
   overflow: hidden;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.1s;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s,
+    transform 0.1s;
   gap: 0.5rem;
 }
 
@@ -1390,7 +1475,9 @@ footer {
   );
   opacity: 0;
   transform: scale(0);
-  transition: opacity 0.5s, transform 0.5s;
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
 }
 
 .back-to-home__link:hover::before {
@@ -1523,8 +1610,6 @@ footer {
 .wind-container {
   position: relative;
 }
-
-
 
 /* Posizionata sul lato sinistro, centrata verticalmente */
 .wind-overlay {
@@ -1963,7 +2048,10 @@ ul {
   padding: 0.7rem;
   border-radius: var(--border-radius);
   pointer-events: auto; /* serve per cliccare i bottoni */
-  transition: padding 0.3s ease, width 0.3s ease, height 0.3s ease;
+  transition:
+    padding 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
   overflow: auto;
 }
 
@@ -2011,7 +2099,10 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: padding 0.3s ease, width 0.3s ease, height 0.3s ease;
+  transition:
+    padding 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
   overflow: hidden;
 }
 .sim-info-panel.collapsed .sim-info-header {
@@ -2284,7 +2375,9 @@ ul {
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   height: 100%;
 }
 
@@ -2731,7 +2824,9 @@ ul {
   color: var(--text-color);
   font-size: 1rem;
   line-height: 1.5;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 
 .blog-editor-area input:focus,
@@ -2764,7 +2859,9 @@ ul {
   padding: 10px 15px;
   font-size: 1rem;
   cursor: pointer;
-  transition: color 0.3s, border-bottom 0.3s;
+  transition:
+    color 0.3s,
+    border-bottom 0.3s;
   border-bottom: 2px solid transparent;
   color: #888;
   margin-bottom: -1px;

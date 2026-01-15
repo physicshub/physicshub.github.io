@@ -11,9 +11,9 @@ const containerVariants = (rm) => ({
     opacity: 1,
     transition: {
       delayChildren: rm ? 0.1 : 0.6,
-      staggerChildren: rm ? 0.08 : 0.25
-    }
-  }
+      staggerChildren: rm ? 0.08 : 0.25,
+    },
+  },
 });
 
 const fadeUp = (rm) => ({
@@ -23,22 +23,31 @@ const fadeUp = (rm) => ({
     y: 0,
     transition: {
       duration: rm ? 0.5 : 1.2,
-      ease: [0.22, 1, 0.36, 1]
-    }
-  }
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
 });
 
 const buttonVariant = {
   hidden: { opacity: 0, y: 24, scale: 0.96 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 90, damping: 16 } },
-  hover: { scale: 1.04, boxShadow: "0 10px 30px rgba(0,0,0,0.18)", transition: { duration: 0.25 } },
-  tap: { scale: 0.98 }
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 90, damping: 16 },
+  },
+  hover: {
+    scale: 1.04,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+    transition: { duration: 0.25 },
+  },
+  tap: { scale: 0.98 },
 };
 
 // Config CTA
 const defaultCTAs = [
   /* Example for CTAs: */
-/*{
+  /*{
     label: "Go to Simulations",
     to: "/simulations",
     type: "primary",
@@ -66,8 +75,8 @@ const defaultCTAs = [
 ];
 
 const defaultStats = [
-/* Example for Stats: */
-/*{
+  /* Example for Stats: */
+  /*{
     label: "Chapters:",
     value: "2",
     icon: faListNumeric
@@ -110,9 +119,9 @@ export function LandingPart({
       </motion.p>
 
       <Popup
-        isOpen={open}        
+        isOpen={open}
         onClose={() => setOpen(false)}
-        popupContent={ctas.find(cta => cta.popup)?.popup}
+        popupContent={ctas.find((cta) => cta.popup)?.popup}
       />
 
       {/* CTA buttons */}
@@ -140,7 +149,9 @@ export function LandingPart({
                   rel="noopener noreferrer"
                 >
                   {label}
-                  {icon && <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />}
+                  {icon && (
+                    <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />
+                  )}
                 </a>
               ) : (
                 <Link
@@ -149,13 +160,14 @@ export function LandingPart({
                   target={target}
                 >
                   {label}
-                  {icon && <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />}
+                  {icon && (
+                    <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />
+                  )}
                 </Link>
               )}
             </motion.div>
           );
         })}
-
       </motion.div>
 
       {/* Stats */}
@@ -176,4 +188,3 @@ export function LandingPart({
     </motion.div>
   );
 }
-

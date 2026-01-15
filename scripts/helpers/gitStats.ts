@@ -1,6 +1,6 @@
 // scripts/helpers/gitStats.ts
-import axios from 'axios';
-import { green, red, yellow } from '../helpers/painter.ts';
+import axios from "axios";
+import { green, red, yellow } from "../helpers/painter.ts";
 
 export interface ContributorStats {
   additions: number | null;
@@ -19,9 +19,9 @@ export const getRemoteStats = async (
   maxRetries = 10,
   delayMs = 5000
 ): Promise<ContributorStats> => {
-  if(!process.env.GH_TOKEN){
-    console.log(red("GH_TOKEN isn't defined. Define it on .env file"))
-    return { additions: null, deletions: null, commits: null };;
+  if (!process.env.GH_TOKEN) {
+    console.log(red("GH_TOKEN isn't defined. Define it on .env file"));
+    return { additions: null, deletions: null, commits: null };
   }
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -30,8 +30,8 @@ export const getRemoteStats = async (
         `https://api.github.com/repos/physicshub/physicshub.github.io/stats/contributors`,
         {
           headers: {
-            accept: 'application/json',
-            'User-Agent': 'Contributors script',
+            accept: "application/json",
+            "User-Agent": "Contributors script",
             ...(process.env.GH_TOKEN
               ? { Authorization: `token ${process.env.GH_TOKEN}` }
               : {}),
@@ -75,7 +75,9 @@ export const getRemoteStats = async (
       return { additions, deletions, commits };
     } catch (err) {
       console.error(
-        red(`Error fetching stats for ${author}. Attempt ${attempt}/${maxRetries}`)
+        red(
+          `Error fetching stats for ${author}. Attempt ${attempt}/${maxRetries}`
+        )
       );
       // aspetta e riprova invece di uscire subito
       await new Promise((resolve) => setTimeout(resolve, delayMs));

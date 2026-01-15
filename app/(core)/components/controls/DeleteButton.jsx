@@ -8,7 +8,13 @@ export default function DeleteButton({ simulation }) {
     alert("Simulation Inputs deleted for " + simulation + "!");
   };
 
-  return <button onClick={handleDelete} className="btn-glow" title="Delete saved inputs from local memory">
-    <FontAwesomeIcon icon={faTrash} />
-  </button>;
+  return (
+    <button
+      onClick={handleDelete}
+      className="btn-glow"
+      title="Delete saved inputs from local memory"
+    >
+      <FontAwesomeIcon icon={faTrash} />
+    </button>
+  );
 }

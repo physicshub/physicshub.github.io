@@ -4,10 +4,10 @@ import Link from "next/link";
 import Button from "../../(core)/components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSliders,       
-  faSquareRootVariable, 
-  faMoon,        
-  faCodeBranch,  
+  faSliders,
+  faSquareRootVariable,
+  faMoon,
+  faCodeBranch,
 } from "@fortawesome/free-solid-svg-icons";
 import chaptersData from "../../(core)/data/chapters.js";
 
@@ -36,8 +36,8 @@ export default function About() {
   const chaptersCount = Array.isArray(chaptersData)
     ? chaptersData.length
     : chaptersData && typeof chaptersData === "object"
-    ? Object.keys(chaptersData).length
-    : 0;
+      ? Object.keys(chaptersData).length
+      : 0;
 
   // Fetch data from GitHub API on component mount
   useEffect(() => {
@@ -91,7 +91,9 @@ export default function About() {
     <div className="about-page">
       <section className="about-hero">
         <div className="about-hero__text">
-          <p className="about-eyebrow">PhysicsHub - Open-source physics playground</p>
+          <p className="about-eyebrow">
+            PhysicsHub - Open-source physics playground
+          </p>
           <h1 className="title text-2xl">
             Stop memorizing formulas. <br /> Start visualizing them.
           </h1>

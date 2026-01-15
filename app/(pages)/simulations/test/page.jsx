@@ -6,8 +6,17 @@ import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
 import { toMeters, toPixels } from "../../../(core)/constants/Utils.js";
-import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
-import { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } from "../../../(core)/data/configs/test.js";
+import {
+  computeDelta,
+  resetTime,
+  isPaused,
+  setPause,
+} from "../../../(core)/constants/Time.js";
+import {
+  INITIAL_INPUTS,
+  INPUT_FIELDS,
+  SimInfoMapper,
+} from "../../../(core)/data/configs/test.js";
 import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
@@ -28,7 +37,10 @@ import Body from "../../../(core)/physics/Body";
 export default function Test() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+    INITIAL_INPUTS,
+    storageKey
+  );
   const [resetVersion, setResetVersion] = useState(0);
 
   const { simData, updateSimInfo } = useSimInfo();
@@ -53,7 +65,11 @@ export default function Test() {
     const { clientWidth: w, clientHeight: h } = p._userNode;
 
     return Array.from({ length: numBodies }, () => {
-      const randomColor = p.color(p.random(0, 255), p.random(0, 255), p.random(0, 255));
+      const randomColor = p.color(
+        p.random(0, 255),
+        p.random(0, 255),
+        p.random(0, 255)
+      );
       const randomX = toMeters(p.random(50, w - 50));
       const randomY = toMeters(p.random(50, h / 2));
 
@@ -89,7 +105,11 @@ export default function Test() {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
         trailLayerRef.current = initTrailLayer(p, w, h);
-        bodiesRef.current = createBodies(p, inputsRef.current.numBodies, inputsRef.current);
+        bodiesRef.current = createBodies(
+          p,
+          inputsRef.current.numBodies,
+          inputsRef.current
+        );
         p.background(getBackgroundColor());
       };
 
@@ -129,12 +149,7 @@ export default function Test() {
 
           // Aggiorna sim info solo sul primo corpo
           if (i === 0) {
-            updateSimInfo(
-              p,
-              {  },
-              { p },
-              SimInfoMapper
-            );
+            updateSimInfo(p, {}, { p }, SimInfoMapper);
           }
         });
       };

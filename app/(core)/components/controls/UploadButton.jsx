@@ -14,7 +14,9 @@ export default function UploadButton({ onLoad, simulation }) {
       try {
         const parsed = JSON.parse(event.target.result);
         if (onLoad) onLoad(parsed);
-        alert("Inputs for the simulation" + simulation + " uploaded successfully!");
+        alert(
+          "Inputs for the simulation" + simulation + " uploaded successfully!"
+        );
       } catch (err) {
         alert("Error: JSON file is not valid.");
         console.error(err);

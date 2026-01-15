@@ -9,8 +9,18 @@ import { useState, useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { computeDelta, resetTime, isPaused, setPause } from "../../../(core)/constants/Time.js";
-import { INITIAL_INPUTS, INPUT_FIELDS, FORCES, SimInfoMapper } from "../../../(core)/data/configs/test.js";
+import {
+  computeDelta,
+  resetTime,
+  isPaused,
+  setPause,
+} from "../../../(core)/constants/Time.js";
+import {
+  INITIAL_INPUTS,
+  INPUT_FIELDS,
+  FORCES,
+  SimInfoMapper,
+} from "../../../(core)/data/configs/test.js";
 import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
@@ -22,20 +32,24 @@ import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
 // --- Hooks & Utils ---
 import useSimulationState from "../../../(core)/hooks/useSimulationState";
 import useSimInfo from "../../../(core)/hooks/useSimInfo";
-import { drawForceVector, getActiveForces } from "../../../(core)/utils/drawUtils.js";
+import {
+  drawForceVector,
+  getActiveForces,
+} from "../../../(core)/utils/drawUtils.js";
 
 // --- Centralized Body classes ---
 
 export default function Test() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(INITIAL_INPUTS, storageKey);
+  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+    INITIAL_INPUTS,
+    storageKey
+  );
   const [resetVersion, setResetVersion] = useState(0);
 
   // Centralized sim info system
-  const { simData, updateSimInfo } = useSimInfo({  });
-
-  
+  const { simData, updateSimInfo } = useSimInfo({});
 
   const handleInputChange = useCallback(
     (name, value) => {
@@ -51,7 +65,6 @@ export default function Test() {
 
   const sketch = useCallback(
     (p) => {
-
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
@@ -60,13 +73,11 @@ export default function Test() {
       };
 
       p.draw = () => {
-        const { } = inputsRef.current;
+        const {} = inputsRef.current;
         const dt = computeDelta(p);
 
         // Vettori forze
-        const activeForces = getActiveForces(
-          FORCES,
-        );
+        const activeForces = getActiveForces(FORCES);
 
         for (const f of activeForces) {
           drawForceVector(p, pixelX, pixelY, f.vec, f.color);
