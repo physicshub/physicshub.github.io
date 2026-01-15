@@ -1,15 +1,17 @@
+"use client";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faHome } from '@fortawesome/free-solid-svg-icons';
 import React from "react";
 import Link from 'next/link';
+import { useIsMobile } from '../hooks/useMobile';
 
 interface BaseProps {
-  type?: 'full' | 'icon';
+  type?: 'full' | 'icon' | 'responsive';
   arrowPosition?: 'left' | 'right';
 }
 
 interface FullLinkProps extends BaseProps {
-  type: 'full';
+  type: 'full' | 'responsive';
   content: React.ReactNode;
   link: string;
   onClick?: never;
@@ -23,7 +25,7 @@ interface IconLinkProps extends BaseProps {
 }
 
 interface FullButtonProps extends BaseProps {
-  type: 'full';
+  type: 'full' | 'responsive';
   content: React.ReactNode;
   link?: undefined;
   onClick: () => void;
@@ -50,6 +52,8 @@ function Back({
   type = "icon",
   arrowPosition = "left"
 }: Props) {
+  
+  const isMobile = useIsMobile();
 
   const arrowIcon = (
     <span className="back-to-home__icon" aria-hidden="true">
@@ -57,8 +61,8 @@ function Back({
     </span>
   );
 
-  const mainIcon =
-    type === "full"
+  // Determina l'icona da mostrare
+  const mainIcon = (type === "full" || type === "responsive")
       ? arrowIcon
       : (
         <span className="back-to-home__icon" aria-hidden="true">
@@ -66,7 +70,9 @@ function Back({
         </span>
       );
 
-  const text = type === "full" && (
+  const shouldShowText = type === "full" || (type === "responsive" && !isMobile);
+
+  const text = shouldShowText && (
     <span className="back-to-home__text">{content}</span>
   );
 

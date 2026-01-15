@@ -1,10 +1,12 @@
 import Back from "./Back";
 import simulations from "../data/chapters";
 import { usePathname } from "next/navigation";
+import { useIsMobile } from "../hooks/useMobile";
 
 export default function TopSim() {
   const location = usePathname();
   const idx = simulations.findIndex(sim => sim.link === location);
+  const isMobile = useIsMobile();
 
 
   function getPrevious() {
@@ -27,15 +29,19 @@ export default function TopSim() {
 
   return (
     <div className="top-nav-sim">
-      <div className="top-nav-sim-back-to-home-wrapper">
-        <Back link="/" />
-      </div>
-      <div className="top-nav-sim-inner">
-        <Back link={getPrevious()} type="full" arrowPosition="left" content="Previous" />
+      {!isMobile && 
+        <div className="top-nav-sim-back-to-home-wrapper">
+          <Back link="/" />
+        </div>
+      }
+      <div className="top-nav-sim-inner" style={{maxWidth: isMobile ? '100%' : '80%'}}>
+        <Back link={getPrevious()} type="responsive" arrowPosition="left" content="Previous" />
         <h3>{getCurrentName()}</h3>
-        <Back link={getNext()} type="full" arrowPosition="right" content="Next" />
+        <Back link={getNext()} type="responsive" arrowPosition="right" content="Next" />
       </div>
-      <div className="top-nav-sim-filler"/>
+      {!isMobile && 
+        <div className="top-nav-sim-filler"/>
+      }
     </div>
   );
 }

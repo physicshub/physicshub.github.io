@@ -1506,6 +1506,7 @@ footer {
 
 .top-nav-sim-inner > h3 {
   white-space: nowrap;
+  margin: 0 !important;
 }
 
 .top-nav-sim-back-to-home-wrapper {
