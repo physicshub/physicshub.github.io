@@ -60,6 +60,7 @@ This guide will walk you through **setting up the project locally** and creating
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
