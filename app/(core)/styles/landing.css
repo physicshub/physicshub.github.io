@@ -146,6 +146,7 @@
   border: 1px solid transparent;
   transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, text-shadow 0.4s ease;
   will-change: transform;
+  cursor: pointer;
 }
 
 .ph-btn--primary {

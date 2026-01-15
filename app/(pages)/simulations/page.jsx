@@ -75,7 +75,7 @@ export default function Simulations() {
           Explore core physics concepts through real-time, interactive experiments
         </p>
 
-        <button className="begin-button" onClick={scrollToContent}>
+        <button className="ph-btn ph-btn--primary main-btn" onClick={scrollToContent}>
           Let's begin
         </button>
       </section>
@@ -84,7 +84,7 @@ export default function Simulations() {
       <section ref={contentRef} className="simulations-content">
         <Search onSearch={setSearchTerm} />
 
-        <main className="simulations-page max-width-container">
+        <main className="simulations-page">
           {filteredChapters.map((chap) => (
             <Chapter
               key={chap.id}

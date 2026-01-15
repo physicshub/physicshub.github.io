@@ -9,6 +9,7 @@ import {
   faMoon,        
   faCodeBranch,  
 } from "@fortawesome/free-solid-svg-icons";
+import chaptersData from "../../(core)/data/chapters.js";
 
 // Define the shape of our stats state (JSDoc for editor hints)
 /**
@@ -30,6 +31,14 @@ export default function About() {
     stars: "-", // Fallback value
     contributors: "-", // Fallback value
   });
+
+  // Compute chapters count
+  const chaptersCount = Array.isArray(chaptersData)
+    ? chaptersData.length
+    : chaptersData && typeof chaptersData === "object"
+    ? Object.keys(chaptersData).length
+    : 0;
+
   // Fetch data from GitHub API on component mount
   useEffect(() => {
     const fetchStats = async () => {
@@ -62,27 +71,27 @@ export default function About() {
 
   const stats = [
     {
-      label: "Interactive Labs",
-      value: "6+",
-      helper: "Classical mechanics, waves, and thermodynamics.",
+      label: "Interactive Simulations",
+      value: chaptersCount,
+      helper: "Hands-on experiments across physics topics.",
     },
     {
       label: "GitHub Stars",
       value: ghStats.stars,
-      helper: "Trusted by the open-source community.",
+      helper: "Loved by the open-source community.",
     },
     {
       label: "Contributors",
       value: ghStats.contributors,
-      helper: "Code committed by students & devs worldwide.",
+      helper: "Students, devs and physics lovers worldwide.",
     },
   ];
 
   return (
-    <div className="page-container about-page">
+    <div className="about-page">
       <section className="about-hero">
         <div className="about-hero__text">
-          <p className="about-eyebrow">Open-source physics playground</p>
+          <p className="about-eyebrow">PhysicsHub - Open-source physics playground</p>
           <h1 className="title text-2xl">
             Stop memorizing formulas. <br /> Start visualizing them.
           </h1>

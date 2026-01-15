@@ -228,14 +228,6 @@ nav a:hover::after {
 }
 
 
-.max-width-container{
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
 .controls {
   display: flex;
   align-items: center;
@@ -505,7 +497,6 @@ main.simulations-page {
 main.simulations-page {
   margin-bottom: 7.5rem;
   padding: 2rem;
-  max-width: 1400px;
   margin-inline: auto;
 }
 
@@ -532,7 +523,7 @@ main.simulations-page {
 }
 
 .simulations-hero {
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -566,24 +557,6 @@ main.simulations-page {
 }
 .simulations-content > * {
   width: 1000%;
-}
-
-.begin-button {
-  padding: 0.9rem 2.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #1fb6a6 0%, #1e6fbf 100%);
-
-  color: #e6fafa;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.begin-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(94, 234, 212, 0.4);
 }
 
 /* Random positions, delays, and speed for natural effect */
@@ -1596,25 +1569,20 @@ footer {
   }
 }
 
-/* Countribute About pages */
-
-.page-container {
-  flex: 1;
-  padding: 7rem 4rem 2rem;
-  display: grid;
-  gap: 1rem;
-}
-
-.page-container ol,
-ul {
-  padding-left: 1rem;
-}
-
 /* About page */
 .about-page {
   width: min(1200px, 100%);
   margin-inline: auto;
   gap: clamp(1.5rem, 3vw, 2.5rem);
+  flex: 1;
+  padding: 7rem 2rem 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.about-page ol,
+ul {
+  padding-left: 1rem;
 }
 
 .about-hero {
@@ -2133,7 +2101,7 @@ ul {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 8rem 20px 0 20px;
+  padding: 8rem 2rem 0;
 }
 
 .contribution-workflow {
@@ -2488,11 +2456,6 @@ ul {
 }
 
 @media (max-width: 768px) {
-  .contribution-page-container {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-
   .contribution-workflow {
     flex-direction: column;
   }
@@ -2524,11 +2487,6 @@ ul {
 }
 
 @media (max-width: 600px) {
-  .contribution-page-container {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
   .contribution-grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -2574,11 +2532,6 @@ ul {
 }
 
 @media (max-width: 480px) {
-  .contribution-page-container {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
   .contribution-grid {
     padding: 0 5px;
   }
