@@ -5,6 +5,7 @@ import "katex/dist/katex.min.css";
 import Script from "next/script";
 import Layout from "./(core)/components/Layout.jsx";
 import { Metadata } from "next";
+import { FeedbackProvider } from "./(core)/context/FeedbackProvider.tsx";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://physicshub.github.io"),
@@ -57,44 +58,46 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
-      <body>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
-          strategy="afterInteractive"
-        />
-        <Script id="ga-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-ELZTKTE86N');
-          `}
-        </Script>
+    <FeedbackProvider>
+      <html lang="en" dir="ltr">
+        <body>
+          {/* Google Analytics */}
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
+            strategy="afterInteractive"
+          />
+          <Script id="ga-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-ELZTKTE86N');
+            `}
+          </Script>
 
-        {/* Theme initialization script */}
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`
-            (function() {
-              const THEME_STORAGE_KEY = 'physicshub-theme';
-              const saved = localStorage.getItem(THEME_STORAGE_KEY);
-              const theme = saved && ['light','dark'].includes(saved) ? saved : 'dark';
-              document.addEventListener("DOMContentLoaded", () => {
-                document.body.dataset.theme = theme;
-                if (theme === 'light') {
-                  document.body.style.backgroundColor = '#ffffff';
-                }
-              });
-            })();
-          `}
-        </Script>
+          {/* Theme initialization script */}
+          <Script id="theme-init" strategy="beforeInteractive">
+            {`
+              (function() {
+                const THEME_STORAGE_KEY = 'physicshub-theme';
+                const saved = localStorage.getItem(THEME_STORAGE_KEY);
+                const theme = saved && ['light','dark'].includes(saved) ? saved : 'dark';
+                document.addEventListener("DOMContentLoaded", () => {
+                  document.body.dataset.theme = theme;
+                  if (theme === 'light') {
+                    document.body.style.backgroundColor = '#ffffff';
+                  }
+                });
+              })();
+            `}
+          </Script>
 
-        <Layout showStars={true} showGradient={true}>
-          {children}
-        </Layout>
-      </body>
-    </html>
+          <Layout showStars={true} showGradient={true}>
+            {children}
+          </Layout>
+        </body>
+      </html>
+    </FeedbackProvider>
   );
 }
 

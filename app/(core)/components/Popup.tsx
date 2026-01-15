@@ -64,7 +64,9 @@ const ExamplePage = () => {
 export default ExamplePage; */
 
 
-const Popup: React.FC<PopupProps> = ({ isOpen, onClose, popupContent }) => {
+const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({ 
+  isOpen, onClose, popupContent, children 
+}) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -85,6 +87,9 @@ const Popup: React.FC<PopupProps> = ({ isOpen, onClose, popupContent }) => {
       <div className={`popup-container ${isOpen ? "popup-enter" : "popup-exit"}`}>
         <h2 className="ph-hero__title">{title}</h2>
         {description && <p className="ph-hero__subtitle">{description}</p>}
+
+        <div className="popup-custom-content">{children}</div>
+        
         <div className="popup-buttons">
           {buttons.map((btn, idx) => (
             <a

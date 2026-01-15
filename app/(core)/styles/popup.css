@@ -23,12 +23,13 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* meglio top-align per contenuti variabili */
-  background: var(--bg);
+  background: var(--bg-gradient);
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
   border-radius: var(--border-radius);
   padding: 1.5rem;
   
+  width: 30rem;
   max-width: 70%;
   max-height: 80vh; /* non oltre l’altezza viewport */
   overflow-y: auto; /* scroll se i contenuti superano l’altezza */
@@ -64,4 +65,40 @@
 .popup-buttons {
   display: flex;
   gap: 1rem;
+  cursor: pointer;
+}
+
+.feedback-form {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.feedback-textarea {
+  width: 100%;
+  min-height: 10rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  resize: vertical;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  transition: transform 0.2s;
+}
+
+.star-rating span:hover {
+  transform: scale(1.2);
 }
