@@ -30,12 +30,42 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 
+// --- INTERFACCE TYPESCRIPT ---
+interface Block {
+  type: string;
+  text?: string;
+  code?: string;
+  language?: string;
+  latex?: string;
+  inline?: boolean;
+  items?: string[];
+  ordered?: boolean;
+  calloutType?: string;
+  title?: string;
+  content?: string;
+  columns?: string[];
+  data?: any[];
+  src?: string;
+  alt?: string;
+  caption?: string;
+  level?: number;
+}
+
+interface Section {
+  blocks: Block[];
+}
+
+interface BlogContent {
+  title: string;
+  sections: Section[];
+}
+
 const DynamicEditor = dynamic(
   () => import("../../../(core)/components/Editor"),
   { ssr: false }
 );
 
-const objectToJSString = (obj, indent = 2) => {
+const objectToJSString = (obj: any, indent = 2): string => {
   const spacing = " ".repeat(indent);
 
   if (Array.isArray(obj)) {
@@ -55,7 +85,6 @@ const objectToJSString = (obj, indent = 2) => {
     const objectString = keys
       .map((key) => {
         const value = objectToJSString(obj[key], indent + 2);
-        // Rimuove le virgolette dalle chiavi se sono nomi validi (es: title invece di "title")
         const safeKey = /^[a-z$_][a-z0-9$_]*$/i.test(key) ? key : `"${key}"`;
         return `${spacing}  ${safeKey}: ${value.trimStart()}`;
       })
@@ -63,10 +92,10 @@ const objectToJSString = (obj, indent = 2) => {
     return "{\n" + objectString + "\n" + spacing + "}";
   }
 
-  return JSON.stringify(obj); // Per stringhe, numeri e booleani
+  return JSON.stringify(obj);
 };
 
-const jsStringToObject = (str: string) => {
+const jsStringToObject = (str: string): any => {
   try {
     return new Function(`return ${str}`)();
   } catch (e) {
@@ -120,7 +149,7 @@ const NEW_BLOCK_TEMPLATES = {
   },
   image: {
     type: "image",
-    src: "https://via.placeholder.com/200",
+    src: "https://placehold.co/600x400/black/white",
     alt: "Placeholder Image",
     caption: "New Image Caption",
   },
@@ -133,8 +162,8 @@ const NEW_BLOCK_TEMPLATES = {
 
 // --- COMPONENTE 1: VISUAL EDITOR (Modifica) ---
 const VisualEditorRenderer: React.FC<{
-  dataContent: string;
-  setDataContent: (content: string) => void;
+  dataContent: BlogContent;
+  setDataContent: React.Dispatch<React.SetStateAction<BlogContent>>;
 }> = ({ dataContent, setDataContent }) => {
   const handleContentUpdate = useCallback(
     (
@@ -296,7 +325,7 @@ const VisualEditorRenderer: React.FC<{
 
 // --- COMPONENTE 2: LIVE PREVIEW (Sola Lettura) ---
 const LivePreviewRenderer: React.FC<{
-  dataContent: string;
+  dataContent: BlogContent;
 }> = ({ dataContent }) => {
   try {
     if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
@@ -621,7 +650,7 @@ export default function CreateBlogPage() {
               <div className="form-group full-height">
                 <DynamicEditor
                   value={dataContentString}
-                  onChange={(newString) => {
+                  onChange={(newString: string) => {
                     try {
                       const parsed = jsStringToObject(newString);
                       if (parsed && typeof parsed === "object") {
