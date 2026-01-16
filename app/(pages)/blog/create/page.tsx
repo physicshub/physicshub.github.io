@@ -29,9 +29,11 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
+import { BlogContent } from "../../../(core)/components/theory/types";
 
 // --- INTERFACCE TYPESCRIPT ---
 interface Block {
+  id?: string;
   type: string;
   text?: string;
   code?: string;
@@ -49,15 +51,6 @@ interface Block {
   alt?: string;
   caption?: string;
   level?: number;
-}
-
-interface Section {
-  blocks: Block[];
-}
-
-interface BlogContent {
-  title: string;
-  sections: Section[];
 }
 
 const DynamicEditor = dynamic(
@@ -200,17 +193,20 @@ const VisualEditorRenderer: React.FC<{
 
   const handleDeleteBlock = useCallback(
     (sectionIndex: number, blockIndex: number) => {
-      if (!window.confirm("Are you sure you want to delete this block?"))
-        return;
+      if (!window.confirm("Are you sure?")) return;
 
-      try {
-        if (dataContent.sections[sectionIndex]?.blocks[blockIndex]) {
-          dataContent.sections[sectionIndex].blocks.splice(blockIndex, 1);
-          setDataContent(dataContent);
-        }
-      } catch (e) {
-        console.error("Error deleting block:", e);
-      }
+      const newData = { ...dataContent };
+      const newSections = [...newData.sections];
+      const newBlocks = [...newSections[sectionIndex].blocks];
+
+      newBlocks.splice(blockIndex, 1);
+      newSections[sectionIndex] = {
+        ...newSections[sectionIndex],
+        blocks: newBlocks,
+      };
+      newData.sections = newSections;
+
+      setDataContent(newData);
     },
     [dataContent, setDataContent]
   );
@@ -362,7 +358,9 @@ const LivePreviewRenderer: React.FC<{
 export default function CreateBlogPage() {
   const router = useRouter();
   const [title, setTitle] = useState("New Blog Title");
-  const [dataContent, setDataContent] = useState(initialContentData);
+  const [dataContent, setDataContent] = useState<BlogContent>(
+    initialContentData as BlogContent
+  );
   const [viewMode, setViewMode] = useState<"Editor" | "JS" | "Preview">(
     "Editor"
   );
@@ -386,20 +384,23 @@ export default function CreateBlogPage() {
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
-      try {
-        const newBlock = NEW_BLOCK_TEMPLATES[blockType];
+      const newBlock = JSON.parse(
+        JSON.stringify(NEW_BLOCK_TEMPLATES[blockType])
+      );
 
-        if (dataContent.sections.length > 0) {
-          dataContent.sections[0].blocks.unshift(newBlock);
-          setDataContent({ ...dataContent });
-        } else {
-          alert("Please ensure at least one section exists to add a block.");
-        }
-      } catch (e) {
-        console.error("Error adding block:", e);
-      }
+      newBlock.id = crypto.randomUUID();
+
+      setDataContent((prev) => {
+        if (prev.sections.length === 0) return prev;
+        const newSections = [...prev.sections];
+        newSections[0] = {
+          ...newSections[0],
+          blocks: [newBlock, ...newSections[0].blocks],
+        };
+        return { ...prev, sections: newSections };
+      });
     },
-    [dataContent]
+    [setDataContent]
   );
 
   const handleClearAllBlocks = useCallback(() => {

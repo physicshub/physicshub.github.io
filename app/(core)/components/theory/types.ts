@@ -47,8 +47,8 @@ export interface SectionData {
   blocks: BlockData[];
 }
 
-export interface JsonContent {
-  title?: string;
+export interface BlogContent {
+  title: string;
   sections: SectionData[];
 }
 
@@ -82,7 +82,7 @@ export interface BlockControlsProps {
 }
 
 export interface TheoryRendererProps {
-  theory: JsonContent;
+  theory: BlogContent;
   isEditing: boolean;
   onContentUpdate: OnContentUpdate;
   onDeleteBlock?: OnDeleteBlock;
