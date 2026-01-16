@@ -70,6 +70,10 @@
   --color-text-primary: #333; /* Sovrascrive per l'editor */
 }
 
+.theory-renderer {
+  padding: 0.5rem 1.5rem 2rem;
+}
+
 /* Regole globali: per coerenza, applichiamo gli stili hover qui */
 /* NOTA: Ho sostituito i colori hardcoded degli hover/focus con variabili */
 
@@ -126,7 +130,7 @@
 
 .theory-paragraph {
   line-height: 1.7;
-  margin-left: var(--margin-element);
+
   margin-top: 2rem;
   color: var(--text-muted);
 }
@@ -145,7 +149,6 @@
   overflow: auto;
   display: flex;
   align-items: center;
-  margin-left: var(--margin-element);
 }
 
 /* Raggruppo stili comuni ai copy-btn */
@@ -202,8 +205,7 @@
 /* Non sono più necessarie le sovrascritture light mode per note/formula/table */
 
 .theory-list {
-  margin: 0.5rem 1.25rem;
-  padding-left: 1rem;
+  margin: 0.5rem 0;
 }
 
 .theory-list li {
@@ -212,9 +214,7 @@
 
 /* Code block esteso */
 .theory-codeblock {
-  border-radius: 10px; /* Mantengo 10px come da originale */
-  padding: 0.5rem;
-  margin-left: var(--margin-element);
+  border-radius: 10px;
 }
 
 .code-actions {
@@ -247,7 +247,6 @@
   border-radius: var(--radius);
   background: var(--bg);
   align-items: flex-start;
-  margin-left: var(--margin-element);
 }
 
 .callout-icon {
@@ -575,6 +574,8 @@
 .main-blog-title {
   font-size: clamp(2rem, 5vw, 2.5rem);
   margin: 0;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
 }
 
 /* Stili hover/focus per titoli ereditati da .editable-block */
@@ -953,7 +954,6 @@
 /* 11. TABLE EDITING */
 .theory-table-wrap {
   margin: 2rem 0;
-  margin-left: var(--margin-element);
 }
 
 .table-controls {
@@ -1102,4 +1102,21 @@
 .blog-container {
   margin-top: 6rem;
   padding: 2rem;
+}
+
+/* Indentation levels */
+.indent-1 {
+  margin-left: calc(1 * var(--margin-element));
+}
+
+.indent-2 {
+  margin-left: calc(2 * var(--margin-element));
+}
+
+.indent-3 {
+  margin-left: calc(3 * var(--margin-element));
+}
+
+.indent-4 {
+  margin-left: calc(4 * var(--margin-element));
 }

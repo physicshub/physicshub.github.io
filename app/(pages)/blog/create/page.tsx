@@ -281,9 +281,7 @@ const LivePreviewRenderer: React.FC<{
 
     return (
       <div className="preview-output read-mode">
-        <h1 className="main-blog-title" style={{ marginBottom: "2rem" }}>
-          {data.title || "Untitled Blog"}
-        </h1>
+        <h1 className="main-blog-title">{data.title || "Untitled Blog"}</h1>
 
         <TheoryRenderer
           theory={data}
