@@ -30,12 +30,49 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 
-const DynamicJsonEditor = dynamic(
-  () => import("../../../(core)/components/JsonEditor"),
+const DynamicEditor = dynamic(
+  () => import("../../../(core)/components/Editor"),
   { ssr: false }
 );
 
-const initialContent = JSON.stringify(initialContentData, null, 2);
+const objectToJSString = (obj, indent = 2) => {
+  const spacing = " ".repeat(indent);
+
+  if (Array.isArray(obj)) {
+    return (
+      "[\n" +
+      obj
+        .map((item) => spacing + "  " + objectToJSString(item, indent + 2))
+        .join(",\n") +
+      "\n" +
+      spacing +
+      "]"
+    );
+  }
+
+  if (typeof obj === "object" && obj !== null) {
+    const keys = Object.keys(obj);
+    const objectString = keys
+      .map((key) => {
+        const value = objectToJSString(obj[key], indent + 2);
+        // Rimuove le virgolette dalle chiavi se sono nomi validi (es: title invece di "title")
+        const safeKey = /^[a-z$_][a-z0-9$_]*$/i.test(key) ? key : `"${key}"`;
+        return `${spacing}  ${safeKey}: ${value.trimStart()}`;
+      })
+      .join(",\n");
+    return "{\n" + objectString + "\n" + spacing + "}";
+  }
+
+  return JSON.stringify(obj); // Per stringhe, numeri e booleani
+};
+
+const jsStringToObject = (str: string) => {
+  try {
+    return new Function(`return ${str}`)();
+  } catch (e) {
+    throw new Error("Sintassi JS non valida");
+  }
+};
 
 // Block Templates
 const NEW_BLOCK_TEMPLATES = {
@@ -96,39 +133,40 @@ const NEW_BLOCK_TEMPLATES = {
 
 // --- COMPONENTE 1: VISUAL EDITOR (Modifica) ---
 const VisualEditorRenderer: React.FC<{
-  jsonContent: string;
-  setJsonContent: (content: string) => void;
-}> = ({ jsonContent, setJsonContent }) => {
+  dataContent: string;
+  setDataContent: (content: string) => void;
+}> = ({ dataContent, setDataContent }) => {
   const handleContentUpdate = useCallback(
     (
       sectionIndex: number,
       blockIndex: number,
       field: string,
-      newValue: string
+      newValue: any
     ) => {
-      try {
-        const newData = JSON.parse(jsonContent);
+      const newData = { ...dataContent };
 
-        if (sectionIndex === -1 && field === "title") {
-          newData.title = newValue;
-        } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
-          const block = newData.sections[sectionIndex].blocks[blockIndex];
+      if (sectionIndex === -1 && field === "title") {
+        newData.title = newValue;
+      } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
+        const newSections = [...newData.sections];
+        const newBlocks = [...newSections[sectionIndex].blocks];
 
-          if (field === "tableData") {
-            const tableData = JSON.parse(newValue);
-            block.columns = tableData.columns;
-            block.data = tableData.data;
-          } else {
-            block[field] = newValue;
-          }
-        }
+        newBlocks[blockIndex] = {
+          ...newBlocks[blockIndex],
+          [field]: newValue,
+        };
 
-        setJsonContent(JSON.stringify(newData, null, 2));
-      } catch (e) {
-        console.error("Error updating JSON:", e);
+        newSections[sectionIndex] = {
+          ...newSections[sectionIndex],
+          blocks: newBlocks,
+        };
+
+        newData.sections = newSections;
       }
+
+      setDataContent(newData);
     },
-    [jsonContent, setJsonContent]
+    [dataContent, setDataContent]
   );
 
   const handleDeleteBlock = useCallback(
@@ -137,40 +175,36 @@ const VisualEditorRenderer: React.FC<{
         return;
 
       try {
-        const newData = JSON.parse(jsonContent);
-
-        if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
-          newData.sections[sectionIndex].blocks.splice(blockIndex, 1);
-          setJsonContent(JSON.stringify(newData, null, 2));
+        if (dataContent.sections[sectionIndex]?.blocks[blockIndex]) {
+          dataContent.sections[sectionIndex].blocks.splice(blockIndex, 1);
+          setDataContent(dataContent);
         }
       } catch (e) {
         console.error("Error deleting block:", e);
       }
     },
-    [jsonContent, setJsonContent]
+    [dataContent, setDataContent]
   );
 
   const handleDuplicateBlock = useCallback(
     (sectionIndex: number, blockIndex: number) => {
       try {
-        const newData = JSON.parse(jsonContent);
-
-        if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
+        if (dataContent.sections[sectionIndex]?.blocks[blockIndex]) {
           const blockToDuplicate =
-            newData.sections[sectionIndex].blocks[blockIndex];
-          const duplicatedBlock = JSON.parse(JSON.stringify(blockToDuplicate));
-          newData.sections[sectionIndex].blocks.splice(
+            dataContent.sections[sectionIndex].blocks[blockIndex];
+          const duplicatedBlock = { ...blockToDuplicate };
+          dataContent.sections[sectionIndex].blocks.splice(
             blockIndex + 1,
             0,
             duplicatedBlock
           );
-          setJsonContent(JSON.stringify(newData, null, 2));
+          setDataContent({ ...dataContent });
         }
       } catch (e) {
         console.error("Error duplicating block:", e);
       }
     },
-    [jsonContent, setJsonContent]
+    [dataContent, setDataContent]
   );
 
   const handleDragEnd = useCallback(
@@ -180,8 +214,6 @@ const VisualEditorRenderer: React.FC<{
       if (!over || active.id === over.id) return;
 
       try {
-        const newData = JSON.parse(jsonContent);
-
         const activeMatch = String(active.id).match(/^s(\d+)-b(\d+)$/);
         const overMatch = String(over.id).match(/^s(\d+)-b(\d+)$/);
 
@@ -193,30 +225,28 @@ const VisualEditorRenderer: React.FC<{
         const overBlock = parseInt(overMatch[2]);
 
         if (activeSec === overSec) {
-          const blocks = newData.sections[activeSec].blocks;
+          const blocks = dataContent.sections[activeSec].blocks;
           const reorderedBlocks = arrayMove(blocks, activeBlock, overBlock);
-          newData.sections[activeSec].blocks = reorderedBlocks;
-          setJsonContent(JSON.stringify(newData, null, 2));
+          dataContent.sections[activeSec].blocks = reorderedBlocks;
+          setDataContent({ ...dataContent });
         }
       } catch (e) {
         console.error("Error in drag operation:", e);
       }
     },
-    [jsonContent, setJsonContent]
+    [dataContent, setDataContent]
   );
 
   try {
-    const data = JSON.parse(jsonContent);
-
-    if (!data?.sections || !Array.isArray(data.sections)) {
+    if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JSON structure must contain 'sections'.
+          Error: JS structure must contain 'sections'.
         </div>
       );
     }
 
-    const dndItems = data.sections.flatMap((sec: any, i: number) =>
+    const dndItems = dataContent.sections.flatMap((sec: any, i: number) =>
       sec.blocks.map((_: any, j: number) => `s${i}-b${j}`)
     );
 
@@ -231,7 +261,7 @@ const VisualEditorRenderer: React.FC<{
             }
             className="main-blog-title editable-block"
           >
-            {data.title || "Untitled Blog"}
+            {dataContent.title || "Untitled Blog"}
           </h1>
         </div>
 
@@ -244,7 +274,7 @@ const VisualEditorRenderer: React.FC<{
             strategy={verticalListSortingStrategy}
           >
             <TheoryRenderer
-              theory={data}
+              theory={dataContent}
               isEditing={true} // Modalità Edit
               onContentUpdate={handleContentUpdate}
               onDeleteBlock={handleDeleteBlock}
@@ -258,7 +288,7 @@ const VisualEditorRenderer: React.FC<{
   } catch (e) {
     return (
       <div className="preview-error">
-        Error parsing JSON: {(e as Error).message}
+        Error parsing JS: {(e as Error).message}
       </div>
     );
   }
@@ -266,25 +296,25 @@ const VisualEditorRenderer: React.FC<{
 
 // --- COMPONENTE 2: LIVE PREVIEW (Sola Lettura) ---
 const LivePreviewRenderer: React.FC<{
-  jsonContent: string;
-}> = ({ jsonContent }) => {
+  dataContent: string;
+}> = ({ dataContent }) => {
   try {
-    const data = JSON.parse(jsonContent);
-
-    if (!data?.sections || !Array.isArray(data.sections)) {
+    if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JSON structure must contain 'sections'.
+          Error: JS structure must contain 'sections'.
         </div>
       );
     }
 
     return (
       <div className="preview-output read-mode">
-        <h1 className="main-blog-title">{data.title || "Untitled Blog"}</h1>
+        <h1 className="main-blog-title">
+          {dataContent.title || "Untitled Blog"}
+        </h1>
 
         <TheoryRenderer
-          theory={data}
+          theory={dataContent}
           isEditing={false} // Modalità Read-Only
           onContentUpdate={() => {}}
         />
@@ -293,19 +323,9 @@ const LivePreviewRenderer: React.FC<{
   } catch (e) {
     return (
       <div className="preview-error">
-        Error parsing JSON: {(e as Error).message}
+        Error parsing JS: {(e as Error).message}
       </div>
     );
-  }
-};
-
-// Utility function
-const isJsonInvalid = (str: string): boolean => {
-  try {
-    JSON.parse(str);
-    return false;
-  } catch (e) {
-    return true;
   }
 };
 
@@ -313,32 +333,36 @@ const isJsonInvalid = (str: string): boolean => {
 export default function CreateBlogPage() {
   const router = useRouter();
   const [title, setTitle] = useState("New Blog Title");
-  const [jsonContent, setJsonContent] = useState(initialContent);
-  const [viewMode, setViewMode] = useState<"Editor" | "JSON" | "Preview">(
+  const [dataContent, setDataContent] = useState(initialContentData);
+  const [viewMode, setViewMode] = useState<"Editor" | "JS" | "Preview">(
     "Editor"
   );
 
-  const jsonTitle = useMemo(() => {
+  const jsTitle = useMemo(() => {
     try {
-      return JSON.parse(jsonContent).title || "New Blog Title";
+      return dataContent.title || "New Blog Title";
     } catch (e) {
       return "New Blog Title";
     }
-  }, [jsonContent]);
+  }, [dataContent]);
+
+  const dataContentString = useMemo(
+    () => objectToJSString(dataContent),
+    [dataContent]
+  );
 
   useEffect(() => {
-    setTitle(jsonTitle);
-  }, [jsonTitle]);
+    setTitle(jsTitle);
+  }, [jsTitle]);
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
       try {
-        const newData = JSON.parse(jsonContent);
         const newBlock = NEW_BLOCK_TEMPLATES[blockType];
 
-        if (newData.sections.length > 0) {
-          newData.sections[0].blocks.unshift(newBlock);
-          setJsonContent(JSON.stringify(newData, null, 2));
+        if (dataContent.sections.length > 0) {
+          dataContent.sections[0].blocks.unshift(newBlock);
+          setDataContent({ ...dataContent });
         } else {
           alert("Please ensure at least one section exists to add a block.");
         }
@@ -346,7 +370,7 @@ export default function CreateBlogPage() {
         console.error("Error adding block:", e);
       }
     },
-    [jsonContent]
+    [dataContent]
   );
 
   const handleClearAllBlocks = useCallback(() => {
@@ -358,15 +382,15 @@ export default function CreateBlogPage() {
       return;
 
     try {
-      const newData = JSON.parse(jsonContent);
+      const newData = { ...dataContent };
       newData.sections = newData.sections.map((section: any) => ({
         blocks: [],
       }));
-      setJsonContent(JSON.stringify(newData, null, 2));
+      setDataContent(newData);
     } catch (e) {
       console.error("Error clearing blocks:", e);
     }
-  }, [jsonContent, setJsonContent]);
+  }, [dataContent, setDataContent]);
 
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -378,7 +402,7 @@ export default function CreateBlogPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: title,
-          jsonContent: jsonContent,
+          dataContent: dataContent,
         }),
       });
 
@@ -398,19 +422,16 @@ export default function CreateBlogPage() {
     } finally {
       setIsPublishing(false);
     }
-  }, [jsonContent, title, router]);
+  }, [dataContent, title, router]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
 
-    try {
-      const newData = JSON.parse(jsonContent);
-      newData.title = newTitle;
-      setJsonContent(JSON.stringify(newData, null, 2));
-    } catch (e) {
-      console.error("Failed to update JSON title:", e);
-    }
+    setDataContent({
+      ...dataContent,
+      title: newTitle,
+    });
   };
 
   return (
@@ -457,16 +478,16 @@ export default function CreateBlogPage() {
               type="button"
               className={`tab-button ${viewMode === "Editor" ? "active" : ""}`}
               onClick={() => setViewMode("Editor")}
-              disabled={viewMode === "Editor" && isJsonInvalid(jsonContent)}
+              disabled={viewMode === "Editor" && !dataContent}
             >
               <FontAwesomeIcon icon={faEdit} /> Visual Editor
             </button>
             <button
               type="button"
-              className={`tab-button ${viewMode === "JSON" ? "active" : ""}`}
-              onClick={() => setViewMode("JSON")}
+              className={`tab-button ${viewMode === "JS" ? "active" : ""}`}
+              onClick={() => setViewMode("JS")}
             >
-              <FontAwesomeIcon icon={faCode} /> JSON Editor
+              <FontAwesomeIcon icon={faCode} /> JS Editor
             </button>
             <button
               type="button"
@@ -596,24 +617,33 @@ export default function CreateBlogPage() {
           </div>
 
           <div className="content-area">
-            {viewMode === "JSON" && (
+            {viewMode === "JS" && (
               <div className="form-group full-height">
-                <DynamicJsonEditor
-                  value={jsonContent}
-                  onChange={setJsonContent}
+                <DynamicEditor
+                  value={dataContentString}
+                  onChange={(newString) => {
+                    try {
+                      const parsed = jsStringToObject(newString);
+                      if (parsed && typeof parsed === "object") {
+                        setDataContent(parsed);
+                      }
+                    } catch (e) {
+                      // Silenzioso durante la digitazione per evitare crash
+                    }
+                  }}
                 />
               </div>
             )}
 
             {viewMode === "Editor" && (
               <VisualEditorRenderer
-                jsonContent={jsonContent}
-                setJsonContent={setJsonContent}
+                dataContent={dataContent}
+                setDataContent={setDataContent}
               />
             )}
 
             {viewMode === "Preview" && (
-              <LivePreviewRenderer jsonContent={jsonContent} />
+              <LivePreviewRenderer dataContent={dataContent} />
             )}
           </div>
         </form>
