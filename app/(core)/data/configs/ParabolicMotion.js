@@ -66,10 +66,10 @@ export const INPUT_FIELDS = [
     placeholder: "Insert wind accel...",
   },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
-  { name: "showGuides", label: "Show predicted guides", type: "checkbox" },
+  { name: "showGuides", label: "Show guide", type: "checkbox" },
   {
     name: "showVectors",
-    label: "Show force & velocity vectors",
+    label: "Show vectors",
     type: "checkbox",
   },
   { name: "ballColor", label: "Ball color:", type: "color" },

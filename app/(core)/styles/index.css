@@ -1566,7 +1566,7 @@ footer {
   flex: 1;
   padding: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   gap: 1.5rem;
   background: var(--bg-gradient-rotated);
   border-radius: var(--border-radius);
@@ -2660,7 +2660,7 @@ footer {
   }
 }
 
-/* Style for Controls in simlations (resume, play, stop, reset, speed) */
+/* Style for Controls in simulations (resume, play, stop, reset, speed) */
 
 .simulation-controls {
   position: relative;
@@ -2669,28 +2669,25 @@ footer {
   border: 1px solid var(--accent-color);
   box-shadow: 0 0 8px var(--accent-color);
   border-radius: var(--border-radius);
-  padding: 0.5rem 1rem;
-  display: flex;
-  flex-wrap: nowrap; /* stay in one line */
-  justify-content: center;
-  align-items: center;
-  gap: clamp(6px, 2vw, 1rem);
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
   max-width: 100%;
-  overflow-x: auto; /* allow horizontal scroll if needed */
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
 }
 
 .simulation-controls button {
-  flex: 0 1 auto; /* don't force equal width, allow shrink */
-  width: clamp(36px, 10vw, 60px); /* responsive sizing */
-  aspect-ratio: 1.2 / 1;
+  width: 100%;
+  max-width: 60px;
+  min-height: 40px;
+  padding: 0.5rem !important;
 }
 
 .control-item {
   display: flex;
-  flex-wrap: nowrap; /* keep items in one row */
-  gap: 0.25rem;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
   justify-content: center;
 }
 
