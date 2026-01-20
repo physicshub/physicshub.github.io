@@ -2663,32 +2663,84 @@ footer {
 /* Style for Controls in simulations (resume, play, stop, reset, speed) */
 
 .simulation-controls {
-  position: relative;
-  margin: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--bg-gradient-rotated);
   border: 1px solid var(--accent-color);
-  box-shadow: 0 0 8px var(--accent-color);
   border-radius: var(--border-radius);
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.75rem;
-  max-width: 100%;
-  box-sizing: border-box;
+  padding: 0.4rem;
+  margin: 0 1.5rem;
+  gap: 0.25rem;
 }
 
-.simulation-controls button {
-  width: 100%;
-  max-width: 60px;
-  min-height: 40px;
-  padding: 0.5rem !important;
-}
-
-.control-item {
+.controls-group {
   display: flex;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  justify-content: center;
+  flex-direction: row;
+  gap: 0.25rem;
+  margin: 0 1rem;
+}
+
+/* --- DESKTOP: Tutto in una riga --- */
+@media (min-width: 768px) {
+  .simulation-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .main-controls-wrapper,
+  .extra-controls-wrapper {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .mobile-toggle {
+    display: none;
+  }
+}
+
+/* --- MOBILE: Menu a tendina --- */
+@media (max-width: 767px) {
+  .simulation-controls {
+    flex-direction: column; /* Colonna per ospitare il menu sotto */
+    gap: 0;
+  }
+
+  .main-controls-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2rem 0;
+    gap: 0.25rem;
+  }
+
+  .extra-controls-wrapper {
+    display: none; /* Nascondi di base */
+    width: 100%;
+    flex-direction: column; /* O "row wrap" se preferisci i tasti piccoli */
+    gap: 0.5rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Quando clicchi la freccia */
+  .simulation-controls.is-open .extra-controls-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    justify-items: center;
+  }
+}
+
+/* Stile bottoni per compattezza */
+.simulation-controls button {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 3rem;
+  min-height: 1rem;
+  height: 100%;
+  aspect-ratio: 1.2;
 }
 
 .footer-version {
