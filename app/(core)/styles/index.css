@@ -1438,7 +1438,7 @@ footer {
 
 /* Back button */
 .back-to-home {
-  margin: 1.5em 1.5em;
+  margin: 1.5rem 0.7rem;
   text-align: left;
 }
 
@@ -1459,6 +1459,13 @@ footer {
     box-shadow 0.3s,
     transform 0.1s;
   gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .back-to-home__link {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
 }
 
 .back-to-home__link::before {

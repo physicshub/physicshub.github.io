@@ -29,7 +29,7 @@ export default function TopSim() {
     <div className="top-nav-sim">
       {!isMobile && (
         <div className="top-nav-sim-back-to-home-wrapper">
-          <Back link="/" />
+          <Back link="/simulations" />
         </div>
       )}
       <div
