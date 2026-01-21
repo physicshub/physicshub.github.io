@@ -64,4 +64,12 @@ export default [
     icon: "/icons/parabola.png",
     relatedBlogSlug: "projectile-parabolic-motion",
   },
+  {
+    id: 0,
+    name: "Test for benchmarks",
+    desc: "This is a simulation created specifically for performance testing.",
+    link: "/simulations/test",
+    tags: [TAGS.PHYSICS, TAGS.GRAVITY],
+    icon: "/icons/test.png",
+  },
 ];

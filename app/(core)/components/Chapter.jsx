@@ -18,7 +18,7 @@ function Chapter(props) {
         {/* Title with optional icon */}
         <h2 className="text-2xl flex items-center gap-2">
           {props.isABlog
-            ? `#${props.id} ${props.name}`
+            ? `${props.name}`
             : `Chapter ${props.id}: ${props.name}`}
           {props.icon && (
             <img

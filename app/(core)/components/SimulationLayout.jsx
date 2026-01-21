@@ -17,15 +17,16 @@ export default function SimulationLayout({
   children,
   dynamicInputs,
 }) {
-  const theoryRelatedBlog = useMemo(
-    () => chapters.find((ch) => ch.link === simulation)?.relatedBlogSlug,
-    [simulation]
-  );
+  const theory = useMemo(() => {
+    const chapter = chapters.find((ch) => ch.link === simulation);
+    const slug = chapter?.relatedBlogSlug;
 
-  const theory = useMemo(
-    () => allBlogs[theoryRelatedBlog].theory,
-    [theoryRelatedBlog]
-  );
+    return slug && allBlogs[slug]
+      ? allBlogs[slug].theory
+      : {
+          sections: [],
+        };
+  }, [simulation]);
 
   // Reset time on simulation change
   useEffect(() => {
