@@ -1,118 +1,113 @@
-// app/(core)/components/theory/TheoryImage.tsx
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCopyright } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
+
+type ImageSize = "small" | "medium" | "large" | "full";
 
 interface TheoryImageProps extends EditableProps {
   src: string;
   alt?: string;
   caption?: string;
+  size?: ImageSize;
+  href?: string;
 }
 
 export const TheoryImage: React.FC<TheoryImageProps> = ({
   src,
   alt = "",
   caption,
+  size = "medium",
+  href,
   isEditing,
   onContentUpdate,
   sectionIndex,
   blockIndex,
 }) => {
-  const isEditable =
-    isEditing &&
-    onContentUpdate &&
-    sectionIndex !== undefined &&
-    blockIndex !== undefined;
-  const suppressWarning = isEditable;
   const [currentSrc, setCurrentSrc] = useState(src);
 
   useEffect(() => {
     setCurrentSrc(src);
   }, [src]);
 
-  const handleSrcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentSrc(e.target.value);
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onContentUpdate?.(sectionIndex!, blockIndex!, "size", e.target.value);
   };
 
-  const handleSrcBlur = () => {
-    if (isEditable && currentSrc !== src) {
-      onContentUpdate(sectionIndex, blockIndex, "src", currentSrc);
+  const handleImageClick = () => {
+    if (!isEditing && href) {
+      window.open(href, "_blank", "noopener,noreferrer");
     }
   };
 
-  const handleCaptionBlur = (e: React.FocusEvent<HTMLElement>) => {
-    if (isEditable && e.target.innerText !== caption) {
-      onContentUpdate(sectionIndex, blockIndex, "caption", e.target.innerText);
-    }
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      alert(
-        `Simulating upload for file: ${file.name}. Actual implementation requires backend logic.`
-      );
-      // Backend integration needed here
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <figure className="theory-image image-editor-mode editable-block">
-        <div className="image-controls">
+  return (
+    <figure className={`theory-image-container size-${size}`}>
+      {isEditing && (
+        <div className="image-editor-toolbar">
           <input
             type="url"
             value={currentSrc}
-            onChange={handleSrcChange}
-            onBlur={handleSrcBlur}
-            placeholder="Image URL (http://...)"
-            className="image-url-input"
+            onChange={(e) => setCurrentSrc(e.target.value)}
+            onBlur={() =>
+              onContentUpdate?.(sectionIndex!, blockIndex!, "src", currentSrc)
+            }
+            placeholder="Image URL"
+            className="url-input"
           />
-
-          <label
-            htmlFor={`upload-${blockIndex}`}
-            className="ph-btn ph-btn--small upload-label"
+          <select
+            value={size}
+            onChange={handleSizeChange}
+            className="size-select"
           >
-            <FontAwesomeIcon icon={faPlus} /> Upload File
-            <input
-              id={`upload-${blockIndex}`}
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              style={{ display: "none" }}
-            />
+            <option value="small">Piccola</option>
+            <option value="medium">Media</option>
+            <option value="large">Grande</option>
+            <option value="full">Intera</option>
+          </select>
+          <label className="upload-button">
+            <FontAwesomeIcon icon={faPlus} />
+            <input type="file" accept="image/*" style={{ display: "none" }} />
           </label>
         </div>
+      )}
 
+      <div
+        className={`image-wrapper ${!isEditing && href ? "is-link" : ""}`}
+        onClick={handleImageClick}
+      >
         <img
-          src={currentSrc || "https://via.placeholder.com/200?text=No+Image"}
+          src={
+            currentSrc || "https://via.placeholder.com/800x400?text=No+Image"
+          }
           alt={alt}
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-            border: "2px dashed var(--color-border)",
-          }}
+          className={isEditing ? "editing-border" : ""}
         />
 
-        {caption && (
-          <figcaption
-            contentEditable
-            suppressContentEditableWarning={suppressWarning}
-            onBlur={handleCaptionBlur}
-            className="editable-block"
-          >
-            {caption}
-          </figcaption>
+        {href && (
+          <div className="copyright-badge">
+            <FontAwesomeIcon icon={faCopyright} className="badge-icon" />
+            <span className="badge-text">{new URL(href).hostname}</span>
+          </div>
         )}
-      </figure>
-    );
-  }
+      </div>
 
-  return (
-    <figure className="theory-image">
-      <img src={src} alt={alt} />
-      {caption && <figcaption>{caption}</figcaption>}
+      {(caption || isEditing) && (
+        <figcaption
+          contentEditable={isEditing}
+          suppressContentEditableWarning={true}
+          onBlur={(e) =>
+            onContentUpdate?.(
+              sectionIndex!,
+              blockIndex!,
+              "caption",
+              e.currentTarget.innerText
+            )
+          }
+          className="image-caption"
+        >
+          {caption || (isEditing ? "Scrivi una didascalia..." : "")}
+        </figcaption>
+      )}
     </figure>
   );
 };

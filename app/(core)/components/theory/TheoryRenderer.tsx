@@ -201,6 +201,8 @@ const renderBlock = (
           src={block.src || ""}
           alt={block.alt}
           caption={block.caption}
+          size={block.size}
+          href={block.href}
         />
       );
 

@@ -352,6 +352,156 @@
   margin-top: 0.35rem;
 }
 
+/* Container Principale */
+.theory-image-container {
+  margin: 2rem 0;
+  display: block;
+  position: relative;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Gestione Dimensioni Responsive */
+.size-small {
+  width: 30%;
+  min-width: 250px;
+}
+.size-medium {
+  width: 50%;
+  min-width: 300px;
+}
+.size-large {
+  width: 85%;
+}
+.size-full {
+  width: 100%;
+}
+
+/* Forza la larghezza piena su schermi piccoli */
+@media (max-width: 600px) {
+  .theory-image-container {
+    width: 100% !important;
+  }
+}
+
+/* Toolbar Editor */
+.image-editor-toolbar {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.url-input {
+  flex: 1;
+  padding: 4px 8px;
+}
+.size-select {
+  padding: 4px;
+  border-radius: 4px;
+}
+.upload-button {
+  cursor: pointer;
+  padding: 4px 10px;
+  background: #ddd;
+  border-radius: 4px;
+}
+
+/* Image Wrapper & Img */
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.image-wrapper.is-link {
+  cursor: pointer;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.editing-border {
+  border: 2px dashed #ccc;
+}
+
+/* Copyright Badge */
+.copyright-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.503);
+  color: white;
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Importante: allinea a sinistra internamente */
+
+  /* Dimensioni iniziali (Cerchio) */
+  width: 2rem;
+  height: 2rem;
+  border-radius: 5rem;
+  padding: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  box-sizing: border-box;
+
+  /* Transizione su max-width anziché width */
+  transition:
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s;
+}
+
+.copyright-badge:hover {
+  /* Definisci un'ampiezza sufficiente per contenere il link */
+  width: 180px;
+  background-color: rgba(0, 0, 0, 0.701);
+}
+
+.badge-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.9rem;
+}
+
+.badge-text {
+  font-size: 0.75rem;
+  text-decoration: underline;
+  opacity: 0;
+  margin-left: 0.2rem; /* Spazio tra icona e testo */
+  transition: opacity 0.3s ease;
+  display: none;
+}
+
+.copyright-badge:hover .badge-text {
+  opacity: 1;
+  /* Aspetta che il badge sia quasi aperto prima di mostrare il testo */
+  transition-delay: 0.15s;
+  display: block;
+}
+
+/* Didascalia */
+.image-caption {
+  margin-top: 10px;
+  font-style: italic;
+  color: #666;
+  outline: none;
+  text-align: left;
+}
+
 /* Toggle/accordion */
 .theory-toggle {
   border-radius: var(--radius);
