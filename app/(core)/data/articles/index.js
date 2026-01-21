@@ -1,3 +1,4 @@
+// (core)/data/articles/index.js
 import { bouncingBallBlog } from "./bouncing-ball-physics.js";
 import { operationVectorsBlog } from "./operations-with-vectors.js";
 import { ballAcceleratingBlog } from "./ball-uniformly-accelerated-motion.js";

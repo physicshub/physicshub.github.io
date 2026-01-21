@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useCallback } from "react";
 import Tag from "./Tag";
-import TAGS from "../data/tags";
+import TAGS from "../data/tags.js";
 
 const TAGS_MAP = Object.values(TAGS).reduce((acc, tag) => {
   acc[tag.name] = tag;

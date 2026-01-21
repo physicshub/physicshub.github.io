@@ -1,4 +1,4 @@
-import TAGS from "../tags";
+import TAGS from "../tags.js";
 
 export const ballFreeFallBlog = {
   id: "bb-004",
