@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
-import Blogs from "../../(core)/data/blogs.js";
+import { blogsArray } from "../../(core)/data/articles/index.js";
 import { Search } from "../../(core)/components/Search.jsx";
 import { useRouter } from "next/navigation";
 
@@ -15,8 +15,8 @@ export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
-  const pinnedBlogs = Blogs.filter((chap) => chap.isPinned);
-  const unpinnedBlogs = Blogs.filter((chap) => !chap.isPinned);
+  const pinnedBlogs = blogsArray.filter((chap) => chap.isPinned);
+  const unpinnedBlogs = blogsArray.filter((chap) => !chap.isPinned);
 
   const filteredUnpinnedChapters = unpinnedBlogs.filter((chap) => {
     const searchTerms = searchTerm

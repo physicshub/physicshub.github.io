@@ -1,4 +1,4 @@
-import Blogs from "../../../(core)/data/blogs.js";
+import { blogsArray } from "../../../(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx";
 
@@ -6,7 +6,7 @@ import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx
  * 1. Obbligatorio per output: export
  */
 export async function generateStaticParams() {
-  return Blogs.map((blog) => ({
+  return blogsArray.map((blog) => ({
     slug: blog.slug,
   }));
 }
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
   // UNWRAP della Promise params
   const { slug } = await params;
 
-  const blog = Blogs.find((b) => b.slug === slug);
+  const blog = blogsArray.find((b) => b.slug === slug);
 
   if (!blog) {
     return { title: "Blog Not Found" };
@@ -37,7 +37,7 @@ export default async function BlogPost({ params }) {
   // UNWRAP della Promise params
   const { slug } = await params;
 
-  const blog = Blogs.find((b) => b.slug === slug);
+  const blog = blogsArray.find((b) => b.slug === slug);
 
   if (!blog) {
     notFound();
