@@ -18,7 +18,6 @@ import {
   SimInfoMapper,
   FORCES,
 } from "../../../(core)/data/configs/BallAcceleration.js";
-import chapters from "../../../(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
@@ -58,11 +57,6 @@ export default function BallAcceleration() {
       setInputs((prev) => ({ ...prev, [name]: value }));
     },
     [setInputs]
-  );
-
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
   );
 
   const sketch = useCallback(
@@ -180,7 +174,6 @@ export default function BallAcceleration() {
         setInputs(loadedInputs);
         setResetVersion((v) => v + 1);
       }}
-      theory={theory}
       dynamicInputs={
         <DynamicInputs
           config={INPUT_FIELDS}

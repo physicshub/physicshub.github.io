@@ -1,21 +1,32 @@
 // app/components/SimulationLayout.jsx
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { resetTime } from "../constants/Time.js";
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
 import TopSim from "./TopSim.tsx";
 import Controls from "./Controls.jsx";
 import TheoryRenderer from "./theory/TheoryRenderer.tsx";
+import chapters from "../data/chapters.js";
+import { allBlogs } from "../data/articles/index.js";
 
 export default function SimulationLayout({
   onReset,
   inputs,
   simulation,
   onLoad,
-  theory,
-  children, // This will now ONLY be the canvas (P5Wrapper)
-  dynamicInputs, // A new prop for the simulation-specific inputs
+  children,
+  dynamicInputs,
 }) {
+  const theoryRelatedBlog = useMemo(
+    () => chapters.find((ch) => ch.link === simulation)?.relatedBlogSlug,
+    [simulation]
+  );
+
+  const theory = useMemo(
+    () => allBlogs[theoryRelatedBlog].theory,
+    [theoryRelatedBlog]
+  );
+
   // Reset time on simulation change
   useEffect(() => {
     resetTime();
