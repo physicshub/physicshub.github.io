@@ -33,7 +33,8 @@ export default function ScrollIndicator() {
     };
   }, [scrollY]);
 
-  const heroHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+  const heroHeight =
+    typeof window !== "undefined" ? window.innerHeight / 6 : 500;
 
   // Fade out after hero
   const opacity =
