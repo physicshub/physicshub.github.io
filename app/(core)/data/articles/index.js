@@ -1,6 +1,6 @@
 // (core)/data/articles/index.js
 import { bouncingBallBlog } from "./physics-bouncing-ball-comprehensive-educational-guide.js";
-import { operationVectorsBlog } from "./operations-with-vectors.js";
+import { operationVectorsBlog } from "./comprehensive-guide-to-vector-operations.js";
 import { ballAcceleratingBlog } from "./ball-uniformly-accelerated-motion.js";
 import { ballFreeFallBlog } from "./ball-free-fall.js";
 import { springConnectionBlog } from "./spring-connection.js";
