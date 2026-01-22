@@ -1,12 +1,12 @@
 import Back from "./Back";
 import simulations from "../data/chapters";
 import { usePathname } from "next/navigation";
-import { useIsMobile } from "../hooks/useMobile";
+import useMobile from "../hooks/useMobile";
 
 export default function TopSim() {
   const location = usePathname();
   const idx = simulations.findIndex((sim) => sim.link === location);
-  const isMobile = useIsMobile();
+  const isMobile = useMobile();
 
   function getPrevious() {
     if (idx === -1) return "/";

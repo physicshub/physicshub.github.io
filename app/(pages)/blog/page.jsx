@@ -5,6 +5,7 @@ import Chapter from "../../(core)/components/Chapter.jsx";
 import { blogsArray } from "../../(core)/data/articles/index.js";
 import { Search } from "../../(core)/components/Search.jsx";
 import { useRouter } from "next/navigation";
+import useMobile from "../../(core)/hooks/useMobile.ts";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faThumbtack, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +15,7 @@ const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
+  const isMobile = useMobile();
 
   const pinnedBlogs = blogsArray.filter((chap) => chap.isPinned);
   const unpinnedBlogs = blogsArray.filter((chap) => !chap.isPinned);
@@ -59,7 +61,7 @@ export default function Blog() {
               aria-label="Create a new blog"
             >
               <FontAwesomeIcon icon={faPlus} />
-              New Blog
+              {!isMobile && "New Blog"}
             </button>
           }
         />

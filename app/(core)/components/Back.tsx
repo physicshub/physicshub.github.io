@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Link from "next/link";
-import { useIsMobile } from "../hooks/useMobile";
+import useMobile from "../hooks/useMobile";
 
 interface BaseProps {
   type?: "full" | "icon" | "responsive";
@@ -51,7 +51,7 @@ function Back({
   type = "icon",
   arrowPosition = "left",
 }: Props) {
-  const isMobile = useIsMobile();
+  const isMobile = useMobile();
 
   const arrowIcon = (
     <span className="back-to-home__icon" aria-hidden="true">
