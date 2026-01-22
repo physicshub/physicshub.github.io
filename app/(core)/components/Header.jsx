@@ -1,6 +1,6 @@
 // app/components/Header.jsx
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Logo } from "./Logo";
 import NavMenu from "./Nav";
 import { Theme } from "./Theme";
@@ -9,11 +9,17 @@ import { useTheme } from "../hooks/useTheme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHamburger } from "@fortawesome/free-solid-svg-icons";
 import GoogleTranslator from "./GoogleTranslator.jsx";
+import { usePathname } from "next/navigation.js";
 
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const isSticky = useSticky(50);
   const { mode, toggleMode } = useTheme();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const handleMenuToggle = useCallback(() => setMenuOpen((open) => !open), []);
 
