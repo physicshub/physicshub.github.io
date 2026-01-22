@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://physicshub.github.io/sitemap.xml
+Sitemap: https://physicshub.github.io/sitemap-physicshub.xml

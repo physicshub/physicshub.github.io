@@ -7,6 +7,7 @@ import { routes as staticRoutes } from "../routes.js";
 import { blogsArray } from "../app/(core)/data/articles/index.js";
 
 const hostname = "https://physicshub.github.io";
+const sitemapName = "sitemap-physicshub";
 
 function updateRoutesFile(allRoutes) {
   const content = `export const routes = ${JSON.stringify(allRoutes, null, 2)};`;
@@ -41,12 +42,12 @@ async function generateSitemap() {
     collapseContent: true,
   });
 
-  writeFileSync("./public/sitemap-physicshub.xml", formatted);
+  writeFileSync(`./public/${sitemapName}.xml`, formatted);
   console.log(`✅ Sitemap generated with ${allRoutes.length} links!`);
 
   // Robots.txt
   const robotsTxt =
-    `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/sitemap.xml`.trim();
+    `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/${sitemapName}.xml`.trim();
   writeFileSync("./public/robots.txt", robotsTxt);
   console.log("✅ Robots.txt updated!");
 
