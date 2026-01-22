@@ -41,7 +41,7 @@ async function generateSitemap() {
     collapseContent: true,
   });
 
-  writeFileSync("./public/sitemap.xml", formatted);
+  writeFileSync("./public/sitemap-physicshub.xml", formatted);
   console.log(`✅ Sitemap generated with ${allRoutes.length} links!`);
 
   // Robots.txt
