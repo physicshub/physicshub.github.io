@@ -1278,9 +1278,12 @@
 
 /* Header dell'articolo */
 .blog-header {
-  margin-bottom: 3rem;
-  border-bottom: 1px solid #f3f4f6;
+  border: 1px solid #0000;
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
   padding-bottom: 1rem;
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  padding: 1rem;
 }
 
 .blog-title {
@@ -1297,7 +1300,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #f9fafb; /* gray-50 */
+  border-top: 1px solid #0000;
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
   padding-top: 1rem;
   margin-top: 1rem;
 }

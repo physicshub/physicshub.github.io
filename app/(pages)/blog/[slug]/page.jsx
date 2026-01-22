@@ -2,6 +2,8 @@ import { blogsArray } from "../../../(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx";
 import Tag from "../../../(core)/components/Tag.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * 1. Obbligatorio per output: export
@@ -86,19 +88,7 @@ export default async function BlogPost({ params }) {
             <div className="reading-time-content">
               <span className="reading-time-label">Time to read</span>
               <span className="reading-time-value">
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
+                <FontAwesomeIcon icon={faClock} />
                 {readingTime} min
               </span>
             </div>
