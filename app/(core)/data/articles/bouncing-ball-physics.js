@@ -5,6 +5,7 @@ export const bouncingBallBlog = {
   name: "The Physics of a Bouncing Ball: A Progressive Learning Path",
   desc: "A comprehensive exploration of classical mechanics through the lens of a bouncing ball, transitioning from basic kinematic observations to advanced thermodynamics and algorithmic simulation.",
   tags: [TAGS.PHYSICS, TAGS.EASY, TAGS.COLLISION, TAGS.ANIMATIONS],
+  date: "22/01/2026",
   theory: {
     title: "The Mechanics of Impact: From Simple Motion to Complex Dynamics",
     sections: [

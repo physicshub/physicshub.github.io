@@ -1327,6 +1327,8 @@
   font-family: serif;
   font-style: italic;
   font-size: 1.25rem;
+  border: 2px solid #0000;
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
 }
 
 .author-details {

@@ -71,13 +71,17 @@ export default async function BlogPost({ params }) {
         <div className="blog-meta-footer">
           <div className="author-info">
             {blog.avatar ? (
-              <img src={blog.avatar} />
+              <img className="author-avatar" src={blog.avatar} />
+            ) : blog.author ? (
+              <div className="author-avatar">{blog.author?.[0]}</div>
             ) : (
-              <div className="author-avatar">{blog.author?.[0] || "C"}</div>
+              <img className="author-avatar" src="../../Logo.png" />
             )}
 
             <div className="author-details">
-              <span className="author-name">{blog.author || "Unknown"}</span>
+              <span className="author-name">
+                {blog.author || "PhysicsHub Community"}
+              </span>
               <span className="publish-date">
                 Last update: {blog.date || "--/--/----"}
               </span>
