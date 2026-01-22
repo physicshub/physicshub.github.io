@@ -8,7 +8,7 @@ export default [
     link: "/simulations/BouncingBall",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
     icon: "/icons/bouncingBall.png",
-    relatedBlogSlug: "bouncing-ball-physics",
+    relatedBlogSlug: "physics-bouncing-ball-comprehensive-educational-guide",
   },
   {
     id: 2,
