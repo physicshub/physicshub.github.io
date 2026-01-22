@@ -1,3 +1,6 @@
+// THIS FILE GOT REPLACED BY NEW SYSTEM FOR BLOG HANDLING:
+// check articles/ folder and articles/index.js for more
+
 import TAGS from "./tags.js";
 
 export default [

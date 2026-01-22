@@ -1,6 +1,7 @@
 import { blogsArray } from "../../../(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx";
+import Tag from "../../../(core)/components/Tag.jsx";
 
 /**
  * 1. Obbligatorio per output: export
@@ -9,6 +10,14 @@ export async function generateStaticParams() {
   return blogsArray.map((blog) => ({
     slug: blog.slug,
   }));
+}
+
+function getReadingTime(text) {
+  const wordsPerMinute = 225;
+
+  const noOfWords = text.split(/\s+/).length;
+
+  return Math.ceil(noOfWords / wordsPerMinute);
 }
 
 /**
@@ -34,21 +43,71 @@ export async function generateMetadata({ params }) {
  * 3. Componente Pagina (Fix Next.js 15: await params)
  */
 export default async function BlogPost({ params }) {
-  // UNWRAP della Promise params
   const { slug } = await params;
-
   const blog = blogsArray.find((b) => b.slug === slug);
 
-  if (!blog) {
-    notFound();
-  }
+  if (!blog) notFound();
+
+  const readingTime = blog.theory
+    ? getReadingTime(JSON.stringify(blog.theory))
+    : 1;
 
   return (
     <div className="blog-container">
-      <h1 className="text-3xl font-bold">{blog.name}</h1>
-      <p className="blog-description my-4 italic text-gray-600">{blog.desc}</p>
+      {/* Container Info Articolo */}
+      <div className="blog-header">
+        <div className="chapter-card-tags-container">
+          {blog.tags.map((tag, idx) => (
+            <Tag tag={tag} key={tag.id || idx} />
+          ))}
+        </div>
 
-      <div className="mt-8">
+        <h1 className="blog-title">{blog.name}</h1>
+
+        <p className="blog-desc theory-paragraph">{blog.desc}</p>
+
+        <div className="blog-meta-footer">
+          <div className="author-info">
+            {blog.avatar ? (
+              <img src={blog.avatar} />
+            ) : (
+              <div className="author-avatar">{blog.author?.[0] || "C"}</div>
+            )}
+
+            <div className="author-details">
+              <span className="author-name">{blog.author || "Unknown"}</span>
+              <span className="publish-date">
+                Last update: {blog.date || "--/--/----"}
+              </span>
+            </div>
+          </div>
+
+          <div className="reading-time-wrapper">
+            <div className="reading-time-content">
+              <span className="reading-time-label">Time to read</span>
+              <span className="reading-time-value">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {readingTime} min
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rendering Contenuto */}
+      <div className="blog-content">
         {blog.theory && <TheoryRenderer theory={blog.theory} />}
       </div>
     </div>
