@@ -53,7 +53,6 @@ export function setPause(value) {
 }
 
 export function resetTime() {
-  timeScale = 1;
   paused = false;
   simulationInstances.clear(); // Pulisci tutte le istanze
   lastMillis = null;
