@@ -5,14 +5,11 @@ import { EditableWrapper } from "./EditableWrapper";
 
 // TheorySection - Now just a container without editable title
 export const TheorySection: React.FC<
-  {
-    title?: string;
-    className?: string;
-  } & Children &
-    EditableProps
-> = ({ title, children, className }) => {
+  { id?: string; title?: string; className?: string } & Children & EditableProps
+> = ({ id, children, className }) => {
   return (
     <section
+      id={id}
       className={["theory-section", className].filter(Boolean).join(" ")}
     >
       <div className="theory-blocks">{children}</div>
@@ -20,12 +17,10 @@ export const TheorySection: React.FC<
   );
 };
 
-// NEW: TheorySectionTitle - Treated as a regular block
-export const TheorySectionTitle: React.FC<Children & EditableProps> = ({
-  children,
-  ...props
-}) => (
-  <EditableWrapper as="h2" className="theory-section-title" {...props}>
+export const TheorySectionTitle: React.FC<
+  { id?: string } & Children & EditableProps
+> = ({ children, id, ...props }) => (
+  <EditableWrapper as="h2" id={id} className="theory-section-title" {...props}>
     {children}
   </EditableWrapper>
 );

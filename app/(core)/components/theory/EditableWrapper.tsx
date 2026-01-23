@@ -6,12 +6,14 @@ import { parseBoldText, useEditableBlock } from "./utils";
 interface EditableWrapperProps extends EditableProps, Children {
   as: ElementTag;
   className: string;
+  id?: string;
 }
 
 export const EditableWrapper: React.FC<EditableWrapperProps> = ({
   children,
   as,
   className,
+  id,
   fieldToUpdate = "text",
   ...props
 }) => {
@@ -32,6 +34,7 @@ export const EditableWrapper: React.FC<EditableWrapperProps> = ({
   if (isEditable) {
     return (
       <Tag
+        id={id}
         className={`${className} editable-block`}
         contentEditable="true"
         suppressContentEditableWarning={suppressWarning}
@@ -42,6 +45,9 @@ export const EditableWrapper: React.FC<EditableWrapperProps> = ({
     );
   }
 
-  // ALWAYS parse bold text in view mode
-  return <Tag className={className}>{parseBoldText(initialContent)}</Tag>;
+  return (
+    <Tag id={id} className={className}>
+      {parseBoldText(initialContent)}
+    </Tag>
+  );
 };

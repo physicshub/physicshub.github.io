@@ -9,6 +9,7 @@ import {
   faClone,
   faGripVertical,
 } from "@fortawesome/free-solid-svg-icons";
+import { slugify } from "../../../(core)/utils/blogHandling.ts";
 
 import {
   TheoryRendererProps,
@@ -103,7 +104,17 @@ const renderBlock = (
   isEditing: boolean,
   onContentUpdate: OnContentUpdate
 ) => {
-  const commonProps = { isEditing, onContentUpdate, sectionIndex, blockIndex };
+  // Prepariamo l'id se il blocco è un titolo
+  const blockId =
+    block.type === "sectionTitle" ? slugify(block.text || "") : undefined;
+
+  const commonProps = {
+    isEditing,
+    onContentUpdate,
+    sectionIndex,
+    blockIndex,
+    id: blockId, // Passiamo l'id ai componenti base
+  };
 
   switch (block.type) {
     case "sectionTitle":
@@ -233,7 +244,10 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
   return (
     <div className="theory-renderer">
       {theory.sections.map((section, i) => (
-        <TheorySection key={i}>
+        <TheorySection
+          key={i}
+          id={section.title ? slugify(section.title) : undefined}
+        >
           {section.blocks.map((block, j) => {
             const blockId = `s${i}-b${j}`;
 
