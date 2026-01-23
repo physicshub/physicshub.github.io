@@ -32,21 +32,31 @@ export function collideBoundary(pos, vel, bounds, radius, restitution) {
   const newPos = pos.copy();
   const newVel = vel.copy();
 
-  // X axis
-  if (newPos.x - radius < 0) {
-    newPos.x = radius;
+  const ballLeftEdge = newPos.x - radius;
+  const ballRightEdge = newPos.x + radius;
+  const hitLeftWall = ballLeftEdge < 0;
+  const hitRightWall = ballRightEdge > bounds.w;
+  if (hitLeftWall) {
+    const collisionPenetration = 0 - ballLeftEdge;
+    newPos.x = radius + collisionPenetration;
     newVel.x = Math.abs(newVel.x) * restitution;
-  } else if (newPos.x + radius > bounds.w) {
-    newPos.x = bounds.w - radius;
+  } else if (hitRightWall) {
+    const collisionPenetration = ballRightEdge - bounds.w;
+    newPos.x = bounds.w - radius - collisionPenetration;
     newVel.x = -Math.abs(newVel.x) * restitution;
   }
 
-  // Y axis
-  if (newPos.y - radius < 0) {
-    newPos.y = radius;
+  const ballTopEdge = newPos.y - radius;
+  const ballBottomEdge = newPos.y + radius;
+  const hitCeiling = ballTopEdge < 0;
+  const hitFloor = ballBottomEdge > bounds.h;
+  if (hitCeiling) {
+    const collisionPenetration = 0 - ballTopEdge;
+    newPos.y = radius + collisionPenetration;
     newVel.y = Math.abs(newVel.y) * restitution;
-  } else if (newPos.y + radius > bounds.h) {
-    newPos.y = bounds.h - radius;
+  } else if (hitFloor) {
+    const collisionPenetration = ballBottomEdge - bounds.h;
+    newPos.y = bounds.h - radius - collisionPenetration;
     newVel.y = -Math.abs(newVel.y) * restitution;
   }
 
