@@ -31,7 +31,10 @@ export function integrate(pos, vel, acc, dt) {
 
 /**
  * Collision with Energy Conservation.
- * Uses Mirroring for position to prevent energy loss, but corrects velocity to prevent energy gain.
+ * bounds: { w, h }
+ * radius: world units
+ * restitution: 0..1
+ * acc: current acceleration
  */
 export function collideBoundary(pos, vel, bounds, radius, restitution, acc) {
   const newPos = pos.copy();
