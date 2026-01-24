@@ -65,6 +65,14 @@ export default [
     relatedBlogSlug: "projectile-parabolic-motion",
   },
   {
+    id: 8,
+    name: "Inclined Plane",
+    desc: "Block sliding on an inclined plane.",
+    link: "/simulations/InclinedPlane",
+    tags: [TAGS.MEDIUM, TAGS.PHYSICS, TAGS.GRAVITY],
+    icon: "/icons/inclined.png",
+  },
+  {
     id: 0,
     name: "Test for benchmarks",
     desc: "This is a simulation created specifically for performance testing.",
