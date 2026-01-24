@@ -3,18 +3,19 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
-export default function BackToTopButton() {
+export default function BackToTopButton({ onlyMobile = true }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Mostra solo se mobile e scroll > 300px
-      if (window.innerWidth <= 600 && window.scrollY > 300) {
+      if (window.scrollY > 300 && (!onlyMobile || window.innerWidth <= 600)) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
+
+    handleScroll();
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
