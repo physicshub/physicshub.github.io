@@ -13,24 +13,30 @@ export const springK_SI_to_px = (k_SI) => k_SI / SCALE;
 export const springK_px_to_SI = (k_px) => k_px * SCALE;
 
 /**
- * Semi-implicit Euler (Euler-Cromer) integration.
- * Conserves energy better than explicit Euler.
+ * Velocity verlet integration
  */
 export function integrate(pos, vel, acc, dt) {
-  const newVel = vel.copy().add(acc.copy().mult(dt));
-  const newPos = pos.copy().add(newVel.copy().mult(dt));
+  const newPos = pos.copy();
+  const newVel = vel.copy();
+
+  const velDt = vel.copy().mult(dt);
+  const accDt2 = acc.copy().mult(0.5 * dt * dt);
+  newPos.add(velDt).add(accDt2);
+
+  const accDt = acc.copy().mult(dt);
+  newVel.add(accDt);
+
   return { pos: newPos, vel: newVel };
 }
 
 /**
- * Collision with canvas boundaries in world units.
- * bounds: { w, h }
- * radius: world units
- * restitution: 0..1
+ * Collision with Energy Conservation.
+ * Uses Mirroring for position to prevent energy loss, but corrects velocity to prevent energy gain.
  */
-export function collideBoundary(pos, vel, bounds, radius, restitution) {
+export function collideBoundary(pos, vel, bounds, radius, restitution, acc) {
   const newPos = pos.copy();
   const newVel = vel.copy();
+  const gravity = acc ? acc.y : 0;
 
   const ballLeftEdge = newPos.x - radius;
   const ballRightEdge = newPos.x + radius;
@@ -56,8 +62,20 @@ export function collideBoundary(pos, vel, bounds, radius, restitution) {
     newVel.y = Math.abs(newVel.y) * restitution;
   } else if (hitFloor) {
     const collisionPenetration = ballBottomEdge - bounds.h;
-    newPos.y = bounds.h - radius - collisionPenetration;
-    newVel.y = -Math.abs(newVel.y) * restitution;
+    const velSquared = newVel.y ** 2;
+    const liftDistance = 2 * collisionPenetration;
+    const work = gravity > 0 ? 2 * gravity * liftDistance : 0;
+
+    if (velSquared > work) {
+      // mirror
+      newPos.y = bounds.h - radius - collisionPenetration;
+      const vNew = Math.sqrt(velSquared - work);
+      newVel.y = -vNew * restitution;
+    } else {
+      // clamp
+      newPos.y = bounds.h - radius;
+      newVel.y = 0;
+    }
   }
 
   return { pos: newPos, vel: newVel };
