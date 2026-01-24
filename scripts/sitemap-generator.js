@@ -7,7 +7,7 @@ import { routes as staticRoutes } from "../routes.js";
 import { blogsArray } from "../app/(core)/data/articles/index.js";
 
 const hostname = "https://physicshub.github.io";
-const sitemapName = "sitemap-physicshub";
+const sitemapName = "sitemap";
 
 function updateRoutesFile(allRoutes) {
   const content = `export const routes = ${JSON.stringify(allRoutes, null, 2)};`;
