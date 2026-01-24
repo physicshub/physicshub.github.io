@@ -35,7 +35,7 @@ export default [
     link: "/simulations/BallGravity",
     tags: [TAGS.MEDIUM, TAGS.COLLISION, TAGS.PHYSICS, TAGS.GRAVITY],
     icon: "/icons/gravity.png",
-    relatedBlogSlug: "ball-free-fall",
+    relatedBlogSlug: "ball-free-fall-comprehensive-guide",
   },
   {
     id: 5,

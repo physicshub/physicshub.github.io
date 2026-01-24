@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:sitemap\"",
     "build": "next build && npm run generate:sitemap",
-    "preview": "npm run build && next start",
+    "preview": "npm run build && npx serve@latest out",
     "predeploy": "npm run build && npm run contributors",
     "deploy": "gh-pages -d out",
     "generate:sitemap": "node scripts/sitemap-generator.js",
