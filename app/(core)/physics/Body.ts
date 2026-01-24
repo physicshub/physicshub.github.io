@@ -66,7 +66,7 @@ export default class Body {
     }
 
     // Accelerazione base (gravità)
-    let totalAcc = acc.copy().add(createVector(0, gravity));
+    const totalAcc = acc.copy().add(createVector(0, gravity));
 
     // Accelerazione esterna (vento, mouse, ecc.)
     if (externalAcc) totalAcc.add(externalAcc);
@@ -89,7 +89,8 @@ export default class Body {
       newState.vel,
       { w: toMeters(p.width), h: toMeters(p.height) },
       radius,
-      restitution
+      restitution,
+      totalAcc
     );
 
     this.state.pos = collided.pos;
