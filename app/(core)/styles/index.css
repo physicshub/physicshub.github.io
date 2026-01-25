@@ -168,6 +168,7 @@ header.sticky {
   position: relative;
   border-radius: 10%;
   height: 3rem;
+  width: auto;
   transition:
     transform 0.3s,
     box-shadow 0.3s;

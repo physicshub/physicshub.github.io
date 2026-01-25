@@ -1,5 +1,5 @@
 // app/hooks/useSimInfo.ts
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 
 // Tipi generici per rendere l'hook riutilizzabile
 export interface UseSimInfoOptions<TRefs = Record<string, unknown>> {
@@ -21,27 +21,21 @@ export default function useSimInfo<
   TRefs extends Record<string, unknown> = Record<string, unknown>,
   TData extends Record<string, unknown> = Record<string, unknown>,
 >(options: UseSimInfoOptions<TRefs> = {}) {
-  const {
-    updateIntervalMs = 150, // default 150ms
-    customRefs,
-  } = options;
-
-  // Stabilizza i refs per evitare re-render inutili
-  const stableCustomRefs = useMemo(
-    () => customRefs || ({} as TRefs),
-    [customRefs]
-  );
+  const { updateIntervalMs = 150, customRefs } = options;
 
   const [simData, setSimData] = useState<TData | Record<string, unknown>>({});
   const lastInfoUpdateMs = useRef(0);
 
-  /**
-   * Funzione centralizzata di update
-   * @param p - istanza p5 (deve avere millis())
-   * @param state - stato della simulazione (pos, vel, ecc.)
-   * @param context - contesto extra (gravity, canvasHeight, ecc.)
-   * @param mapper - funzione che mappa state+context+refs -> simData
-   */
+  // 1. Usiamo un Ref per "inscatolare" le dipendenze instabili
+  const internalConfigRef = useRef({ updateIntervalMs, customRefs });
+
+  // 2. Teniamo il Ref aggiornato ad ogni render
+  useEffect(() => {
+    internalConfigRef.current = { updateIntervalMs, customRefs };
+  }, [updateIntervalMs, customRefs]);
+
+  // 3. updateSimInfo ora ha dipendenze VUOTE []
+  // Non cambierà MAI riferimento, quindi p5.js non si resetterà mai
   const updateSimInfo = useCallback(
     (
       p: { millis: () => number },
@@ -52,10 +46,14 @@ export default function useSimInfo<
       if (!p || !mapper) return;
 
       const now = p.millis();
-      if (now - lastInfoUpdateMs.current < updateIntervalMs) return;
+      // Usiamo i valori dal Ref per la logica, garantendo dati freschi
+      const { updateIntervalMs: interval, customRefs: refs } =
+        internalConfigRef.current;
+
+      if (now - lastInfoUpdateMs.current < interval) return;
 
       try {
-        const data = mapper(state, context, stableCustomRefs);
+        const data = mapper(state, context, (refs || {}) as TRefs);
         if (data) setSimData(data);
       } catch (error) {
         console.warn("Error in sim info mapper:", error);
@@ -63,7 +61,7 @@ export default function useSimInfo<
 
       lastInfoUpdateMs.current = now;
     },
-    [updateIntervalMs, stableCustomRefs]
+    [] // <--- Fondamentale: dipendenze vuote
   );
 
   return {
