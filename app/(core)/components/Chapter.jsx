@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import Tag from "./Tag.jsx";
 import Link from "next/link.js";
+import Image from "next/image";
 
 function Chapter(props) {
   return (
@@ -21,7 +22,7 @@ function Chapter(props) {
             ? `${props.name}`
             : `Chapter ${props.id}: ${props.name}`}
           {props.icon && (
-            <img
+            <Image
               src={props.icon}
               alt={`${props.name} icon`}
               width={24}

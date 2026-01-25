@@ -16,8 +16,8 @@ export type SimInfoMapper<TState, TContext, TRefs, TData> = (
 
 // Hook principale
 export default function useSimInfo<
-  TState = any,
-  TContext = any,
+  TState = unknown,
+  TContext = unknown,
   TRefs extends Record<string, unknown> = Record<string, unknown>,
   TData extends Record<string, unknown> = Record<string, unknown>,
 >(options: UseSimInfoOptions<TRefs> = {}) {

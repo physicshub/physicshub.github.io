@@ -233,7 +233,6 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
   onContentUpdate,
   onDeleteBlock,
   onDuplicateBlock,
-  dndItems = [],
 }) => {
   if (!theory || !theory.sections || !Array.isArray(theory.sections)) {
     return (

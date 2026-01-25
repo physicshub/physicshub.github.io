@@ -1,7 +1,7 @@
 // app/pages/simulations/BallAcceleration.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
@@ -40,7 +40,7 @@ import Body from "../../../(core)/physics/Body";
 export default function BallAcceleration() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );

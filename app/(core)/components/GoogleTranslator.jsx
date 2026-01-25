@@ -69,36 +69,40 @@ export default function GoogleTranslator() {
     }
   }, []);
 
-  const changeLanguage = (languageCode) => {
-    if (languageCode === currentLanguage) return;
-    setCurrentLanguage(languageCode);
+  const changeLanguage = useCallback(
+    (languageCode) => {
+      if (languageCode === currentLanguage) return;
+      setCurrentLanguage(languageCode);
 
-    let frame = 0;
-    const interval = setInterval(() => {
-      setIcon(ICON_FRAMES[frame % ICON_FRAMES.length]);
-      frame++;
-      if (frame > ICON_FRAMES.length) {
-        clearInterval(interval);
-        setIcon(LANGUAGE_ICONS[languageCode] || LANGUAGE_ICONS.default);
+      let frame = 0;
+      const interval = setInterval(() => {
+        setIcon(ICON_FRAMES[frame % ICON_FRAMES.length]);
+        frame++;
+        if (frame > ICON_FRAMES.length) {
+          clearInterval(interval);
+          setIcon(LANGUAGE_ICONS[languageCode] || LANGUAGE_ICONS.default);
+        }
+      }, 100);
+
+      const selectElement = document.querySelector(".goog-te-combo");
+      if (selectElement) {
+        selectElement.value = languageCode;
+        selectElement.dispatchEvent(new Event("change"));
       }
-    }, 100);
-
-    const selectElement = document.querySelector(".goog-te-combo");
-    if (selectElement) {
-      selectElement.value = languageCode;
-      selectElement.dispatchEvent(new Event("change"));
-    }
-    document.cookie = `googtrans=/en/${languageCode}; path=/; domain=${window.location.hostname}`;
-  };
+      document.cookie = `googtrans=/en/${languageCode}; path=/; domain=${window.location.hostname}`;
+    },
+    [currentLanguage]
+  );
 
   // Reset translation when route changes
   useEffect(() => {
     if (currentLanguage !== "en") {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         changeLanguage(currentLanguage);
       }, 300);
+      return () => clearTimeout(timeout);
     }
-  }, [pathname, currentLanguage]);
+  }, [pathname, currentLanguage, changeLanguage]);
 
   return (
     <div className="select-container translator-container">

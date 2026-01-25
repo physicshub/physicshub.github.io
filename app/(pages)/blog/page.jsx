@@ -99,7 +99,7 @@ export default function Blog() {
           <h2 className="blogs-header">Search Results</h2>
         )}
 
-        <main className="blogs-list">
+        <div className="blogs-list">
           {finalChapters.map((chap, i) => (
             <Chapter
               key={i}
@@ -114,9 +114,11 @@ export default function Blog() {
           ))}
 
           {finalChapters.length === 0 && searchTerm.length > 0 && (
-            <p className="no-results">Nothing found for "{searchTerm}".</p>
+            <p className="no-results">
+              Nothing found for &quot;{searchTerm}&quot;.
+            </p>
           )}
-        </main>
+        </div>
       </main>
     </div>
   );

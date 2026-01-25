@@ -32,33 +32,13 @@ import {
 import { BlogContent } from "../../../(core)/components/theory/types";
 
 // --- INTERFACCE TYPESCRIPT ---
-interface Block {
-  id?: string;
-  type: string;
-  text?: string;
-  code?: string;
-  language?: string;
-  latex?: string;
-  inline?: boolean;
-  items?: string[];
-  ordered?: boolean;
-  calloutType?: string;
-  title?: string;
-  content?: string;
-  columns?: string[];
-  data?: any[];
-  src?: string;
-  alt?: string;
-  caption?: string;
-  level?: number;
-}
 
 const DynamicEditor = dynamic(
   () => import("../../../(core)/components/Editor"),
   { ssr: false }
 );
 
-const objectToJSString = (obj: any, indent = 2): string => {
+const objectToJSString = (obj: unknown, indent = 2): string => {
   const spacing = " ".repeat(indent);
 
   if (Array.isArray(obj)) {
@@ -77,7 +57,10 @@ const objectToJSString = (obj: any, indent = 2): string => {
     const keys = Object.keys(obj);
     const objectString = keys
       .map((key) => {
-        const value = objectToJSString(obj[key], indent + 2);
+        const value = objectToJSString(
+          (obj as Record<string, unknown>)[key],
+          indent + 2
+        );
         const safeKey = /^[a-z$_][a-z0-9$_]*$/i.test(key) ? key : `"${key}"`;
         return `${spacing}  ${safeKey}: ${value.trimStart()}`;
       })
@@ -88,10 +71,10 @@ const objectToJSString = (obj: any, indent = 2): string => {
   return JSON.stringify(obj);
 };
 
-const jsStringToObject = (str: string): any => {
+const jsStringToObject = (str: string): unknown => {
   try {
     return new Function(`return ${str}`)();
-  } catch (e) {
+  } catch {
     throw new Error("Sintassi JS non valida");
   }
 };
@@ -163,12 +146,12 @@ const VisualEditorRenderer: React.FC<{
       sectionIndex: number,
       blockIndex: number,
       field: string,
-      newValue: any
+      newValue: unknown
     ) => {
       const newData = { ...dataContent };
 
       if (sectionIndex === -1 && field === "title") {
-        newData.title = newValue;
+        newData.title = newValue as string;
       } else if (newData.sections[sectionIndex]?.blocks[blockIndex]) {
         const newSections = [...newData.sections];
         const newBlocks = [...newSections[sectionIndex].blocks];
@@ -266,13 +249,13 @@ const VisualEditorRenderer: React.FC<{
     if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JS structure must contain 'sections'.
+          Error: JS structure must contain &apos;sections&apos;.
         </div>
       );
     }
 
-    const dndItems = dataContent.sections.flatMap((sec: any, i: number) =>
-      sec.blocks.map((_: any, j: number) => `s${i}-b${j}`)
+    const dndItems = dataContent.sections.flatMap((sec, i: number) =>
+      sec.blocks.map((_, j: number) => `s${i}-b${j}`)
     );
 
     return (
@@ -327,7 +310,7 @@ const LivePreviewRenderer: React.FC<{
     if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JS structure must contain 'sections'.
+          Error: JS structure must contain &apos;sections&apos;.
         </div>
       );
     }
@@ -368,7 +351,7 @@ export default function CreateBlogPage() {
   const jsTitle = useMemo(() => {
     try {
       return dataContent.title || "New Blog Title";
-    } catch (e) {
+    } catch {
       return "New Blog Title";
     }
   }, [dataContent]);
@@ -413,7 +396,7 @@ export default function CreateBlogPage() {
 
     try {
       const newData = { ...dataContent };
-      newData.sections = newData.sections.map((section: any) => ({
+      newData.sections = newData.sections.map(() => ({
         blocks: [],
       }));
       setDataContent(newData);
@@ -422,10 +405,7 @@ export default function CreateBlogPage() {
     }
   }, [dataContent, setDataContent]);
 
-  const [isPublishing, setIsPublishing] = useState(false);
-
   const handleSave = useCallback(async () => {
-    setIsPublishing(true);
     try {
       const response = await fetch("/api/publish", {
         method: "POST",
@@ -450,7 +430,6 @@ export default function CreateBlogPage() {
       console.error("Errore durante l'invio:", error);
       alert("Errore durante la pubblicazione. Riprova più tardi.");
     } finally {
-      setIsPublishing(false);
     }
   }, [dataContent, title, router]);
 
@@ -655,9 +634,9 @@ export default function CreateBlogPage() {
                     try {
                       const parsed = jsStringToObject(newString);
                       if (parsed && typeof parsed === "object") {
-                        setDataContent(parsed);
+                        setDataContent(parsed as BlogContent);
                       }
-                    } catch (e) {
+                    } catch {
                       // Silenzioso durante la digitazione per evitare crash
                     }
                   }}

@@ -8,17 +8,16 @@ const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showHero, setShowHero] = useState(true);
+  const [showHero] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !localStorage.getItem("hasVisitedSimulations");
+    }
+    return true;
+  });
   const contentRef = useRef(null);
   const duration = 1200;
 
   useEffect(() => {
-    const hasVisited = localStorage.getItem("hasVisitedSimulations");
-
-    if (hasVisited) {
-      setShowHero(false);
-    }
-
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
@@ -81,7 +80,7 @@ export default function Simulations() {
             className="ph-btn ph-btn--primary main-btn"
             onClick={handleStart}
           >
-            Let's begin
+            Let&apos;s begin
           </button>
         </section>
       )}

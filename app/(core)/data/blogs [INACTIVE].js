@@ -3,7 +3,7 @@
 
 import TAGS from "./tags.js";
 
-export default [
+const INACTIVE_BLOGS = [
   {
     id: 1,
     name: "Blog Test",
@@ -191,3 +191,5 @@ export default [
     theory: {},
   },
 ];
+
+export default INACTIVE_BLOGS;

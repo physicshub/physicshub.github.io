@@ -99,7 +99,6 @@ export default class Spring {
       this.p.stroke(this.p.color(this.color));
       this.p.line(obj.pos.x, obj.pos.y, this.anchor.x, this.anchor.y);
     } else {
-      const anchorMeters = this.anchor.copy().div(SCALE);
       this.p.stroke(this.p.color(this.color));
       this.p.line(
         obj.state.pos.x * SCALE,

@@ -98,7 +98,7 @@ export const FORCES = [
   {
     key: "normal",
     color: "#10b981",
-    computeFn: ({ mass }, inputs, context) => {
+    computeFn: ({ mass }, inputs) => {
       const angleRad = (inputs.angle * Math.PI) / 180;
       const appliedAngleRad = (inputs.appliedAngle * Math.PI) / 180;
       const totalAppliedAngle = angleRad - appliedAngleRad;
@@ -118,7 +118,7 @@ export const FORCES = [
   {
     key: "friction",
     color: "#f59e0b",
-    computeFn: ({ mass, vel }, inputs, context) => {
+    computeFn: ({ mass, vel }, inputs) => {
       const angleRad = (inputs.angle * Math.PI) / 180;
       const appliedAngleRad = (inputs.appliedAngle * Math.PI) / 180;
       const totalAppliedAngle = angleRad - appliedAngleRad;
@@ -175,7 +175,7 @@ export const FORCES = [
   },
 ];
 
-export const SimInfoMapper = (state, context, refs) => {
+export const SimInfoMapper = (state, context) => {
   const { posAlongPlane, vel, acc, mass } = state;
   const { gravity, angle, forces } = context;
 

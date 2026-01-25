@@ -130,7 +130,7 @@ export function LandingPart({
         style={{ display: "flex", gap: ctaGap }}
         variants={fadeUp(reduceMotion)}
       >
-        {ctas.map(({ label, to, type, icon, target, popup }, i) => {
+        {ctas.map(({ label, to, type, icon, target }, i) => {
           const isExternal = /^https?:\/\//i.test(to) || to.startsWith("//");
 
           return (

@@ -37,7 +37,7 @@ export default function VectorsOperations() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
 
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -54,8 +54,8 @@ export default function VectorsOperations() {
   );
 
   const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location.pathname)?.theory,
-    [location.pathname]
+    () => chapters.find((ch) => ch.link === location)?.theory,
+    [location]
   );
 
   const sketch = useCallback(
@@ -66,7 +66,6 @@ export default function VectorsOperations() {
       const boundsRef = { current: null };
       const lastMassRef = { current: null };
 
-      let lastTime = 0;
       let accumulator = 0;
       const FIXED_DT = 1 / 60;
       const MAX_STEPS = 5;
@@ -119,7 +118,6 @@ export default function VectorsOperations() {
 
         bodyRef.current = body;
         lastMassRef.current = massKg;
-        lastTime = performance.now() / 1000;
         accumulator = 0;
       }
 
@@ -314,9 +312,6 @@ export default function VectorsOperations() {
           }
 
           case "dot": {
-            const A = center.copy();
-            const B = p.constructor.Vector.sub(mouse, center);
-
             p.strokeWeight(strokeWeight);
             p.stroke(strokeColor);
             p.line(0, 0, center.x, center.y);
@@ -533,7 +528,7 @@ export default function VectorsOperations() {
         }
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

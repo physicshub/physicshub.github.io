@@ -1,7 +1,6 @@
 // constants/Time.js
 let timeScale = 1;
 let paused = false;
-let lastMillis = null;
 let simulationInstances = new Map(); // Mappa per tenere traccia di ogni istanza
 
 /**
@@ -55,7 +54,6 @@ export function setPause(value) {
 export function resetTime() {
   paused = false;
   simulationInstances.clear(); // Pulisci tutte le istanze
-  lastMillis = null;
 }
 
 export function isPaused() {

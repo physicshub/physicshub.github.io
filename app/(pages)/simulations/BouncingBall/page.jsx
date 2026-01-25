@@ -43,7 +43,7 @@ import Body from "../../../(core)/physics/Body";
 export default function BouncingBall() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -330,7 +330,7 @@ export default function BouncingBall() {
         isSetupComplete = false;
       };
     },
-    [inputsRef, maxHeightRef, fallStartTimeRef]
+    [inputsRef, maxHeightRef, fallStartTimeRef, updateSimInfo]
   );
 
   // Cleanup quando componente viene smontato

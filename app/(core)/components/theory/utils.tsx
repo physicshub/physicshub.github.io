@@ -98,7 +98,7 @@ export const normalizeItems = (
     try {
       const parsed = JSON.parse(rawItems);
       return Array.isArray(parsed) ? parsed : [rawItems];
-    } catch (e) {
+    } catch {
       return [rawItems];
     }
   }

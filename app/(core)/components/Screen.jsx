@@ -24,13 +24,13 @@ function Screen({ sketch }) {
     p5Instance.current.frameRate(FPS_FOR_SIMULATIONS);
 
     return () => {
-      const c = containerRef.current;
       if (p5Instance.current) {
         p5Instance.current.remove();
         p5Instance.current = null;
       }
-      if (c) {
-        while (c.firstChild) c.removeChild(c.firstChild);
+      if (container) {
+        while (container.firstChild)
+          container.removeChild(container.firstChild);
       }
     };
   }, [sketch]);

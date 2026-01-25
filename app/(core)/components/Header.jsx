@@ -1,6 +1,6 @@
 // app/components/Header.jsx
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Logo } from "./Logo";
 import NavMenu from "./Nav";
 import { Theme } from "./Theme";
@@ -17,9 +17,12 @@ export default function Header() {
   const { mode, toggleMode } = useTheme();
   const pathname = usePathname();
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+  // Close menu when route changes
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    if (isMenuOpen) setMenuOpen(false);
+  }
 
   const handleMenuToggle = useCallback(() => setMenuOpen((open) => !open), []);
 

@@ -21,6 +21,8 @@ export interface Children {
   children?: React.ReactNode;
 }
 
+export type ImageSize = "small" | "medium" | "large" | "full";
+
 export interface BlockData {
   type: string;
   text?: string;
@@ -35,11 +37,13 @@ export interface BlockData {
   title?: string;
   content?: string;
   columns?: string[];
-  data?: Array<Record<string, any>>;
+  data?: Array<Record<string, unknown>>;
   src?: string;
   alt?: string;
   caption?: string;
-  [key: string]: any;
+  size?: ImageSize;
+  href?: string;
+  [key: string]: unknown;
 }
 
 export interface SectionData {

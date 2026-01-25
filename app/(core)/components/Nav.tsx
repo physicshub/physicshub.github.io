@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const menuItems = [
   { href: "/", label: "Home" },
@@ -16,7 +16,7 @@ export default function NavMenu() {
   const navRef = useRef<HTMLUListElement>(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
-  const updateUnderline = () => {
+  const updateUnderline = useCallback(() => {
     if (!navRef.current) return;
 
     const activeLink = navRef.current.querySelector<HTMLAnchorElement>(
@@ -32,17 +32,13 @@ export default function NavMenu() {
         width: rect.width,
       });
     }
-  };
+  }, [pathname]);
 
   useEffect(() => {
     updateUnderline();
     window.addEventListener("resize", updateUnderline);
     return () => window.removeEventListener("resize", updateUnderline);
-  }, []);
-
-  useEffect(() => {
-    updateUnderline();
-  }, [pathname]);
+  }, [updateUnderline]);
 
   return (
     <nav className="nav-menu">

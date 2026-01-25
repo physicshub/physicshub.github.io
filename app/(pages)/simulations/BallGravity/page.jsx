@@ -41,7 +41,7 @@ import Body from "../../../(core)/physics/Body";
 export default function BallGravity() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -137,7 +137,6 @@ export default function BallGravity() {
 
         // Se cambia la size, aggiorna in modo coerente (mantieni il centro, evita salti visivi)
         if (size !== bodyRef.current.params.size) {
-          const prevRadius = bodyRef.current.params.size / 2;
           const newRadius = size / 2;
           // Opzionale: correzione fine per evitare penetrazioni al cambio
           const bottomM = toMeters(p.height);
@@ -240,7 +239,6 @@ export default function BallGravity() {
 
         // Garantisci che il corpo resti dentro i nuovi bordi
         if (bodyRef.current) {
-          const bottomM = toMeters(p.height);
           const radius = bodyRef.current.params.size / 2;
           bodyRef.current.state.pos.x = Math.min(
             Math.max(bodyRef.current.state.pos.x, radius),
@@ -253,7 +251,7 @@ export default function BallGravity() {
         }
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

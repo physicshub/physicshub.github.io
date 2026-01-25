@@ -16,7 +16,7 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
   const [settingsMode, setSettingsMode] = useState(false);
   const [hiddenKeys, setHiddenKeys] = useState(new Set());
 
-  const lastUpdateRef = useRef(Date.now());
+  const lastUpdateRef = useRef(0);
   const dataRef = useRef(data);
 
   // Update dataRef whenever data changes

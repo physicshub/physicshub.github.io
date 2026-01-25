@@ -13,13 +13,9 @@ import BackToTopButton from "../BackToTop";
 
 interface BlogInteractionsProps {
   title: string;
-  slug: string;
 }
 
-export default function BlogInteractions({
-  title,
-  slug,
-}: BlogInteractionsProps) {
+export default function BlogInteractions({ title }: BlogInteractionsProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copied, setCopied] = useState(false);
 

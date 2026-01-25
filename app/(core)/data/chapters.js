@@ -1,6 +1,6 @@
 import TAGS from "./tags.js";
 
-export default [
+const chapters = [
   {
     id: 1,
     name: "Bouncing Ball",
@@ -81,3 +81,5 @@ export default [
     icon: "/icons/test.png",
   },
 ];
+
+export default chapters;

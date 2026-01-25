@@ -42,7 +42,7 @@ import {
 export default function Test() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -74,7 +74,7 @@ export default function Test() {
 
       p.draw = () => {
         const {} = inputsRef.current;
-        const dt = computeDelta(p);
+        computeDelta(p);
 
         // Vettori forze
         const activeForces = getActiveForces(FORCES);
@@ -96,7 +96,7 @@ export default function Test() {
         p.resizeCanvas(w, h);
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

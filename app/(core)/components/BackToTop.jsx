@@ -19,7 +19,7 @@ export default function BackToTopButton({ onlyMobile = true }) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [onlyMobile]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

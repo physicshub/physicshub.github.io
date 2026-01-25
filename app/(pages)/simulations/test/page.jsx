@@ -37,7 +37,7 @@ import Body from "../../../(core)/physics/Body";
 export default function Test() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -131,7 +131,7 @@ export default function Test() {
           body.params.gravity = gravity;
           body.step(p, dt);
 
-          const { pos, vel } = body.state;
+          const { pos } = body.state;
           const pixelX = toPixels(pos.x);
           const pixelY = toPixels(pos.y);
           const bodySizePx = toPixels(body.params.size);
