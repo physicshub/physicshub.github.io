@@ -63,7 +63,7 @@
     "fast-xml-parser": "^5.3.0",
     "gh-pages": "^6.3.0",
     "globals": "^17.0.0",
-    "husky": "^8.0.0",
+    "husky": "^8.0.3",
     "lint-staged": "^16.2.7",
     "nodemon": "^3.1.10",
     "prettier": "3.8.0",
@@ -74,7 +74,13 @@
     "typescript": "^5.9.3"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,css,json,md}": "prettier --write"
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "author": "MattQ",
   "license": "MIT"
