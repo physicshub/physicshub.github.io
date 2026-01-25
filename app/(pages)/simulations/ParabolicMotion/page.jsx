@@ -44,7 +44,7 @@ const TRAJECTORY_STEPS = 96;
 export default function ParabolicMotion() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -419,7 +419,7 @@ export default function ParabolicMotion() {
         needsRelaunchRef.current = true;
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

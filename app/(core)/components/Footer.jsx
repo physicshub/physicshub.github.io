@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import BackToTopButton from "./BackToTop";
 import { useFeedback } from "../context/FeedbackProvider";
-import { faBug, faBugs } from "@fortawesome/free-solid-svg-icons";
+import { faBug } from "@fortawesome/free-solid-svg-icons";
 
 const links = [
   { label: "Home", to: "/", exact: true },

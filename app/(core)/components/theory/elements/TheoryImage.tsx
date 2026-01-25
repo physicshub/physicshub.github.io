@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCopyright } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
+import Image from "next/image";
 
 type ImageSize = "small" | "medium" | "large" | "full";
 
@@ -75,12 +76,15 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
         className={`image-wrapper ${!isEditing && href ? "is-link" : ""}`}
         onClick={handleImageClick}
       >
-        <img
+        <Image
           src={
             currentSrc || "https://via.placeholder.com/800x400?text=No+Image"
           }
           alt={alt}
           className={isEditing ? "editing-border" : ""}
+          width={800}
+          height={450}
+          style={{ width: "100%", height: "auto" }}
         />
 
         {href && (

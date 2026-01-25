@@ -1,6 +1,6 @@
 // app/pages/contribute.jsx
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Skeleton from "../../(core)/components/ContributorsSectionSkeleton";
 import {
@@ -22,39 +22,6 @@ const ContributorsSection = React.lazy(
 );
 
 export default function Contribute() {
-  const [contributors, setContributors] = useState([]);
-
-  // Fetch contributors da GitHub API
-  async function getContributors(page = 1) {
-    const request = await fetch(
-      `https://api.github.com/repos/physicshub/physicshub.github.io/contributors?per_page=100&page=${page}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    return request.json();
-  }
-
-  // Recupera tutti i contributors (paginati)
-  async function getAllContributors() {
-    let contributorsList = [];
-    let page = 1;
-    let list = [];
-
-    do {
-      list = await getContributors(page);
-      contributorsList = contributorsList.concat(list);
-      page++;
-    } while (list.length > 0);
-
-    return contributorsList;
-  }
-
-  useEffect(() => {
-    getAllContributors().then((data) => setContributors(data));
-  }, []);
-
   return (
     <div className="contribution-page-container">
       <h1 className="title text-3xl">Contribute to PhysicsHub</h1>
@@ -71,7 +38,7 @@ export default function Contribute() {
           </div>
           <h3 className="card-title">Who can contribute</h3>
           <p className="card-description">
-            Anyone can contribute to this project, even if you aren't a
+            Anyone can contribute to this project, even if you aren&apos;t a
             programmer. We need people that want to write the theory part or
             just to give us some new ideas.
           </p>

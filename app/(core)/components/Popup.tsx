@@ -71,10 +71,14 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
 }) => {
   const [visible, setVisible] = useState(false);
 
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) setVisible(true);
+  }
+
   useEffect(() => {
-    if (isOpen) {
-      setVisible(true);
-    } else {
+    if (!isOpen) {
       const timeout = setTimeout(() => setVisible(false), 300);
       return () => clearTimeout(timeout);
     }

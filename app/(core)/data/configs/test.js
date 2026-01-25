@@ -33,7 +33,7 @@ export const INPUT_FIELDS = [
 export const FORCES = [];
 
 // Mapper specifico per benchmarking
-export const SimInfoMapper = (state, context, refs) => {
+export const SimInfoMapper = (_state, context) => {
   const { p } = context;
   // FPS medio
   const fps = Math.round(p.frameRate());

@@ -8,6 +8,17 @@ export interface ContributorStats {
   commits: number | null;
 }
 
+interface GitHubContributor {
+  author: {
+    login: string;
+  };
+  weeks: Array<{
+    a: number; // additions
+    d: number; // deletions
+    c: number; // commits
+  }>;
+}
+
 /**
  * Poll GitHub API until stats are ready.
  * @param author GitHub username
@@ -53,7 +64,8 @@ export const getRemoteStats = async (
       }
 
       const contributor = contributors.find(
-        (c: any) => c.author?.login?.toLowerCase() === author.toLowerCase()
+        (c: GitHubContributor) =>
+          c.author?.login?.toLowerCase() === author.toLowerCase()
       );
 
       if (!contributor) {
@@ -65,7 +77,7 @@ export const getRemoteStats = async (
       let deletions = 0;
       let commits = 0;
 
-      contributor.weeks.forEach((week: any) => {
+      contributor.weeks.forEach((week: { a: number; d: number; c: number }) => {
         additions += week.a;
         deletions += week.d;
         commits += week.c;
@@ -73,7 +85,7 @@ export const getRemoteStats = async (
 
       console.log(green(`Stats found for ${author}.`));
       return { additions, deletions, commits };
-    } catch (err) {
+    } catch {
       console.error(
         red(
           `Error fetching stats for ${author}. Attempt ${attempt}/${maxRetries}`

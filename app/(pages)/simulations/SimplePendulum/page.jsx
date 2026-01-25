@@ -36,7 +36,7 @@ import useSimInfo from "../../../(core)/hooks/useSimInfo";
 export default function SimplePendulum() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -174,7 +174,7 @@ export default function SimplePendulum() {
         createPendulum();
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

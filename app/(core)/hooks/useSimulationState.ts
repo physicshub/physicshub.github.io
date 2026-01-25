@@ -6,7 +6,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
  * Hook per gestire lo stato di una simulazione con priorità:
  * URL params > localStorage > initialInputs
  */
-export default function useSimulationState<T extends Record<string, any>>(
+export default function useSimulationState<T extends Record<string, unknown>>(
   initialInputs: T,
   storageKey: string
 ) {
@@ -30,19 +30,19 @@ export default function useSimulationState<T extends Record<string, any>>(
       const params = new URLSearchParams(queryString);
       if ([...params.keys()].length === 0) return null;
 
-      const parsed: Partial<T> = {};
+      const parsed: Record<string, unknown> = {};
       params.forEach((value, key) => {
         if (value === "true") {
-          (parsed as any)[key] = true;
+          parsed[key] = true;
         } else if (value === "false") {
-          (parsed as any)[key] = false;
+          parsed[key] = false;
         } else {
           const num = Number(value);
-          (parsed as any)[key] = isNaN(num) ? value : num;
+          parsed[key] = isNaN(num) ? value : num;
         }
       });
 
-      return parsed;
+      return parsed as Partial<T>;
     } catch (error) {
       console.warn("[useSimulationState] Errore parsing URL params:", error);
       return null;
@@ -102,24 +102,19 @@ export default function useSimulationState<T extends Record<string, any>>(
       if (preferSaved) {
         const loaded = loadInputs();
         setInputs(loaded);
-        inputsRef.current = loaded;
       } else {
         setInputs(initialInputs);
-        inputsRef.current = initialInputs;
       }
     },
     [initialInputs, loadInputs]
   );
 
   // Carica una volta al mount
-  useEffect(() => {
-    if (!isInitialized) {
-      const loaded = loadInputs();
-      setInputs(loaded);
-      inputsRef.current = loaded;
-      setIsInitialized(true);
-    }
-  }, [isInitialized, loadInputs]);
+  if (typeof window !== "undefined" && !isInitialized) {
+    const loaded = loadInputs();
+    setInputs(loaded);
+    setIsInitialized(true);
+  }
 
   return {
     inputs,

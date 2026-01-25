@@ -6,7 +6,7 @@ import { EditableProps } from "../types.ts";
 
 interface TheoryTableProps extends EditableProps {
   columns: string[];
-  data: Array<Record<string, any>>;
+  data: Array<Record<string, unknown>>;
 }
 
 export const TheoryTable: React.FC<TheoryTableProps> = ({
@@ -25,7 +25,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
   const suppressWarning = isBlockEditable;
 
   const updateTable = useCallback(
-    (newColumns: string[], newData: Array<Record<string, any>>) => {
+    (newColumns: string[], newData: Array<Record<string, unknown>>) => {
       if (!isBlockEditable) return;
 
       const newTableData = { columns: newColumns, data: newData };
@@ -79,7 +79,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
   const handleAddRow = () => {
     if (!isBlockEditable) return;
 
-    const newRow: Record<string, any> = {};
+    const newRow: Record<string, unknown> = {};
     columns.forEach((col) => (newRow[col] = "New Data"));
 
     updateTable(columns, [...data, newRow]);
@@ -146,7 +146,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
                   onBlur={(e) => handleCellBlur(e, r, c)}
                   className={isBlockEditable ? "editable-block" : ""}
                 >
-                  {row[c]}
+                  {row[c] as React.ReactNode}
                 </td>
               ))}
             </tr>

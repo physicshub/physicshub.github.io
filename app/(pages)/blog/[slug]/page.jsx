@@ -11,6 +11,7 @@ import {
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import Image from "next/image";
 import {
   getReadingTime,
   getTitles,
@@ -85,18 +86,22 @@ export default async function BlogPost({ params }) {
               <div className="blog-meta-footer">
                 <div className="author-info">
                   {blog.avatar ? (
-                    <img
+                    <Image
                       className="author-avatar"
                       src={blog.avatar}
                       alt="Author"
+                      width={40}
+                      height={40}
                     />
                   ) : blog.author ? (
                     <div className="author-avatar">{blog.author[0]}</div>
                   ) : (
-                    <img
+                    <Image
                       className="author-avatar"
-                      src="../../Logo.png"
+                      src="/Logo.png"
                       alt="Logo"
+                      width={40}
+                      height={40}
                     />
                   )}
                   <div className="author-details">

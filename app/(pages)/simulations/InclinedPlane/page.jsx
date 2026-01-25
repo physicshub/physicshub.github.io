@@ -1,7 +1,7 @@
 // app/pages/simulations/InclinedPlane.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
@@ -14,7 +14,6 @@ import {
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
-  FORCES,
   SimInfoMapper,
 } from "../../../(core)/data/configs/InclinedPlane.js";
 import chapters from "../../../(core)/data/chapters.js";
@@ -94,7 +93,7 @@ class InclinedBody {
 export default function InclinedPlane() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef, resetInputs } = useSimulationState(
+  const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
@@ -190,7 +189,7 @@ export default function InclinedPlane() {
         renderScene(p, angleRad, forces);
 
         // Update sim info
-        const screenPos = bodyRef.current.getScreenPosition(
+        bodyRef.current.getScreenPosition(
           { x: planeRef.current.startX, y: planeRef.current.startY },
           angleRad
         );
@@ -492,7 +491,7 @@ export default function InclinedPlane() {
         setupPlane();
       };
     },
-    [inputsRef]
+    [inputsRef, updateSimInfo]
   );
 
   return (

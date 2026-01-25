@@ -1,4 +1,8 @@
-import { BlockData } from "../components/theory";
+import {
+  BlockData,
+  BlogContent,
+  SectionData,
+} from "../components/theory/types";
 
 export function slugify(text: string): string {
   console.log(text);
@@ -14,10 +18,10 @@ export function getReadingTime(text: string): number {
   return Math.ceil(noOfWords / wordsPerMinute);
 }
 
-export function getTitles(blog: any) {
+export function getTitles(blog: { theory?: BlogContent }) {
   return (
-    blog.theory?.sections?.flatMap((section: any) => {
-      const titles: any[] = [];
+    blog.theory?.sections?.flatMap((section: SectionData) => {
+      const titles: { title: string; id: string; isSubSection: boolean }[] = [];
 
       if (section.title) {
         titles.push({
@@ -27,12 +31,13 @@ export function getTitles(blog: any) {
         });
       }
 
+      // Assuming BlockData has a 'type' and 'text' property when type is 'sectionTitle'
       const blockTitles =
         section.blocks
           ?.filter((block: BlockData) => block.type === "sectionTitle")
-          .map((block: any) => ({
-            title: block.text,
-            id: slugify(block.text),
+          .map((block: BlockData) => ({
+            title: block.text || "",
+            id: slugify(block.text || ""),
             isSubSection: section.title ? true : false,
           })) || [];
 

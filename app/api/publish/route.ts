@@ -65,10 +65,12 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, url: pr.html_url });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GitHub API Error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal Server Error";
     return NextResponse.json(
-      { success: false, error: error.message || "Internal Server Error" },
+      { success: false, error: errorMessage },
       { status: 500 }
     );
   }

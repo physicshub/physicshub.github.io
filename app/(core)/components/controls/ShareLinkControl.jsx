@@ -11,8 +11,6 @@ import {
   faTelegram,
   faReddit,
   faInstagram,
-  faPinterest,
-  faTumblr,
 } from "@fortawesome/free-brands-svg-icons";
 import Popup from "../Popup";
 

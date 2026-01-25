@@ -29,7 +29,7 @@ export default function FullLandingPage() {
         const data = await res.json();
 
         const voiceActiveCount = data.members.filter(
-          (m: { channel_id: any }) => m.channel_id
+          (m: { channel_id: string | null }) => m.channel_id
         ).length;
 
         setStats({
