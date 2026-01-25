@@ -323,56 +323,81 @@ nav a:hover::after {
 
 /* Menu for tags filter */
 .horizontal-menu-container {
-  max-height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.3s ease-out,
+    padding 0.3s ease-out,
+    max-height 0.3s ease-out;
   overflow: hidden;
-  transition: max-height 0.4s ease-out;
   width: 100%;
-  padding: 0 0.5rem;
-  border-radius: var(--border-radius);
-  display: flex;
-  align-items: center;
+  max-height: 0;
 }
 
 .horizontal-menu-container.open {
-  max-height: 50px;
-  padding: 0.5rem 0.5rem;
+  grid-template-rows: 1fr;
+  max-height: 500px; /* Set a max height when open */
+  border-radius: var(--border-radius);
+  transition:
+    grid-template-rows 0.3s ease-out,
+    max-height 0.3s ease-out;
 }
 
 .horizontal-menu {
+  min-height: 0;
   list-style: none;
-  height: 4rem;
   display: flex;
+  gap: 0.6rem;
   overflow-x: auto;
   white-space: nowrap;
-  border-radius: var(--border-radius);
+  padding-bottom: 8px;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; /* Firefox */
+  padding: 1rem 0.5rem;
 }
 
-.horizontal-menu .menu-item {
-  flex-shrink: 0;
-  padding: 0.3rem 0.8rem;
-  margin-right: 0.5rem;
-  background-color: var(--secondary-bg-color);
-  border-radius: 20px;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: background-color 0.3s;
+/* Ottimizzazione scrollbar per Chrome/Safari */
+.horizontal-menu::-webkit-scrollbar {
+  height: 4px;
 }
-
-.horizontal-menu .menu-item:hover {
-  background-color: var(--accent-color);
-  color: var(--bg-color);
+.horizontal-menu::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 .filter-button {
+  flex-shrink: 0;
   background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
-  margin-right: 0.5rem;
-  transition: transform 0.2s;
+  outline: none;
+  transition: transform 0.2s ease;
+  display: flex;
 }
 
-.filter-button:hover {
-  transform: scale(1.1);
+.filter-button > span {
+  margin: 0;
+}
+
+.filter-button:active {
+  transform: scale(0.95);
+}
+
+.tag-selected {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  background-color: var(--accent-color) !important;
+  color: white !important;
+}
+
+.tag-input-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  flex: 1;
 }
 
 .tag-input-area {
@@ -462,7 +487,6 @@ header.open nav ul {
   .horizontal-menu-container {
     width: 100%;
     display: none; /* hidden by default */
-    margin-bottom: 8.5rem;
     overflow: visible;
   }
 
@@ -1155,62 +1179,6 @@ footer {
 .tag-selected {
   transition: border 0.3s;
   border: var(--accent-color) 2px solid;
-}
-
-/* Levels Tag */
-.tag-green {
-  background: linear-gradient(135deg, #00c62e, #00ff3c);
-  box-shadow: 0 0 8px #00ff3c;
-}
-
-.tag-lightorange {
-  background: linear-gradient(135deg, #ffc823, #ffb300);
-  box-shadow: 0 0 8px #ffc823;
-}
-
-.tag-red {
-  background: linear-gradient(135deg, #dc3545, #ff0019);
-  box-shadow: 0 0 8px #ff0019;
-}
-
-.tag-bluesky {
-  background: linear-gradient(135deg, #007bff, #00cfff);
-  box-shadow: 0 0 8px #00cfff;
-}
-
-.tag-purple {
-  background: linear-gradient(135deg, #8e44ad, #c678dd);
-  box-shadow: 0 0 8px #c678dd;
-}
-
-.tag-orange {
-  background: linear-gradient(135deg, #fd7e14, #ffb07c);
-  box-shadow: 0 0 8px #fd7e14;
-}
-
-.tag-cyan {
-  background: linear-gradient(135deg, #20c997, #00ffb3);
-  box-shadow: 0 0 8px #00ffb3;
-}
-
-.tag-grey {
-  background: linear-gradient(135deg, #6c757d, #adb5bd);
-  box-shadow: 0 0 8px #adb5bd;
-}
-
-.tag-pink {
-  background: linear-gradient(135deg, #e83e8c, #ff6fba);
-  box-shadow: 0 0 8px #ff6fba;
-}
-
-.tag-orange {
-  background: linear-gradient(135deg, #fd7e14, #ffb07c);
-  box-shadow: 0 0 8px #fd7e14;
-}
-
-.tag-coral {
-  background: linear-gradient(135deg, #ff6f61, #ff9a8d);
-  box-shadow: 0 0 8px #ff9a8d;
 }
 
 /* Screen */

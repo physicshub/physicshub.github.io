@@ -1,6 +1,17 @@
-function Tag({ tag = "", className = "" }) {
+import { COLORS } from "../data/tags";
+
+function Tag({ tag, className = "" }) {
+  const colorData = COLORS[tag.color] || COLORS.grey;
+
+  const inlineStyle = {
+    background: `linear-gradient(135deg, ${colorData.primary}, ${colorData.secondary})`,
+    boxShadow: `0 0 8px ${colorData.secondary}`,
+  };
+
   return (
-    <span className={`tag tag-${tag.color} ${className}`}>{tag.name}</span>
+    <span className={`tag ${className}`} style={inlineStyle}>
+      {tag.name}
+    </span>
   );
 }
 
