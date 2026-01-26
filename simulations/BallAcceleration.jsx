@@ -5,37 +5,37 @@ import { useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
-import { SCALE } from "../../../(core)/constants/Config.js";
+import { SCALE } from "../app/(core)/constants/Config.js";
 import {
   computeDelta,
   resetTime,
   isPaused,
   setPause,
-} from "../../../(core)/constants/Time.js";
+} from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
   FORCES,
-} from "../../../(core)/data/configs/BallAcceleration.js";
+} from "../app/(core)/data/configs/BallAcceleration.js";
 
 // --- Reusable UI Components ---
-import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
-import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
+import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
-import useSimulationState from "../../../(core)/hooks/useSimulationState";
-import useSimInfo from "../../../(core)/hooks/useSimInfo";
-import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
+import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
+import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
+import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
 import {
   drawBallWithTrail,
   drawForceVector,
-} from "../../../(core)/utils/drawUtils.js";
+} from "../app/(core)/utils/drawUtils.js";
 
 // --- Centralized Body class ---
-import Body from "../../../(core)/physics/Body";
+import Body from "../app/(core)/physics/Body.ts";
 
 export default function BallAcceleration() {
   const location = usePathname();

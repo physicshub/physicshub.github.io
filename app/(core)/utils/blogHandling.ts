@@ -5,7 +5,6 @@ import {
 } from "../components/theory/types";
 
 export function slugify(text: string): string {
-  console.log(text);
   return text
     .toLowerCase()
     .replace(/\s+/g, "-")

@@ -5,30 +5,30 @@ import { useState, useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { SCALE } from "../../../(core)/constants/Config.js";
+import { SCALE } from "../app/(core)/constants/Config.js";
 import {
   computeDelta,
   resetTime,
   isPaused,
   setPause,
-} from "../../../(core)/constants/Time.js";
+} from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
-} from "../../../(core)/data/configs/VectorsOperations.js";
-import chapters from "../../../(core)/data/chapters.js";
+} from "../app/(core)/data/configs/VectorsOperations.js";
+import chapters from "../app/(core)/data/chapters.js";
 
 // --- Reusable UI Components ---
-import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
-import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
+import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
-import useSimulationState from "../../../(core)/hooks/useSimulationState";
-import useSimInfo from "../../../(core)/hooks/useSimInfo";
-import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
-import { adjustColor } from "../../../(core)/utils/adjustColor";
+import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
+import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
+import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+import { adjustColor } from "../app/(core)/utils/adjustColor.ts";
 
 // --- Planck Physics ---
 import * as planck from "planck";

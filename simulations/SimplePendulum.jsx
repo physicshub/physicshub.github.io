@@ -5,33 +5,29 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Classes & Config ---
-import Pendulum from "../../../(core)/physics/Pendulum.js";
+import Pendulum from "../app/(core)/physics/Pendulum.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
-} from "../../../(core)/data/configs/SimplePendulum.js";
-import chapters from "../../../(core)/data/chapters.js";
-import { SCALE } from "../../../(core)/constants/Config.js";
+} from "../app/(core)/data/configs/SimplePendulum.js";
+import chapters from "../app/(core)/data/chapters.js";
+import { SCALE } from "../app/(core)/constants/Config.js";
 
 // --- Core Utils ---
-import {
-  resetTime,
-  isPaused,
-  setPause,
-} from "../../../(core)/constants/Time.js";
-import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
-import { drawGlow } from "../../../(core)/utils/drawUtils.js";
+import { resetTime, isPaused, setPause } from "../app/(core)/constants/Time.js";
+import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+import { drawGlow } from "../app/(core)/utils/drawUtils.js";
 
 // --- Reusable UI Components ---
-import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
-import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
+import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks ---
-import useSimulationState from "../../../(core)/hooks/useSimulationState";
-import useSimInfo from "../../../(core)/hooks/useSimInfo";
+import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
+import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 
 export default function SimplePendulum() {
   const location = usePathname();

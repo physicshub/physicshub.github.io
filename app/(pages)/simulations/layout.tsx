@@ -1,9 +1,5 @@
 // app/simulations/layout.tsx
-"use client";
-
-export const dynamic = "force-dynamic";
-export const ssr = false;
-
+// Rimuovi "use client", force-dynamic e ssr = false
 export default function SimulationsLayout({
   children,
 }: {

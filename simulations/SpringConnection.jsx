@@ -5,14 +5,14 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Classes & Config ---
-import Bob from "../../../(core)/physics/Bob";
-import Spring from "../../../(core)/physics/Spring";
+import Bob from "../app/(core)/physics/Bob.ts";
+import Spring from "../app/(core)/physics/Spring.ts";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
-} from "../../../(core)/data/configs/SpringConnection.js";
-import chapters from "../../../(core)/data/chapters.js";
+} from "../app/(core)/data/configs/SpringConnection.js";
+import chapters from "../app/(core)/data/chapters.js";
 
 // --- Core Utils ---
 import {
@@ -20,23 +20,23 @@ import {
   isPaused,
   setPause,
   computeDelta,
-} from "../../../(core)/constants/Time.js";
+} from "../app/(core)/constants/Time.js";
 import {
   toPixels,
   accelSI_to_pxSec,
   springK_SI_to_px,
-} from "../../../(core)/constants/Utils.js";
-import getBackgroundColor from "../../../(core)/utils/getBackgroundColor";
+} from "../app/(core)/constants/Utils.js";
+import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
 
 // --- Reusable UI Components ---
-import SimulationLayout from "../../../(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../../../(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../../../(core)/components/inputs/DynamicInputs.jsx";
-import SimInfoPanel from "../../../(core)/components/SimInfoPanel.jsx";
+import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
+import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks ---
-import useSimulationState from "../../../(core)/hooks/useSimulationState";
-import useSimInfo from "../../../(core)/hooks/useSimInfo";
+import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
+import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 
 export default function SpringConnection() {
   const location = usePathname();
