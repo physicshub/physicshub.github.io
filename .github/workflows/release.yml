@@ -48,7 +48,7 @@ jobs:
       - name: Build with Next.js
         env:
           NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK: ${{ secrets.NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK }}
-        run: npx next build
+        run: npm run build
 
       # 4. Carica Artifact (Sempre eseguito)
       - name: Upload artifact
