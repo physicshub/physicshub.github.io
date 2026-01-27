@@ -22,7 +22,14 @@ async function generateSitemap() {
     priority: 0.8,
   }));
 
-  const allRoutes = [...staticRoutes, ...blogRoutes];
+  const combinedRoutes = [...staticRoutes, ...blogRoutes];
+
+  // Deduplicate routes based on path
+  const uniqueRoutesMap = new Map();
+  combinedRoutes.forEach((route) => {
+    uniqueRoutesMap.set(route.path, route);
+  });
+  const allRoutes = Array.from(uniqueRoutesMap.values());
 
   const sitemap = new SitemapStream({ hostname });
 
@@ -45,10 +52,32 @@ async function generateSitemap() {
   writeFileSync(`./public/${sitemapName}.xml`, formatted);
   console.log(`✅ Sitemap generated with ${allRoutes.length} links!`);
 
+  // Also write to out/ if it exists (for deployment consistency)
+  try {
+    const fs = await import("fs");
+    if (fs.existsSync("./out")) {
+      writeFileSync(`./out/${sitemapName}.xml`, formatted);
+      console.log(`✅ Sitemap copied to ./out!`);
+    }
+  } catch (e) {
+    console.error("Error writing to out directory:", e);
+  }
+
   // Robots.txt
   const robotsTxt =
     `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/${sitemapName}.xml`.trim();
   writeFileSync("./public/robots.txt", robotsTxt);
+
+  try {
+    const fs = await import("fs");
+    if (fs.existsSync("./out")) {
+      writeFileSync("./out/robots.txt", robotsTxt);
+      console.log(`✅ Robots.txt copied to ./out!`);
+    }
+  } catch (e) {
+    /* ignore */
+  }
+
   console.log("✅ Robots.txt updated!");
 
   updateRoutesFile(allRoutes);
