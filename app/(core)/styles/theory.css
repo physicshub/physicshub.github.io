@@ -385,13 +385,14 @@
 
 /* Toolbar Editor */
 .image-editor-toolbar {
-  background: #f4f4f4;
+  background: var(--bg-light);
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 10px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  border: 1px solid var(--border-color);
 }
 
 .url-input {
@@ -399,13 +400,25 @@
   padding: 4px 8px;
 }
 .size-select {
-  padding: 4px;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-darker);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
 }
+
+.size-select option {
+  background-color: var(--bg-darker);
+  color: var(--text-primary);
+}
+
 .upload-button {
   cursor: pointer;
   padding: 4px 10px;
-  background: #ddd;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 
@@ -1053,13 +1066,18 @@
   padding: 5px 10px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  background-color: var(--bg-light);
+  background-color: var(--bg-darker);
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   text-transform: uppercase;
+}
+
+.callout-type-selector option {
+  background-color: var(--bg-darker);
+  color: var(--text-primary);
 }
 
 .callout-type-selector:hover {
