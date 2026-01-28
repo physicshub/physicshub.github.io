@@ -1050,20 +1050,24 @@
 }
 
 .callout-type-selector {
-  padding: 5px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background-color: var(--bg-light);
-  color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 600;
+  padding: 8px 12px;
+  border: 2px solid var(--accent-color);
+  border-radius: 8px;
+  background: var(--bg-color);
+  color: var(--accent-color);
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .callout-type-selector:hover {
   border-color: var(--accent-color);
+  background: var(--bg-color);
+  box-shadow: 0 4px 12px rgba(0, 230, 230, 0.3);
+  transform: translateY(-2px);
 }
 
 .callout-type-selector:focus {
