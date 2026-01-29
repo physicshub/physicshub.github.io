@@ -1072,6 +1072,17 @@
   box-shadow: 0 0 0 2px var(--focus-ring);
 }
 
+/* Fix: Dark mode dropdown visibility for callout type selector */
+.callout-type-selector option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+[data-theme="light"] .callout-type-selector option {
+  background-color: #ffffff;
+  color: #333333;
+}
+
 /* 10. LIST EDITING */
 .theory-list-container {
   margin: 12px 0;
