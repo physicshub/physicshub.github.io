@@ -134,6 +134,10 @@ const TAGS = {
     name: "Performance",
     color: "navy",
   },
+  OSCILLATIONS: {
+    name: "Oscillations",
+    color: "pink",
+  },
 };
 
 export default TAGS;

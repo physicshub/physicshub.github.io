@@ -4,7 +4,7 @@ import { operationVectorsBlog } from "./comprehensive-guide-to-vector-operations
 import { ballAcceleratingBlog } from "./ball-uniformly-accelerated-motion.js";
 import { ballFreeFallBlog } from "./ball-free-fall-comprehensive-guide.js";
 import { springConnectionBlog } from "./spring-connection.js";
-import { pendulumBlog } from "./pendulum-motion.js";
+import { pendulumBlog } from "./physics-of-pendulum-explained.js";
 import { projectileParabolicBlog } from "./projectile-parabolic-motion.js";
 
 export const allBlogs = {
