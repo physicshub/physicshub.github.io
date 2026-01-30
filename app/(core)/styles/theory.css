@@ -1053,7 +1053,7 @@
   padding: 8px 12px;
   border: 2px solid var(--accent-color);
   border-radius: 8px;
-  background: var(--bg-color);
+  background: var(--bg-light);
   color: var(--accent-color);
   font-size: 14px;
   font-weight: 700;
@@ -1063,17 +1063,24 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+[data-theme="light"] .callout-type-selector {
+  background: var(--bg-color);
+}
+
 .callout-type-selector:hover {
   border-color: var(--accent-color);
-  background: var(--bg-color);
+  background: var(--bg-light);
   box-shadow: 0 4px 12px rgba(0, 230, 230, 0.3);
-  transform: translateY(-2px);
 }
 
 .callout-type-selector:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.callout-type-selector option {
+  font-weight: 500;
 }
 
 /* 10. LIST EDITING */
