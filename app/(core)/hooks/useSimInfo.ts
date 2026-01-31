@@ -34,6 +34,11 @@ export default function useSimInfo<
     internalConfigRef.current = { updateIntervalMs, customRefs };
   }, [updateIntervalMs, customRefs]);
 
+  const resetSimInfo = useCallback(() => {
+    setSimData({});
+    lastInfoUpdateMs.current = 0;
+  }, []);
+
   // 3. updateSimInfo ora ha dipendenze VUOTE []
   // Non cambierà MAI riferimento, quindi p5.js non si resetterà mai
   const updateSimInfo = useCallback(
@@ -43,8 +48,11 @@ export default function useSimInfo<
       context: TContext,
       mapper: SimInfoMapper<TState, TContext, TRefs, TData>
     ) => {
-      if (!p || !mapper) return;
-
+      // if (!p || !mapper) return;
+      if (!p || !state || !mapper) {
+        setSimData({});
+        return;
+      }
       const now = p.millis();
       // Usiamo i valori dal Ref per la logica, garantendo dati freschi
       const { updateIntervalMs: interval, customRefs: refs } =
@@ -67,6 +75,7 @@ export default function useSimInfo<
   return {
     simData,
     updateSimInfo,
+    resetSimInfo,
     refs: customRefs,
   };
 }
