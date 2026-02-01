@@ -89,7 +89,7 @@ export function Search({ onSearch, extraButton }) {
             <input
               type="search"
               name="query"
-              placeholder={selectedTags.length > 0 ? "" : "Search..."}
+              placeholder="Search..."
               aria-label="Search"
               value={searchText}
               onChange={handleTextChange}

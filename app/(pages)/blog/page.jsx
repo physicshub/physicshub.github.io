@@ -55,14 +55,16 @@ export default function Blog() {
         <Search
           onSearch={setSearchTerm}
           extraButton={
-            <button
-              onClick={handleCreateNewBlog}
-              className="ph-btn ph-btn--primary cursor-pointer"
-              aria-label="Create a new blog"
-            >
-              <FontAwesomeIcon icon={faPlus} />
-              {!isMobile && "New Blog"}
-            </button>
+            !isMobile ? (
+              <button
+                onClick={handleCreateNewBlog}
+                className="ph-btn ph-btn--primary cursor-pointer"
+                aria-label="Create a new blog"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+                New Blog
+              </button>
+            ) : undefined
           }
         />
       </div>
@@ -120,6 +122,17 @@ export default function Blog() {
           )}
         </div>
       </main>
+
+      {/* Floating Action Button for Mobile */}
+      {isMobile && (
+        <button
+          onClick={handleCreateNewBlog}
+          className="fab-new-blog"
+          aria-label="Create a new blog"
+        >
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
+      )}
     </div>
   );
 }
