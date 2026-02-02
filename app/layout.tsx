@@ -9,9 +9,9 @@ import { FeedbackProvider } from "./(core)/context/FeedbackProvider.tsx";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://physicshub.github.io"),
-  title: "PhysicsHub – Free Physics Simulations",
+  title: "PhysicsHub – Interactive Physics Simulations Online",
   description:
-    "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
+    "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
   keywords: [
     "physics",
     "science",
@@ -27,17 +27,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://physicshub.github.io/",
-    title: "Physics Portal – Free Physics Simulations",
+    title: "Physics Portal – Interactive Physics Simulations Online",
     description:
-      "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
+      "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
     images: ["/Thumbnail.png"],
   },
   twitter: {
     card: "summary_large_image",
     site: "https://physicshub.github.io/",
-    title: "Physics Portal – Free Physics Simulations",
+    title: "Physics Portal – Interactive Physics Simulations Online",
     description:
-      "Learn physics with simulations, interactive tools and free resources for students, educators, and science lovers.",
+      "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
     images: ["/Thumbnail.png"],
   },
   icons: {

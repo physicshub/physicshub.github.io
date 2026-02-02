@@ -12,8 +12,8 @@ const chapters = [
   },
   {
     id: 2,
-    name: "Vector Operations",
-    desc: "Vector Operations in real time.",
+    name: "Vector Operations Calculator",
+    desc: "Interactive 2D vector operations tool. Visualize vector addition, subtraction, and dot products in real-time with our physics calculator.",
     link: "/simulations/VectorsOperations",
     tags: [TAGS.EASY, TAGS.MATH, TAGS.VECTORS, TAGS.TRIGONOMETRY],
     icon: "/icons/vector.png",
@@ -39,8 +39,8 @@ const chapters = [
   },
   {
     id: 5,
-    name: "Spring Connection",
-    desc: "A Ball connected to a string.",
+    name: "Spring Mass System Simulator",
+    desc: "Explore Hooke's Law and Simple Harmonic Motion. Adjust mass and spring constants to visualize oscillations and energy conservation.",
     link: "/simulations/SpringConnection",
     tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
     icon: "/icons/spring.png",
@@ -48,8 +48,8 @@ const chapters = [
   },
   {
     id: 6,
-    name: "Simple Pendulum",
-    desc: "A Simple Pendulum system.",
+    name: "Simple Pendulum Simulation",
+    desc: "Calculate the period and frequency of a pendulum. Visualize the relationship between length, gravity, and kinetic energy in real-time.",
     link: "/simulations/SimplePendulum",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
     icon: "/icons/pendulam.png",
@@ -57,8 +57,8 @@ const chapters = [
   },
   {
     id: 7,
-    name: "Parabolic Motion",
-    desc: "Projectile motion under gravity.",
+    name: "Projectile & Parabolic Motion",
+    desc: "Simulate projectile motion under gravity. Predict trajectories, range, and maximum height with our interactive physics calculator.",
     link: "/simulations/ParabolicMotion",
     tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.GRAVITY, TAGS.MATH],
     icon: "/icons/parabola.png",

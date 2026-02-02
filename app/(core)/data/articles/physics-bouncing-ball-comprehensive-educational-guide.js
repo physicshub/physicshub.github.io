@@ -2,8 +2,8 @@ import TAGS from "../tags.js";
 
 export const bouncingBallBlog = {
   slug: "physics-bouncing-ball-comprehensive-educational-guide",
-  name: "The Physics of a Bouncing Ball: A Progressive Learning Path",
-  desc: "A comprehensive exploration of classical mechanics through the lens of a bouncing ball, transitioning from basic kinematic observations to advanced thermodynamics and algorithmic simulation.",
+  name: "Physics of Bouncing Balls: How a Bouncing Ball Works",
+  desc: "Explore the physics of a bouncing ball: from kinematic equations to energy dissipation. Learn about gravity, restitution, and Newton's laws with our interactive JS simulator.",
   tags: [TAGS.PHYSICS, TAGS.EASY, TAGS.COLLISION, TAGS.ANIMATIONS],
   date: "23/01/2026",
   theory: {

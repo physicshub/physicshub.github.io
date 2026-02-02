@@ -25,14 +25,28 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  // IMPORTANTE: Dobbiamo cercare il capitolo confrontando l'ID estratto dal link
   const chapter = chapters.find((c) => getSimulationId(c.link) === id);
 
-  if (!chapter) return { title: "Not Found" };
+  if (!chapter) return { title: "Simulation Not Found | PhysicsHub" };
+
+  const title = `${chapter.name}: Interactive Physics Simulation | PhysicsHub`;
+
+  const description = chapter.desc;
 
   return {
-    title: `PhysicsHub - ${chapter.name}`,
-    description: chapter.desc,
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      images: [chapter.icon],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: [chapter.icon],
+    },
   };
 }
 
