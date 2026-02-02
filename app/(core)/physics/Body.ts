@@ -25,6 +25,8 @@ export interface BodyState {
 export default class Body {
   params: BodyParams;
   state: BodyState;
+  collisionCount: number = 0;
+  lastCollisionPos: p5.Vector | null = null;
 
   constructor(p: p5, params: BodyParams, initialPos?: p5.Vector) {
     this.params = {
@@ -92,6 +94,21 @@ export default class Body {
       restitution,
       totalAcc
     );
+
+    // Track collisions
+    if (collided.pos.x !== newState.pos.x || collided.pos.y !== newState.pos.y) {
+      // Check if this is a new collision (not just updating the same collision)
+      if (!this.lastCollisionPos || 
+          p.dist(
+            toPixels(collided.pos.x), 
+            toPixels(collided.pos.y),
+            toPixels(this.lastCollisionPos.x),
+            toPixels(this.lastCollisionPos.y)
+          ) > toPixels(radius * 2)) {
+        this.collisionCount++;
+        this.lastCollisionPos = collided.pos.copy();
+      }
+    }
 
     this.state.pos = collided.pos;
     this.state.vel = collided.vel;

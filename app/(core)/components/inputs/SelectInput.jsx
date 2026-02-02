@@ -3,20 +3,34 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function SelectInput({ label, name, options, value, onChange, placeholder }) {
+  const handleChange = (e) => {
+    const selectedValue = e.target.value;
+    // Convert to number if the value is numeric (for gravity and similar numeric selects)
+    const numericValue = !isNaN(selectedValue) && selectedValue !== "" && !isNaN(parseFloat(selectedValue))
+      ? parseFloat(selectedValue) 
+      : selectedValue;
+    // Create a synthetic event object that matches what onChange expects
+    const syntheticEvent = {
+      target: {
+        name,
+        value: numericValue
+      }
+    };
+    onChange(syntheticEvent);
+  };
+
   return (
-    <div className="select-container">
-      {label && (
-        <label htmlFor={name} className="select-label">
-          {label}
-        </label>
-      )}
+    <div className="control-group">
+      <label htmlFor={name} className="input-label">
+        {label}
+      </label>
       <div className="select-wrapper">
         <select
           id={name}
           name={name}
-          className="select-input"
+          className="input-number select-input"
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
         >
           {placeholder && (
             <option value="" disabled>

@@ -3,30 +3,34 @@ import { useState, useRef, useEffect } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faList } from "@fortawesome/free-solid-svg-icons";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Simulations() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showHero] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !localStorage.getItem("hasVisitedSimulations");
-    }
-    return true;
-  });
+  // Initialize with consistent value for SSR, then update on client
+  const [showHero, setShowHero] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const contentRef = useRef(null);
   const duration = 1200;
 
+  // Handle client-side hydration
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
+    setIsClient(true);
+    // Check localStorage only on client after hydration
+    const hasVisited = localStorage.getItem("hasVisitedSimulations");
+    setShowHero(!hasVisited);
+    window.scrollTo(0, 0);
   }, []);
 
   const handleStart = () => {
-    localStorage.setItem("hasVisitedSimulations", "true");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hasVisitedSimulations", "true");
+    }
+    setShowHero(false);
     scrollToContent();
-    //setTimeout(() => setShowHero(false), duration);
   };
 
   const scrollToContent = () => {
@@ -69,7 +73,8 @@ export default function Simulations() {
   return (
     <div className="simulations-container">
       {/* RENDERING CONDIZIONALE DELLA HERO */}
-      {showHero && (
+      {/* Only render hero if showHero is true AND we're on client (to avoid hydration mismatch) */}
+      {isClient && showHero && (
         <section className="simulations-hero">
           <h1>Interactive Physics Simulations</h1>
           <p>
@@ -88,9 +93,23 @@ export default function Simulations() {
       <section ref={contentRef} className="simulations-content">
         <Search onSearch={setSearchTerm} />
         <main className="simulations-page">
-          {filteredChapters.map((chap) => (
-            <Chapter key={chap.id} {...chap} />
-          ))}
+          {searchTerm === "" ? (
+            <h2 className="simulations-header-title">
+              <FontAwesomeIcon icon={faList} /> All Simulations
+            </h2>
+          ) : (
+            <h2 className="simulations-header-title">Search Results</h2>
+          )}
+          <div className="simulations-list">
+            {filteredChapters.map((chap) => (
+              <Chapter key={chap.id} {...chap} />
+            ))}
+            {filteredChapters.length === 0 && searchTerm.length > 0 && (
+              <p className="no-results">
+                Nothing found for &quot;{searchTerm}&quot;.
+              </p>
+            )}
+          </div>
         </main>
       </section>
     </div>
