@@ -6,6 +6,7 @@ import {
   faDiscord,
 } from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
+import Image from "next/image";
 import BackToTopButton from "./BackToTop";
 import { useFeedback } from "../context/FeedbackProvider";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +34,15 @@ function Footer() {
       <div className="footer-content">
         <div className="footer-section footer-about">
           <h3>
+            <Link href="/" className="footer-logo-link" aria-label="Home">
+              <Image
+                src="/Logo.png"
+                alt="PhysicsHub Logo"
+                width={32}
+                height={32}
+                className="footer-logo"
+              />
+            </Link>
             PhysicsHub{" "}
             <a
               className="ph-btn ph-btn--ghost footer-version"

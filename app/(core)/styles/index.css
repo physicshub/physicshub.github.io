@@ -942,6 +942,14 @@ footer {
   text-shadow: 0 0 4px var(--accent-color);
 }
 
+.footer-logo-link {
+  margin-right: 0.5rem;
+}
+
+.footer-logo {
+  border-radius: 8px;
+}
+
 .footer-about p {
   font-size: 0.95rem;
   line-height: 1.6;
