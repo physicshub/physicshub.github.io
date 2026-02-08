@@ -1,3 +1,5 @@
+import path from "path";
+
 // routes.js
 export const routes = [
   { path: "/", component: "Home", changefreq: "weekly", priority: 1.0 },
@@ -62,5 +64,11 @@ export const routes = [
     component: "ParabolicMotion",
     changefreq: "weekly",
     priority: 0.7,
+  },
+  {
+    path: "/blog/:slug",
+    component: "BlogPost",
+    changefreq: "weekly",
+    priority: 0.8,
   },
 ];
