@@ -79,6 +79,7 @@ const chapters = [
     link: "/simulations/InclinedPlane",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     icon: "/icons/inclined.png",
+    relatedBlogSlug: "inclinedPlane",
   },
 ];
 

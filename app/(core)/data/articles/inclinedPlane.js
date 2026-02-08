@@ -2,7 +2,7 @@ import TAGS from "../tags.js";
 
 export const inclinedPlaneBlog = {
   id: "bb-008",
-  slug: "incline-plane",
+  slug: "inclinedPlane",
   name: "Inclined Plane",
   desc: "Understand the physics of an inclined plane through forces, motion, and energy.",
   tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
