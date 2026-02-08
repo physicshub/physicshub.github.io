@@ -2,6 +2,14 @@ import TAGS from "./tags.js";
 
 const chapters = [
   {
+    id: 0,
+    name: "Test for benchmarks",
+    desc: "This is a simulation created specifically for performance testing.",
+    link: "/simulations/test",
+    tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
+    icon: "/icons/test.png",
+  },
+  {
     id: 1,
     name: "Bouncing Ball",
     desc: "Simulation of the ball bouncing off the walls.",
@@ -71,14 +79,6 @@ const chapters = [
     link: "/simulations/InclinedPlane",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     icon: "/icons/inclined.png",
-  },
-  {
-    id: 0,
-    name: "Test for benchmarks",
-    desc: "This is a simulation created specifically for performance testing.",
-    link: "/simulations/test",
-    tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
-    icon: "/icons/test.png",
   },
 ];
 
