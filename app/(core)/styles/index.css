@@ -84,14 +84,14 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-gradient);
-  background-color: var(--bg-color);
+  background: transparent;
+  background-color: transparent;
 }
 
 /* Ensure pure white background in light mode */
 [data-theme="light"] body {
-  background: #ffffff;
-  background-color: #ffffff;
+  background: transparent;
+  background-color: transparent;
 }
 
 h1,
@@ -527,20 +527,45 @@ header.open nav ul {
   margin-top: 6.5rem;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1; /* Above background, below fixed elements */
+  background: transparent !important; /* Ensure no background covers stars */
+  min-height: 100vh;
 }
 
 main.simulations-page {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.75rem;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  background: transparent; /* Ensure no background covers stars */
+  position: relative;
+  z-index: 1;
+  margin-bottom: 7.5rem;
+  padding: 0;
 }
 
-main.simulations-page {
-  margin-bottom: 7.5rem;
-  padding: 2rem;
-  margin-inline: auto;
+.simulations-header-title {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+}
+
+.simulations-header-title svg {
+  color: var(--accent-color);
+  margin-right: 0.5rem;
+}
+
+.simulations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: min-content;
+  gap: 1rem;
+  width: 100%;
 }
 
 .simulations-header {
@@ -573,6 +598,9 @@ main.simulations-page {
   align-items: center;
   text-align: center;
   padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+  background: transparent; /* Ensure no background covers stars */
 }
 
 .simulations-hero h1 {
@@ -594,12 +622,69 @@ main.simulations-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center; /* ⬅️ key */
-  padding: 4rem 0;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 2rem 3rem 4rem;
+  position: relative;
+  z-index: 1; /* Ensure content is above background but below fixed elements */
+  background: transparent; /* Ensure no background covers stars */
+  width: 100%;
 }
 .simulations-content > * {
-  width: 1000%;
+  width: 100%;
+}
+
+.simulations-content main.simulations-page {
+  max-width: 100%;
+}
+
+.simulations-content .search-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Ensure search wrapper doesn't cover background */
+.simulations-content .search-wrapper {
+  background: transparent;
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure main content doesn't cover background */
+.simulations-content main.simulations-page {
+  background: transparent;
+}
+
+/* Responsive grid for simulations page - matching blog layout */
+@media (max-width: 1200px) {
+  .simulations-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .simulations-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .chapter-card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .simulations-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .chapter-card {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 /* Random positions, delays, and speed for natural effect */
@@ -680,13 +765,13 @@ main.simulations-page {
 
 .chapter-card {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   position: relative;
   overflow: hidden;
-  border: 0 solid transparent;
+  border: 1px solid var(--accent-color);
   border-radius: var(--border-radius);
-  box-shadow: 0 0 4px var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
   transition:
     transform 0.3s,
     box-shadow 0.3s,
@@ -694,7 +779,9 @@ main.simulations-page {
     border-color 0.3s;
   padding: 0.5rem;
   color: var(--ph-fg);
-  height: 100%;
+  min-height: fit-content;
+  height: auto;
+  width: 100%;
   will-change: transform, box-shadow;
 }
 
@@ -756,17 +843,16 @@ main.simulations-page {
 }
 
 .chapter-card-overlay {
-  /* background: var(--card-bg); */
-  background: color-mix(in oklab, var(--ph-accent), transparent 90%);
+  background: var(--card-bg);
   border-radius: var(--border-radius);
   z-index: 2;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   padding: 1rem 1.5rem;
-  background-color: var(--bg-color);
   box-shadow: 0 0 12px var(--accent-color);
+  flex: 1;
 }
 
 .chapter-card-overlay::after {
@@ -1360,57 +1446,66 @@ footer {
 }
 
 /* Input selection menu styles */
-.select-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.select-label {
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  text-shadow: 0 0 4px var(--glow-color);
-}
-
+/* Select input wrapper - matches number input styling */
 .select-wrapper {
   position: relative;
   width: 100%;
   display: inline-block;
 }
 
+/* Select input - uses same classes as number input for consistent styling */
 .select-input {
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   width: 100%;
-  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
-  font-size: 1rem;
-  color: var(--text-color);
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: var(--border-radius);
-  outline: none;
-  transition:
-    border-color 0.3s,
-    box-shadow 0.3s;
+  padding-right: 2.5rem; /* Extra padding for arrow */
+  cursor: pointer;
 }
 
-.select-input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
-}
-
+/* Select arrow indicator */
 .select-arrow {
   position: absolute;
   top: 50%;
   right: 0.75rem;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--accent-color);
   text-shadow: 0 0 4px var(--accent-color);
+  transition: color 0.2s;
+}
+
+.select-wrapper:hover .select-arrow {
+  color: color-mix(in oklab, var(--accent-color), white 15%);
+}
+
+.select-input:focus ~ .select-arrow {
+  color: var(--accent-color);
+  text-shadow: 0 0 6px var(--accent-color);
+}
+
+/* Select dropdown options */
+.select-input option {
+  background: var(--input-bg);
+  color: var(--text-color);
+  padding: 0.5rem;
 }
 
 .select-input option[disabled] {
   color: #888;
+  opacity: 0.6;
+}
+
+/* Light theme select arrow */
+[data-theme="light"] .select-arrow {
+  text-shadow: none;
+  color: var(--accent-color);
+}
+
+[data-theme="light"] .select-input option {
+  background: #ffffff;
+  color: var(--text-color);
 }
 
 /* Back button */
@@ -2979,4 +3074,604 @@ footer {
   border-radius: var(--border-radius);
   background-color: var(--bg-color-light);
   min-height: 400px;
+}
+
+/* ============================================
+   Educational Features Styles
+   ============================================ */
+
+/* Learning Objectives */
+.learning-objectives {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.learning-title {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 4px var(--accent-color);
+}
+
+.learning-section {
+  margin-top: 1rem;
+}
+
+.learning-section-title {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.learning-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.learning-list li {
+  padding: 0.4rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--text-color);
+}
+
+.learning-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+}
+
+/* Physics Equations */
+.physics-equations {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.equations-title {
+  font-size: 1.1rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.equations-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.equation-item {
+  padding: 0.75rem;
+  background: color-mix(in oklab, var(--bg-color), transparent 50%);
+  border-radius: calc(var(--border-radius) * 0.8);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 40%);
+}
+
+.equation-formula {
+  font-family: "Courier New", monospace;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.equation-description {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+/* Physics Warnings */
+.physics-warnings {
+  margin-bottom: 1.5rem;
+}
+
+.warning-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.warning-warning {
+  background: color-mix(in oklab, #ffa500, transparent 85%);
+  border: 1px solid color-mix(in oklab, #ffa500, transparent 60%);
+  color: #ffa500;
+}
+
+.warning-error {
+  background: color-mix(in oklab, #ff3333, transparent 85%);
+  border: 1px solid color-mix(in oklab, #ff3333, transparent 60%);
+  color: #ff3333;
+}
+
+/* Guided Experiments */
+.guided-experiments {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.experiments-title {
+  font-size: 1.1rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.experiments-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.experiment-card {
+  background: color-mix(in oklab, var(--bg-color), transparent 50%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 40%);
+  border-radius: calc(var(--border-radius) * 0.8);
+  padding: 1rem;
+  padding-bottom: 1.25rem; /* Extra bottom padding */
+  transition: all 0.3s;
+  overflow: visible; /* Ensure content isn't clipped */
+}
+
+.experiment-card.active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color), transparent 60%);
+}
+
+.experiment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.experiment-header h4 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: 1rem;
+}
+
+.experiment-apply-btn {
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: calc(var(--border-radius) * 0.8);
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: transform 0.2s;
+}
+
+.experiment-apply-btn:hover {
+  transform: scale(1.05);
+}
+
+.experiment-description {
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.experiment-instructions {
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+  color: var(--text-color);
+}
+
+.experiment-instructions ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.experiment-instructions li {
+  margin: 0.25rem 0;
+}
+
+.experiment-question {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem; /* Add bottom margin to prevent cutoff */
+  padding: 0.75rem;
+  background: color-mix(in oklab, var(--accent-color), transparent 90%);
+  border-radius: calc(var(--border-radius) * 0.8);
+  font-size: 0.9rem;
+  color: var(--text-color);
+  word-wrap: break-word; /* Ensure long text wraps */
+  overflow-wrap: break-word;
+}
+
+/* Input Groups */
+.inputs-group {
+  margin-bottom: 1.5rem;
+}
+
+.inputs-group-title {
+  font-size: 1.1rem;
+  color: var(--accent-color);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.simulation-header-section {
+  margin-bottom: 1.5rem;
+}
+
+.simulation-controls-section {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.simulation-controls-section .simulation-controls {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .learning-objectives,
+[data-theme="light"] .physics-equations,
+[data-theme="light"] .guided-experiments {
+  background: #ffffff;
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .learning-title,
+[data-theme="light"] .equations-title,
+[data-theme="light"] .experiments-title {
+  text-shadow: none;
+  color: var(--accent-color);
+}
+
+[data-theme="light"] .equation-item,
+[data-theme="light"] .experiment-card {
+  background: #f8f9fa;
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .experiment-question {
+  background: #f0f0f0;
+}
+
+/* ============================================
+   Collapsible Sections
+   ============================================ */
+
+.collapsible-section {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  overflow: visible; /* Changed from hidden to visible to prevent cutoff */
+  transition: all 0.3s ease;
+}
+
+.collapsible-section.expanded {
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--accent-color), transparent 40%);
+}
+
+.collapsible-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.collapsible-header:hover {
+  background: color-mix(in oklab, var(--accent-color), transparent 95%);
+}
+
+.collapsible-header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.collapsible-icon {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.collapsible-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-shadow: 0 0 4px var(--accent-color);
+}
+
+.collapsible-arrow {
+  color: var(--accent-color);
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+  opacity: 0.8;
+}
+
+.collapsible-section.expanded .collapsible-arrow {
+  transform: rotate(0deg);
+}
+
+.collapsible-section.collapsed .collapsible-arrow {
+  transform: rotate(-90deg);
+}
+
+.collapsible-content {
+  padding: 0 1.5rem 2rem 1.5rem;
+  animation: slideDown 0.3s ease;
+  max-height: none; /* Allow full content to show */
+  overflow: visible;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .collapsible-section {
+  background: #ffffff;
+  border-color: var(--border-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .collapsible-section.expanded {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .collapsible-header:hover {
+  background: #f8f9fa;
+}
+
+[data-theme="light"] .collapsible-title {
+  text-shadow: none;
+  color: var(--accent-color);
+}
+
+[data-theme="light"] .collapsible-icon {
+  color: var(--accent-color);
+}
+
+/* Remove duplicate styles from nested components when inside collapsible */
+.collapsible-content .learning-objectives,
+.collapsible-content .physics-equations,
+.collapsible-content .guided-experiments,
+.collapsible-content .physics-warnings {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.collapsible-content .learning-title,
+.collapsible-content .equations-title,
+.collapsible-content .experiments-title {
+  display: none; /* Hide duplicate titles */
+}
+
+/* Improve spacing in collapsible sections */
+.collapsible-content .learning-section {
+  margin-top: 1rem;
+}
+
+.collapsible-content .learning-section:first-child {
+  margin-top: 0;
+}
+
+/* Adjust spacing for inputs inside collapsible */
+.collapsible-content .inputs-container {
+  margin-top: 0.5rem;
+}
+
+.collapsible-content .inputs-group {
+  margin-bottom: 0;
+}
+
+.collapsible-content .inputs-group-title {
+  display: none; /* Hide duplicate group titles */
+}
+
+/* ============================================
+   Simulation Controls Panel (Parabolic Motion Style)
+   ============================================ */
+
+.simulation-controls-panel {
+  margin: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.simulation-controls-panel.enhanced-controls {
+  gap: 2rem;
+}
+
+.controls-row {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.controls-row:hover {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 40%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.controls-row-title {
+  font-size: 1.2rem;
+  color: var(--accent-color);
+  margin: 0 0 1.25rem 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 6px var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid color-mix(in oklab, var(--accent-color), transparent 70%);
+}
+
+.controls-row-title .title-icon {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 4px var(--accent-color));
+}
+
+.controls-row-content,
+.controls-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: color-mix(in oklab, var(--bg-color), transparent 50%);
+  border-radius: calc(var(--border-radius) * 0.8);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 80%);
+}
+
+.advanced-controls {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in oklab, var(--accent-color), transparent 70%);
+}
+
+/* Light theme for controls panel */
+[data-theme="light"] .controls-row {
+  background: #ffffff;
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .controls-row:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .controls-row-title {
+  text-shadow: none;
+  color: var(--accent-color);
+  border-bottom-color: color-mix(in oklab, var(--accent-color), transparent 80%);
+}
+
+[data-theme="light"] .control-group {
+  background: #f8f9fa;
+  border-color: #e0e0e0;
+}
+
+/* Educational Section */
+.educational-section {
+  margin: 1.5rem;
+}
+
+.educational-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Experiments Section - Separate */
+.experiments-section {
+  margin: 1.5rem;
+  margin-bottom: 3rem; /* Extra bottom margin to prevent cutoff */
+}
+
+.experiments-section .guided-experiments {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.experiments-section .experiments-list {
+  padding-bottom: 1rem; /* Extra padding at bottom */
+}
+
+.experiments-section .experiment-card {
+  margin-bottom: 1rem;
+}
+
+.experiments-section .experiment-card:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0.5rem; /* Extra padding for last card */
+}
+
+.educational-content .learning-objectives,
+.educational-content .physics-equations,
+.educational-content .guided-experiments {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.educational-content .learning-title,
+.educational-content .equations-title,
+.educational-content .experiments-title {
+  display: block; /* Show titles in educational section */
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.educational-content .learning-section {
+  margin-top: 1.5rem;
+}
+
+.educational-content .learning-section:first-child {
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .simulation-controls-panel {
+    margin: 1rem;
+    gap: 1rem;
+  }
+
+  .controls-row {
+    padding: 1rem;
+  }
+
+  .educational-section {
+    margin: 1rem;
+  }
 }

@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev & nodemon --watch src/routes.js --watch public/index.html --exec \"npm run generate:sitemap\"",
+    "dev": "concurrently -n \"next,nodemon\" -c \"blue,green\" \"next dev\" \"nodemon --watch routes.js --watch public/index.html --exec npm run generate:sitemap\"",
     "build": "npm run generate:sitemap && next build",
     "preview": "npm run build && npx serve@latest out",
     "predeploy": "npm run build && npm run contributors",
@@ -55,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
     "axios": "^1.13.2",
+    "concurrently": "^9.2.1",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.1",
     "eslint-config-next": "16.1.6",
