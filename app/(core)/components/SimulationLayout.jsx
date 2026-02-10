@@ -16,6 +16,7 @@ export default function SimulationLayout({
   onLoad,
   children,
   dynamicInputs,
+  hideDefaultControls = false,
 }) {
   const theory = useMemo(() => {
     const chapter = chapters.find((ch) => ch.link === simulation);
@@ -42,13 +43,15 @@ export default function SimulationLayout({
       {/* 1. Render the Canvas */}
       {children}
 
-      {/* 2. Render the Main Controls */}
-      <Controls
-        onReset={onReset}
-        inputs={inputs}
-        simulation={simulation}
-        onLoad={onLoad}
-      />
+      {/* 2. Render the Main Controls (unless hidden) */}
+      {!hideDefaultControls && (
+        <Controls
+          onReset={onReset}
+          inputs={inputs}
+          simulation={simulation}
+          onLoad={onLoad}
+        />
+      )}
 
       {/* 3. Render the Dynamic Inputs */}
       {dynamicInputs}

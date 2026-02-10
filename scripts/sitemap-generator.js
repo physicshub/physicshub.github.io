@@ -74,7 +74,7 @@ async function generateSitemap() {
       writeFileSync("./out/robots.txt", robotsTxt);
       console.log(`✅ Robots.txt copied to ./out!`);
     }
-  } catch (e) {
+  } catch {
     /* ignore */
   }
 

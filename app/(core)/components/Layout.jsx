@@ -18,8 +18,8 @@ export default function Layout({
         <Stars
           color={starColor}
           opacity={starOpacity}
-          zIndex={1}
-          starDensity={0.005}
+          zIndex={-10}
+          starDensity={0.0003}
         />
       )}
       {showGradient && <GradientBackground />}
