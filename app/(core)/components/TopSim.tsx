@@ -56,9 +56,8 @@ export default function TopSim() {
       </div>
 
       {/* ✅ RIGHT SIDE SLIDING FUN FACT */}
-      {showFact && (
+      { !isMobile && showFact && (
         <FunFactSlider
-          chapterName={simulations[idx]?.name}
           fact={fact}
         />
       )}

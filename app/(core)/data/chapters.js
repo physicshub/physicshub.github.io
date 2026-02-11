@@ -10,8 +10,7 @@ const chapters = [
     icon: "/icons/bouncingBall.png",
     relatedBlogSlug: "physics-bouncing-ball-comprehensive-educational-guide",
     funFacts: [
-      "No real ball bounces forever because energy is lost as heat and sound.",
-      "Perfectly elastic collisions exist only in theory."
+      "No real ball bounces forever because energy is lost as heat and sound."
     ],
   },
 
@@ -24,7 +23,6 @@ const chapters = [
     icon: "/icons/vector.png",
     relatedBlogSlug: "operations-with-vectors",
     funFacts: [
-      "Vector addition is commutative.",
       "Dot product helps determine the angle between two vectors."
     ],
   },
