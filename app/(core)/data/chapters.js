@@ -10,7 +10,7 @@ const chapters = [
     icon: "/icons/bouncingBall.png",
     relatedBlogSlug: "physics-bouncing-ball-comprehensive-educational-guide",
     funFacts: [
-      "No real ball bounces forever because energy is lost as heat and sound."
+      "No real ball bounces forever because energy is lost as heat and sound.",
     ],
   },
 
@@ -22,9 +22,7 @@ const chapters = [
     tags: [TAGS.EASY, TAGS.MATH, TAGS.VECTORS, TAGS.TRIGONOMETRY],
     icon: "/icons/vector.png",
     relatedBlogSlug: "operations-with-vectors",
-    funFacts: [
-      "Dot product helps determine the angle between two vectors."
-    ],
+    funFacts: ["Dot product helps determine the angle between two vectors."],
   },
 
   {
@@ -35,9 +33,7 @@ const chapters = [
     tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.ACCELERATION, TAGS.INTERACTIVE],
     icon: "/icons/acceleration.png",
     relatedBlogSlug: "ball-uniformly-accelerated-motion",
-    funFacts: [
-      "Acceleration happens whenever velocity changes.",
-    ],
+    funFacts: ["Acceleration happens whenever velocity changes."],
   },
 
   {

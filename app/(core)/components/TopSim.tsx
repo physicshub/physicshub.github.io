@@ -9,10 +9,11 @@ export default function TopSim() {
   const location = usePathname();
   const idx = simulations.findIndex((sim) => sim.link === location);
   const isMobile = useMobile();
- 
+
   function getPrevious() {
     if (idx === -1) return "/";
-    return simulations[(idx - 1 + simulations.length) % simulations.length].link;
+    return simulations[(idx - 1 + simulations.length) % simulations.length]
+      .link;
   }
 
   function getNext() {
@@ -40,9 +41,19 @@ export default function TopSim() {
       )}
 
       <div className="top-nav-sim-inner">
-        <Back link={getPrevious()} type="responsive" arrowPosition="left" content="Previous" />
+        <Back
+          link={getPrevious()}
+          type="responsive"
+          arrowPosition="left"
+          content="Previous"
+        />
         <h3>{getCurrentName()}</h3>
-        <Back link={getNext()} type="responsive" arrowPosition="right" content="Next" />
+        <Back
+          link={getNext()}
+          type="responsive"
+          arrowPosition="right"
+          content="Next"
+        />
       </div>
 
       {/* ✅ THIRD DIV MOVED TO RIGHT */}

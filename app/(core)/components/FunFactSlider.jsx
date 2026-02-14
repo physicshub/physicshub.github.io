@@ -53,7 +53,10 @@ export default function FunFactSlider({ fact }) {
         <div className="flex-shrink-0 relative">
           <div className="absolute inset-0 rounded-lg bg-cyan-400/20 blur-sm animate-pulse" />
           <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-[#0b3a3f] border border-cyan-400/40 shadow-inner">
-            <Lightbulb size={18} className="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+            <Lightbulb
+              size={18}
+              className="text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+            />
           </div>
         </div>
 
