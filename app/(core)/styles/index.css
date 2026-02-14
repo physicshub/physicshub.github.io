@@ -1588,8 +1588,11 @@ footer {
   width: 20%;
 }
 
-.top-nav-sim-filler {
+.fun-fact-slider-wrapper {
   width: 20%;
+  justify-content: center ;
+   margin-left: auto; 
+   margin-top: 20px;
 }
 
 /* Wind icon for Ball Gravity Simulation*/
