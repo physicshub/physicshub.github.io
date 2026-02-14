@@ -8,8 +8,13 @@ export default function FunFactSlider({ fact }) {
   useEffect(() => {
     if (!fact) return;
 
-    setRender(true);
-    setTimeout(() => setVisible(true), 50);
+    const renderTimer = setTimeout(() => {
+      setRender(true);
+    }, 0);
+
+    const showTimer = setTimeout(() => {
+      setVisible(true);
+    }, 50);
 
     const hideTimer = setTimeout(() => {
       setVisible(false);
@@ -20,6 +25,8 @@ export default function FunFactSlider({ fact }) {
     }, 5800);
 
     return () => {
+      clearTimeout(renderTimer);
+      clearTimeout(showTimer);
       clearTimeout(hideTimer);
       clearTimeout(removeTimer);
     };

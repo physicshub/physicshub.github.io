@@ -10,6 +10,8 @@ export default function TopSim() {
   const idx = simulations.findIndex((sim) => sim.link === location);
   const isMobile = useMobile();
 
+  const [fact, setFact] = useState<string | null>(null);
+
   function getPrevious() {
     if (idx === -1) return "/";
     return simulations[(idx - 1 + simulations.length) % simulations.length]
@@ -26,11 +28,21 @@ export default function TopSim() {
     return `${simulations[idx].id} - ${simulations[idx].name}`;
   }
 
-  const funFacts = simulations[idx]?.funFacts || [];
-  const fact =
-    funFacts.length > 0
-      ? funFacts[Math.floor(Math.random() * funFacts.length)]
-      : null;
+  useEffect(() => {
+    const funFacts = simulations[idx]?.funFacts ?? [];
+
+    const timer = setTimeout(() => {
+      if (funFacts.length === 0) {
+        setFact(null);
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * funFacts.length);
+      setFact(funFacts[randomIndex]);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [idx]);
 
   return (
     <div className="top-nav-sim">
@@ -56,9 +68,8 @@ export default function TopSim() {
         />
       </div>
 
-      {/* ✅ THIRD DIV MOVED TO RIGHT */}
       {!isMobile && (
-        <div className="fun-fact-slider-wrapper ">
+        <div className="fun-fact-slider-wrapper">
           <FunFactSlider fact={fact} />
         </div>
       )}
