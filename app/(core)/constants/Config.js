@@ -1,4 +1,4 @@
-// constants/
+// constants/Config.js
 
 // Conversione metri ↔ pixel
 export const SCALE = 100; // 1 m = 100 px
