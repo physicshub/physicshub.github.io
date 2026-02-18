@@ -22,13 +22,25 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const blog = blogsArray.find((b) => b.slug === slug);
+
   if (!blog) return { title: "Blog Not Found" };
 
   return {
     title: blog.name,
     description: blog.desc,
+
+    keywords: [
+      "Physics",
+      "PhysicsHub",
+      "Inclined Plane",
+      "Physics concepts",
+      "Physics tutorial",
+      "Physics students",
+      ...(blog.tags || []),
+    ],
+
     openGraph: {
       title: blog.name,
       description: blog.desc,
