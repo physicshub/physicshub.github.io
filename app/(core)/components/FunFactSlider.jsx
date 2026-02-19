@@ -36,6 +36,7 @@ export default function FunFactSlider({ fact }) {
 
   return (
     <div
+      style={{ borderRadius: "var(--border-radius)" }}
       className={`
     relative w-full max-w-[320px] 
     rounded-xl border border-cyan-400/30
@@ -75,11 +76,13 @@ export default function FunFactSlider({ fact }) {
               Do you know?
             </p>
           </div>
-          <p className="text-cyan-50/90 text-[13px] leading-relaxed font-medium">
-            <span className="text-cyan-400/50 mr-1 italic">“</span>
-            {fact}
-            <span className="text-cyan-400/50 ml-1 italic">”</span>
-          </p>
+          <div className="toast-message p-4">
+            <p className="text-cyan-50/90 text-[13px] leading-relaxed font-medium">
+              <span className="text-cyan-400/50 mr-1 italic">“</span>
+              {fact}
+              <span className="text-cyan-400/50 ml-1 italic">”</span>
+            </p>
+          </div>
         </div>
 
         {/* Close Button */}
