@@ -66,11 +66,12 @@ const chapters = [
   },
   {
     id: 8,
-    name: "Inclined Plane",
-    desc: "Block sliding on an inclined plane.",
+    name: "Friction & Gravity Lab",
+    desc: "Master the forces of nature. Manipulate gravity, friction, and angles to predict the perfect slide.",
     link: "/simulations/InclinedPlane",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     icon: "/icons/inclined.png",
+    relatedBlogSlug: "mastering-the-inclined-plane",
   },
   {
     id: 0,

@@ -1,17 +1,17 @@
-// THIS FILE GOT REPLACED BY NEW SYSTEM FOR BLOG HANDLING:
-// check articles/ folder and articles/index.js for more
+// ⚠️ DEPRECATED FILE
+// This file is no longer used.
+// Blog handling has moved to `articles/` and `articles/index.js`.
+// Kept only for reference/testing purposes.
 
 import TAGS from "./tags.js";
 
 const INACTIVE_BLOGS = [
   {
-    id: 1,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
+    id: "inactive-001",
+    name: "Sample Physics Blog (Inactive)",
+    desc: "Deprecated example blog used for testing UI components.",
+    slug: "inactive-sample-blog",
     tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-    isPinned: true,
-
     theory: {
       sections: [
         {
@@ -19,86 +19,7 @@ const INACTIVE_BLOGS = [
           blocks: [
             {
               type: "paragraph",
-              text: "This section demonstrates the physics behind the Bouncing Ball simulation.",
-            },
-          ],
-        },
-        {
-          title: "Tips and Tricks",
-          blocks: [
-            {
-              type: "callout",
-              calloutType: "info",
-              title: "Did you know",
-              text: "This simulation is a basic form of motion physics used in most 2D games and animation engines.",
-            },
-            {
-              type: "callout",
-              calloutType: "warning",
-              title: "Common Mistake",
-              text: "Forgetting to reverse the velocity component upon collision will result in the ball getting stuck at the wall.",
-            },
-            {
-              type: "callout",
-              calloutType: "tip",
-              title: "Try It Yourself!",
-              text: "Experiment by changing velocity values or ball size to see how motion patterns change.",
-            },
-            {
-              type: "callout",
-              calloutType: "success",
-              title: "Success!",
-              text: "You've learned the basics of 2D motion and collision handling!",
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: 2,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {
-      sections: [
-        {
-          title: "Introduction",
-          blocks: [
-            {
-              type: "paragraph",
-              text: "This section demonstrates the physics behind the Bouncing Ball simulation.",
-            },
-          ],
-        },
-        {
-          title: "Tips and Tricks",
-          blocks: [
-            {
-              type: "callout",
-              calloutType: "info",
-              title: "Did you know",
-              text: "This simulation is a basic form of motion physics used in most 2D games and animation engines.",
-            },
-            {
-              type: "callout",
-              calloutType: "warning",
-              title: "Common Mistake",
-              text: "Forgetting to reverse the velocity component upon collision will result in the ball getting stuck at the wall.",
-            },
-            {
-              type: "callout",
-              calloutType: "tip",
-              title: "Try It Yourself!",
-              text: "Experiment by changing velocity values or ball size to see how motion patterns change.",
-            },
-            {
-              type: "callout",
-              calloutType: "success",
-              title: "Success!",
-              text: "You've learned the basics of 2D motion and collision handling!",
+              text: "This is a deprecated blog example retained only for reference.",
             },
           ],
         },
@@ -107,87 +28,11 @@ const INACTIVE_BLOGS = [
   },
 
   {
-    id: 3,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {},
-  },
-  {
-    id: 4,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {},
-  },
-  {
-    id: 5,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {},
-  },
-  {
-    id: 3,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-    isPinned: true,
-
-    theory: {},
-  },
-  {
-    id: 4,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-    isPinned: true,
-
-    theory: {},
-  },
-  {
-    id: 5,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-    isPinned: true,
-
-    theory: {},
-  },
-  {
-    id: 3,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {},
-  },
-  {
-    id: 4,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
-    theory: {},
-  },
-  {
-    id: 5,
-    name: "Blog Test",
-    desc: "This is a blog example.",
-    slug: "this-is-a-blog-example",
-    tags: [TAGS.EASY, TAGS.PHYSICS, TAGS.COLLISION, TAGS.ANIMATIONS],
-
+    id: "inactive-002",
+    name: "Empty Blog Shell",
+    desc: "Placeholder blog with no theory content.",
+    slug: "inactive-empty-blog",
+    tags: [TAGS.MEDIUM, TAGS.DYNAMICS],
     theory: {},
   },
 ];
