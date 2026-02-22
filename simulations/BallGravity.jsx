@@ -1,7 +1,7 @@
 // app/pages/simulations/BallGravity.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
@@ -14,29 +14,27 @@ import {
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
-  FORCES,
   SimInfoMapper,
 } from "../app/(core)/data/configs/BallGravity.js";
 import chapters from "../app/(core)/data/chapters.js";
-import { toMeters, toPixels } from "../app/(core)/constants/Utils.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
+
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
+import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
+import DragController from "../app/(core)/physics/DragController.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-import {
-  drawBallWithTrail,
-  drawForceVector,
-} from "../app/(core)/utils/drawUtils.js";
-
-// --- Centralized Body class ---
-import Body from "../app/(core)/physics/Body.ts";
 
 export default function BallGravity() {
   const location = usePathname();
@@ -47,21 +45,19 @@ export default function BallGravity() {
   );
   const [resetVersion, setResetVersion] = useState(0);
 
-  // Overlay vento
+  // Wind state
   const [isBlowing, setIsBlowing] = useState(false);
-  const isBlowingRef = useRef(isBlowing);
-  useEffect(() => {
-    isBlowingRef.current = isBlowing;
-  }, [isBlowing]);
+
+  // References
+  const bodyRef = useRef(null);
+  const forceRendererRef = useRef(null);
+  const dragControllerRef = useRef(null);
+  const maxHeightRef = useRef(0);
 
   // Sim info
-  const maxHeightRef = useRef(0);
   const { simData, updateSimInfo } = useSimInfo({
     customRefs: { maxHeightRef },
   });
-
-  // Corpo fisico
-  const bodyRef = useRef(null);
 
   const handleInputChange = useCallback(
     (name, value) => {
@@ -79,6 +75,54 @@ export default function BallGravity() {
     (p) => {
       let trailLayer = null;
 
+      const setupSimulation = () => {
+        const w = p.width;
+        const h = p.height;
+
+        // Initialize body using PhysicsBody
+        const initialX = toMeters(w / 2);
+        const initialY = toMeters(h / 4);
+
+        if (!bodyRef.current) {
+          bodyRef.current = new PhysicsBody(p, {
+            mass: inputsRef.current.mass,
+            size: inputsRef.current.size,
+            color: inputsRef.current.color,
+            shape: "circle",
+            restitution: inputsRef.current.restitution,
+            position: p.createVector(initialX, initialY),
+          });
+
+          // Enable trail
+          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
+          bodyRef.current.trail.maxLength = 150;
+          bodyRef.current.trail.color = inputsRef.current.color;
+        } else {
+          bodyRef.current.reset({
+            position: p.createVector(initialX, initialY),
+          });
+        }
+
+        // Reset max height
+        maxHeightRef.current = 0;
+
+        // Initialize force renderer
+        if (!forceRendererRef.current) {
+          forceRendererRef.current = new ForceRenderer({
+            scale: 10,
+            showLabels: true,
+            showMagnitude: true,
+          });
+        }
+
+        // Initialize drag controller
+        if (!dragControllerRef.current) {
+          dragControllerRef.current = new DragController({
+            snapBack: false,
+          });
+        }
+      };
+
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
@@ -87,31 +131,16 @@ export default function BallGravity() {
         trailLayer.pixelDensity(1);
         trailLayer.clear();
 
-        // Inizializza corpo (unità: metri)
-        bodyRef.current = new Body(
-          p,
-          {
-            mass: inputsRef.current.mass,
-            size: inputsRef.current.size,
-            gravity: inputsRef.current.gravity,
-            restitution: inputsRef.current.restitution,
-            frictionMu: inputsRef.current.frictionMu,
-            color: inputsRef.current.color,
-          },
-          p.createVector(toMeters(w / 2), toMeters(h / 4))
-        );
-
-        // Altezza iniziale dal suolo
-        const bottomM = toMeters(p.height);
-        maxHeightRef.current =
-          bottomM -
-          bodyRef.current.state.pos.y -
-          bodyRef.current.params.size / 2;
-
+        setupSimulation();
         p.background(getBackgroundColor());
       };
 
       p.draw = () => {
+        if (!bodyRef.current) return;
+
+        const dt = computeDelta(p);
+        if (dt <= 0) return;
+
         const {
           mass,
           gravity,
@@ -122,136 +151,186 @@ export default function BallGravity() {
           restitution,
           frictionMu,
         } = inputsRef.current;
-        const dt = computeDelta(p);
-        if (!bodyRef.current || dt <= 0) return;
 
-        // Sincronizza i parametri del corpo con gli input correnti (reattività senza re-instanziare)
-        bodyRef.current.params.mass = mass;
-        bodyRef.current.params.gravity = gravity;
-        bodyRef.current.params.color = color;
-        bodyRef.current.params.restitution = Math.max(
-          0,
-          Math.min(1, restitution ?? bodyRef.current.params.restitution)
-        );
-        bodyRef.current.params.frictionMu = frictionMu;
-
-        // Se cambia la size, aggiorna in modo coerente (mantieni il centro, evita salti visivi)
-        if (size !== bodyRef.current.params.size) {
-          const newRadius = size / 2;
-          // Opzionale: correzione fine per evitare penetrazioni al cambio
-          const bottomM = toMeters(p.height);
-          const lowest = bodyRef.current.state.pos.y + newRadius;
-          if (lowest > bottomM) {
-            bodyRef.current.state.pos.y = bottomM - newRadius;
-            bodyRef.current.state.vel.y = Math.min(
-              bodyRef.current.state.vel.y,
-              0
-            );
-          }
-          bodyRef.current.params.size = size;
-        }
-
-        // Vento come accelerazione (F = m * a → a = F/m). Qui 'wind' è forza in N.
-        let externalAcc = null;
-        if (p.mouseIsPressed && wind > 0) {
-          externalAcc = p.createVector(wind / mass, 0);
-        }
-
-        // Step fisico centralizzato (collisioni con bordi in metri)
-        bodyRef.current.step(p, dt, externalAcc);
-
-        const { pos, vel } = bodyRef.current.state;
-
-        // Rendering in pixel
-        const pixelX = toPixels(pos.x);
-        const pixelY = toPixels(pos.y);
-        const isHover = bodyRef.current.isHover(p);
-
-        // Aggiorna max height (metri dal suolo)
-        {
-          const bottomM = toMeters(p.height);
-          const hFromGround = bottomM - pos.y - bodyRef.current.params.size / 2;
-          if (hFromGround > maxHeightRef.current) {
-            maxHeightRef.current = hFromGround;
-          }
-        }
-
-        // Trail + palla
-        drawBallWithTrail(p, trailLayer, {
-          bg: getBackgroundColor(),
-          trailEnabled,
-          trailAlpha: 60,
-          pixelX,
-          pixelY,
-          size: toPixels(bodyRef.current.params.size),
-          isHover,
-          ballColor: bodyRef.current.params.color,
+        // Sync body parameters
+        bodyRef.current.updateParams({
+          mass,
+          size,
+          color,
+          restitution: Math.max(0, Math.min(1, restitution)),
         });
+        bodyRef.current.trail.enabled = trailEnabled;
+        bodyRef.current.trail.color = color;
 
-        p.clear();
-        p.image(trailLayer, 0, 0);
+        // Calculate forces
+        const gravityForce = ForceCalculator.gravity(mass, gravity);
+        bodyRef.current.applyForce(
+          p.createVector(gravityForce.x, gravityForce.y)
+        );
 
-        // Force vectors (only visual)
-        const activeForces = FORCES.map((fDef) => {
-          const vec = fDef.computeFn(
-            {
-              pos,
-              vel,
-              radius: bodyRef.current.params.size / 2,
-              mass,
-              isBlowing: isBlowingRef.current,
-            },
-            inputsRef.current,
-            { canvasHeightMeters: toMeters(p.height) }
-          );
-          return vec ? { vec, color: fDef.color } : null;
-        }).filter(Boolean);
-
-        for (const f of activeForces) {
-          drawForceVector(p, pixelX, pixelY, f.vec, f.color);
+        // Wind force (when mouse pressed)
+        let windForce = null;
+        if (p.mouseIsPressed && wind > 0) {
+          windForce = p.createVector(wind, 0);
+          bodyRef.current.applyForce(windForce);
         }
 
-        // Sim info (passa p per FPS, maxHeight per quota)
+        // Ground friction (simplified)
+        const bottomM = toMeters(p.height);
+        const onGround =
+          bodyRef.current.state.position.y + size / 2 >= bottomM - 0.01;
+        if (
+          onGround &&
+          bodyRef.current.state.velocity.mag() > 0.01 &&
+          frictionMu > 0
+        ) {
+          const friction = ForceCalculator.friction(
+            mass * gravity, // Normal force
+            frictionMu,
+            frictionMu * 0.8,
+            bodyRef.current.state.velocity.x,
+            0
+          );
+          bodyRef.current.applyForce(p.createVector(friction, 0));
+        }
+
+        // Physics step (if not dragging)
+        if (!dragControllerRef.current.isDragging()) {
+          bodyRef.current.step(dt);
+
+          // Constrain to bounds
+          bodyRef.current.constrainToBounds(
+            size / 2,
+            toMeters(p.width) - size / 2,
+            size / 2,
+            toMeters(p.height) - size / 2
+          );
+        }
+
+        // Update max height
+        const hFromGround =
+          bottomM - bodyRef.current.state.position.y - size / 2;
+        if (hFromGround > maxHeightRef.current) {
+          maxHeightRef.current = hFromGround;
+        }
+
+        // Render scene
+        renderScene(p, { gravityForce, windForce, onGround });
+
+        // Update sim info
         updateSimInfo(
           p,
-          { pos, vel, mass },
+          {
+            pos: bodyRef.current.state.position,
+            vel: bodyRef.current.state.velocity,
+            mass,
+            kineticEnergy: bodyRef.current.getKineticEnergy(),
+            potentialEnergy: bodyRef.current.getPotentialEnergy(
+              gravity,
+              toMeters(p.height)
+            ),
+          },
           {
             gravity,
             canvasHeight: p.height,
-            p,
             maxHeight: maxHeightRef.current,
           },
           SimInfoMapper
         );
       };
 
-      p.mousePressed = () => setIsBlowing(true);
-      p.mouseReleased = () => setIsBlowing(false);
+      const renderScene = (p, forces) => {
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
 
+        // Trail layer
+        if (!inputsRef.current.trailEnabled) {
+          trailLayer.background(r, g, b);
+        } else {
+          trailLayer.fill(r, g, b, 60);
+          trailLayer.noStroke();
+          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+        }
+
+        // Main canvas
+        p.clear();
+        p.image(trailLayer, 0, 0);
+
+        // Draw body
+        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
+        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
+
+        // Draw forces
+        const renderer = forceRendererRef.current;
+
+        // Gravity
+        renderer.drawWeight(
+          p,
+          screenPos.x,
+          screenPos.y,
+          bodyRef.current.params.mass,
+          inputsRef.current.gravity
+        );
+
+        // Wind (if active)
+        if (forces.windForce && inputsRef.current.wind > 0) {
+          renderer.drawVector(
+            p,
+            screenPos.x,
+            screenPos.y,
+            forces.windForce.x,
+            0,
+            "#6366f1",
+            "Wind"
+          );
+        }
+
+        // Ground line
+        if (forces.onGround) {
+          p.stroke(100, 100, 120);
+          p.strokeWeight(2);
+          p.line(0, p.height - 2, p.width, p.height - 2);
+        }
+      };
+
+      // Mouse events
+      p.mousePressed = () => {
+        if (!bodyRef.current) return;
+
+        // Check if clicking on ball for drag
+        const clicked = dragControllerRef.current.handlePress(
+          p,
+          bodyRef.current
+        );
+
+        // If not dragging, then wind is blowing
+        if (!clicked) {
+          setIsBlowing(true);
+        }
+      };
+
+      p.mouseDragged = () => {
+        dragControllerRef.current.handleDrag(p);
+      };
+
+      p.mouseReleased = () => {
+        dragControllerRef.current.handleRelease();
+        setIsBlowing(false);
+      };
+
+      // Window resize
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
 
-        // Ricrea il layer del trail
         trailLayer = p.createGraphics(w, h);
         trailLayer.pixelDensity(1);
         trailLayer.clear();
 
-        // Garantisci che il corpo resti dentro i nuovi bordi
-        if (bodyRef.current) {
-          const radius = bodyRef.current.params.size / 2;
-          bodyRef.current.state.pos.x = Math.min(
-            Math.max(bodyRef.current.state.pos.x, radius),
-            toMeters(p.width) - radius
-          );
-          bodyRef.current.state.pos.y = Math.min(
-            Math.max(bodyRef.current.state.pos.y, radius),
-            toMeters(p.height) - radius
-          );
-        }
+        setupSimulation();
       };
     },
-    [inputsRef, updateSimInfo]
+    [inputsRef, setIsBlowing, updateSimInfo]
   );
 
   return (
@@ -261,6 +340,19 @@ export default function BallGravity() {
         const wasPaused = isPaused();
         resetTime();
         if (wasPaused) setPause(true);
+
+        maxHeightRef.current = 0;
+        if (bodyRef.current) {
+          const w = 800; // default width
+          const h = 600; // default height
+          bodyRef.current.reset({
+            position: bodyRef.current.p.createVector(
+              toMeters(w / 2),
+              toMeters(h / 4)
+            ),
+          });
+        }
+
         setResetVersion((v) => v + 1);
       }}
       inputs={inputs}
@@ -284,7 +376,7 @@ export default function BallGravity() {
         simInfos={<SimInfoPanel data={simData} />}
       />
 
-      {/* Overlay vento */}
+      {/* Wind overlay */}
       <div
         className={`wind-overlay ${isBlowing ? "blowing" : ""}`}
         aria-hidden="true"

@@ -93,9 +93,19 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
       <div
         className={`popup-container ${isOpen ? "popup-enter" : "popup-exit"}`}
       >
-        <h2 className="ph-hero__title">{title}</h2>
-        {description && <p className="ph-hero__subtitle">{description}</p>}
-
+        <div className="popup-header">
+          <div>
+            <h2 className="ph-hero__title">{title}</h2>
+            {description && <p className="ph-hero__subtitle">{description}</p>}
+          </div>
+          <button
+            onClick={onClose}
+            className="popup-close-btn ph-btn ph-btn--ghost"
+            aria-label="Close modal"
+          >
+            Close
+          </button>
+        </div>
         <div className="popup-custom-content">{children}</div>
 
         <div className="popup-buttons">
@@ -108,9 +118,6 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
               {btn.label}
             </a>
           ))}
-          <a onClick={onClose} className="ph-btn ph-btn--ghost">
-            Close
-          </a>
         </div>
       </div>
     </div>

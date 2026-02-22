@@ -4,7 +4,7 @@ import { invertYAxis } from "../../constants/Utils.js";
 export const INITIAL_INPUTS = {
   size: 0.5, // diametro palla in metri
   maxspeed: 5, // velocità massima (m/s)
-  acc: 2, // accelerazione costante verso il target (m/s²)
+  acceleration: 2, // accelerazione costante verso il target (m/s²)
   color: "#7f7f7f", // colore palla
   trailEnabled: true,
 };
@@ -27,7 +27,7 @@ export const INPUT_FIELDS = [
   },
   {
     type: "number",
-    name: "acc",
+    name: "acceleration",
     label: "a - Acceleration (m/s²)",
     min: 0,
     step: 0.01,
@@ -61,19 +61,19 @@ export const FORCES = [
 ];
 
 export const SimInfoMapper = (state, context) => {
-  const { pos, vel, acc, maxspeed } = state;
+  const { position, velocity, acceleration, maxspeed } = state;
   const { canvasHeight } = context;
 
-  pos.y = invertYAxis(canvasHeight, pos.y);
+  position.y = invertYAxis(canvasHeight, position.y);
   return {
-    "s(x, y) (position)": pos
-      ? `(${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}) m`
+    "s(x, y) (position)": position
+      ? `(${position.x.toFixed(2)}, ${position.y.toFixed(2)}) m`
       : "-",
-    "v(x, y) (velocity xy)": vel
-      ? `(${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}) m/s`
+    "v(x, y) (velocity xy)": velocity
+      ? `(${velocity.x.toFixed(2)}, ${velocity.y.toFixed(2)}) m/s`
       : "-",
-    "v (velocity)": vel ? vel.mag().toFixed(2) + " m/s" : "-",
-    "a (acceleration)": acc.toFixed(3) + " m/s²",
+    "v (velocity)": velocity ? velocity.mag().toFixed(2) + " m/s" : "-",
+    "a (acceleration)": acceleration.toFixed(3) + " m/s²",
     "vₘₐₓ (max speed)": maxspeed.toFixed(2) + " m/s",
   };
 };

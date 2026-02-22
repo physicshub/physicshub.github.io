@@ -67,6 +67,18 @@
   cursor: pointer;
 }
 
+.popup-header {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 1.5rem;
+}
+
 .feedback-form {
   margin: 20px 0;
   display: flex;

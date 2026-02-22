@@ -3,7 +3,7 @@ function NumberInput({
   val,
   min,
   max,
-  disabled,
+  disabled = false,
   placeholder,
   onChange,
   name,
@@ -24,7 +24,7 @@ function NumberInput({
         placeholder={placeholder}
         className="input-number"
         onChange={onChange}
-        disabled={disabled || false}
+        disabled={disabled}
       />
     </div>
   );

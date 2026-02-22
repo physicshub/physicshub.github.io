@@ -7,7 +7,7 @@ export const INITIAL_INPUTS = {
   gravity: EARTH_G_SI, // m/s²
   restitution: 1, // coefficiente di rimbalzo
   frictionMu: 0, // coefficiente di attrito dinamico
-  numBodies: 100, // numero di corpi per benchmarking
+  numBodies: 20, // numero di corpi per benchmarking
   trailEnabled: true,
   color: "#ff0000",
 };

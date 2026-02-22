@@ -15,29 +15,27 @@ import {
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
-  FORCES,
   SimInfoMapper,
   computeProjectileAnalytics,
 } from "../app/(core)/data/configs/ParabolicMotion.js";
 import chapters from "../app/(core)/data/chapters.js";
 
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
+import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
+import DragController from "../app/(core)/physics/DragController.js";
+
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-import {
-  drawBallWithTrail,
-  drawForceVector,
-} from "../app/(core)/utils/drawUtils.js";
-
-// --- Centralized Body class ---
-import Body from "../app/(core)/physics/Body.ts";
 
 const TRAJECTORY_STEPS = 96;
 
@@ -50,19 +48,17 @@ export default function ParabolicMotion() {
   );
   const [resetVersion, setResetVersion] = useState(0);
 
+  // References
   const bodyRef = useRef(null);
+  const forceRendererRef = useRef(null);
+  const dragControllerRef = useRef(null);
   const trailLayerRef = useRef(null);
   const needsRelaunchRef = useRef(true);
   const predictedPathRef = useRef([]);
   const launchMetadataRef = useRef({
     startPos: null,
     startMs: 0,
-    stats: computeProjectileAnalytics({
-      v0: INITIAL_INPUTS.v0,
-      angleDeg: INITIAL_INPUTS.angle,
-      h0: INITIAL_INPUTS.h0,
-      gravity: INITIAL_INPUTS.gravity,
-    }),
+    stats: null,
     radius: INITIAL_INPUTS.size / 2,
   });
 
@@ -85,77 +81,11 @@ export default function ParabolicMotion() {
 
   const sketch = useCallback(
     (p) => {
-      const dragState = { active: false };
-
       const resetTrailLayer = () => {
         if (!trailLayerRef.current) return;
         const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         trailLayerRef.current.background(r, g, b);
-      };
-
-      const clampHeight = (canvasHeightMeters, radius, desiredHeight) => {
-        const maxHeight = Math.max(0, canvasHeightMeters - radius * 2);
-        return Math.min(Math.max(desiredHeight, 0), maxHeight);
-      };
-
-      const recomputeLaunch = (hardResetTrail = false) => {
-        if (!bodyRef.current) return;
-
-        const { mass, size, gravity, v0, angle, h0 } = inputsRef.current;
-
-        bodyRef.current.params.mass = Math.max(mass, 0.1);
-        bodyRef.current.params.gravity = gravity;
-        bodyRef.current.params.color = inputsRef.current.ballColor;
-        bodyRef.current.params.restitution = 0;
-        bodyRef.current.params.frictionMu = 0;
-
-        if (size !== bodyRef.current.params.size) {
-          bodyRef.current.params.size = size;
-        }
-
-        const canvasHeightMeters = toMeters(p.height);
-        const canvasWidthMeters = toMeters(p.width);
-        const radius = bodyRef.current.params.size / 2;
-        const safeHeight = clampHeight(canvasHeightMeters, radius, h0);
-
-        const analytics = computeProjectileAnalytics({
-          v0,
-          angleDeg: angle,
-          h0: safeHeight,
-          gravity,
-        });
-
-        const startX = Math.max(toMeters(80), canvasWidthMeters * 0.12);
-        const groundY = canvasHeightMeters;
-        const startY = Math.min(
-          groundY - radius,
-          Math.max(radius, groundY - safeHeight - radius)
-        );
-
-        const vx0 = analytics.vx0;
-        const vy0World = -analytics.vy0; // convert to downward-positive axis
-
-        bodyRef.current.state.pos.set(startX, startY);
-        bodyRef.current.state.vel.set(vx0, vy0World);
-        bodyRef.current.state.acc.set(0, 0);
-
-        launchMetadataRef.current = {
-          startPos: { x: startX, y: startY },
-          startMs: p.millis(),
-          stats: analytics,
-          radius,
-        };
-
-        predictedPathRef.current = buildTrajectoryPoints(
-          analytics,
-          { x: startX, y: startY },
-          gravity,
-          radius
-        );
-
-        needsRelaunchRef.current = false;
-        if (hardResetTrail) resetTrailLayer();
       };
 
       const buildTrajectoryPoints = (analytics, startPos, gravity, radius) => {
@@ -168,10 +98,11 @@ export default function ParabolicMotion() {
         const dt = analytics.flightTime / TRAJECTORY_STEPS;
         const canvasHeightMeters = toMeters(p.height);
         const ground = canvasHeightMeters - radius;
-        for (let i = 0; i <= TRAJECTORY_STEPS; i += 1) {
+
+        for (let i = 0; i <= TRAJECTORY_STEPS; i++) {
           const t = dt * i;
           const x = startPos.x + analytics.vx0 * t;
-          const y = startPos.y + -analytics.vy0 * t + 0.5 * gravity * t * t;
+          const y = startPos.y - analytics.vy0 * t + 0.5 * gravity * t * t;
 
           if (y > ground) break;
           points.push({
@@ -182,6 +113,73 @@ export default function ParabolicMotion() {
         return points;
       };
 
+      const recomputeLaunch = (hardResetTrail = false) => {
+        if (!bodyRef.current) return;
+
+        const { mass, size, gravity, v0, angle, h0 } = inputsRef.current;
+
+        // Sync body parameters
+        bodyRef.current.updateParams({
+          mass: Math.max(mass, 0.1),
+          size,
+          color: inputsRef.current.ballColor,
+          restitution: 0,
+        });
+
+        const canvasHeightMeters = toMeters(p.height);
+        const canvasWidthMeters = toMeters(p.width);
+        const radius = size / 2;
+
+        // Clamp height to valid range
+        const safeHeight = Math.min(
+          Math.max(h0, 0),
+          canvasHeightMeters - radius * 2
+        );
+
+        // Compute projectile analytics
+        const analytics = computeProjectileAnalytics({
+          v0,
+          angleDeg: angle,
+          h0: safeHeight,
+          gravity,
+        });
+
+        // Starting position
+        const startX = Math.max(toMeters(80), canvasWidthMeters * 0.12);
+        const groundY = canvasHeightMeters;
+        const startY = Math.min(
+          groundY - radius,
+          Math.max(radius, groundY - safeHeight - radius)
+        );
+
+        // Set initial velocity
+        const vx0 = analytics.vx0;
+        const vy0World = -analytics.vy0; // Convert to downward-positive axis
+
+        bodyRef.current.state.position.set(startX, startY);
+        bodyRef.current.state.velocity.set(vx0, vy0World);
+        bodyRef.current.state.acceleration.set(0, 0);
+
+        // Update metadata
+        launchMetadataRef.current = {
+          startPos: { x: startX, y: startY },
+          startMs: p.millis(),
+          stats: analytics,
+          radius,
+        };
+
+        // Build predicted path
+        predictedPathRef.current = buildTrajectoryPoints(
+          analytics,
+          { x: startX, y: startY },
+          gravity,
+          radius
+        );
+
+        needsRelaunchRef.current = false;
+        if (hardResetTrail) resetTrailLayer();
+      };
+
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
@@ -190,155 +188,219 @@ export default function ParabolicMotion() {
         trailLayerRef.current.pixelDensity(1);
         trailLayerRef.current.clear();
 
-        bodyRef.current = new Body(
-          p,
-          {
-            mass: inputsRef.current.mass,
-            size: inputsRef.current.size,
-            gravity: inputsRef.current.gravity,
-            restitution: 0,
-            frictionMu: 0,
-            color: inputsRef.current.ballColor,
-          },
-          p.createVector(
+        // Initialize body
+        bodyRef.current = new PhysicsBody(p, {
+          mass: inputsRef.current.mass,
+          size: inputsRef.current.size,
+          color: inputsRef.current.ballColor,
+          shape: "circle",
+          restitution: 0,
+          position: p.createVector(
             toMeters(w * 0.12),
             toMeters(h) - inputsRef.current.size / 2
-          )
-        );
+          ),
+        });
+
+        bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
+        bodyRef.current.trail.maxLength = 200;
+
+        // Initialize force renderer
+        if (!forceRendererRef.current) {
+          forceRendererRef.current = new ForceRenderer({
+            scale: 10,
+            showLabels: true,
+            showMagnitude: true,
+          });
+        }
+
+        // Initialize drag controller
+        if (!dragControllerRef.current) {
+          dragControllerRef.current = new DragController({
+            snapBack: false,
+          });
+        }
 
         recomputeLaunch(true);
       };
 
       p.draw = () => {
         if (!bodyRef.current) return;
+
         const dt = computeDelta(p);
         if (dt <= 0) return;
 
+        // Relaunch if needed
         if (needsRelaunchRef.current) {
           recomputeLaunch();
         }
 
-        const { trailEnabled, showGuides, showVectors } = inputsRef.current;
-        syncBodyParams(p);
-
-        if (!dragState.active) {
-          const external = computeExternalAcceleration(p);
-          bodyRef.current.step(
-            p,
-            dt,
-            external?.mag?.() > 0 ? external : undefined
-          );
-        }
-
-        renderScene(p, {
+        const {
+          gravity,
+          dragCoeff,
+          wind,
           trailEnabled,
           showGuides,
           showVectors,
-        });
-      };
+        } = inputsRef.current;
 
-      const syncBodyParams = (p) => {
-        const { mass, size, gravity, ballColor } = inputsRef.current;
-        const radius = bodyRef.current.params.size / 2;
+        // Sync body color and trail
+        bodyRef.current.params.color = inputsRef.current.ballColor;
+        bodyRef.current.trail.enabled = trailEnabled;
+        bodyRef.current.trail.color = inputsRef.current.ballColor;
 
-        bodyRef.current.params.mass = Math.max(mass, 0.1);
-        bodyRef.current.params.gravity = gravity;
-        bodyRef.current.params.color = ballColor;
-
-        if (size !== bodyRef.current.params.size) {
-          bodyRef.current.params.size = size;
-          const bottomM = toMeters(p.height);
-          bodyRef.current.state.pos.x = Math.min(
-            Math.max(bodyRef.current.state.pos.x, radius),
-            toMeters(p.width) - radius
+        // Apply forces (if not dragging)
+        if (!dragControllerRef.current.isDragging()) {
+          // Gravity
+          const gravityForce = ForceCalculator.gravity(
+            bodyRef.current.params.mass,
+            gravity
           );
-          bodyRef.current.state.pos.y = Math.min(
-            Math.max(bodyRef.current.state.pos.y, radius),
-            bottomM - radius
+          bodyRef.current.applyForce(
+            p.createVector(gravityForce.x, gravityForce.y)
           );
-        }
-      };
 
-      const computeExternalAcceleration = (p) => {
-        const { dragCoeff, wind, mass } = inputsRef.current;
-        const external = p.createVector(0, 0);
-        const vel = bodyRef.current.state.vel.copy();
-
-        if (dragCoeff > 0 && vel.magSq() > 0) {
-          external.add(vel.copy().mult(-Math.max(dragCoeff, 0)));
-        }
-
-        if (wind !== 0) {
-          external.add(p.createVector(wind / Math.max(mass, 0.1), 0));
-        }
-
-        return external;
-      };
-
-      const renderScene = (p, opts) => {
-        const trailLayer = trailLayerRef.current;
-        if (!trailLayer) return;
-
-        const { pos, vel } = bodyRef.current.state;
-        const radius = bodyRef.current.params.size / 2;
-        const pixelX = toPixels(pos.x);
-        const pixelY = toPixels(pos.y);
-        const isHover =
-          p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= toPixels(radius);
-
-        drawBallWithTrail(p, trailLayer, {
-          bg: getBackgroundColor(),
-          trailEnabled: opts.trailEnabled,
-          trailAlpha: 50,
-          pixelX,
-          pixelY,
-          size: toPixels(bodyRef.current.params.size),
-          isHover,
-          ballColor: bodyRef.current.params.color,
-        });
-
-        p.clear();
-        p.image(trailLayer, 0, 0);
-
-        if (opts.showGuides && predictedPathRef.current.length > 1) {
-          drawGuides(p);
-        }
-
-        if (opts.showVectors) {
-          const activeForces = FORCES.map((def) => {
-            const vec = def.computeFn(
-              {
-                pos,
-                vel,
-                radius,
-                mass: bodyRef.current.params.mass,
-              },
-              inputsRef.current,
-              { canvasHeightMeters: toMeters(p.height) }
+          // Air resistance
+          if (dragCoeff > 0) {
+            const vel = bodyRef.current.state.velocity;
+            const drag = ForceCalculator.airResistance(
+              vel.mag(),
+              dragCoeff,
+              false // quadratic drag
             );
-            return vec ? { vec, color: def.color } : null;
-          }).filter(Boolean);
+            if (Math.abs(drag) > 0.001) {
+              const dragForce = vel.copy().normalize().mult(drag);
+              bodyRef.current.applyForce(dragForce);
+            }
+          }
 
-          activeForces.forEach((force) =>
-            drawForceVector(p, pixelX, pixelY, force.vec, force.color)
-          );
+          // Wind force
+          if (wind !== 0) {
+            bodyRef.current.applyForce(p.createVector(wind, 0));
+          }
+
+          // Physics step
+          bodyRef.current.step(dt);
+
+          // Check ground collision
+          const radius = bodyRef.current.params.size / 2;
+          const groundY = toMeters(p.height) - radius;
+          if (bodyRef.current.state.position.y >= groundY) {
+            bodyRef.current.state.position.y = groundY;
+            bodyRef.current.state.velocity.y = 0;
+            bodyRef.current.state.velocity.x *= 0.95; // Ground friction
+          }
         }
 
+        // Render scene
+        renderScene(p, { showGuides, showVectors });
+
+        // Update sim info
         const elapsed =
           (p.millis() - (launchMetadataRef.current?.startMs ?? 0)) / 1000;
         updateSimInfo(
           p,
-          { pos, vel },
+          {
+            pos: bodyRef.current.state.position,
+            vel: bodyRef.current.state.velocity,
+          },
           {
             canvasHeightMeters: toMeters(p.height),
-            radius,
+            radius: bodyRef.current.params.size / 2,
             elapsedTime: Math.max(0, elapsed),
           },
           SimInfoMapper
         );
       };
 
-      const drawGuides = (p) => {
+      const renderScene = (p, opts) => {
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+
+        // Trail layer
+        if (!inputsRef.current.trailEnabled) {
+          trailLayerRef.current.background(r, g, b);
+        } else {
+          trailLayerRef.current.fill(r, g, b, 50);
+          trailLayerRef.current.noStroke();
+          trailLayerRef.current.rect(
+            0,
+            0,
+            trailLayerRef.current.width,
+            trailLayerRef.current.height
+          );
+        }
+
+        // Main canvas
+        p.clear();
+        p.image(trailLayerRef.current, 0, 0);
+
+        // Draw predicted trajectory
+        if (opts.showGuides && predictedPathRef.current.length > 1) {
+          drawTrajectory(p);
+        }
+
+        // Draw body
+        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
+        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
+
+        // Draw forces
+        if (opts.showVectors) {
+          const renderer = forceRendererRef.current;
+
+          // Gravity
+          renderer.drawWeight(
+            p,
+            screenPos.x,
+            screenPos.y,
+            bodyRef.current.params.mass,
+            inputsRef.current.gravity
+          );
+
+          // Drag (if active)
+          if (inputsRef.current.dragCoeff > 0) {
+            const vel = bodyRef.current.state.velocity;
+            const drag = ForceCalculator.airResistance(
+              vel.mag(),
+              inputsRef.current.dragCoeff,
+              false
+            );
+            if (Math.abs(drag) > 0.01 && vel.mag() > 0.01) {
+              const dragVec = vel.copy().normalize().mult(drag);
+              renderer.drawVector(
+                p,
+                screenPos.x,
+                screenPos.y,
+                dragVec.x,
+                dragVec.y,
+                renderer.colors.drag,
+                "Drag"
+              );
+            }
+          }
+
+          // Wind (if active)
+          if (inputsRef.current.wind !== 0) {
+            renderer.drawVector(
+              p,
+              screenPos.x,
+              screenPos.y,
+              inputsRef.current.wind,
+              0,
+              "#6366f1",
+              "Wind"
+            );
+          }
+        }
+
+        // Draw ground line
+        p.push();
+        p.stroke(100, 100, 120);
+        p.strokeWeight(2);
+        p.line(0, p.height - 2, p.width, p.height - 2);
+        p.pop();
+      };
+
+      const drawTrajectory = (p) => {
         p.push();
         p.noFill();
         p.stroke("#7dd3fc");
@@ -349,22 +411,21 @@ export default function ParabolicMotion() {
         });
         p.endShape();
 
+        // Landing marker
         const landingPoint =
           predictedPathRef.current[predictedPathRef.current.length - 1];
         if (landingPoint) {
-          const ctx = p.drawingContext;
-          if (ctx?.setLineDash) {
-            ctx.save();
-            ctx.setLineDash([6, 6]);
-            p.stroke("#f472b6");
-            p.strokeWeight(1);
-            p.line(landingPoint.x, landingPoint.y, landingPoint.x, p.height);
-            ctx.restore();
-          } else {
-            p.stroke("#f472b6");
-            p.strokeWeight(1);
-            p.line(landingPoint.x, landingPoint.y, landingPoint.x, p.height);
-          }
+          p.push();
+          p.drawingContext.setLineDash([6, 6]);
+          p.stroke("#f472b6");
+          p.strokeWeight(1);
+          p.line(landingPoint.x, landingPoint.y, landingPoint.x, p.height);
+          p.drawingContext.setLineDash([]);
+          p.pop();
+
+          // Crosshair
+          p.stroke("#f472b6");
+          p.strokeWeight(2);
           p.line(
             landingPoint.x - 8,
             landingPoint.y,
@@ -375,35 +436,28 @@ export default function ParabolicMotion() {
         p.pop();
       };
 
+      // Mouse events
       p.mousePressed = () => {
         if (!bodyRef.current) return;
-        const { pos } = bodyRef.current.state;
-        const radiusPx = toPixels(bodyRef.current.params.size / 2);
-        const d = p.dist(toPixels(pos.x), toPixels(pos.y), p.mouseX, p.mouseY);
-        if (d <= radiusPx) {
-          dragState.active = true;
-        }
+        dragControllerRef.current.handlePress(p, bodyRef.current);
       };
 
       p.mouseDragged = () => {
-        if (!dragState.active || !bodyRef.current) return;
-        bodyRef.current.state.pos.x = toMeters(p.mouseX);
-        bodyRef.current.state.pos.y = toMeters(p.mouseY);
-        bodyRef.current.state.vel.set(0, 0);
-        needsRelaunchRef.current = false;
-        predictedPathRef.current = [];
-        launchMetadataRef.current.stats = null;
+        if (dragControllerRef.current.isDragging()) {
+          dragControllerRef.current.handleDrag(p);
+          needsRelaunchRef.current = false;
+          predictedPathRef.current = [];
+        }
       };
 
       p.mouseReleased = () => {
-        dragState.active = false;
-        if (bodyRef.current) {
+        dragControllerRef.current.handleRelease((body) => {
           launchMetadataRef.current.startPos = {
-            x: bodyRef.current.state.pos.x,
-            y: bodyRef.current.state.pos.y,
+            x: body.state.position.x,
+            y: body.state.position.y,
           };
           launchMetadataRef.current.startMs = p.millis();
-        }
+        });
       };
 
       p.doubleClicked = () => {
@@ -413,9 +467,11 @@ export default function ParabolicMotion() {
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
+
         trailLayerRef.current = p.createGraphics(w, h);
         trailLayerRef.current.pixelDensity(1);
         trailLayerRef.current.clear();
+
         needsRelaunchRef.current = true;
       };
     },

@@ -90,6 +90,9 @@
       "prettier --write"
     ]
   },
+  "engines": {
+    "node": "24.8.0"
+  },
   "author": "MattQ",
   "license": "MIT"
 }

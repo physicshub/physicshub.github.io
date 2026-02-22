@@ -1,8 +1,6 @@
 name: Release and Build
 
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -58,7 +56,6 @@ jobs:
 
   deploy:
     needs: release-and-build
-    # Rimosso il controllo if: ora parte sempre dopo il build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

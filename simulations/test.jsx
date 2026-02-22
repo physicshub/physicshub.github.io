@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters, toPixels } from "../app/(core)/constants/Utils.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
@@ -19,20 +19,20 @@ import {
 } from "../app/(core)/data/configs/test.js";
 import chapters from "../app/(core)/data/chapters.js";
 
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
+
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import { drawBallWithTrail } from "../app/(core)/utils/drawUtils.js";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-
-// --- Centralized Body class ---
-import Body from "../app/(core)/physics/Body.ts";
 
 export default function Test() {
   const location = usePathname();
@@ -47,56 +47,48 @@ export default function Test() {
   const bodiesRef = useRef([]);
   const trailLayerRef = useRef(null);
 
-  // 🔧 Gestione input
   const handleInputChange = useCallback(
     (name, value) => setInputs((prev) => ({ ...prev, [name]: value })),
     [setInputs]
   );
 
-  // 📚 Teoria associata
   const theory = useMemo(
     () => chapters.find((ch) => ch.link === location)?.theory,
     [location]
   );
 
-  // 🔄 Funzione per creare corpi
   const createBodies = useCallback((p, numBodies, params) => {
-    const { mass, size, gravity, restitution, frictionMu } = params;
+    const { mass, size, restitution } = params;
     const { clientWidth: w, clientHeight: h } = p._userNode;
 
     return Array.from({ length: numBodies }, () => {
       const randomColor = p.color(
-        p.random(0, 255),
-        p.random(0, 255),
-        p.random(0, 255)
+        p.random(100, 255),
+        p.random(100, 255),
+        p.random(100, 255)
       );
+
       const randomX = toMeters(p.random(50, w - 50));
       const randomY = toMeters(p.random(50, h / 2));
 
-      return new Body(
-        p,
-        {
-          mass: mass * p.random(0.5, 2),
-          size: size * p.random(0.5, 1.5),
-          gravity,
-          restitution,
-          frictionMu,
-          color: randomColor,
-        },
-        p.createVector(randomX, randomY)
-      );
+      const body = new PhysicsBody(p, {
+        mass: mass * p.random(0.5, 2),
+        size: size * p.random(0.5, 1.5),
+        color: randomColor.toString("#rrggbb"),
+        shape: "circle",
+        restitution,
+        position: p.createVector(randomX, randomY),
+      });
+
+      // Enable trails
+      body.trail.enabled = params.trailEnabled;
+      body.trail.maxLength = 100;
+      body.trail.color = randomColor.toString("#rrggbb");
+
+      return body;
     });
   }, []);
 
-  // 🎨 Inizializza layer trail
-  const initTrailLayer = useCallback((p, w, h) => {
-    const layer = p.createGraphics(w, h);
-    layer.pixelDensity(1);
-    layer.clear();
-    return layer;
-  }, []);
-
-  // 🖌️ Sketch P5
   const sketch = useCallback(
     (p) => {
       let lastNumBodies = inputsRef.current.numBodies;
@@ -104,63 +96,195 @@ export default function Test() {
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
-        trailLayerRef.current = initTrailLayer(p, w, h);
+
+        trailLayerRef.current = p.createGraphics(w, h);
+        trailLayerRef.current.pixelDensity(1);
+        trailLayerRef.current.clear();
+
         bodiesRef.current = createBodies(
           p,
           inputsRef.current.numBodies,
           inputsRef.current
         );
-        p.background(getBackgroundColor());
+
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+        trailLayerRef.current.background(r, g, b);
+        p.background(r, g, b);
       };
 
       p.draw = () => {
-        const { gravity, numBodies, trailEnabled } = inputsRef.current;
+        const { gravity, numBodies, trailEnabled, restitution, frictionMu } =
+          inputsRef.current;
         const dt = computeDelta(p);
         if (dt <= 0) return;
 
-        // 🔄 Ricrea corpi se numBodies cambia
+        // Recreate bodies if count changed
         if (numBodies !== lastNumBodies) {
           bodiesRef.current = createBodies(p, numBodies, inputsRef.current);
           lastNumBodies = numBodies;
+
+          // Clear trail
+          const bg = getBackgroundColor();
+          const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+          trailLayerRef.current.background(r, g, b);
         }
 
+        // Render trail layer
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+
+        if (!trailEnabled) {
+          trailLayerRef.current.background(r, g, b);
+        } else {
+          trailLayerRef.current.fill(r, g, b, 60);
+          trailLayerRef.current.noStroke();
+          trailLayerRef.current.rect(
+            0,
+            0,
+            trailLayerRef.current.width,
+            trailLayerRef.current.height
+          );
+        }
+
+        // Main canvas
         p.clear();
         p.image(trailLayerRef.current, 0, 0);
 
+        // Update and draw all bodies
         bodiesRef.current.forEach((body, i) => {
-          body.params.gravity = gravity;
-          body.step(p, dt);
-
-          const { pos } = body.state;
-          const pixelX = toPixels(pos.x);
-          const pixelY = toPixels(pos.y);
-          const bodySizePx = toPixels(body.params.size);
-
-          drawBallWithTrail(p, trailLayerRef.current, {
-            bg: getBackgroundColor(),
-            trailEnabled,
-            trailAlpha: 60,
-            pixelX,
-            pixelY,
-            size: bodySizePx,
-            isHover: body.isHover(p),
-            ballColor: body.params.color,
+          // Sync parameters
+          body.updateParams({
+            restitution,
           });
+          body.trail.enabled = trailEnabled;
 
-          // Aggiorna sim info solo sul primo corpo
+          // Apply gravity
+          const gravityForce = ForceCalculator.gravity(
+            body.params.mass,
+            gravity
+          );
+          body.applyForce(p.createVector(gravityForce.x, gravityForce.y));
+
+          // Ground friction (simplified)
+          const bottomM = toMeters(p.height);
+          const onGround =
+            body.state.position.y + body.params.size / 2 >= bottomM - 0.01;
+          if (onGround && body.state.velocity.mag() > 0.01 && frictionMu > 0) {
+            const friction = ForceCalculator.friction(
+              body.params.mass * gravity,
+              frictionMu,
+              frictionMu * 0.8,
+              body.state.velocity.x,
+              0
+            );
+            body.applyForce(p.createVector(friction, 0));
+          }
+
+          // Physics step
+          body.step(dt);
+
+          // Constrain to bounds
+          const radius = body.params.size / 2;
+          body.constrainToBounds(
+            radius,
+            toMeters(p.width) - radius,
+            radius,
+            toMeters(p.height) - radius
+          );
+
+          // Draw
+          body.checkHover(p, body.toScreenPosition());
+          body.draw(p, { hoverEffect: true });
+
+          // Update sim info for first body
           if (i === 0) {
-            updateSimInfo(p, {}, { p }, SimInfoMapper);
+            updateSimInfo(
+              p,
+              {
+                pos: body.state.position,
+                vel: body.state.velocity,
+                mass: body.params.mass,
+                kineticEnergy: body.getKineticEnergy(),
+                potentialEnergy: body.getPotentialEnergy(
+                  gravity,
+                  toMeters(p.height)
+                ),
+              },
+              { p },
+              SimInfoMapper
+            );
           }
         });
+
+        // Simple collision detection between bodies
+        for (let i = 0; i < bodiesRef.current.length; i++) {
+          for (let j = i + 1; j < bodiesRef.current.length; j++) {
+            const body1 = bodiesRef.current[i];
+            const body2 = bodiesRef.current[j];
+
+            const dist = p.constructor.Vector.dist(
+              body1.state.position,
+              body2.state.position
+            );
+            const minDist = (body1.params.size + body2.params.size) / 2;
+
+            if (dist < minDist) {
+              // Collision detected - simple elastic response
+              const normal = p.constructor.Vector.sub(
+                body2.state.position,
+                body1.state.position
+              ).normalize();
+
+              // Separate bodies
+              const overlap = minDist - dist;
+              body1.state.position.sub(
+                p.constructor.Vector.mult(normal, overlap / 2)
+              );
+              body2.state.position.add(
+                p.constructor.Vector.mult(normal, overlap / 2)
+              );
+
+              // Calculate relative velocity
+              const relVel = p.constructor.Vector.sub(
+                body2.state.velocity,
+                body1.state.velocity
+              );
+              const velAlongNormal = relVel.dot(normal);
+
+              // Don't resolve if velocities are separating
+              if (velAlongNormal < 0) continue;
+
+              // Calculate restitution (average of both bodies)
+              const restitution =
+                (body1.params.restitution + body2.params.restitution) / 2;
+
+              // Calculate impulse
+              const impulse =
+                (-(1 + restitution) * velAlongNormal) /
+                (1 / body1.params.mass + 1 / body2.params.mass);
+
+              // Apply impulse
+              body1.applyImpulse(p.constructor.Vector.mult(normal, -impulse));
+              body2.applyImpulse(p.constructor.Vector.mult(normal, impulse));
+            }
+          }
+        }
       };
 
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
-        trailLayerRef.current = initTrailLayer(p, w, h);
+
+        trailLayerRef.current = p.createGraphics(w, h);
+        trailLayerRef.current.pixelDensity(1);
+
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+        trailLayerRef.current.background(r, g, b);
       };
     },
-    [inputsRef, updateSimInfo, createBodies, initTrailLayer]
+    [inputsRef, createBodies, updateSimInfo]
   );
 
   return (

@@ -21,7 +21,7 @@ import chapters from "../app/(core)/data/chapters.js";
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
@@ -249,7 +249,9 @@ export default function VectorsOperations() {
 
           case "-": {
             const Avec_sub = center.copy();
-            const Bvec_sub = p.constructor.Vector.sub(mouse, center);
+            const Bvec_sub = mouse.copy(); // B: origin -> mouse
+            const negAvec_sub = p.constructor.Vector.mult(Avec_sub, -1); // -A
+            const Rvec_sub = p.constructor.Vector.add(Bvec_sub, negAvec_sub); // R = B + (-A) = B - A
 
             p.strokeWeight(strokeWeight);
             p.stroke(strokeColor);
@@ -261,17 +263,40 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight + 1);
               p.line(center.x, center.y, mouse.x, mouse.y);
             } else {
-              const Bneg = p.constructor.Vector.mult(Bvec_sub, -1);
-              const tip = p.constructor.Vector.add(Avec_sub, Bneg);
+              p.stroke(strokeColor);
+              p.strokeWeight(Math.max(1, strokeWeight - 0.5));
               p.line(0, 0, Avec_sub.x, Avec_sub.y);
-              p.line(0, 0, Bneg.x, Bneg.y);
+
+              p.stroke(strokeColor);
+              p.strokeWeight(strokeWeight);
+              p.line(0, 0, Bvec_sub.x, Bvec_sub.y);
+
+              p.stroke(180, 180, 180, 180);
+              p.strokeWeight(strokeWeight);
               p.drawingContext.setLineDash([6, 6]);
-              p.line(Avec_sub.x, Avec_sub.y, tip.x, tip.y);
-              p.line(Bneg.x, Bneg.y, tip.x, tip.y);
+              p.line(0, 0, negAvec_sub.x, negAvec_sub.y);
+
+              p.line(Bvec_sub.x, Bvec_sub.y, Rvec_sub.x, Rvec_sub.y);
+              p.line(negAvec_sub.x, negAvec_sub.y, Rvec_sub.x, Rvec_sub.y);
               p.drawingContext.setLineDash([]);
+
+              p.noStroke();
+              p.fill(220);
+              p.textSize(14);
+              p.textAlign(p.CENTER, p.CENTER);
+              p.text("-A", negAvec_sub.x * 0.55, negAvec_sub.y * 0.55);
+
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, tip.x, tip.y);
+              p.line(0, 0, Rvec_sub.x, Rvec_sub.y);
+
+              p.stroke(adjustColor(strokeColor));
+              p.strokeWeight(Math.max(1, strokeWeight - 0.2));
+              p.line(Avec_sub.x, Avec_sub.y, Bvec_sub.x, Bvec_sub.y);
+
+              p.noStroke();
+              p.fill(255, 220, 120);
+              p.circle(Avec_sub.x, Avec_sub.y, 7);
             }
             break;
           }
@@ -407,21 +432,33 @@ export default function VectorsOperations() {
           }
 
           case "-": {
-            const R =
-              visualizeMode === "triangle"
-                ? p.constructor.Vector.sub(mouse, center)
-                : p.constructor.Vector.add(
-                    A,
-                    p.constructor.Vector.mult(B_from_center, -1)
-                  );
+            const R = p.constructor.Vector.sub(mouse, center);
+            const Rpar = p.constructor.Vector.sub(B_from_origin, A);
+            const negA = p.constructor.Vector.mult(A, -1);
+            const Bcheck = p.constructor.Vector.add(A, R);
+            const checkErr = p.constructor.Vector.sub(
+              Bcheck,
+              B_from_origin
+            ).mag();
+
             info["Subtraction resultant R = B - A"] = `(${R.x.toFixed(
               2
             )}, ${R.y.toFixed(2)}) px`;
+            info["Parallelogram diagonal B + (-A)"] = `(${Rpar.x.toFixed(
+              2
+            )}, ${Rpar.y.toFixed(2)}) px`;
             info["|R|"] = `${R.mag().toFixed(2)} px`;
+            info["Auxiliary -A"] = `(${negA.x.toFixed(2)}, ${negA.y.toFixed(
+              2
+            )}) px`;
+            info["Parallelogram check B = A + R"] = `(${Bcheck.x.toFixed(
+              2
+            )}, ${Bcheck.y.toFixed(2)}) px`;
+            info["Check error |(A + R) - B|"] = `${checkErr.toFixed(4)} px`;
             info["Formula"] =
               visualizeMode === "triangle"
                 ? "Triangle: R = B - A (center→mouse)"
-                : "Parallelogram: R = A + (-B)";
+                : "Parallelogram: use B and -A as adjacent sides, diagonal is R = B + (-A)";
             break;
           }
 

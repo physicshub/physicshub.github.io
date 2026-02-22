@@ -5,7 +5,6 @@ import { useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation.js";
 
 // --- Core Physics & Constants ---
-import { SCALE } from "../app/(core)/constants/Config.js";
 import {
   computeDelta,
   resetTime,
@@ -16,26 +15,23 @@ import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
-  FORCES,
 } from "../app/(core)/data/configs/BallAcceleration.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
+
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-import {
-  drawBallWithTrail,
-  drawForceVector,
-} from "../app/(core)/utils/drawUtils.js";
-
-// --- Centralized Body class ---
-import Body from "../app/(core)/physics/Body.ts";
 
 export default function BallAcceleration() {
   const location = usePathname();
@@ -46,11 +42,12 @@ export default function BallAcceleration() {
   );
   const [resetVersion, setResetVersion] = useState(0);
 
-  // Centralized sim info system
-  const { simData, updateSimInfo } = useSimInfo();
-
-  // Corpo fisico riusabile
+  // References
   const bodyRef = useRef(null);
+  const forceRendererRef = useRef(null);
+
+  // Sim info
+  const { simData, updateSimInfo } = useSimInfo();
 
   const handleInputChange = useCallback(
     (name, value) => {
@@ -63,97 +60,199 @@ export default function BallAcceleration() {
     (p) => {
       let trailLayer = null;
 
+      const setupSimulation = () => {
+        const w = p.width;
+        const h = p.height;
+
+        // Initialize body at center
+        const initialX = toMeters(w / 2);
+        const initialY = toMeters(h / 2);
+
+        if (!bodyRef.current) {
+          bodyRef.current = new PhysicsBody(p, {
+            size: inputsRef.current.size,
+            color: inputsRef.current.color,
+            shape: "circle",
+            position: p.createVector(initialX, initialY),
+          });
+
+          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
+          bodyRef.current.trail.maxLength = 200;
+          bodyRef.current.trail.color = inputsRef.current.color;
+        } else {
+          bodyRef.current.reset({
+            position: p.createVector(initialX, initialY),
+          });
+        }
+
+        // Initialize force renderer
+        if (!forceRendererRef.current) {
+          forceRendererRef.current = new ForceRenderer({
+            showLabels: true,
+            showMagnitude: true,
+            colors: {
+              applied: "#ef4444", // Red for acceleration
+              velocity: "#3b82f6", // Blue for velocity
+            },
+          });
+        }
+      };
+
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
+
         trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
         trailLayer.clear();
 
-        // Inizializza corpo con parametri
-        bodyRef.current = new Body(
-          p,
-          {
-            mass: 1,
-            size: inputsRef.current.size,
-            gravity: 0,
-            frictionMu: 0,
-            color: inputsRef.current.color,
-          },
-          p.createVector(w / 2 / SCALE, h / 2 / SCALE)
-        );
-
+        setupSimulation();
         p.background(getBackgroundColor());
       };
 
       p.draw = () => {
-        const { size, acc, maxspeed, color, trailEnabled } = inputsRef.current;
+        if (!bodyRef.current) return;
+
         const dt = computeDelta(p);
-        if (!bodyRef.current || dt <= 0) return;
+        if (dt <= 0) return;
 
-        const { pos, vel } = bodyRef.current.state;
+        const { size, acceleration, maxspeed, color, trailEnabled } =
+          inputsRef.current;
 
-        // Accelerazione verso il mouse
-        const target = p.createVector(p.mouseX / SCALE, p.mouseY / SCALE);
-        const offset = target.sub(pos);
-        let dir = p.createVector(0, 0);
-        if (offset.magSq() > 1e-8) {
-          dir = offset.copy().normalize().mult(acc);
-        }
-
-        // Step fisico con forza esterna
-        bodyRef.current.step(p, dt, dir.magSq() > 0 ? dir : undefined);
-
-        // Clamp velocità
-        if (bodyRef.current.state.vel.mag() > maxspeed) {
-          bodyRef.current.state.vel.setMag(maxspeed);
-        }
-
-        const pixelX = pos.x * SCALE;
-        const pixelY = pos.y * SCALE;
-        const isHover =
-          p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= (size * SCALE) / 2;
-
-        // --- Trail + palla ---
-        drawBallWithTrail(p, trailLayer, {
-          bg: getBackgroundColor(),
-          trailEnabled,
-          trailAlpha: 60,
-          pixelX,
-          pixelY,
-          size: size * SCALE,
-          isHover,
-          ballColor: color,
+        // Sync body parameters
+        bodyRef.current.updateParams({
+          size,
+          color,
         });
+        bodyRef.current.trail.enabled = trailEnabled;
+        bodyRef.current.trail.color = color;
 
+        // Calculate acceleration toward mouse
+        const target = p.createVector(toMeters(p.mouseX), toMeters(p.mouseY));
+        const offset = p.constructor.Vector.sub(
+          target,
+          bodyRef.current.state.position
+        );
+
+        let accelerationForce = p.createVector(0, 0);
+        if (offset.magSq() > 1e-8) {
+          const direction = offset.copy().normalize();
+          accelerationForce = direction.mult(
+            acceleration * bodyRef.current.params.mass
+          ); // F = ma
+        }
+
+        // Apply acceleration force
+        if (accelerationForce.magSq() > 0) {
+          bodyRef.current.applyForce(accelerationForce);
+        }
+
+        // Physics step
+        bodyRef.current.step(dt);
+
+        // Clamp velocity to max speed
+        if (bodyRef.current.state.velocity.mag() > maxspeed) {
+          bodyRef.current.state.velocity.setMag(maxspeed);
+        }
+
+        // Keep in bounds
+        bodyRef.current.constrainToBounds(
+          size / 2,
+          toMeters(p.width) - size / 2,
+          size / 2,
+          toMeters(p.height) - size / 2
+        );
+
+        // Render scene
+        renderScene(p, { accelerationForce });
+
+        // Update sim info
+        updateSimInfo(
+          p,
+          {
+            position: bodyRef.current.state.position,
+            velocity: bodyRef.current.state.velocity,
+            acceleration,
+            maxspeed,
+          },
+          {
+            canvasHeight: p.height,
+          },
+          SimInfoMapper
+        );
+      };
+
+      const renderScene = (p, { accelerationForce }) => {
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+
+        // Trail layer
+        if (!inputsRef.current.trailEnabled) {
+          trailLayer.background(r, g, b);
+        } else {
+          trailLayer.fill(r, g, b, 60);
+          trailLayer.noStroke();
+          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+        }
+
+        // Main canvas
         p.clear();
         p.image(trailLayer, 0, 0);
 
-        /*       // --- Vettori ---
-      drawForceVector(p, pixelX, pixelY, dir.copy().mult(200), "red"); // Accelerazione
-      drawForceVector(p, pixelX, pixelY, bodyRef.current.state.vel.copy().mult(20), "blue"); // Velocità */
+        // Draw body
+        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
+        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
 
-        // Force vectors (only visual)
-        const activeForces = FORCES.map((fDef) => {
-          const vec = fDef.computeFn({ dir, vel }, inputsRef.current, {});
-          return vec ? { vec, color: fDef.color } : null;
-        }).filter(Boolean);
+        // Draw vectors
+        const renderer = forceRendererRef.current;
 
-        for (const f of activeForces) {
-          drawForceVector(p, pixelX, pixelY, f.vec, f.color);
+        // Acceleration vector (red)
+        if (accelerationForce.mag() > 0.01) {
+          renderer.drawVector(
+            p,
+            screenPos.x,
+            screenPos.y,
+            accelerationForce.x / bodyRef.current.params.mass, // Convert back to acceleration
+            accelerationForce.y / bodyRef.current.params.mass,
+            "#ef4444",
+            "Acceleration"
+          );
         }
 
-        // Aggiornamento SimInfo
-        updateSimInfo(
-          p,
-          { pos, vel, acc, maxspeed },
-          { canvasHeight: p.height },
-          SimInfoMapper
-        );
+        // Velocity vector (blue)
+        if (bodyRef.current.state.velocity.mag() > 0.01) {
+          renderer.drawVector(
+            p,
+            screenPos.x,
+            screenPos.y,
+            bodyRef.current.state.velocity.x * 10, // Scale for visibility
+            bodyRef.current.state.velocity.y * 10,
+            "#3b82f6",
+            "Velocity",
+            { scale: 1 } // Override default scale
+          );
+        }
+
+        // Draw target indicator (mouse position)
+        p.push();
+        p.noFill();
+        p.stroke(255, 255, 255, 100);
+        p.strokeWeight(2);
+        p.circle(p.mouseX, p.mouseY, 20);
+        p.line(p.mouseX - 10, p.mouseY, p.mouseX + 10, p.mouseY);
+        p.line(p.mouseX, p.mouseY - 10, p.mouseX, p.mouseY + 10);
+        p.pop();
       };
 
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
+
+        trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
+        trailLayer.clear();
+
+        setupSimulation();
       };
     },
     [inputsRef, updateSimInfo]

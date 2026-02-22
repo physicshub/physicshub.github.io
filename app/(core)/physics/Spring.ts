@@ -1,111 +1,176 @@
-// app/(core)/physics/Spring.ts
-// Nature of Code
-// Daniel Shiffman
-// Chapter 3: Oscillation
-// Object to describe an anchor point that can connect to "Bob" objects via a spring
-// Thank you: http://www.myphysicslab.com/spring2d.html
-// Edited by: @mattqdev
+import p5 from "p5";
+import PhysicsBody from "./PhysicsBody.js";
+import {
+  physicsToScreen,
+  screenYToPhysicsY,
+  toMeters,
+} from "../constants/Utils.js";
 
-import type p5 from "p5";
-import Bob from "./Bob";
-import Body from "./Body";
-import { SCALE } from "../constants/Config.js";
+interface SpringConfig {
+  color?: string;
+  anchorColor?: string;
+  numCoils?: number;
+  coilWidth?: number;
+}
 
 export default class Spring {
+  public anchor: p5.Vector;
+  public restLength: number;
+  public k: number;
+
+  public readonly config: Required<SpringConfig>;
   private p: p5;
-  anchor: p5.Vector;
-  restLength: number;
-  k: number; // costante elastica N/m
-  color: string;
-  anchorColor: string;
 
-  constructor(p: p5, x: number, y: number, length: number) {
+  constructor(
+    p: p5,
+    anchor: p5.Vector,
+    restLengthMeters: number,
+    k: number = 50,
+    config: SpringConfig = {}
+  ) {
     this.p = p;
-    this.anchor = p.createVector(x, y);
-    this.restLength = length;
-    this.k = 100; // default
-    this.color = "#000000";
-    this.anchorColor = "#7f7f7f";
+    this.anchor = anchor.copy();
+    this.restLength = restLengthMeters;
+    this.k = k;
+
+    this.config = {
+      color: config.color ?? "#ec4899",
+      anchorColor: config.anchorColor ?? "#9ca3af",
+      numCoils: config.numCoils ?? 10,
+      coilWidth: config.coilWidth ?? 8,
+    };
   }
 
-  /** Collega un Bob (pixel) */
-  connect(bob: Bob): void;
-  /** Collega un Body (metri) */
-  connect(body: Body): void;
-  connect(obj: Bob | Body): void {
-    if (obj instanceof Bob) {
-      // Bob lavora in pixel
-      const force = obj.pos.copy().sub(this.anchor);
-      const currentLength = force.mag();
-      const stretch = currentLength - this.restLength;
-      force.setMag(-this.k * stretch);
-      obj.applyForce(force);
-    } else {
-      // Body lavora in metri, convertiamo anchor in metri
-      const anchorMeters = this.anchor.copy().div(SCALE);
-      const force = obj.state.pos.copy().sub(anchorMeters);
-      const currentLength = force.mag();
-      const stretch = currentLength - this.restLength;
-      force.setMag(-this.k * stretch);
-      obj.applyForce(force);
+  public connect(body: PhysicsBody): void {
+    const force = p5.Vector.sub(this.anchor, body.state.position);
+    const currentLength = force.mag();
+
+    if (currentLength < 0.0001) return;
+
+    const displacement = currentLength - this.restLength;
+    const springForceMag = -this.k * displacement;
+
+    force.normalize().mult(springForceMag);
+    body.applyForce(force);
+  }
+
+  /**
+   * Constrain physical distance between anchor and body
+   */
+  public constrainLength(body: PhysicsBody, min: number, max: number): void {
+    const direction = p5.Vector.sub(body.state.position, this.anchor);
+    const d = direction.mag();
+
+    if (d < min || d > max) {
+      const targetLen = this.p.constrain(d, min, max);
+      direction.setMag(targetLen);
+      body.state.position = p5.Vector.add(this.anchor, direction);
+      body.state.velocity.mult(0.5);
     }
   }
 
-  /** Limita la lunghezza della molla */
-  constrainLength(bob: Bob, minlen: number, maxlen: number): void;
-  constrainLength(body: Body, minlen: number, maxlen: number): void;
-  constrainLength(obj: Bob | Body, minlen: number, maxlen: number): void {
-    if (obj instanceof Bob) {
-      const direction = obj.pos.copy().sub(this.anchor);
-      const length = direction.mag();
+  /**
+   * Draw anchor (fixed point)
+   * Converts physics coords to screen coords
+   */
+  public show(): void {
+    const screenPos = physicsToScreen(this.anchor, this.p);
 
-      if (length < minlen) {
-        direction.setMag(minlen);
-        obj.pos = this.anchor.copy().add(direction);
-        obj.vel.mult(0);
-      } else if (length > maxlen) {
-        direction.setMag(maxlen);
-        obj.pos = this.anchor.copy().add(direction);
-        obj.vel.mult(0);
-      }
-    } else {
-      const anchorMeters = this.anchor.copy().div(SCALE);
-      const direction = obj.state.pos.copy().sub(anchorMeters);
-      const length = direction.mag();
+    this.p.push();
+    this.p.noStroke();
+    this.p.fill(this.config.anchorColor);
+    this.p.circle(screenPos.x, screenPos.y, 12);
 
-      if (length < minlen) {
-        direction.setMag(minlen);
-        obj.state.pos = anchorMeters.copy().add(direction);
-        obj.state.vel.mult(0);
-      } else if (length > maxlen) {
-        direction.setMag(maxlen);
-        obj.state.pos = anchorMeters.copy().add(direction);
-        obj.state.vel.mult(0);
-      }
-    }
+    this.p.stroke(this.config.anchorColor);
+    this.p.strokeWeight(3);
+    this.p.line(
+      screenPos.x - 15,
+      screenPos.y - 8,
+      screenPos.x + 15,
+      screenPos.y - 8
+    );
+    this.p.pop();
   }
 
-  /** Disegna il punto di ancoraggio */
-  show(): void {
-    this.p.fill(this.p.color(this.anchorColor));
-    this.p.circle(this.anchor.x, this.anchor.y, 10);
-  }
+  /**
+   * Draw spring connection
+   * Converts physics coords to screen coords
+   */
+  public showLine(body: PhysicsBody, stylized: boolean = true): void {
+    const anchorScreen = physicsToScreen(this.anchor, this.p);
+    const bodyScreen = physicsToScreen(body.state.position, this.p);
 
-  /** Disegna la linea tra il corpo e l’ancora */
-  showLine(bob: Bob): void;
-  showLine(body: Body): void;
-  showLine(obj: Bob | Body): void {
-    if (obj instanceof Bob) {
-      this.p.stroke(this.p.color(this.color));
-      this.p.line(obj.pos.x, obj.pos.y, this.anchor.x, this.anchor.y);
-    } else {
-      this.p.stroke(this.p.color(this.color));
-      this.p.line(
-        obj.state.pos.x * SCALE,
-        obj.state.pos.y * SCALE,
-        this.anchor.x,
-        this.anchor.y
+    this.p.push();
+    this.p.stroke(this.config.color);
+    this.p.strokeWeight(2);
+    this.p.noFill();
+
+    if (stylized) {
+      this.drawCoils(
+        anchorScreen.x,
+        anchorScreen.y,
+        bodyScreen.x,
+        bodyScreen.y
       );
+    } else {
+      this.p.line(anchorScreen.x, anchorScreen.y, bodyScreen.x, bodyScreen.y);
     }
+    this.p.pop();
+  }
+
+  private drawCoils(ax: number, ay: number, bx: number, by: number): void {
+    const { numCoils, coilWidth } = this.config;
+    const angle = Math.atan2(by - ay, bx - ax);
+    const perpAngle = angle + Math.PI / 2;
+
+    this.p.beginShape();
+    for (let i = 0; i <= numCoils; i++) {
+      const t = i / numCoils;
+      let x = this.p.lerp(ax, bx, t);
+      let y = this.p.lerp(ay, by, t);
+
+      if (i > 0 && i < numCoils) {
+        const offset = (i % 2 === 0 ? 1 : -1) * coilWidth;
+        x += Math.cos(perpAngle) * offset;
+        y += Math.sin(perpAngle) * offset;
+      }
+      this.p.vertex(x, y);
+    }
+    this.p.endShape();
+  }
+
+  public getElasticPotentialEnergy(body: PhysicsBody): number {
+    const displacement = this.getDisplacement(body);
+    return 0.5 * this.k * displacement * displacement;
+  }
+
+  /**
+   * Get spring force magnitude: F = -k * x
+   */
+  public getSpringForce(body: PhysicsBody): number {
+    const displacement = this.getDisplacement(body);
+    return -this.k * displacement;
+  }
+
+  /**
+   * Set anchor position
+   * @param x - X coordinate
+   * @param y - Y coordinate
+   * @param isScreen - If true, converts from screen coords to physics coords
+   */
+  public setAnchor(x: number, y: number, isScreen: boolean = false): void {
+    if (isScreen) {
+      this.anchor.set(toMeters(x), screenYToPhysicsY(y));
+    } else {
+      this.anchor.set(x, y);
+    }
+  }
+
+  public getLength(body: PhysicsBody): number {
+    return p5.Vector.dist(this.anchor, body.state.position);
+  }
+
+  public getDisplacement(body: PhysicsBody): number {
+    return this.getLength(body) - this.restLength;
   }
 }

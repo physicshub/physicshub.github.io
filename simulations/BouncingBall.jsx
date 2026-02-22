@@ -5,40 +5,36 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters, toPixels } from "../app/(core)/constants/Utils.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
   isPaused,
   setPause,
-  cleanupInstance,
 } from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
-  FORCES,
   SimInfoMapper,
 } from "../app/(core)/data/configs/BouncingBall.js";
 import chapters from "../app/(core)/data/chapters.js";
 
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
+import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
+import DragController from "../app/(core)/physics/DragController.js";
+
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
 // --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-import {
-  drawBallWithTrail,
-  drawForceVector,
-  getActiveForces,
-} from "../app/(core)/utils/drawUtils.js";
-
-// --- Centralized Body class ---
-import Body from "../app/(core)/physics/Body.ts";
 
 export default function BouncingBall() {
   const location = usePathname();
@@ -49,22 +45,16 @@ export default function BouncingBall() {
   );
   const [resetVersion, setResetVersion] = useState(0);
 
-  // Centralized sim info system
+  // References
+  const bodyRef = useRef(null);
+  const forceRendererRef = useRef(null);
+  const dragControllerRef = useRef(null);
   const maxHeightRef = useRef(0);
   const fallStartTimeRef = useRef(0);
+
+  // Sim info
   const { simData, updateSimInfo } = useSimInfo({
     customRefs: { maxHeightRef, fallStartTimeRef },
-  });
-
-  // Corpo fisico riusabile
-  const bodyRef = useRef(null);
-
-  // Ref per tracking ultimo update dei parametri
-  const lastParamsRef = useRef({
-    mass: INITIAL_INPUTS.mass,
-    size: INITIAL_INPUTS.size,
-    gravity: INITIAL_INPUTS.gravity,
-    restitution: INITIAL_INPUTS.restitution,
   });
 
   const handleInputChange = useCallback(
@@ -81,259 +71,244 @@ export default function BouncingBall() {
 
   const sketch = useCallback(
     (p) => {
-      const dragState = { active: false, lastX: 0, lastY: 0 };
-      let trailLayer;
-      let instanceId;
-      let isSetupComplete = false;
+      let trailLayer = null;
+
+      const setupSimulation = () => {
+        const w = p.width;
+        const h = p.height;
+
+        // Initialize body
+        const initialX = toMeters(w / 2);
+        const initialY = toMeters(h / 4);
+
+        if (!bodyRef.current) {
+          bodyRef.current = new PhysicsBody(p, {
+            mass: inputsRef.current.mass,
+            size: inputsRef.current.size,
+            color: inputsRef.current.ballColor,
+            shape: "circle",
+            restitution: inputsRef.current.restitution,
+            position: p.createVector(initialX, initialY),
+          });
+
+          // Enable trail
+          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
+          bodyRef.current.trail.maxLength = 200;
+          bodyRef.current.trail.color = inputsRef.current.ballColor;
+        } else {
+          bodyRef.current.reset({
+            position: p.createVector(initialX, initialY),
+          });
+        }
+
+        // Reset tracking
+        maxHeightRef.current = 0;
+        fallStartTimeRef.current = p.millis();
+
+        // Initialize force renderer
+        if (!forceRendererRef.current) {
+          forceRendererRef.current = new ForceRenderer({
+            scale: 10,
+            showLabels: true,
+            showMagnitude: true,
+          });
+        }
+
+        // Initialize drag controller
+        if (!dragControllerRef.current) {
+          dragControllerRef.current = new DragController({
+            snapBack: false,
+            smoothing: 0.3, // Smooth dragging
+          });
+        }
+      };
 
       p.setup = () => {
-        try {
-          const { clientWidth: w, clientHeight: h } = p._userNode;
-          p.createCanvas(w, h);
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.createCanvas(w, h);
 
-          // Imposta instanceId per Time.js
-          instanceId = p._userNode?.id || `sim-${Date.now()}`;
-          p._instanceId = instanceId;
+        trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
+        trailLayer.clear();
 
-          // Crea trail layer con densità consistente
-          trailLayer = p.createGraphics(w, h);
-          trailLayer.pixelDensity(p.pixelDensity());
+        setupSimulation();
 
-          // Inizializza corpo con tutti i parametri corretti
-          const currentInputs = inputsRef.current;
-          bodyRef.current = new Body(
-            p,
-            {
-              mass: currentInputs.mass,
-              size: currentInputs.size,
-              gravity: currentInputs.gravity,
-              restitution: currentInputs.restitution,
-              color: currentInputs.ballColor,
-              frictionMu: 0,
-            },
-            p.createVector(toMeters(w / 2), toMeters(h / 4))
-          );
-
-          // Reset refs per sim info
-          maxHeightRef.current = 0;
-          fallStartTimeRef.current = p.millis();
-
-          // Inizializza background del trail
-          const bg = getBackgroundColor();
-          const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-          trailLayer.background(r, g, b);
-
-          // Salva parametri iniziali
-          lastParamsRef.current = {
-            mass: currentInputs.mass,
-            size: currentInputs.size,
-            gravity: currentInputs.gravity,
-            restitution: currentInputs.restitution,
-          };
-
-          isSetupComplete = true;
-        } catch (error) {
-          console.error("[BouncingBall] Setup error:", error);
-        }
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+        trailLayer.background(r, g, b);
+        p.background(r, g, b);
       };
 
       p.draw = () => {
-        // ⚡ SAFETY: Aspetta che setup sia completo
-        if (!isSetupComplete || !bodyRef.current || !trailLayer) {
-          return;
+        if (!bodyRef.current || !trailLayer) return;
+
+        const dt = computeDelta(p);
+        if (dt <= 0) return;
+
+        const { size, gravity, trailEnabled, ballColor, mass, restitution } =
+          inputsRef.current;
+
+        // Sync body parameters
+        bodyRef.current.updateParams({
+          mass,
+          size,
+          color: ballColor,
+          restitution,
+        });
+        bodyRef.current.trail.enabled = trailEnabled;
+        bodyRef.current.trail.color = ballColor;
+
+        // Apply gravity
+        const gravityForce = ForceCalculator.gravity(mass, gravity);
+        bodyRef.current.applyForce(
+          p.createVector(gravityForce.x, gravityForce.y)
+        );
+
+        // Physics step (if not dragging)
+        if (!dragControllerRef.current.isDragging()) {
+          bodyRef.current.step(dt);
+
+          // Constrain to bounds
+          bodyRef.current.constrainToBounds(
+            size / 2,
+            toMeters(p.width) - size / 2,
+            size / 2,
+            toMeters(p.height) - size / 2
+          );
         }
 
-        try {
-          const currentInputs = inputsRef.current;
-          const { size, gravity, trailEnabled, ballColor, mass, restitution } =
-            currentInputs;
-
-          const dt = computeDelta(p);
-          if (dt <= 0) return;
-
-          // ⚡ FIX: Aggiorna TUTTI i parametri del body
-          const paramsChanged =
-            lastParamsRef.current.mass !== mass ||
-            lastParamsRef.current.size !== size ||
-            lastParamsRef.current.gravity !== gravity ||
-            lastParamsRef.current.restitution !== restitution;
-
-          if (paramsChanged) {
-            bodyRef.current.params.mass = mass;
-            bodyRef.current.params.size = size;
-            bodyRef.current.params.gravity = gravity;
-            bodyRef.current.params.restitution = restitution;
-            bodyRef.current.params.color = ballColor;
-
-            lastParamsRef.current = { mass, size, gravity, restitution };
-
-            // Reset maxHeight quando cambiano parametri significativi
-            if (
-              lastParamsRef.current.gravity !== gravity ||
-              lastParamsRef.current.restitution !== restitution
-            ) {
-              maxHeightRef.current = 0;
-            }
-          }
-
-          // Step fisico (solo se non in dragging)
-          if (!dragState.active) {
-            bodyRef.current.step(p, dt);
-          }
-
-          const { pos, vel } = bodyRef.current.state;
-          const pixelX = toPixels(pos.x);
-          const pixelY = toPixels(pos.y);
-          const radiusPx = toPixels(size / 2);
-          const isHover =
-            p.dist(pixelX, pixelY, p.mouseX, p.mouseY) <= radiusPx;
-
-          // ⚡ FIX: Trail management con safety check
-          if (trailEnabled && trailLayer) {
-            drawBallWithTrail(p, trailLayer, {
-              bg: getBackgroundColor(),
-              trailEnabled: true,
-              trailAlpha: 60,
-              pixelX,
-              pixelY,
-              size: toPixels(size),
-              isHover,
-              ballColor,
-            });
-
-            p.clear();
-            p.image(trailLayer, 0, 0);
-          } else {
-            // Trail disabilitato: background + palla
-            const bg = getBackgroundColor();
-            const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-            p.background(r, g, b);
-
-            p.fill(ballColor);
-            p.noStroke();
-            if (isHover) {
-              p.strokeWeight(3);
-              p.stroke(255, 255, 255, 150);
-            }
-            p.circle(pixelX, pixelY, toPixels(size));
-          }
-
-          // Vettori forze
-          const activeForces = getActiveForces(
-            FORCES,
-            { pos, vel, radius: size / 2, mass },
-            currentInputs,
-            { canvasHeightMeters: toMeters(p.height) }
-          );
-
-          for (const f of activeForces) {
-            if (f && f.vec) {
-              drawForceVector(p, pixelX, pixelY, f.vec, f.color);
-            }
-          }
-
-          // Aggiorna sim info
-          updateSimInfo(
-            p,
-            { pos, vel, mass },
-            { gravity, canvasHeight: p.height },
-            SimInfoMapper
-          );
-        } catch (error) {
-          console.error("[BouncingBall] Draw error:", error);
+        // Update max height
+        const bottomM = toMeters(p.height);
+        const currentHeight =
+          bottomM - bodyRef.current.state.position.y - size / 2;
+        if (currentHeight > maxHeightRef.current) {
+          maxHeightRef.current = currentHeight;
         }
+
+        // Render scene
+        renderScene(p, { gravityForce });
+
+        // Update sim info
+        updateSimInfo(
+          p,
+          {
+            pos: bodyRef.current.state.position,
+            vel: bodyRef.current.state.velocity,
+            mass,
+            kineticEnergy: bodyRef.current.getKineticEnergy(),
+            potentialEnergy: bodyRef.current.getPotentialEnergy(
+              gravity,
+              bottomM
+            ),
+          },
+          {
+            gravity,
+            canvasHeight: p.height,
+            maxHeight: maxHeightRef.current,
+          },
+          SimInfoMapper
+        );
       };
 
-      // ⚡ Dragging migliorato
+      const renderScene = (p) => {
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+
+        // Trail management
+        if (inputsRef.current.trailEnabled) {
+          // Fade trail
+          trailLayer.fill(r, g, b, 60);
+          trailLayer.noStroke();
+          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+
+          // Main canvas
+          p.clear();
+          p.image(trailLayer, 0, 0);
+        } else {
+          // No trail - solid background
+          trailLayer.background(r, g, b);
+          p.background(r, g, b);
+        }
+
+        // Draw body
+        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
+        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
+
+        // Draw forces
+        const renderer = forceRendererRef.current;
+        renderer.drawWeight(
+          p,
+          screenPos.x,
+          screenPos.y,
+          bodyRef.current.params.mass,
+          inputsRef.current.gravity
+        );
+      };
+
+      // Mouse events
       p.mousePressed = () => {
         if (!bodyRef.current) return;
 
-        const { pos } = bodyRef.current.state;
-        const d = p.dist(toPixels(pos.x), toPixels(pos.y), p.mouseX, p.mouseY);
-        if (d <= toPixels(inputsRef.current.size / 2)) {
-          dragState.active = true;
-          dragState.lastX = p.mouseX;
-          dragState.lastY = p.mouseY;
+        const pressed = dragControllerRef.current.handlePress(
+          p,
+          bodyRef.current
+        );
+
+        if (pressed) {
+          // Reset max height when starting drag
+          maxHeightRef.current = 0;
         }
       };
 
       p.mouseDragged = () => {
-        if (!dragState.active || !bodyRef.current) return;
-
-        const newX = toMeters(p.mouseX);
-        const newY = toMeters(p.mouseY);
-
-        bodyRef.current.state.pos.x = newX;
-        bodyRef.current.state.pos.y = newY;
-
-        // Calcola velocità dal movimento del mouse
-        const dx =
-          ((p.mouseX - dragState.lastX) / Math.max(p.deltaTime, 1)) * 16.67;
-        const dy =
-          ((p.mouseY - dragState.lastY) / Math.max(p.deltaTime, 1)) * 16.67;
-
-        bodyRef.current.state.vel.set(toMeters(dx), toMeters(dy));
-
-        dragState.lastX = p.mouseX;
-        dragState.lastY = p.mouseY;
-
-        maxHeightRef.current = 0;
+        dragControllerRef.current.handleDrag(p);
       };
 
       p.mouseReleased = () => {
-        dragState.active = false;
+        dragControllerRef.current.handleRelease(() => {
+          // Reset fall time when released
+          fallStartTimeRef.current = p.millis();
+        });
       };
 
-      // ⚡ Window resize
+      // Window resize
       p.windowResized = () => {
-        try {
-          const { clientWidth: w, clientHeight: h } = p._userNode;
-          p.resizeCanvas(w, h);
+        const { clientWidth: w, clientHeight: h } = p._userNode;
+        p.resizeCanvas(w, h);
 
-          if (trailLayer) {
-            trailLayer.remove();
-          }
-
-          trailLayer = p.createGraphics(w, h);
-          trailLayer.pixelDensity(p.pixelDensity());
-
-          const bg = getBackgroundColor();
-          const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-          trailLayer.background(r, g, b);
-
-          // Mantieni palla nei bounds
-          if (bodyRef.current) {
-            const { pos } = bodyRef.current.state;
-            const { size } = bodyRef.current.params;
-            const radius = size / 2;
-
-            const maxX = toMeters(w) - radius;
-            const maxY = toMeters(h) - radius;
-
-            if (pos.x > maxX) pos.x = maxX;
-            if (pos.y > maxY) pos.y = maxY;
-            if (pos.x < radius) pos.x = radius;
-            if (pos.y < radius) pos.y = radius;
-          }
-        } catch (error) {
-          console.error("[BouncingBall] Resize error:", error);
-        }
-      };
-
-      // ⚡ Cleanup
-      p.remove = () => {
-        cleanupInstance(p);
         if (trailLayer) {
           trailLayer.remove();
-          trailLayer = null;
         }
-        isSetupComplete = false;
+
+        trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
+
+        const bg = getBackgroundColor();
+        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
+        trailLayer.background(r, g, b);
+
+        // Keep ball in bounds
+        if (bodyRef.current) {
+          const { size } = bodyRef.current.params;
+          const radius = size / 2;
+          const maxX = toMeters(w) - radius;
+          const maxY = toMeters(h) - radius;
+
+          if (bodyRef.current.state.position.x > maxX)
+            bodyRef.current.state.position.x = maxX;
+          if (bodyRef.current.state.position.y > maxY)
+            bodyRef.current.state.position.y = maxY;
+          if (bodyRef.current.state.position.x < radius)
+            bodyRef.current.state.position.x = radius;
+          if (bodyRef.current.state.position.y < radius)
+            bodyRef.current.state.position.y = radius;
+        }
       };
     },
     [inputsRef, maxHeightRef, fallStartTimeRef, updateSimInfo]
   );
 
-  // Cleanup quando componente viene smontato
+  // Cleanup
   useEffect(() => {
     return () => {
       if (bodyRef.current) {
@@ -342,7 +317,7 @@ export default function BouncingBall() {
     };
   }, []);
 
-  // ⚡ Reset migliorato
+  // Reset handler
   const handleReset = useCallback(() => {
     const wasPaused = isPaused();
     resetTime();
@@ -354,7 +329,7 @@ export default function BouncingBall() {
       if (wasPaused) setPause(true);
       setResetVersion((v) => v + 1);
     }, 0);
-  }, [maxHeightRef, fallStartTimeRef]);
+  }, []);
 
   return (
     <SimulationLayout

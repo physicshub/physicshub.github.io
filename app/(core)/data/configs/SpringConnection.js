@@ -1,13 +1,12 @@
-import { toMeters } from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
-// Initial values (SI)
+// Initial values (SI units, Y-up physics coordinates)
 export const INITIAL_INPUTS = {
   bobMass: 0.2, // kg
-  bobDamping: 0.99, // damping factor (dimensionless)
-  gravity: EARTH_G_SI, // m/s²
+  bobDamping: 0.5, // damping coefficient (N·s/m)
+  gravity: EARTH_G_SI, // m/s² (magnitude, always positive)
   springK: 200, // N/m
-  springRestLength: 0, // m
+  springRestLength: 0.5, // m
   minLength: 0.2, // m
   maxLength: 3.5, // m
   bobColor: "#7f7f7f",
@@ -36,11 +35,11 @@ export const INPUT_FIELDS = [
   },
   {
     name: "bobDamping",
-    label: "ζ - Damping factor:",
+    label: "c - Damping coefficient (N·s/m):",
     type: "number",
     min: 0,
-    max: 1,
-    step: 0.01,
+    max: 10,
+    step: 0.1,
   },
   {
     name: "gravity",
@@ -60,9 +59,9 @@ export const INPUT_FIELDS = [
     name: "springRestLength",
     label: "L₀ - Rest length (m):",
     type: "number",
-    min: 0.1,
+    min: 0,
     max: 5,
-    step: 0.01,
+    step: 0.1,
   },
   {
     name: "minLength",
@@ -86,35 +85,56 @@ export const INPUT_FIELDS = [
 ];
 
 // Mapper for SimInfoPanel
-// Receives { pos, vel, mass, k, restLength } and { gravity }
+// ALL CALCULATIONS IN Y-UP PHYSICS COORDINATES
 export const SimInfoMapper = (state, context) => {
-  const { pos, vel, mass, k, restLength } = state;
-  const { gravity } = context;
+  const {
+    pos,
+    vel,
+    mass,
+    k,
+    restLength,
+    potentialEnergyElastic,
+    springForceMag,
+    currentLengthM,
+  } = state;
 
   if (!pos || !vel) return {};
 
-  // Conversion to meters
-  const posXM = toMeters(pos.x);
-  const posYM = toMeters(pos.y);
-  const speedMs = toMeters(vel.mag());
-  const currentLengthM = toMeters(pos.mag());
+  // Position in physics coordinates (Y-up)
+  const posXM = pos.x;
+  const posYM = pos.y;
+  const speedMs = vel.mag();
 
-  // ΔL in meters
-  const deltaL = currentLengthM - restLength;
-
-  // Energies
-  const elasticEnergy = 0.5 * k * Math.pow(deltaL, 2);
-  const potentialEnergy = mass * gravity * posYM;
+  // Kinetic energy
   const kineticEnergy = 0.5 * mass * Math.pow(speedMs, 2);
-  const totalEnergy = elasticEnergy + potentialEnergy + kineticEnergy;
+
+  // Gravitational potential energy
+  // In Y-up coords: higher Y = more PE
+  // Use anchor as reference point (PE = 0 at anchor height)
+  const potentialEnergyGrav = mass * context.gravity * posYM;
+
+  const equilibriumDisplacement = (mass * context.gravity) / k;
+  const equilibriumLength = restLength + equilibriumDisplacement;
+
+  // Total mechanical energy
+  const totalEnergy =
+    potentialEnergyElastic + kineticEnergy + potentialEnergyGrav;
+
+  // Displacement from rest length
+  const displacement = currentLengthM - restLength;
 
   return {
-    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
-    "v (velocity)": `${speedMs.toFixed(2)} m/s`,
-    "k (spring constant)": `${k.toFixed(2)} N/m`,
+    "Position (x, y)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    "Height (from ground)": `${posYM.toFixed(2)} m`,
+    "L (current length)": `${currentLengthM.toFixed(2)} m`,
     "L₀ (rest length)": `${restLength.toFixed(2)} m`,
-    "Eₑ (elastic energy)": `${elasticEnergy.toFixed(2)} J`,
-    "Eₚ (potential energy)": `${potentialEnergy.toFixed(2)} J`,
+    "Lₑ (equilibrium)": `${equilibriumLength.toFixed(2)} m`,
+    "Δx (displacement)": `${displacement.toFixed(2)} m`,
+    "v (velocity)": `${speedMs.toFixed(2)} m/s`,
+    "k (spring constant)": `${k.toFixed(0)} N/m`,
+    "Fₛ (spring force)": `${Math.abs(springForceMag).toFixed(2)} N`,
+    "Eₑ (elastic PE)": `${potentialEnergyElastic.toFixed(2)} J`,
+    "Eₚ (gravitational PE)": `${potentialEnergyGrav.toFixed(2)} J`,
     "Eₖ (kinetic energy)": `${kineticEnergy.toFixed(2)} J`,
     "Eₜₒₜ (total energy)": `${totalEnergy.toFixed(2)} J`,
   };

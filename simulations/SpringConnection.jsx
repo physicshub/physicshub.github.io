@@ -2,41 +2,39 @@
 "use client";
 
 import { useState, useCallback, useMemo, useRef } from "react";
-import { usePathname } from "next/navigation.js";
+import { usePathname } from "next/navigation";
 
-// --- Core Classes & Config ---
-import Bob from "../app/(core)/physics/Bob.ts";
-import Spring from "../app/(core)/physics/Spring.ts";
+// --- Core Physics & Constants ---
+import { resetTime, computeDelta } from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/SpringConnection.js";
 import chapters from "../app/(core)/data/chapters.js";
-
-// --- Core Utils ---
 import {
-  resetTime,
-  isPaused,
-  setPause,
-  computeDelta,
-} from "../app/(core)/constants/Time.js";
-import {
-  toPixels,
-  accelSI_to_pxSec,
-  springK_SI_to_px,
+  toMeters,
+  setCanvasHeight,
+  screenYToPhysicsY,
 } from "../app/(core)/constants/Utils.js";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+
+// --- Centralized Physics Components ---
+import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
+import Spring from "../app/(core)/physics/Spring";
+import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
+import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
+import DragController from "../app/(core)/physics/DragController.js";
 
 // --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs.jsx";
+import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
-// --- Hooks ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
+// --- Hooks & Utils ---
+import useSimulationState from "../app/(core)/hooks/useSimulationState";
+import useSimInfo from "../app/(core)/hooks/useSimInfo";
+import getBackgroundColor from "../app/(core)/utils/getBackgroundColor";
 
 export default function SpringConnection() {
   const location = usePathname();
@@ -47,12 +45,13 @@ export default function SpringConnection() {
   );
   const [resetVersion, setResetVersion] = useState(0);
 
-  // Centralized sim info
-  const { simData, updateSimInfo } = useSimInfo();
-
-  // Refs per oggetti fisici
+  // References
+  const bodyRef = useRef(null);
   const springRef = useRef(null);
-  const bobRef = useRef(null);
+  const forceRendererRef = useRef(null);
+  const dragControllerRef = useRef(null);
+
+  const { simData, updateSimInfo } = useSimInfo();
 
   const handleInputChange = useCallback(
     (name, value) => {
@@ -68,121 +67,239 @@ export default function SpringConnection() {
 
   const sketch = useCallback(
     (p) => {
+      const setupSimulation = () => {
+        const canvasWidth = p.width;
+        const canvasHeight = p.height;
+
+        // Update canvas height for coordinate conversions
+        setCanvasHeight(canvasHeight);
+
+        const {
+          springRestLength,
+          springK,
+          bobMass,
+          bobSize,
+          bobColor,
+          springColor,
+          anchorColor,
+        } = inputsRef.current;
+
+        // Physics coordinates (Y-up, origin at bottom-left)
+        const canvasWidthMeters = toMeters(canvasWidth);
+        const canvasHeightMeters = toMeters(canvasHeight);
+
+        // Anchor position: centered horizontally, near top of canvas
+        // In physics coords: high Y value = near top
+        const anchorPhysics = p.createVector(
+          canvasWidthMeters / 2,
+          canvasHeightMeters - 0.2 // 1 meter from top
+        );
+
+        // Initial body position: below anchor by rest length + extra
+        const initialPhysics = p.createVector(
+          anchorPhysics.x,
+          anchorPhysics.y - springRestLength - 1.0 // Below anchor
+        );
+
+        // Initialize body
+        bodyRef.current = new PhysicsBody(p, {
+          mass: bobMass,
+          size: bobSize,
+          color: bobColor,
+          shape: "circle",
+        });
+        bodyRef.current.state.position.set(initialPhysics);
+
+        // Initialize spring
+        springRef.current = new Spring(
+          p,
+          anchorPhysics,
+          springRestLength,
+          springK,
+          {
+            color: springColor,
+            anchorColor: anchorColor,
+          }
+        );
+
+        forceRendererRef.current = new ForceRenderer({
+          scale: 5,
+          showLabels: true,
+          colors: { spring: springColor, weight: "#ef4444" },
+        });
+
+        dragControllerRef.current = new DragController({ snapBack: false });
+      };
+
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.createCanvas(w, h);
-
-        // Anchor al centro in alto
-        springRef.current = new Spring(
-          p,
-          w / 2,
-          50,
-          toPixels(inputsRef.current.springRestLength)
-        );
-        springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
-
-        // Bob inizializzato più in basso
-        bobRef.current = new Bob(p, w / 2, 250);
-        bobRef.current.mass = inputsRef.current.bobMass;
-        bobRef.current.damping = inputsRef.current.bobDamping;
-        // size in metri → convertito in pixel
-        bobRef.current.size = toPixels(inputsRef.current.bobSize);
-        bobRef.current.color = inputsRef.current.bobColor;
+        setupSimulation();
       };
 
       p.draw = () => {
+        if (!bodyRef.current || !springRef.current) return;
+
+        const dt = computeDelta(p);
+        if (dt <= 0) return;
+
         const {
           gravity,
           springK,
           springRestLength,
           bobMass,
           bobDamping,
-          bobSize,
-          bobColor,
-          springColor,
-          anchorColor,
           minLength,
           maxLength,
         } = inputsRef.current;
 
-        const spring = springRef.current;
-        const bob = bobRef.current;
-        if (!spring || !bob) return;
+        // Update canvas height for coordinate conversions
+        setCanvasHeight(p.height);
 
-        // Background
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [0, 0, 0];
-        p.background(r, g, b);
+        // 1. Sync parameters
+        springRef.current.k = springK;
+        springRef.current.restLength = springRestLength;
+        bodyRef.current.updateParams({
+          mass: bobMass,
+          size: inputsRef.current.bobSize,
+          color: inputsRef.current.bobColor,
+        });
 
-        // Forza di gravità (in pixel/s²)
-        const GravityForce = p.createVector(
-          0,
-          accelSI_to_pxSec(gravity) * bob.mass
-        );
-        bob.applyForce(GravityForce);
+        // 2. Calculate forces (if not dragging)
+        if (!dragControllerRef.current.isDragging()) {
+          // Gravity force (Y-up: negative Y is downward)
+          const gravityForce = ForceCalculator.gravity(bobMass, gravity);
+          bodyRef.current.applyForce(
+            p.createVector(gravityForce.x, gravityForce.y)
+          );
 
-        // Aggiorna proprietà
-        spring.k = springK_SI_to_px(springK);
-        spring.restLength = toPixels(springRestLength);
-        bob.mass = bobMass;
-        bob.damping = bobDamping;
-        bob.size = toPixels(bobSize);
-        bob.color = bobColor;
-        spring.color = springColor;
-        spring.anchorColor = anchorColor;
+          // Spring force
+          springRef.current.connect(bodyRef.current);
 
-        // Update dinamica
-        bob.update(computeDelta(p));
-        bob.handleDrag(p.mouseX, p.mouseY);
+          // Damping force: F = -c * v
+          const v = bodyRef.current.state.velocity;
+          if (v.mag() > 0.001) {
+            const dampingForce = v.copy().mult(-bobDamping);
+            bodyRef.current.applyForce(dampingForce);
+          }
 
-        spring.connect(bob);
-        spring.constrainLength(bob, toPixels(minLength), toPixels(maxLength));
+          // Physics integration
+          bodyRef.current.step(dt);
 
-        // Disegno
-        spring.showLine(bob);
-        bob.show();
-        spring.show();
+          // Length constraints
+          springRef.current.constrainLength(
+            bodyRef.current,
+            minLength,
+            maxLength
+          );
+        }
 
-        // Update SimInfo (in metri)
+        // 3. Rendering
+        renderScene(p);
+
+        // 4. Update info panel
+        const canvasHeightMeters = toMeters(p.height);
         updateSimInfo(
           p,
           {
-            pos: bob.pos, // in pixel, convertito nel mapper
-            vel: bob.vel,
-            mass: bob.mass,
-            k: spring.k,
-            restLength: springRestLength, // già in metri
+            pos: bodyRef.current.state.position,
+            vel: bodyRef.current.state.velocity,
+            mass: bobMass,
+            k: springK,
+            restLength: springRestLength,
+            potentialEnergyElastic: springRef.current.getElasticPotentialEnergy(
+              bodyRef.current
+            ),
+            springForceMag: springRef.current.getSpringForce(bodyRef.current),
+            currentLengthM: springRef.current.getLength(bodyRef.current),
+            anchorHeight: springRef.current.anchor.y,
           },
-          { gravity, canvasHeight: p.height },
+          {
+            gravity,
+            canvasHeight: p.height,
+            canvasHeightMeters,
+          },
           SimInfoMapper
         );
       };
 
-      p.mousePressed = () => {
-        bobRef.current?.handleClick(p.mouseX, p.mouseY);
+      const renderScene = (p) => {
+        p.background(getBackgroundColor());
+
+        // Draw spring and anchor
+        springRef.current.showLine(bodyRef.current, true);
+        springRef.current.show();
+
+        // Draw body
+        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
+        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
+
+        // Draw force vectors
+        const renderer = forceRendererRef.current;
+
+        // Gravity vector (points down in Y-up = negative Y)
+        const gravityForce = ForceCalculator.gravity(
+          bodyRef.current.params.mass,
+          inputsRef.current.gravity
+        );
+        renderer.drawVector(
+          p,
+          screenPos.x,
+          screenPos.y,
+          gravityForce.x,
+          gravityForce.y,
+          "#ef4444",
+          "Weight"
+        );
+
+        // Spring force vector
+        const Vector = p.constructor.Vector;
+        const springForceDir = Vector.sub(
+          springRef.current.anchor,
+          bodyRef.current.state.position
+        );
+        const springForceMag = springRef.current.getSpringForce(
+          bodyRef.current
+        );
+        springForceDir.normalize().mult(springForceMag);
+
+        renderer.drawVector(
+          p,
+          screenPos.x,
+          screenPos.y,
+          springForceDir.x,
+          springForceDir.y,
+          inputsRef.current.springColor,
+          "Spring"
+        );
       };
 
-      p.mouseReleased = () => {
-        bobRef.current?.stopDragging();
+      p.mousePressed = () => {
+        // Convert mouse position to physics coordinates for drag detection
+        const mousePhysics = p.createVector(
+          toMeters(p.mouseX),
+          screenYToPhysicsY(p.mouseY)
+        );
+        dragControllerRef.current.handlePress(p, bodyRef.current, mousePhysics);
       };
+
+      p.mouseDragged = () => {
+        if (dragControllerRef.current.isDragging()) {
+          const mousePhysics = p.createVector(
+            toMeters(p.mouseX),
+            screenYToPhysicsY(p.mouseY)
+          );
+          bodyRef.current.state.position.set(mousePhysics);
+          bodyRef.current.state.velocity.set(0, 0);
+        }
+      };
+
+      p.mouseReleased = () => dragControllerRef.current.handleRelease();
 
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
-
-        springRef.current = new Spring(
-          p,
-          w / 2,
-          50,
-          toPixels(inputsRef.current.springRestLength)
-        );
-        springRef.current.k = springK_SI_to_px(inputsRef.current.springK);
-
-        bobRef.current = new Bob(p, w / 2, 250);
-        bobRef.current.mass = inputsRef.current.bobMass;
-        bobRef.current.damping = inputsRef.current.bobDamping;
-        bobRef.current.size = toPixels(inputsRef.current.bobSize);
-        bobRef.current.color = inputsRef.current.bobColor;
+        setupSimulation();
       };
     },
     [inputsRef, updateSimInfo]
@@ -192,15 +309,13 @@ export default function SpringConnection() {
     <SimulationLayout
       resetVersion={resetVersion}
       onReset={() => {
-        const wasPaused = isPaused();
         resetTime();
-        if (wasPaused) setPause(true);
         setResetVersion((v) => v + 1);
       }}
       inputs={inputs}
       simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
+      onLoad={(loaded) => {
+        setInputs(loaded);
         setResetVersion((v) => v + 1);
       }}
       theory={theory}
