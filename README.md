@@ -110,7 +110,7 @@ Contribution list sorted by order of contribution and based on what they did:
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Talos0248"><img src="https://avatars.githubusercontent.com/u/68732421?v=4?s=100" width="100px;" alt="Talos0248"/><br /><sub><b>Talos0248</b></sub></a><br /><a href="#bug-Talos0248" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Stratos-Kass"><img src="https://avatars.githubusercontent.com/u/183495058?v=4?s=100" width="100px;" alt="Efstratios Kassaras"/><br /><sub><b>Efstratios Kassaras</b></sub></a><br /><a href="#design-Stratos-Kass" title="Design">🎨</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pabrams"><img src="https://avatars.githubusercontent.com/u/1376688?v=4?s=100" width="100px;" alt="Paul Abrams"/><br /><sub><b>Paul Abrams</b></sub></a><br /><a href="#code-pabrams" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Adibayuluthfiansyah"><img src="https://avatars.githubusercontent.com/u/106433930?v=4?s=100" width="100px;" alt="Adibayu Luthfiansyah Setyawan"/><br /><sub><b>Adibayu Luthfiansyah Setyawan</b></sub></a><br /><a href="#code-Adibayuluthfiansyah" title="Code">💻</a> <a href="#bug-Adibayuluthfiansyah" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
