@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCopyright } from "@fortawesome/free-solid-svg-icons";
+import { faCopyright, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
 import Image from "next/image";
 
@@ -60,15 +60,15 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
             onChange={handleSizeChange}
             className="size-select"
           >
-            <option value="small">Piccola</option>
-            <option value="medium">Media</option>
-            <option value="large">Grande</option>
-            <option value="full">Intera</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="full">Full</option>
           </select>
-          <label className="upload-button">
-            <FontAwesomeIcon icon={faPlus} />
+          <button className="upload-btn add-block-btn">
+            <FontAwesomeIcon icon={faUpload} />
             <input type="file" accept="image/*" style={{ display: "none" }} />
-          </label>
+          </button>
         </div>
       )}
 
