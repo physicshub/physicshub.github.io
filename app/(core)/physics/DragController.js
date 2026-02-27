@@ -25,19 +25,18 @@ export class DragController {
    * Check if mouse press hits any body
    */
   handlePress(p, bodies) {
-    //handlePress(p, bodies, customHitTest = null) {
     if (!Array.isArray(bodies)) {
       bodies = [bodies];
     }
 
     for (const body of bodies) {
+      if (!body) continue;
+
       let isHit = false;
 
-      /*       if (customHitTest) {
-        isHit = customHitTest(body, p.mouseX, p.mouseY);
-      } else if (body.checkHover) {
+      if (body.checkHover) {
         isHit = body.checkHover(p, body.toScreenPosition());
-      } */
+      }
 
       if (isHit) {
         this.startDrag(body, p.mouseX, p.mouseY);
@@ -86,7 +85,7 @@ export class DragController {
 
     const body = this.state.targetBody;
 
-    // 1. Calcola la posizione target in PIXEL
+    // 1. Calculate target position in PIXELS
     const targetXPixel = p.mouseX + this.state.offset.x;
     const targetYPixel = p.mouseY + this.state.offset.y;
 
@@ -94,7 +93,7 @@ export class DragController {
       customUpdate(body, p.mouseX, p.mouseY);
     } else {
       if (body.state.position) {
-        // 2. CONVERTI in METRI prima di applicare alla fisica
+        // 2. Convert to METERS before applying to physics
         const targetXMeters = toMeters(targetXPixel);
         const targetYMeters = screenYToPhysicsY(targetYPixel);
 

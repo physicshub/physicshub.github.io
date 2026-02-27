@@ -115,30 +115,15 @@ const SimInfoMapper = (bodyState) => {
   const angle =
     (Math.atan2(bodyState.position.x, -bodyState.position.y) * 180) / Math.PI;
 
-  return [
-    { label: "Angle", value: angle, unit: "°", precision: 1 },
-    {
-      label: "Angular Velocity",
-      value: bodyState.angularVel || 0,
-      unit: "rad/s",
-      precision: 2,
-    },
-    { label: "Height", value: bodyState.position.y, unit: "m", precision: 2 },
-    {
-      label: "Speed",
-      value: bodyState.velocity ? bodyState.velocity.mag() : 0,
-      unit: "m/s",
-      precision: 2,
-    },
-    { label: "KE", value: bodyState.kineticEnergy, unit: "J", precision: 2 },
-    { label: "PE", value: bodyState.potentialEnergy, unit: "J", precision: 2 },
-    {
-      label: "Total E",
-      value: bodyState.kineticEnergy + bodyState.potentialEnergy,
-      unit: "J",
-      precision: 2,
-    },
-  ];
+  return {
+    Angle: `${angle.toFixed(1)}°`,
+    "Angular Velocity": `${bodyState.angularVel.toFixed(2)} rad/s`,
+    Height: `${(-bodyState.position.y).toFixed(2)} m`,
+    Speed: `${bodyState.velocity.mag().toFixed(2)} m/s`,
+    KE: `${bodyState.kineticEnergy.toFixed(2)} J`,
+    PE: `${bodyState.potentialEnergy.toFixed(2)} J`,
+    "Total E": `${(bodyState.kineticEnergy + bodyState.potentialEnergy).toFixed(2)} J`,
+  };
 };
 
 /**

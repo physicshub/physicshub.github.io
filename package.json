@@ -16,6 +16,7 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "pre-commit": "node scripts/check-package-lock.js",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -81,6 +82,9 @@
     "**/*.{json,css,md}": [
       "prettier --write"
     ]
+  },
+  "engines": {
+    "node": "24.8.0"
   },
   "author": "MattQ",
   "license": "MIT"
