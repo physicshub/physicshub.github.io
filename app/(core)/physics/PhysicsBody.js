@@ -4,12 +4,17 @@
  * Converts to screen coordinates (Y-down) only during rendering
  */
 
-import { physicsToScreen, toPixels } from "../constants/Utils.js";
+import {
+  physicsToScreen,
+  toPixels,
+  setCanvasHeight,
+} from "../constants/Utils.js";
 
 export class PhysicsBody {
   constructor(p, params = {}) {
     this.p = p;
 
+    setCanvasHeight(p.height); // Set canvas height again
     // Physical properties
     this.params = {
       mass: params.mass || 1,
