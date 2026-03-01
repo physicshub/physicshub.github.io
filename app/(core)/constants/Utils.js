@@ -135,6 +135,29 @@ export function collideBoundary(pos, vel, bounds, radius, restitution, acc) {
     }
   }
 
+  // ⚡ HARD CONTAINMENT: Ensure ball stays within bounds even at extreme velocities
+  // This prevents "tunneling" when the ball moves too fast for collision detection
+  const minX = radius;
+  const maxX = bounds.w - radius;
+  const minY = radius;
+  const maxY = bounds.h - radius;
+
+  if (newPos.x < minX) {
+    newPos.x = minX;
+    if (newVel.x < 0) newVel.x = Math.abs(newVel.x) * restitution;
+  } else if (newPos.x > maxX) {
+    newPos.x = maxX;
+    if (newVel.x > 0) newVel.x = -Math.abs(newVel.x) * restitution;
+  }
+
+  if (newPos.y < minY) {
+    newPos.y = minY;
+    if (newVel.y < 0) newVel.y = Math.abs(newVel.y) * restitution;
+  } else if (newPos.y > maxY) {
+    newPos.y = maxY;
+    if (newVel.y > 0) newVel.y = -Math.abs(newVel.y) * restitution;
+  }
+
   return { pos: newPos, vel: newVel };
 }
 
