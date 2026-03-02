@@ -75,10 +75,6 @@ async function generateSitemap() {
       console.log(`✅ Robots.txt copied to ./out!`);
     }
   } catch (e) {
-<<<<<<< Updated upstream
-=======
-    /* ignore */
->>>>>>> Stashed changes
     console.error("Error writing robots.txt to out directory:", e);
   }
 
