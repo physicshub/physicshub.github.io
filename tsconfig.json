@@ -32,7 +32,8 @@
     "**/*.mts",
     "app/hooks/useSimInfo.ts",
     "app/components/LandingPart.jsx",
-    "app/(pages)/blog/[slug]/page.jsx"
+    "app/(pages)/blog/[slug]/page.jsx",
+    "next.config.mjs"
   ],
   "exclude": ["node_modules"]
 }
