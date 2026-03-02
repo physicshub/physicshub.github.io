@@ -385,7 +385,7 @@
 
 /* Toolbar Editor */
 .image-editor-toolbar {
-  background: #f4f4f4;
+  background: var(--bg-light);
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -400,13 +400,11 @@
 }
 .size-select {
   padding: 4px;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
 }
-.upload-button {
-  cursor: pointer;
-  padding: 4px 10px;
-  background: #ddd;
-  border-radius: 4px;
+
+.upload-btn::after {
+  display: none !important;
 }
 
 /* Image Wrapper & Img */
