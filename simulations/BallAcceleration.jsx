@@ -16,7 +16,7 @@ import {
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/BallAcceleration.js";
-import { toMeters } from "../app/(core)/constants/Utils.js";
+import { toMeters, screenYToPhysicsY } from "../app/(core)/constants/Utils.js";
 
 // --- Centralized Physics Components ---
 import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
@@ -128,7 +128,10 @@ export default function BallAcceleration() {
         bodyRef.current.trail.color = color;
 
         // Calculate acceleration toward mouse
-        const target = p.createVector(toMeters(p.mouseX), toMeters(p.mouseY));
+        const target = p.createVector(
+          toMeters(p.mouseX),
+          screenYToPhysicsY(p.mouseY)
+        );
         const offset = p.constructor.Vector.sub(
           target,
           bodyRef.current.state.position
@@ -212,8 +215,8 @@ export default function BallAcceleration() {
             p,
             screenPos.x,
             screenPos.y,
-            accelerationForce.x / bodyRef.current.params.mass, // Convert back to acceleration
-            accelerationForce.y / bodyRef.current.params.mass,
+            accelerationForce.x / bodyRef.current.params.mass,
+            -(accelerationForce.y / bodyRef.current.params.mass),
             "#ef4444",
             "Acceleration"
           );
@@ -225,11 +228,11 @@ export default function BallAcceleration() {
             p,
             screenPos.x,
             screenPos.y,
-            bodyRef.current.state.velocity.x * 10, // Scale for visibility
-            bodyRef.current.state.velocity.y * 10,
+            bodyRef.current.state.velocity.x * 10,
+            -(bodyRef.current.state.velocity.y * 10),
             "#3b82f6",
             "Velocity",
-            { scale: 1 } // Override default scale
+            { scale: 1 }
           );
         }
 
