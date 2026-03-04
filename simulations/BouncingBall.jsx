@@ -5,7 +5,11 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters } from "../app/(core)/constants/Utils.js";
+import {
+  toMeters,
+  physicsYToScreenY,
+  screenYToPhysicsY,
+} from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
@@ -79,7 +83,7 @@ export default function BouncingBall() {
 
         // Initialize body
         const initialX = toMeters(w / 2);
-        const initialY = toMeters(h / 4);
+        const initialY = screenYToPhysicsY(h);
 
         if (!bodyRef.current) {
           bodyRef.current = new PhysicsBody(p, {
