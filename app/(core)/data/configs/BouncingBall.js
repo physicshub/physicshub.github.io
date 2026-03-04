@@ -49,7 +49,6 @@ export const FORCES = [
   {
     key: "gravity",
     color: "blue",
-    // computeFn riceve state, inputs, context
     computeFn: ({ mass }, inputs) => {
       return { x: 0, y: mass * inputs.gravity };
     },
@@ -76,41 +75,49 @@ export const FORCES = [
   },
 ];
 
-// Mapper specific for bouncing ball
-// Computes velocity, acceleration, position, per-bounce maxHeight and fallTime
+/**
+ * SimInfoMapper for the bouncing ball simulation.
+ *
+ * IMPORTANT coordinate notes:
+ * - `pos` is already in meters (physics Y-up coords) — do NOT call toPixels/toMeters on it.
+ * - Height above floor = pos.y - radius, because the floor constraint places
+ *   the ball center at y = radius when resting.
+ * - For display, we invert Y so height increases upward visually.
+ */
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel, mass } = state;
   const { gravity, canvasHeight } = context;
   const { maxHeightRef } = refs;
 
-  const pixelX = toPixels(pos.x);
-  const pixelY = toPixels(pos.y);
+  // FIX: pos is already in meters — no unit conversion needed.
+  // X is straightforward. For displayed Y, convert from physics Y-up to
+  // a "height from floor" value the user expects (0 = resting on floor).
+  const radius = state.size ? state.size / 2 : 0;
+  const posXM = pos.x;
+  // Height of ball center above its resting floor position
+  const heightAboveFloor = pos.y - radius;
 
   const speedMs = vel.mag();
-  const posXM = toMeters(pixelX);
-  const posYM = invertYAxis(canvasHeight, toMeters(pixelY));
-
-  // Current height in meters (from ground)
-  const currentHeightM = toMeters(canvasHeight - pixelY);
 
   // Update maxHeight for this bounce
-  if (currentHeightM > maxHeightRef.current) {
-    maxHeightRef.current = currentHeightM;
+  if (heightAboveFloor > maxHeightRef.current) {
+    maxHeightRef.current = heightAboveFloor;
   }
 
-  // Compute fallTime from maxHeight of this bounce (ideal free-fall time)
+  // Ideal free-fall time from max height
   let fallTime = 0;
   if (gravity > 0) {
     fallTime = Math.sqrt((2 * maxHeightRef.current) / gravity);
   }
 
-  // Work done by gravity: W = m * g * h
-  const work = mass * gravity * currentHeightM;
+  // Work done by gravity from max height down to current height
+  // W = m * g * Δh  (positive when falling)
+  const work = mass * gravity * (maxHeightRef.current - heightAboveFloor);
 
   return {
     "v (velocity)": `${speedMs.toFixed(2)} m/s`,
     "a (acceleration)": `${Number(gravity).toFixed(2)} m/s²`,
-    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${heightAboveFloor.toFixed(2)}) m`,
     "t (fall time)": `${fallTime.toFixed(2)} s`,
     "hₘₐₓ (height max)": `${maxHeightRef.current.toFixed(2)} m`,
     "W (work)": `${work.toFixed(2)} J`,
