@@ -11,12 +11,12 @@
 
 The PhysicsHub codebase is a well-structured interactive physics simulation platform. The core architecture (centralized `PhysicsBody`, `ForceCalculator`, `ForceRenderer`, `DragController`) is thoughtfully designed. However, the audit identified **23 confirmed bugs and quality issues** across 4 severity tiers.
 
-| Severity | Count | Key Area |
-|---|---|---|
-| 🔴 Critical | 3 | Physics correctness, broken physics engine |
-| 🟠 High | 5 | Integration bugs, null crashes, broken reset |
-| 🟡 Medium | 9 | Code quality, dead code, unit errors |
-| 🟢 Low | 6 | Performance, UX, naming |
+| Severity    | Count | Key Area                                     |
+| ----------- | ----- | -------------------------------------------- |
+| 🔴 Critical | 3     | Physics correctness, broken physics engine   |
+| 🟠 High     | 5     | Integration bugs, null crashes, broken reset |
+| 🟡 Medium   | 9     | Code quality, dead code, unit errors         |
+| 🟢 Low      | 6     | Performance, UX, naming                      |
 
 ---
 
@@ -50,11 +50,13 @@ All physics runs in **Y-UP** (standard physics: y increases upward). Rendering c
 The file contains the full source of `Spring.ts` (TypeScript `interface` declarations, class definition, methods) appended directly after `export default PhysicsBody`. This creates a `.js` file with TypeScript syntax, which will crash in any environment that does not transpile `.js` files as TypeScript. Two separate modules should not share one file.
 
 **Fix:**
+
 ```js
 // PhysicsBody.js — everything after this line must be removed:
 export default PhysicsBody;
 // ← file ends here. Spring.ts content below must be deleted.
 ```
+
 Ensure `Spring.ts` is the sole location for the Spring class.
 
 ---
@@ -68,13 +70,24 @@ Ensure `Spring.ts` is the sole location for the Spring class.
 
 ```js
 // SpringConnection.jsx — BUGGY direct call:
-renderer.drawVector(p, screenPos.x, screenPos.y,
-  gravityForce.x, gravityForce.y,  // gravityForce.y = -mass*g → draws UP on screen
-  "#ef4444", "Weight");
+renderer.drawVector(
+  p,
+  screenPos.x,
+  screenPos.y,
+  gravityForce.x,
+  gravityForce.y, // gravityForce.y = -mass*g → draws UP on screen
+  "#ef4444",
+  "Weight"
+);
 
 // FIX — use the dedicated helper which handles direction correctly:
-renderer.drawWeight(p, screenPos.x, screenPos.y,
-  bodyRef.current.params.mass, inputsRef.current.gravity);
+renderer.drawWeight(
+  p,
+  screenPos.x,
+  screenPos.y,
+  bodyRef.current.params.mass,
+  inputsRef.current.gravity
+);
 ```
 
 ---
@@ -87,7 +100,7 @@ renderer.drawWeight(p, screenPos.x, screenPos.y,
 ```js
 const scale = 0; //getTimeScale();  ← DEBUG LEFTOVER, never removed
 if (!isPaused()) {
-  accumulator += dt * Math.max(0, scale);  // accumulator always stays 0
+  accumulator += dt * Math.max(0, scale); // accumulator always stays 0
 }
 // worldRef.current.step() is never called → Planck.js body never moves
 ```
@@ -95,6 +108,7 @@ if (!isPaused()) {
 The `getTimeScale()` call was commented out. The physics body is created and displayed but completely frozen regardless of user interaction.
 
 **Fix:**
+
 ```js
 import { getTimeScale } from "../app/(core)/constants/Time.js";
 // ...
@@ -115,6 +129,7 @@ const scale = getTimeScale(); // restore this line
 The method signature `stepAlongPlane(dt, netForceParallel)` ignores the `angleRad` argument passed by the caller. The 2D `state.velocity` is set as `(velAlongPlane, 0)` instead of being projected onto the plane's actual direction. This makes `state.velocity` incorrect for energy calculations.
 
 **Fix:**
+
 ```js
 stepAlongPlane(dt, netForceParallel, angleRad = 0) {
   if (dt <= 0) return;
@@ -140,12 +155,14 @@ stepAlongPlane(dt, netForceParallel, angleRad = 0) {
 
 ```js
 // BUGGY — measures angle from (0,0), not from the anchor pivot
-const angle = (Math.atan2(bodyState.position.x, -bodyState.position.y) * 180) / Math.PI;
+const angle =
+  (Math.atan2(bodyState.position.x, -bodyState.position.y) * 180) / Math.PI;
 ```
 
 The anchor is at `(w/2 meters, h*0.2 meters)` in physics space — not at origin. This formula produces completely wrong angle values. The `PendulumBody.getAngle()` method is already correct and should be used instead.
 
 **Fix:** Pass `body.getAngle()` directly into `SimInfoMapper` via the state object:
+
 ```js
 // In sketch p.draw():
 updateSimInfo(p, {
@@ -192,6 +209,7 @@ potentialEnergy: bodyRef.current.getPotentialEnergy(gravity, toMeters(p.height))
 In Y-up coordinates, the ground is at `y = 0`. `toMeters(p.height)` is the **canvas top** in meters (a large positive number). So `PE = mass * g * (position.y - large_number)` is almost always large and negative — incorrect.
 
 **Fix:**
+
 ```js
 // Ground reference in Y-up space is y = 0 (or ball radius for center-of-mass)
 potentialEnergy: bodyRef.current.getPotentialEnergy(gravity, 0),
@@ -215,6 +233,7 @@ body.applyForce(force);
 When the spring is extended (`displacement > 0`), `springForceMag` is negative, which flips the direction vector to point **away** from the anchor. An extended spring should pull the body toward the anchor.
 
 **Fix:**
+
 ```ts
 public connect(body: PhysicsBody): void {
   const toAnchor = p5.Vector.sub(this.anchor, body.state.position);
@@ -301,6 +320,7 @@ friction = ForceCalculator.kineticFriction(normal, frictionKinetic, vel);
 Should use `body.planeState.velAlongPlane` (the scalar velocity along the plane). `state.velocity.x` is only the horizontal projection, underestimating friction when the angle is non-zero.
 
 **Fix:**
+
 ```js
 const vel = body.planeState?.velAlongPlane ?? body.state.velocity?.x ?? 0;
 ```
@@ -340,53 +360,59 @@ The `+` operation draws from absolute screen coordinates (origin = top-left corn
 ---
 
 ### BUG-018 — package.json: engines.node uses exact version instead of range
+
 ```json
 "engines": { "node": "24.8.0" }  // should be ">=24.0.0"
 ```
 
 ### BUG-019 — Config.js: Mars gravity label shows 3.71 m/s² (actual: 3.72 m/s²)
+
 ```js
 { value: 0.379 * earthG, label: "Mars (3.71 m/s²)" }
 // 0.379 * 9.81 = 3.719 ≈ 3.72, label should read "Mars (3.72 m/s²)"
 ```
 
 ### BUG-020 — VectorsOperations.jsx: "dot" and "cross" case renderers are identical
+
 Both cases draw the exact same three lines. The cross product should show a shaded parallelogram (area = |A×B|), the dot product should show a projection onto A.
 
 ### BUG-021 — test.jsx: Collision separation check has inverted sign condition
+
 ```js
 if (velAlongNormal < 0) continue; // "don't resolve if separating"
 // relVel · normal > 0 means separating → should be: if (velAlongNormal > 0) continue
 ```
 
 ### BUG-022 — BallGravity.jsx: isBlowing state set but wind-overlay CSS class likely missing
+
 `setIsBlowing(true/false)` updates state and toggles class `wind-overlay blowing`, but no CSS for this class was found in the uploaded styles. The wind animation has no visual effect.
 
 ### BUG-023 — DragController.js: Same file-concatenation artifact as BUG-001
+
 The `DragController.js` file content contains appended source from other files (similar to BUG-001). Each physics module file should contain only its own source.
 
 ---
 
 ## Priority Fix Order
 
-| # | Bug | File | Effort |
-|---|---|---|---|
-| 1 | BUG-001, BUG-023 | Separate concatenated files | 30 min |
-| 2 | BUG-003 | Restore getTimeScale() | 5 min |
-| 3 | BUG-008 | Fix Spring.connect() sign | 15 min |
-| 4 | BUG-002 | Fix weight vector direction | 1 hr |
-| 5 | BUG-007 | Fix PE reference height | 30 min |
-| 6 | BUG-004 | Fix stepAlongPlane 2D projection | 1 hr |
-| 7 | BUG-006 | Remove hardcoded reset dimensions | 15 min |
-| 8 | BUG-005 | Fix pendulum angle display | 1 hr |
-| 9 | BUG-012 | Fix gravity hardcoding in renderer | 30 min |
-| 10 | BUG-014 | Fix kinetic friction velocity source | 15 min |
-| 11 | BUG-011 | Move SimplePendulum config | 30 min |
-| 12 | BUG-021 | Fix collision sign | 5 min |
-| 13 | BUG-013 | Add cleanupInstance on unmount | 30 min |
-| 14 | BUG-010 | Fix drag label unit | 5 min |
-| 15 | BUG-015 | Remove/migrate dead utils | 15 min |
-| 16 | All others | Remaining low-priority | ~2 hr |
+| #   | Bug              | File                                 | Effort |
+| --- | ---------------- | ------------------------------------ | ------ |
+| 1   | BUG-001, BUG-023 | Separate concatenated files          | 30 min |
+| 2   | BUG-003          | Restore getTimeScale()               | 5 min  |
+| 3   | BUG-008          | Fix Spring.connect() sign            | 15 min |
+| 4   | BUG-002          | Fix weight vector direction          | 1 hr   |
+| 5   | BUG-007          | Fix PE reference height              | 30 min |
+| 6   | BUG-004          | Fix stepAlongPlane 2D projection     | 1 hr   |
+| 7   | BUG-006          | Remove hardcoded reset dimensions    | 15 min |
+| 8   | BUG-005          | Fix pendulum angle display           | 1 hr   |
+| 9   | BUG-012          | Fix gravity hardcoding in renderer   | 30 min |
+| 10  | BUG-014          | Fix kinetic friction velocity source | 15 min |
+| 11  | BUG-011          | Move SimplePendulum config           | 30 min |
+| 12  | BUG-021          | Fix collision sign                   | 5 min  |
+| 13  | BUG-013          | Add cleanupInstance on unmount       | 30 min |
+| 14  | BUG-010          | Fix drag label unit                  | 5 min  |
+| 15  | BUG-015          | Remove/migrate dead utils            | 15 min |
+| 16  | All others       | Remaining low-priority               | ~2 hr  |
 
 **Estimated total fix time: ~10 hours**
 
@@ -406,4 +432,4 @@ The `DragController.js` file content contains appended source from other files (
 
 ---
 
-*Report generated by static analysis of repository snapshot `physicshub.github.io-main`.*
+_Report generated by static analysis of repository snapshot `physicshub.github.io-main`._
