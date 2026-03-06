@@ -818,7 +818,7 @@ main.simulations-page {
 .chapter-card-overlay > h2 {
   line-height: normal;
   margin-bottom: 0.8rem;
-  text-shadow: 0 0 3px var(--glow-color);
+  text-shadow: 0 0 1px var(--glow-color);
 }
 
 /* Light theme chapter cards */
