@@ -174,10 +174,7 @@ export default function ParabolicMotion() {
 
         needsRelaunchRef.current = false;
         if (hardResetTrail) resetTrailLayer();
-        console.log("h0:", h0);
-        console.log("safeHeight:", safeHeight);
-        console.log("groundY:", groundY);
-        console.log("startY:", startY);
+        
       };
 
       p.setup = () => {
@@ -221,7 +218,7 @@ export default function ParabolicMotion() {
         }
 
         recomputeLaunch(true);
-        console.log("Initial velocity Y:", bodyRef.current.state.velocity.y);
+        
       };
 
       p.draw = () => {
