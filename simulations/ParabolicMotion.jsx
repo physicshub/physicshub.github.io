@@ -154,7 +154,7 @@ export default function ParabolicMotion() {
         bodyRef.current.state.position.set(startX, startY);
         bodyRef.current.state.velocity.set(vx0, vy0World);
         bodyRef.current.state.acceleration.set(0, 0);
-        console.log("Launch position Y:", startY);
+
 
         // Update metadata
         launchMetadataRef.current = {
@@ -174,7 +174,7 @@ export default function ParabolicMotion() {
 
         needsRelaunchRef.current = false;
         if (hardResetTrail) resetTrailLayer();
-        
+
       };
 
       p.setup = () => {
@@ -218,7 +218,7 @@ export default function ParabolicMotion() {
         }
 
         recomputeLaunch(true);
-        
+
       };
 
       p.draw = () => {
