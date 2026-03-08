@@ -88,7 +88,7 @@ export default function ParabolicMotion() {
         trailLayerRef.current.background(r, g, b);
       };
 
-      const buildTrajectoryPoints = (analytics, startPos, gravity, radius) => {
+      const buildTrajectoryPoints = (analytics, startPos, gravity) => {
         if (!analytics || !startPos) return [];
         if (!isFinite(analytics.flightTime) || analytics.flightTime <= 0) {
           return [];
@@ -96,18 +96,15 @@ export default function ParabolicMotion() {
 
         const points = [];
         const dt = analytics.flightTime / TRAJECTORY_STEPS;
-        const canvasHeightMeters = toMeters(p.height);
-        const ground = canvasHeightMeters - radius;
 
         for (let i = 0; i <= TRAJECTORY_STEPS; i++) {
           const t = dt * i;
           const x = startPos.x + analytics.vx0 * t;
-          const y = startPos.y - analytics.vy0 * t + 0.5 * gravity * t * t;
+          const y = startPos.y + analytics.vy0 * t + 0.5 * -gravity * t * t;
 
-          if (y > ground) break;
           points.push({
             x: toPixels(x),
-            y: toPixels(y),
+            y: p.height - toPixels(y),
           });
         }
         return points;
@@ -130,11 +127,14 @@ export default function ParabolicMotion() {
         const canvasWidthMeters = toMeters(p.width);
         const radius = size / 2;
 
-        // Clamp height to valid range
-        const safeHeight = Math.min(
-          Math.max(h0, 0),
-          canvasHeightMeters - radius * 2
-        );
+        // Ground for center-based system
+        const groundY = canvasHeightMeters - radius;
+
+        // Clamp launch height to be between 0 and ground height
+        const safeHeight = Math.max(radius, h0);
+
+        // Convert height-above-ground → world Y (downward-positive)
+        const startY = safeHeight;
 
         // Compute projectile analytics
         const analytics = computeProjectileAnalytics({
@@ -146,15 +146,10 @@ export default function ParabolicMotion() {
 
         // Starting position
         const startX = Math.max(toMeters(80), canvasWidthMeters * 0.12);
-        const groundY = canvasHeightMeters;
-        const startY = Math.min(
-          groundY - radius,
-          Math.max(radius, groundY - safeHeight - radius)
-        );
 
         // Set initial velocity
         const vx0 = analytics.vx0;
-        const vy0World = -analytics.vy0; // Convert to downward-positive axis
+        const vy0World = analytics.vy0; // Convert to downward-positive axis
 
         bodyRef.current.state.position.set(startX, startY);
         bodyRef.current.state.velocity.set(vx0, vy0World);
@@ -226,8 +221,9 @@ export default function ParabolicMotion() {
       p.draw = () => {
         if (!bodyRef.current) return;
 
-        const dt = computeDelta(p);
-        if (dt <= 0) return;
+        const fixedDt = 1 / 120;
+        let frameTime = computeDelta(p);
+        if (frameTime <= 0) return;
 
         // Relaunch if needed
         if (needsRelaunchRef.current) {
@@ -248,47 +244,59 @@ export default function ParabolicMotion() {
         bodyRef.current.trail.enabled = trailEnabled;
         bodyRef.current.trail.color = inputsRef.current.ballColor;
 
-        // Apply forces (if not dragging)
-        if (!dragControllerRef.current.isDragging()) {
-          // Gravity
-          const gravityForce = ForceCalculator.gravity(
-            bodyRef.current.params.mass,
-            gravity
-          );
-          bodyRef.current.applyForce(
-            p.createVector(gravityForce.x, gravityForce.y)
-          );
+        while (frameTime > 0) {
+          const frameStep = Math.min(frameTime, fixedDt);
 
-          // Air resistance
-          if (dragCoeff > 0) {
-            const vel = bodyRef.current.state.velocity;
-            const drag = ForceCalculator.airResistance(
-              vel.mag(),
-              dragCoeff,
-              false // quadratic drag
+          // Apply forces (if not dragging)
+          if (!dragControllerRef.current.isDragging()) {
+            // Gravity
+            const gravityForce = ForceCalculator.gravity(
+              bodyRef.current.params.mass,
+              gravity
             );
-            if (Math.abs(drag) > 0.001) {
-              const dragForce = vel.copy().normalize().mult(drag);
-              bodyRef.current.applyForce(dragForce);
+            bodyRef.current.applyForce(
+              p.createVector(gravityForce.x, gravityForce.y)
+            );
+
+            // Air resistance
+            if (dragCoeff > 0) {
+              const vel = bodyRef.current.state.velocity;
+              const drag = ForceCalculator.airResistance(
+                vel.mag(),
+                dragCoeff,
+                false // quadratic drag
+              );
+              if (Math.abs(drag) > 0.001 && vel.mag() > 0) {
+                const dragForce = vel.copy().normalize().mult(drag);
+                bodyRef.current.applyForce(dragForce);
+              }
+            }
+
+            // Wind force
+            if (wind !== 0) {
+              bodyRef.current.applyForce(p.createVector(wind, 0));
+            }
+
+            // Physics step
+            bodyRef.current.step(frameStep);
+
+            // Check ground collision
+
+            const radius = bodyRef.current.params.size / 2;
+            const groundY = radius;
+
+            if (bodyRef.current.state.position.y <= groundY) {
+              bodyRef.current.state.position.y = groundY;
+
+              if (bodyRef.current.state.velocity.y < 0) {
+                bodyRef.current.state.velocity.y = 0;
+              }
+
+              bodyRef.current.state.velocity.x *= 0.95; // Ground friction
             }
           }
 
-          // Wind force
-          if (wind !== 0) {
-            bodyRef.current.applyForce(p.createVector(wind, 0));
-          }
-
-          // Physics step
-          bodyRef.current.step(dt);
-
-          // Check ground collision
-          const radius = bodyRef.current.params.size / 2;
-          const groundY = toMeters(p.height) - radius;
-          if (bodyRef.current.state.position.y >= groundY) {
-            bodyRef.current.state.position.y = groundY;
-            bodyRef.current.state.velocity.y = 0;
-            bodyRef.current.state.velocity.x *= 0.95; // Ground friction
-          }
+          frameTime -= frameStep;
         }
 
         // Render scene
@@ -396,7 +404,7 @@ export default function ParabolicMotion() {
         p.push();
         p.stroke(100, 100, 120);
         p.strokeWeight(2);
-        p.line(0, p.height - 2, p.width, p.height - 2);
+        p.line(0, p.height, p.width, p.height);
         p.pop();
       };
 
