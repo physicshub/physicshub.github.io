@@ -129,6 +129,15 @@ export class DragController {
         Object.assign(body.planeState, this.state.initialPosition);
       }
     }
+    if (body.state.velocity) {
+      body.state.velocity.set(0, 0);
+    }
+    if (body.state.acceleration) {
+      body.state.acceleration.set(0, 0);
+    }
+    if (body.planeState?.velAlongPlane !== undefined) {
+      body.planeState.velAlongPlane = 0;
+    }
 
     // Custom release callback
     if (onRelease) {

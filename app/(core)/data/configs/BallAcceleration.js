@@ -64,10 +64,10 @@ export const SimInfoMapper = (state, context) => {
   const { position, velocity, acceleration, maxspeed } = state;
   const { canvasHeight } = context;
 
-  position.y = invertYAxis(canvasHeight, position.y);
+  const posYDisplay = invertYAxis(canvasHeight, position.y);
   return {
     "s(x, y) (position)": position
-      ? `(${position.x.toFixed(2)}, ${position.y.toFixed(2)}) m`
+      ? `(${position.x.toFixed(2)}, ${posYDisplay.toFixed(2)}) m`
       : "-",
     "v(x, y) (velocity xy)": velocity
       ? `(${velocity.x.toFixed(2)}, ${velocity.y.toFixed(2)}) m/s`

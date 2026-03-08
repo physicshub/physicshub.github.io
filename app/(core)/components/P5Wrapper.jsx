@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { resetTime, cleanupInstance } from "../constants/Time.js";
+import { setCanvasHeight } from "../constants/Utils.js";
 
 export default function P5Wrapper({ sketch, simInfos }) {
   // containerRef: the <div> where p5 will attach the canvas
@@ -15,55 +16,69 @@ export default function P5Wrapper({ sketch, simInfos }) {
     try {
       cleanupInstance(instance);
       instance.remove();
-    } catch {
-      // Errors are intentionally silenced
-      // as p5 removal can be flaky in some edge cases
-      // (e.g., Fast Refresh, unmount during loading, etc.)
-      // this prevents noise in the console.
-    }
+    } catch (err) {}
   };
 
+  // --- LOGICA DI RESIZE CENTRALIZZATA ---
   useEffect(() => {
-    // Set active to true. If component unmounts, turn it to false.
-    // Active is LOCAL to this useEffect scope, so multiple mounts/unmounts
-    // won't interfere with each other.
+    const handleResize = () => {
+      if (!containerRef.current || !p5InstanceRef.current) return;
+
+      // 1. Ottieni le nuove dimensioni dal contenitore DOM
+      const { clientWidth, clientHeight } = containerRef.current;
+
+      // 2. Aggiorna il valore globale della fisica
+      setCanvasHeight(clientHeight);
+
+      // 3. Comunica a p5.js di ridimensionare il canvas
+      p5InstanceRef.current.resizeCanvas(clientWidth, clientHeight);
+
+      // Opzionale: se hai bisogno di resettare qualcosa nello sketch al resize
+      if (p5InstanceRef.current.onResize) {
+        p5InstanceRef.current.onResize(clientWidth, clientHeight);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Eseguiamo una chiamata iniziale per sincronizzare le dimensioni al montaggio
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [sketch]);
+
+  useEffect(() => {
     let active = true;
     let tempP5Instance = null;
 
-    // IIAFE (Immediately Invoked Async Function Expression)
     (async () => {
       try {
-        // P5 dynamic import (browser-only)
-        // Directly destructuring default import to avoid extra .default usage
         const { default: p5 } = await import("p5");
-
-        // Exit if component inactive (unmounted) or sketch missing
         if (!active || !containerRef.current || !sketch) return;
 
-        // Remove previous instance if exists (Fast Refresh / sketch change)
         safeRemove(p5InstanceRef.current);
-        p5InstanceRef.current = null;
 
-        // Create a new P5 instance in a temporary variable.
-        // We only assign it to p5InstanceRef after confirming the component is still mounted
-        // to avoid keeping a P5 instance alive for an unmounted component.
         tempP5Instance = new p5((p) => {
           p._instanceId =
-            crypto?.randomUUID?.() ??
-            Math.random().toString(36).slice(2) + Date.now().toString(36);
+            crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
 
           resetTime();
           sketch(p);
+
+          p.setup = ((originalSetup) => () => {
+            if (originalSetup) originalSetup();
+            const h = containerRef.current.clientHeight;
+            const w = containerRef.current.clientWidth;
+            p.resizeCanvas(w, h);
+            setCanvasHeight(h);
+          })(p.setup);
         }, containerRef.current);
 
-        // If component is already unmounted when the temp instance finishes loading, cleanup
-        // Very rare edge case, but good to handle
         if (!active) {
           safeRemove(tempP5Instance);
           return;
         }
 
-        // Confirmed mount success - track the new instance
         p5InstanceRef.current = tempP5Instance;
       } catch (err) {
         console.error("Failed to load P5:", err);
@@ -72,16 +87,19 @@ export default function P5Wrapper({ sketch, simInfos }) {
 
     return () => {
       active = false;
-
-      // Cleanup any existing instance
       safeRemove(p5InstanceRef.current);
       p5InstanceRef.current = null;
     };
   }, [sketch]);
 
   return (
-    <div className="p5-wrapper">
-      <div ref={containerRef} className="screen" id="Screen">
+    <div className="p5-wrapper" style={{ width: "100%", height: "100%" }}>
+      <div
+        ref={containerRef}
+        className="screen"
+        id="Screen"
+        style={{ width: "100%", height: "100%" }}
+      >
         {simInfos ?? ""}
       </div>
     </div>

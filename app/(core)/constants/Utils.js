@@ -1,7 +1,7 @@
 import { SCALE } from "./Config.js";
 
 // Store canvas height for coordinate conversion
-let CANVAS_HEIGHT = 600; // Default, will be updated
+let CANVAS_HEIGHT; // Default, will be updated
 
 export function setCanvasHeight(height) {
   CANVAS_HEIGHT = height;

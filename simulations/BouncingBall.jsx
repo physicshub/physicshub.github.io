@@ -77,9 +77,10 @@ export default function BouncingBall() {
         const w = p.width;
         const h = p.height;
 
-        // Initialize body
+        const ballRadius = inputsRef.current.size / 2;
+        const topMarginMeters = ballRadius + 0.3;
         const initialX = toMeters(w / 2);
-        const initialY = toMeters(h / 4);
+        const initialY = toMeters(h) - topMarginMeters; // near top in Y-up coords
 
         if (!bodyRef.current) {
           bodyRef.current = new PhysicsBody(p, {
@@ -99,6 +100,8 @@ export default function BouncingBall() {
           bodyRef.current.reset({
             position: p.createVector(initialX, initialY),
           });
+          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
+          bodyRef.current.trail.color = inputsRef.current.ballColor;
         }
 
         // Reset tracking
@@ -118,7 +121,7 @@ export default function BouncingBall() {
         if (!dragControllerRef.current) {
           dragControllerRef.current = new DragController({
             snapBack: false,
-            smoothing: 0.3, // Smooth dragging
+            smoothing: 0.3,
           });
         }
       };
@@ -177,10 +180,9 @@ export default function BouncingBall() {
           );
         }
 
-        // Update max height
-        const bottomM = toMeters(p.height);
-        const currentHeight =
-          bottomM - bodyRef.current.state.position.y - size / 2;
+        // Update max height: height above floor = position.y - radius
+        // since position is the center and floor is at y = size/2
+        const currentHeight = bodyRef.current.state.position.y - size / 2;
         if (currentHeight > maxHeightRef.current) {
           maxHeightRef.current = currentHeight;
         }
@@ -188,7 +190,10 @@ export default function BouncingBall() {
         // Render scene
         renderScene(p, { gravityForce });
 
-        // Update sim info
+        // FIX 3: Pass bottomM as 0 reference since constrainToBounds floor
+        // is at size/2 in physics coords. PE = m*g*(y - size/2) where size/2
+        // is the resting floor position of the ball's center.
+        const floorY = size / 2;
         updateSimInfo(
           p,
           {
@@ -198,7 +203,7 @@ export default function BouncingBall() {
             kineticEnergy: bodyRef.current.getKineticEnergy(),
             potentialEnergy: bodyRef.current.getPotentialEnergy(
               gravity,
-              bottomM
+              floorY // reference = floor contact point of ball center
             ),
           },
           {
@@ -287,7 +292,7 @@ export default function BouncingBall() {
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         trailLayer.background(r, g, b);
 
-        // Keep ball in bounds
+        // Keep ball in bounds after resize
         if (bodyRef.current) {
           const { size } = bodyRef.current.params;
           const radius = size / 2;
