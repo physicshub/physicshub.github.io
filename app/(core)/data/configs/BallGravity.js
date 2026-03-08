@@ -1,6 +1,10 @@
 // app/data/configs/BallGravity.js
 
-import { toPixels, toMeters, invertYAxis } from "../../constants/Utils.js";
+import {
+  toPixels,
+  toMeters,
+  physicsYToScreenY,
+} from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 // Valori iniziali
@@ -122,12 +126,8 @@ export const SimInfoMapper = (state, context, refs) => {
   const { gravity, canvasHeight } = context;
   const { maxHeightRef } = refs;
 
-  const pixelX = toPixels(pos.x);
   const pixelY = toPixels(pos.y);
-
-  const speedMs = toMeters(vel.mag());
-  const posXM = toMeters(pixelX);
-  const posYM = invertYAxis(canvasHeight, toMeters(pixelY));
+  const speedMs = vel.mag();
 
   // Altezza corrente dal suolo
   const currentHeightM = toMeters(canvasHeight - pixelY);
@@ -149,7 +149,7 @@ export const SimInfoMapper = (state, context, refs) => {
   return {
     "v (velocity)": `${speedMs.toFixed(2)} m/s`,
     "a (acceleration)": `${gravity.toFixed(2)} m/s²`,
-    "s(x, y) (position)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
+    "s(x, y) (position)": `(${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}) m`,
     "Eₖ (kinetic energy)": `${kineticEnergy.toFixed(2)} J`,
     "t (fall time)": `${fallTime.toFixed(2)} s`,
     "hₘₐₓ (height max)": `${maxHeightRef.current.toFixed(2)} m`,

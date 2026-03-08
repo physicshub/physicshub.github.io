@@ -1,5 +1,5 @@
 // app/data/configs/bouncingBall.js
-import { toPixels, toMeters, invertYAxis } from "../../constants/Utils.js";
+import { invertYAxis } from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 export const INITIAL_INPUTS = {

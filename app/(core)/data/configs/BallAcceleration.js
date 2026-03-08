@@ -1,5 +1,5 @@
 // app/data/configs/BallAcceleration.js
-import { invertYAxis } from "../../constants/Utils.js";
+import { physicsYToScreenY } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
   size: 0.5, // diametro palla in metri
@@ -60,14 +60,12 @@ export const FORCES = [
   },
 ];
 
-export const SimInfoMapper = (state, context) => {
+export const SimInfoMapper = (state) => {
   const { position, velocity, acceleration, maxspeed } = state;
-  const { canvasHeight } = context;
 
-  const posYDisplay = invertYAxis(canvasHeight, position.y);
   return {
     "s(x, y) (position)": position
-      ? `(${position.x.toFixed(2)}, ${posYDisplay.toFixed(2)}) m`
+      ? `(${position.x.toFixed(2)}, ${position.y.toFixed(2)}) m`
       : "-",
     "v(x, y) (velocity xy)": velocity
       ? `(${velocity.x.toFixed(2)}, ${velocity.y.toFixed(2)}) m/s`

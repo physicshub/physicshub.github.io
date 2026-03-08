@@ -81,7 +81,7 @@ export default function BallGravity() {
 
         // Initialize body using PhysicsBody
         const initialX = toMeters(w / 2);
-        const initialY = toMeters(h / 4);
+        const initialY = toMeters((h / 4) * 3.5); // 3.5/4 canvas height
 
         if (!bodyRef.current) {
           bodyRef.current = new PhysicsBody(p, {
@@ -109,7 +109,6 @@ export default function BallGravity() {
         // Initialize force renderer
         if (!forceRendererRef.current) {
           forceRendererRef.current = new ForceRenderer({
-            scale: 10,
             showLabels: true,
             showMagnitude: true,
           });
@@ -339,21 +338,11 @@ export default function BallGravity() {
       onReset={() => {
         const wasPaused = isPaused();
         resetTime();
-        if (wasPaused) setPause(true);
 
-        maxHeightRef.current = 0;
-        if (bodyRef.current) {
-          const w = 800; // default width
-          const h = 600; // default height
-          bodyRef.current.reset({
-            position: bodyRef.current.p.createVector(
-              toMeters(w / 2),
-              toMeters(h / 4)
-            ),
-          });
-        }
-
-        setResetVersion((v) => v + 1);
+        setTimeout(() => {
+          if (wasPaused) setPause(true);
+          setResetVersion((v) => v + 1);
+        }, 0);
       }}
       inputs={inputs}
       simulation={location}

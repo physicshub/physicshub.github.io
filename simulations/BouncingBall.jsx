@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters } from "../app/(core)/constants/Utils.js";
+import { toMeters, collideBoundary } from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
@@ -80,7 +80,7 @@ export default function BouncingBall() {
         const ballRadius = inputsRef.current.size / 2;
         const topMarginMeters = ballRadius + 0.3;
         const initialX = toMeters(w / 2);
-        const initialY = toMeters(h) - topMarginMeters; // near top in Y-up coords
+        const initialY = toMeters(h) - topMarginMeters;
 
         if (!bodyRef.current) {
           bodyRef.current = new PhysicsBody(p, {
@@ -92,7 +92,6 @@ export default function BouncingBall() {
             position: p.createVector(initialX, initialY),
           });
 
-          // Enable trail
           bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
           bodyRef.current.trail.maxLength = 200;
           bodyRef.current.trail.color = inputsRef.current.ballColor;
@@ -104,11 +103,9 @@ export default function BouncingBall() {
           bodyRef.current.trail.color = inputsRef.current.ballColor;
         }
 
-        // Reset tracking
         maxHeightRef.current = 0;
         fallStartTimeRef.current = p.millis();
 
-        // Initialize force renderer
         if (!forceRendererRef.current) {
           forceRendererRef.current = new ForceRenderer({
             scale: 10,
@@ -117,7 +114,6 @@ export default function BouncingBall() {
           });
         }
 
-        // Initialize drag controller
         if (!dragControllerRef.current) {
           dragControllerRef.current = new DragController({
             snapBack: false,
@@ -167,21 +163,31 @@ export default function BouncingBall() {
           p.createVector(gravityForce.x, gravityForce.y)
         );
 
-        // Physics step (if not dragging)
+        // Physics step + collision (if not dragging)
         if (!dragControllerRef.current.isDragging()) {
           bodyRef.current.step(dt);
 
-          // Constrain to bounds
-          bodyRef.current.constrainToBounds(
+          // collideBoundary is energy-conserving: it accounts for how much
+          // energy gravity added during the penetration sub-step and removes
+          // it before reflecting, so restitution=1 gives a perfectly elastic
+          // bounce with no height loss.
+          const bounds = {
+            w: toMeters(p.width),
+            h: toMeters(p.height),
+          };
+          const { pos, vel } = collideBoundary(
+            bodyRef.current.state.position,
+            bodyRef.current.state.velocity,
+            bounds,
             size / 2,
-            toMeters(p.width) - size / 2,
-            size / 2,
-            toMeters(p.height) - size / 2
+            restitution,
+            bodyRef.current.state.acceleration // already reset to 0 after step(), but kept for API correctness
           );
+          bodyRef.current.state.position = pos;
+          bodyRef.current.state.velocity = vel;
         }
 
-        // Update max height: height above floor = position.y - radius
-        // since position is the center and floor is at y = size/2
+        // Height above floor = ball center y - radius
         const currentHeight = bodyRef.current.state.position.y - size / 2;
         if (currentHeight > maxHeightRef.current) {
           maxHeightRef.current = currentHeight;
@@ -190,9 +196,6 @@ export default function BouncingBall() {
         // Render scene
         renderScene(p, { gravityForce });
 
-        // FIX 3: Pass bottomM as 0 reference since constrainToBounds floor
-        // is at size/2 in physics coords. PE = m*g*(y - size/2) where size/2
-        // is the resting floor position of the ball's center.
         const floorY = size / 2;
         updateSimInfo(
           p,
@@ -203,7 +206,7 @@ export default function BouncingBall() {
             kineticEnergy: bodyRef.current.getKineticEnergy(),
             potentialEnergy: bodyRef.current.getPotentialEnergy(
               gravity,
-              floorY // reference = floor contact point of ball center
+              floorY
             ),
           },
           {
@@ -219,27 +222,20 @@ export default function BouncingBall() {
         const bg = getBackgroundColor();
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
 
-        // Trail management
         if (inputsRef.current.trailEnabled) {
-          // Fade trail
           trailLayer.fill(r, g, b, 60);
           trailLayer.noStroke();
           trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
-
-          // Main canvas
           p.clear();
           p.image(trailLayer, 0, 0);
         } else {
-          // No trail - solid background
           trailLayer.background(r, g, b);
           p.background(r, g, b);
         }
 
-        // Draw body
         bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
         const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
 
-        // Draw forces
         const renderer = forceRendererRef.current;
         renderer.drawWeight(
           p,
@@ -250,19 +246,13 @@ export default function BouncingBall() {
         );
       };
 
-      // Mouse events
       p.mousePressed = () => {
         if (!bodyRef.current) return;
-
         const pressed = dragControllerRef.current.handlePress(
           p,
           bodyRef.current
         );
-
-        if (pressed) {
-          // Reset max height when starting drag
-          maxHeightRef.current = 0;
-        }
+        if (pressed) maxHeightRef.current = 0;
       };
 
       p.mouseDragged = () => {
@@ -271,20 +261,15 @@ export default function BouncingBall() {
 
       p.mouseReleased = () => {
         dragControllerRef.current.handleRelease(() => {
-          // Reset fall time when released
           fallStartTimeRef.current = p.millis();
         });
       };
 
-      // Window resize
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
 
-        if (trailLayer) {
-          trailLayer.remove();
-        }
-
+        if (trailLayer) trailLayer.remove();
         trailLayer = p.createGraphics(w, h);
         trailLayer.pixelDensity(1);
 
@@ -292,7 +277,6 @@ export default function BouncingBall() {
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         trailLayer.background(r, g, b);
 
-        // Keep ball in bounds after resize
         if (bodyRef.current) {
           const { size } = bodyRef.current.params;
           const radius = size / 2;
@@ -313,23 +297,17 @@ export default function BouncingBall() {
     [inputsRef, maxHeightRef, fallStartTimeRef, updateSimInfo]
   );
 
-  // Cleanup
   useEffect(() => {
     return () => {
-      if (bodyRef.current) {
-        bodyRef.current = null;
-      }
+      if (bodyRef.current) bodyRef.current = null;
     };
   }, []);
 
-  // Reset handler
   const handleReset = useCallback(() => {
     const wasPaused = isPaused();
     resetTime();
-
     maxHeightRef.current = 0;
     fallStartTimeRef.current = 0;
-
     setTimeout(() => {
       if (wasPaused) setPause(true);
       setResetVersion((v) => v + 1);

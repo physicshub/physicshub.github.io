@@ -160,14 +160,3 @@ export function collideBoundary(pos, vel, bounds, radius, restitution, acc) {
 
   return { pos: newPos, vel: newVel };
 }
-
-/**
- * @deprecated Use physicsYToScreenY instead
- */
-export function invertYAxis(h, y) {
-  const scaledH = h / SCALE;
-  if (h != null && y != null) {
-    return scaledH - y;
-  }
-  return undefined;
-}
