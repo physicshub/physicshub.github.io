@@ -6,8 +6,10 @@ import { ballFreeFallBlog } from "./ball-free-fall-comprehensive-guide.js";
 import { springConnectionBlog } from "./spring-connection.js";
 import { pendulumBlog } from "./physics-of-pendulum-explained.js";
 import { projectileParabolicBlog } from "./projectile-parabolic-motion.js";
+import { class12PhysicsBlog } from "./class-12-physics.js";
 
 export const allBlogs = {
+  [class12PhysicsBlog.slug]: class12PhysicsBlog,
   [bouncingBallBlog.slug]: bouncingBallBlog,
   [operationVectorsBlog.slug]: operationVectorsBlog,
   [ballAcceleratingBlog.slug]: ballAcceleratingBlog,
