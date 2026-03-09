@@ -11,7 +11,11 @@ import {
   isPaused,
   setPause,
 } from "../app/(core)/constants/Time.js";
-import { toPixels, toMeters } from "../app/(core)/constants/Utils.js";
+import {
+  toPixels,
+  toMeters,
+  physicsYToScreenY,
+} from "../app/(core)/constants/Utils.js";
 
 // --- Physics Classes ---
 import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
@@ -112,8 +116,7 @@ const INPUT_FIELDS = [
 ];
 
 const SimInfoMapper = (bodyState) => {
-  const angle =
-    (Math.atan2(bodyState.position.x, -bodyState.position.y) * 180) / Math.PI;
+  const angle = (bodyState.angleRad * 180) / Math.PI;
 
   return {
     Angle: `${angle.toFixed(1)}°`,
@@ -146,7 +149,7 @@ class PendulumBody extends PhysicsBody {
     // Get current angle from vertical
     const dx = this.state.position.x - this.anchor.x;
     const dy = this.state.position.y - this.anchor.y;
-    const angle = Math.atan2(dx, dy);
+    const angle = Math.atan2(dx, -dy);
 
     // Angular acceleration: α = -(g/L) * sin(θ) - damping * ω
     const angularAcc =
@@ -160,12 +163,12 @@ class PendulumBody extends PhysicsBody {
 
     // Constrain position to circular path
     this.state.position.x = this.anchor.x + this.length * Math.sin(newAngle);
-    this.state.position.y = this.anchor.y + this.length * Math.cos(newAngle);
+    this.state.position.y = this.anchor.y - this.length * Math.cos(newAngle);
 
     // Update linear velocity (tangent to circular path)
     const speed = this.angularVel * this.length;
     this.state.velocity.x = speed * Math.cos(newAngle);
-    this.state.velocity.y = -speed * Math.sin(newAngle);
+    this.state.velocity.y = speed * Math.sin(newAngle);
 
     // Update moving state
     this.isMoving = Math.abs(this.angularVel) > 0.001;
@@ -181,7 +184,7 @@ class PendulumBody extends PhysicsBody {
    */
   setAngle(angleRad) {
     this.state.position.x = this.anchor.x + this.length * Math.sin(angleRad);
-    this.state.position.y = this.anchor.y + this.length * Math.cos(angleRad);
+    this.state.position.y = this.anchor.y - this.length * Math.cos(angleRad);
     this.angularVel = 0;
     this.state.velocity.set(0, 0);
   }
@@ -192,7 +195,7 @@ class PendulumBody extends PhysicsBody {
   getAngle() {
     const dx = this.state.position.x - this.anchor.x;
     const dy = this.state.position.y - this.anchor.y;
-    return Math.atan2(dx, dy);
+    return Math.atan2(dx, -dy);
   }
 
   /**
@@ -226,8 +229,8 @@ class PendulumBody extends PhysicsBody {
    * Get potential energy (relative to lowest point)
    */
   getPotentialEnergy(gravity) {
-    const lowestY = this.anchor.y + this.length;
-    return this.params.mass * gravity * (lowestY - this.state.position.y);
+    const lowestY = this.anchor.y - this.length;
+    return this.params.mass * gravity * (this.state.position.y - lowestY);
   }
 }
 
@@ -268,14 +271,14 @@ export default function Pendulum() {
         // Setup anchor point
         anchorRef.current = {
           x: toMeters(w / 2),
-          y: toMeters(h * 0.2),
+          y: toMeters(h * 0.9),
         };
 
         // Calculate initial position
         const angleRad = (inputsRef.current.initialAngle * Math.PI) / 180;
         const length = inputsRef.current.length;
         const initialX = anchorRef.current.x + length * Math.sin(angleRad);
-        const initialY = anchorRef.current.y + length * Math.cos(angleRad);
+        const initialY = anchorRef.current.y - length * Math.cos(angleRad);
 
         // Initialize body
         if (!bodyRef.current) {
@@ -375,6 +378,7 @@ export default function Pendulum() {
             position: bodyRef.current.state.position,
             velocity: bodyRef.current.state.velocity,
             angularVel: bodyRef.current.angularVel,
+            angleRad: bodyRef.current.getAngle(),
             kineticEnergy: bodyRef.current.getKineticEnergy(),
             potentialEnergy: bodyRef.current.getPotentialEnergy(
               inputsRef.current.gravity
@@ -408,7 +412,7 @@ export default function Pendulum() {
         // Draw anchor
         const anchorScreen = {
           x: toPixels(bodyRef.current.anchor.x),
-          y: toPixels(bodyRef.current.anchor.y),
+          y: physicsYToScreenY(bodyRef.current.anchor.y),
         };
         p.fill(150);
         p.noStroke();
@@ -417,7 +421,7 @@ export default function Pendulum() {
         // Draw rope
         const bobScreen = {
           x: toPixels(bodyRef.current.state.position.x),
-          y: toPixels(bodyRef.current.state.position.y),
+          y: physicsYToScreenY(bodyRef.current.state.position.y),
         };
         p.stroke(inputsRef.current.ropeColor);
         p.strokeWeight(2);
