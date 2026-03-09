@@ -7,8 +7,10 @@ import { springConnectionBlog } from "./spring-connection.js";
 import { pendulumBlog } from "./physics-of-pendulum-explained.js";
 import { projectileParabolicBlog } from "./projectile-parabolic-motion.js";
 import { class12PhysicsBlog } from "./class-12-physics.js";
+import { whatIsPhysicsBlog } from "./what-is-physics.js";
 
 export const allBlogs = {
+  [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
   [class12PhysicsBlog.slug]: class12PhysicsBlog,
   [bouncingBallBlog.slug]: bouncingBallBlog,
   [operationVectorsBlog.slug]: operationVectorsBlog,
