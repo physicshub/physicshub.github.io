@@ -1,10 +1,6 @@
 // app/data/configs/BallGravity.js
 
-import {
-  toPixels,
-  toMeters,
-  physicsYToScreenY,
-} from "../../constants/Utils.js";
+import { toPixels, toMeters } from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 // Valori iniziali
