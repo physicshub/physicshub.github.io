@@ -123,7 +123,6 @@ export default function SpringConnection() {
         );
 
         forceRendererRef.current = new ForceRenderer({
-          scale: 5,
           showLabels: true,
           colors: { spring: springColor, weight: "#ef4444" },
         });
@@ -214,11 +213,7 @@ export default function SpringConnection() {
             currentLengthM: springRef.current.getLength(bodyRef.current),
             anchorHeight: springRef.current.anchor.y,
           },
-          {
-            gravity,
-            canvasHeight: p.height,
-            canvasHeightMeters,
-          },
+          { gravity, canvasHeight: p.height, canvasHeightMeters },
           SimInfoMapper
         );
       };
@@ -247,7 +242,7 @@ export default function SpringConnection() {
           screenPos.x,
           screenPos.y,
           gravityForce.x,
-          gravityForce.y,
+          -gravityForce.y,
           "#ef4444",
           "Weight"
         );
@@ -268,7 +263,7 @@ export default function SpringConnection() {
           screenPos.x,
           screenPos.y,
           springForceDir.x,
-          springForceDir.y,
+          -springForceDir.y,
           inputsRef.current.springColor,
           "Spring"
         );

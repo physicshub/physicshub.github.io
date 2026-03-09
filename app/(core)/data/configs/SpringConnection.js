@@ -2,7 +2,7 @@ import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 // Initial values (SI units, Y-up physics coordinates)
 export const INITIAL_INPUTS = {
-  bobMass: 0.2, // kg
+  bobMass: 1, // kg
   bobDamping: 0.5, // damping coefficient (N·s/m)
   gravity: EARTH_G_SI, // m/s² (magnitude, always positive)
   springK: 200, // N/m
@@ -84,8 +84,6 @@ export const INPUT_FIELDS = [
   { name: "springColor", label: "Spring color:", type: "color" },
 ];
 
-// Mapper for SimInfoPanel
-// ALL CALCULATIONS IN Y-UP PHYSICS COORDINATES
 export const SimInfoMapper = (state, context) => {
   const {
     pos,
@@ -96,36 +94,31 @@ export const SimInfoMapper = (state, context) => {
     potentialEnergyElastic,
     springForceMag,
     currentLengthM,
+    anchorHeight,
   } = state;
 
   if (!pos || !vel) return {};
 
-  // Position in physics coordinates (Y-up)
   const posXM = pos.x;
   const posYM = pos.y;
   const speedMs = vel.mag();
 
-  // Kinetic energy
   const kineticEnergy = 0.5 * mass * Math.pow(speedMs, 2);
 
-  // Gravitational potential energy
-  // In Y-up coords: higher Y = more PE
-  // Use anchor as reference point (PE = 0 at anchor height)
-  const potentialEnergyGrav = mass * context.gravity * posYM;
+  const heightFromAnchor = posYM - anchorHeight;
+  const potentialEnergyGrav = mass * context.gravity * heightFromAnchor;
 
   const equilibriumDisplacement = (mass * context.gravity) / k;
   const equilibriumLength = restLength + equilibriumDisplacement;
 
-  // Total mechanical energy
   const totalEnergy =
     potentialEnergyElastic + kineticEnergy + potentialEnergyGrav;
 
-  // Displacement from rest length
   const displacement = currentLengthM - restLength;
 
   return {
     "Position (x, y)": `(${posXM.toFixed(2)}, ${posYM.toFixed(2)}) m`,
-    "Height (from ground)": `${posYM.toFixed(2)} m`,
+    "Height (from anchor)": `${heightFromAnchor.toFixed(2)} m`,
     "L (current length)": `${currentLengthM.toFixed(2)} m`,
     "L₀ (rest length)": `${restLength.toFixed(2)} m`,
     "Lₑ (equilibrium)": `${equilibriumLength.toFixed(2)} m`,

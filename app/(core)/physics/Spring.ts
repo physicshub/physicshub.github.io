@@ -48,7 +48,7 @@ export default class Spring {
     if (currentLength < 0.0001) return;
 
     const displacement = currentLength - this.restLength;
-    const springForceMag = -this.k * displacement;
+    const springForceMag = this.k * displacement;
 
     force.normalize().mult(springForceMag);
     body.applyForce(force);
