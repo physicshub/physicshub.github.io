@@ -191,6 +191,18 @@ export default function InclinedPlane() {
           if (bodyRef.current.trail.enabled) {
             bodyRef.current.updateTrailOnPlane();
           }
+
+          const currentDist = bodyRef.current.planeState.posAlongPlane;
+          const currentScreenY =
+            planeRef.current.startY -
+            toPixels(currentDist) * Math.sin(angleRad);
+
+          //  the logic that defines 'bottom'
+          if (currentScreenY >= planeRef.current.startY) {
+            bodyRef.current.planeState.posAlongPlane = 0;
+            bodyRef.current.planeState.velAlongPlane = 0;
+            bodyRef.current.planeState.accAlongPlane = 0;
+          }
         }
 
         // Render scene
