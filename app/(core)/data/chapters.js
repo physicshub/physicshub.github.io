@@ -59,6 +59,7 @@ const chapters = [
     id: 7,
     name: "Projectile & Parabolic Motion",
     desc: "Simulate projectile motion and predict trajectory, range, and max height instantly. Interactive parabolic motion calculator — free online physics tool.",
+    tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.GRAVITY, TAGS.MATH],
     icon: "/icons/parabola.png",
     relatedBlogSlug: "projectile-parabolic-motion",
   },
