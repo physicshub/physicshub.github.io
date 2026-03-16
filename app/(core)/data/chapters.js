@@ -72,8 +72,8 @@ const chapters = [
   },
   {
     id: 0,
-    name: "Test for benchmarks",
-    desc: "This is a simulation created specifically for performance testing.",
+    name: "Browser Performance & Stress Test",
+    desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
     link: "/simulations/test",
     tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
     icon: "/icons/test.png",
