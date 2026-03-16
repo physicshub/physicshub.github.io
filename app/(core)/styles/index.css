@@ -2833,7 +2833,7 @@ footer {
   background: var(--accent-color);
   color: var(--bg-color);
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 12px var(--accent-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2845,11 +2845,14 @@ footer {
 
 .fab-new-blog:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .fab-new-blog:active {
   transform: scale(0.95);
+}
+
+.fab-new-blog > svg {
+  color: var(--text-color);
 }
 
 /* Create a new Blog page */
