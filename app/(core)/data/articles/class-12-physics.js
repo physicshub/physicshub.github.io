@@ -2,8 +2,8 @@ import TAGS from "../tags.js";
 
 export const class12PhysicsBlog = {
   slug: "class-12-physics-complete-guide",
-  name: "Class 12 Physics: The Complete Guide to Every Chapter",
-  desc: "Master every chapter of Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, solved examples, and exam tips—covering Electrostatics, Current Electricity, Magnetism, Optics, Modern Physics, and more.",
+  name: "Class 12 Physics Complete Guide – All Chapters with Formulas & Examples",
+  desc: "Master Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, and solved examples — Electrostatics, Magnetism, Optics, Modern Physics and more.",
   tags: [
     TAGS.PHYSICS,
     TAGS.ELECTROMAGNETISM,

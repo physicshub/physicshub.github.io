@@ -2,8 +2,8 @@ import TAGS from "../tags.js";
 
 export const whatIsPhysicsBlog = {
   slug: "what-is-physics",
-  name: "What Is Physics? The Complete Beginner's Guide to the Science of Everything",
-  desc: "Physics is the science of everything — from why apples fall to how the universe began. Discover what physics really is, its major branches, real-world applications, and why it matters more than you think.",
+  name: "What Is Physics? A Visual, Interactive Introduction for Beginners",
+  desc: "Physics explained visually — not just with formulas. Discover the major branches of physics, real-world applications, and explore free interactive simulations to see the science in action.",
   tags: [
     TAGS.PHYSICS,
     TAGS.EASY,

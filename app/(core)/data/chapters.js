@@ -13,7 +13,7 @@ const chapters = [
   {
     id: 2,
     name: "Vector Operations Calculator",
-    desc: "Interactive 2D vector operations tool. Visualize vector addition, subtraction, and dot products in real-time with our physics calculator.",
+    desc: "Interactive 2D vector calculator — visualize addition, subtraction, and dot products in real time. Free online tool for students learning vector physics.",
     link: "/simulations/VectorsOperations",
     tags: [TAGS.EASY, TAGS.MATH, TAGS.VECTORS, TAGS.TRIGONOMETRY],
     icon: "/icons/vector.png",
@@ -22,7 +22,7 @@ const chapters = [
   {
     id: 3,
     name: "Ball Acceleration",
-    desc: "Ball accelerating to the mouse direction.",
+    desc: "Simulate a ball accelerating toward your cursor in real time. Explore Newton's second law, velocity, and uniform acceleration interactively — free online.",
     link: "/simulations/BallAcceleration",
     tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.ACCELERATION, TAGS.INTERACTIVE],
     icon: "/icons/acceleration.png",
@@ -31,7 +31,7 @@ const chapters = [
   {
     id: 4,
     name: "Ball Gravity",
-    desc: "Ball fall and bounce on the ground.",
+    desc: "Watch a ball fall and bounce under gravity and external forces in real time. Adjust mass, elasticity, and gravitational force to explore Newton's laws — free interactive simulation.",
     link: "/simulations/BallGravity",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.GRAVITY, TAGS.COLLISION],
     icon: "/icons/gravity.png",
@@ -40,7 +40,7 @@ const chapters = [
   {
     id: 5,
     name: "Spring Mass System Simulator",
-    desc: "Explore Hooke's Law and Simple Harmonic Motion. Adjust mass and spring constants to visualize oscillations and energy conservation.",
+    desc: "Explore Hooke's Law and Simple Harmonic Motion interactively. Adjust mass and spring constant to visualize oscillations and energy conservation in real time.",
     link: "/simulations/SpringConnection",
     tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
     icon: "/icons/spring.png",
@@ -49,7 +49,7 @@ const chapters = [
   {
     id: 6,
     name: "Simple Pendulum Simulation",
-    desc: "Calculate the period and frequency of a pendulum. Visualize the relationship between length, gravity, and kinetic energy in real-time.",
+    desc: "Simulate a pendulum and calculate its period and frequency in real time. Explore how length, gravity, and energy are related — free interactive physics tool.",
     link: "/simulations/SimplePendulum",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
     icon: "/icons/pendulam.png",
@@ -58,16 +58,14 @@ const chapters = [
   {
     id: 7,
     name: "Projectile & Parabolic Motion",
-    desc: "Simulate projectile motion under gravity. Predict trajectories, range, and maximum height with our interactive physics calculator.",
-    link: "/simulations/ParabolicMotion",
-    tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.GRAVITY, TAGS.MATH],
+    desc: "Simulate projectile motion and predict trajectory, range, and max height instantly. Interactive parabolic motion calculator — free online physics tool.",
     icon: "/icons/parabola.png",
     relatedBlogSlug: "projectile-parabolic-motion",
   },
   {
     id: 8,
     name: "Inclined Plane",
-    desc: "Block sliding on an inclined plane.",
+    desc: "Simulate a block sliding down an inclined plane with friction. Adjust angle, mass, and surface to explore forces, acceleration, and Newton's laws interactively.",
     link: "/simulations/InclinedPlane",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     icon: "/icons/inclined.png",

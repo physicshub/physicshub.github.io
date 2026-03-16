@@ -3,8 +3,8 @@ import TAGS from "../tags.js";
 export const ballFreeFallBlog = {
   id: "bb-004",
   slug: "ball-free-fall-comprehensive-guide",
-  name: "Free Fall and External Forces: A Complete Physics Journey",
-  desc: "A comprehensive exploration of gravitational motion, atmospheric forces, and planetary physics through the lens of a falling ball subject to wind and resistance.",
+  name: "Free Fall & Air Resistance: Interactive Physics Simulation Guide",
+  desc: "Explore how gravity, air resistance, and wind affect a falling ball. Interactive simulations and clear explanations covering free fall, drag force, and planetary gravity — from beginner to advanced.",
   tags: [TAGS.MEDIUM, TAGS.COLLISION, TAGS.PHYSICS, TAGS.GRAVITY],
   theory: {
     title: "Free Fall Dynamics: From Vacuum to Atmosphere",
