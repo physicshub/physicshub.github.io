@@ -178,12 +178,10 @@ export default function Blog() {
         }
         .blog-view-btn--active {
           background: var(--accent-color);
-          color: #000;
           opacity: 1;
         }
         .blog-view-btn--active:hover {
           background: var(--accent-color);
-          color: #000;
           opacity: 1;
         }
 
