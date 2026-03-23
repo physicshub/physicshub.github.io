@@ -73,6 +73,14 @@ const chapters = [
     icon: "/icons/inclined.png",
   },
   {
+    id: 9,
+    name: "Circular Motion",
+    desc: "Explore uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed interactively.",
+    link: "/simulations/CircularMotion",
+    tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.KINEMATICS, TAGS.VECTORS],
+    icon: "/icons/circular.png",
+  },
+  {
     id: 0,
     name: "Browser Performance & Stress Test",
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
