@@ -1,11 +1,11 @@
 import { physicsYToScreenY } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
-  radius: 2,
+  radius: 1,
   speed: 2,
   mass: 1,
   size: 0.3,
-  color: "#22c55e",
+  color: "#7f7f7f",
   trailEnabled: true,
 }; //radius, tangential speed, mass, size, color, trailEnabled defaults
 
