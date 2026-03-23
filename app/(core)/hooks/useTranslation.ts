@@ -10,7 +10,6 @@ type Translations = Record<string, string>;
 interface LanguageMeta {
   name: string;
   completed: boolean;
-  fallbackOnly: boolean;
 }
 
 type MetaConfig = Record<string, LanguageMeta>;
@@ -76,8 +75,6 @@ export const useTranslation = (lang?: string): UseTranslationResult => {
         setMetaConfig(meta);
 
         const currentMeta = meta[language];
-
-        // If not completed or fallbackOnly, we use the original English text (DEFAULT_LANG)
         // so that Google Translate can translate it normally.
         const langToLoad = currentMeta?.completed ? language : DEFAULT_LANG;
 

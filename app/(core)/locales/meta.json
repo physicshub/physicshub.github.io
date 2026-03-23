@@ -1,32 +1,26 @@
 {
   "en": {
     "name": "English",
-    "completed": true,
-    "fallbackOnly": false
+    "completed": true
   },
   "it": {
     "name": "Italian",
-    "completed": false,
-    "fallbackOnly": true
+    "completed": false
   },
   "es": {
     "name": "Spanish",
-    "completed": false,
-    "fallbackOnly": true
+    "completed": false
   },
   "fr": {
     "name": "French",
-    "completed": false,
-    "fallbackOnly": true
+    "completed": false
   },
   "de": {
     "name": "German",
-    "completed": false,
-    "fallbackOnly": true
+    "completed": false
   },
   "ar": {
     "name": "Arabic",
-    "completed": false,
-    "fallbackOnly": true
+    "completed": false
   }
 }
