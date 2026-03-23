@@ -5,6 +5,7 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import chaptersData from "../data/chapters.js";
 import { motion, useReducedMotion } from "framer-motion";
+import useTranslation from "../hooks/useTranslation.ts";
 
 // Container variant for staggered child animations
 const containerVariants = (rm) => ({
@@ -86,6 +87,9 @@ const glowVariant = {
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const { t, meta } = useTranslation();
+
+  const isCompleted = meta?.completed || false;
 
   // Compute chapters count
   const chaptersCount = Array.isArray(chaptersData)
@@ -95,13 +99,13 @@ export function Hero() {
       : 0;
 
   // Split heading into words
-  const titleWords = "PhysicsHub – Best website to learn physics easily.".split(
-    " "
-  );
+  const titleWords = t(
+    "PhysicsHub – Best website to learn physics easily."
+  ).split(" ");
 
   return (
     <motion.div
-      className="ph-hero__container"
+      className={`ph-hero__container ${isCompleted ? "notranslate" : ""}`}
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       animate="show"
@@ -128,21 +132,22 @@ export function Hero() {
 
       {/* Subtitle */}
       <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
-        Experience physics in real time, uncover the concepts behind the
-        formulas, and instantly see how they apply to the real world.
+        {t(
+          "Experience physics in real time, uncover the concepts behind the formulas, and instantly see how they apply to the real world."
+        )}
       </motion.p>
 
       {/* CTA buttons */}
       <motion.div className="ph-hero__ctas" variants={fadeUp(reduceMotion)}>
         <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
           <Link className="ph-btn ph-btn--primary main-btn" href="/simulations">
-            Go to Simulations
+            {t("Go to Simulations")}
             <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
           </Link>
         </motion.div>
         <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
           <Link className="ph-btn ph-btn--ghost main-btn" href="/contribute">
-            Contribute
+            {t("Contribute")}
             <FontAwesomeIcon icon={faGithub} style={{ marginLeft: 8 }} />
           </Link>
         </motion.div>
@@ -150,7 +155,7 @@ export function Hero() {
 
       {/* Info text */}
       <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
-        Currently {chaptersCount} chapters available.
+        {t("Currently")} {chaptersCount} {t("chapters available.")}
       </motion.p>
     </motion.div>
   );

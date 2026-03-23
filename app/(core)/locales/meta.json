@@ -1,0 +1,32 @@
+{
+  "en": {
+    "name": "English",
+    "completed": true,
+    "fallbackOnly": false
+  },
+  "it": {
+    "name": "Italian",
+    "completed": false,
+    "fallbackOnly": true
+  },
+  "es": {
+    "name": "Spanish",
+    "completed": false,
+    "fallbackOnly": true
+  },
+  "fr": {
+    "name": "French",
+    "completed": false,
+    "fallbackOnly": true
+  },
+  "de": {
+    "name": "German",
+    "completed": false,
+    "fallbackOnly": true
+  },
+  "ar": {
+    "name": "Arabic",
+    "completed": false,
+    "fallbackOnly": true
+  }
+}

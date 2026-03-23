@@ -50,7 +50,9 @@ export default function ContributorsSection() {
               />
             </a>
             <div className="contributor-info">
-              <p className="contributor-name">{c.login}</p>
+              <p className="contributor-name" translate="no">
+                {c.login}
+              </p>
               <p className="contributor-data">
                 {c.contributions} {c.contributions === 1 ? "commit" : "commits"}
               </p>
