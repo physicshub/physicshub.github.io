@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 // Default language if no preference is set
 const DEFAULT_LANG = "en";
 
+// Define the shape
 type Translations = Record<string, string>;
 
 interface LanguageMeta {
