@@ -75,6 +75,20 @@
   display: none;
 }
 
+/* Prevent Google Translate injected iframe from causing CLS */
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip-content {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
 /* Globe icon */
 .globe-icon {
   position: absolute;

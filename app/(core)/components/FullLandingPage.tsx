@@ -12,10 +12,10 @@ import ScrollDown from "./ScrollDown";
 
 export default function FullLandingPage() {
   const [stats, setStats] = useState({
-    online: null,
-    visibleMembers: null,
-    channels: null,
-    voiceActive: null,
+    online: 0,
+    visibleMembers: 0,
+    channels: 0,
+    voiceActive: 0,
     serverName: "",
   });
 

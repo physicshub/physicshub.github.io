@@ -235,6 +235,7 @@
   display: block;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  min-width: 2ch;
 }
 
 @media (max-width: 640px) {
