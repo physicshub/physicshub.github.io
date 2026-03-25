@@ -173,6 +173,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/146768856?v=4",
       "profile": "https://github.com/GigaWHATT",
       "contributions": ["code"]
+    },
+    {
+      "login": "Nitin23123",
+      "name": "Nitin Tanwar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/166863746?v=4",
+      "profile": "https://madebynitin.netlify.app/",
+      "contributions": ["code", "bug"]
     }
   ]
 }
