@@ -1,0 +1,26 @@
+{
+  "en": {
+    "name": "English",
+    "completed": true
+  },
+  "it": {
+    "name": "Italian",
+    "completed": false
+  },
+  "es": {
+    "name": "Spanish",
+    "completed": false
+  },
+  "fr": {
+    "name": "French",
+    "completed": false
+  },
+  "de": {
+    "name": "German",
+    "completed": false
+  },
+  "ar": {
+    "name": "Arabic",
+    "completed": false
+  }
+}
