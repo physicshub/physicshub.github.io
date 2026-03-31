@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://physicshub.github.io/",
     title: "Physics Portal – Interactive Physics Simulations Online",
+    siteName: "PhysicsHub",
     description:
       "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
     images: ["/Thumbnail.png"],
@@ -57,11 +58,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Create the JSON-LD object
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "PhysicsHub",
+    url: "https://physicshub.github.io/",
+  };
+
   return (
     <FeedbackProvider>
       <html lang="en" dir="ltr">
         <body>
-          {/* Google Analytics */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
             strategy="afterInteractive"
