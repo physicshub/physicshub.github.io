@@ -144,8 +144,8 @@ export default function GoogleTranslator() {
       // Update cookie
       const hostname = window.location.hostname;
       const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
-      const domainAttr = isLocal ? "" : `; domain=${hostname}`;
-      document.cookie = `googtrans=/en/${languageCode}; path=/ ${domainAttr}`;
+      const domainAttr = isLocal ? "" : `; domain=.${hostname}`;
+      document.cookie = `googtrans=/en/${languageCode}; path=/${domainAttr}; SameSite=Lax`;
 
       // Notify useTranslation
       window.dispatchEvent(
