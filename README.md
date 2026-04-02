@@ -46,6 +46,8 @@
 
 ## 📚 About
 
+![Stack Fingerprint](https://stackfingerprint.vercel.app/api/card?repo=physicshub/physicshub.github.io&theme=abyss&layout=classic&size=md&icons=icononly&pills=round)
+
 **PhysicsHub** is a free, open-source web app that makes physics accessible through interactive simulations and clearly written theory. Whether you're a student preparing for exams or just curious about how the universe works, PhysicsHub makes complex formulas click.
 
 - 🔬 **Interactive simulations** to visualize physics concepts in real time

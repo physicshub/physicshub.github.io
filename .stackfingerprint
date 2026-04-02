@@ -1,0 +1,13 @@
+{
+  "$schema": "https://stackfingerprint.vercel.app/schema.json",
+  "card": {
+    "repo": "physicshub/physicshub.github.io",
+    "theme": "abyss",
+    "layout": "classic",
+    "size": "md",
+    "icons": "icononly",
+    "pills": "round",
+    "accentLine": "dots"
+  },
+  "ignore": ["husky", "github-actions", "npm", "postcss"]
+}
