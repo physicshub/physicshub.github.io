@@ -15,9 +15,10 @@ function NumberInput({
         {label}
       </label>
       <input
-        type="number"
+        type="text"
+        inputMode="numeric"
         id={name}
-        value={val}
+        value={val === undefined || val === null ? "" : val}
         min={min}
         max={max}
         step={step || 1}

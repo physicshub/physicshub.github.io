@@ -41,9 +41,15 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
               min={field.min}
               max={field.max}
               step={field.step}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                onChange(field.name, Number(e.target.value))
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const rawValue = e.target.value;
+                // Allow empty string
+                if (rawValue === "") {
+                  onChange(field.name, "");
+                } else {
+                  onChange(field.name, Number(rawValue));
+                }
+              }}
             />
           );
         }
