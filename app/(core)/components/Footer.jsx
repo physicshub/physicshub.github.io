@@ -49,19 +49,21 @@ function Footer() {
           </p>
         </div>
         <div className="footer-section footer-links">
-          <h3 className="footer-center">Quick Links</h3>
+          <h3>Quick Links</h3>
           <ul>
             {links.map(({ to, label }) => (
               <li key={to}>
-                <div className="footer-links-dot" />
                 <Link href={to}>{label}</Link>
               </li>
             ))}
             <li>
-              <div className="footer-links-dot" />
-              <a onClick={openFeedback} style={{ cursor: "pointer" }}>
+              <button
+                type="button"
+                className="footer-feedback-link"
+                onClick={openFeedback}
+              >
                 Leave Feedback
-              </a>
+              </button>
             </li>
           </ul>
         </div>
