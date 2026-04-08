@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { Logo } from "./Logo";
 import NavMenu from "./Nav";
 import { Theme } from "./Theme";
+import GitHubHeaderBadge from "./GitHubHeaderBadge.jsx";
 import { useSticky } from "../hooks/useSticky";
 import { useTheme } from "../hooks/useTheme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,6 +47,7 @@ export default function Header() {
 
         <div className="controls">
           <GoogleTranslator />
+          <GitHubHeaderBadge mode={mode} />
           <Theme mode={mode} onToggle={toggleMode} />
         </div>
       </div>
