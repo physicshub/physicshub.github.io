@@ -9,6 +9,13 @@ function NumberInput({
   name,
   step,
 }) {
+  // Convert to string for display, handling all cases
+  let displayValue = "";
+  if (val === "" || val === undefined || val === null) {
+    displayValue = "";
+  } else {
+    displayValue = String(val);
+  }
   return (
     <div className="control-group">
       <label className="input-label" htmlFor={name}>
@@ -18,7 +25,7 @@ function NumberInput({
         type="text"
         inputMode="numeric"
         id={name}
-        value={val === undefined || val === null ? "" : val}
+        value={displayValue}
         min={min}
         max={max}
         step={step || 1}

@@ -43,11 +43,22 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
               step={field.step}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const rawValue = e.target.value;
+
                 // Allow empty string
                 if (rawValue === "") {
                   onChange(field.name, "");
-                } else {
-                  onChange(field.name, Number(rawValue));
+                  return;
+                }
+                // Check if it ends with a dot (user is typing decimal)
+                if (rawValue.endsWith(".")) {
+                  // Pass as string - don't convert to number yet
+                  onChange(field.name, rawValue);
+                  return;
+                }
+                // Check if it's a valid number
+                const num = parseFloat(rawValue);
+                if (!isNaN(num)) {
+                  onChange(field.name, num);
                 }
               }}
             />
