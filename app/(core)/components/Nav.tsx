@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
+import useTranslation from "../../(core)/hooks/useTranslation";
 
 const menuItems = [
   { href: "/", label: "Home" },
@@ -15,6 +16,9 @@ export default function NavMenu() {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   const updateUnderline = useCallback(() => {
     if (!navRef.current) return;
@@ -41,7 +45,7 @@ export default function NavMenu() {
   }, [updateUnderline]);
 
   return (
-    <nav className="nav-menu">
+    <nav className={`nav-menu ${isCompleted ? "notranslate" : ""}`}>
       <ul className="nav-list" ref={navRef}>
         {menuItems.map(({ href, label }) => (
           <li key={href}>
@@ -49,7 +53,7 @@ export default function NavMenu() {
               href={href}
               className={`nav-link ${pathname === href ? "active" : ""}`}
             >
-              {label}
+              {t(label)}
             </Link>
           </li>
         ))}
