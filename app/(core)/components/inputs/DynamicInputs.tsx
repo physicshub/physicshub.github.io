@@ -56,7 +56,7 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
                   return;
                 }
                 // Check if it's a valid number
-                const num = parseFloat(rawValue);
+                const num = Number(rawValue);
                 if (!isNaN(num)) {
                   onChange(field.name, num);
                 }
