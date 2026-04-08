@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 interface Props {
@@ -7,7 +7,15 @@ interface Props {
 }
 
 export const Theme = ({ mode, onToggle }: Props) => {
-  const isLight = mode === "light";
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const isLight = mounted && mode === "light";
 
   return (
     <button
