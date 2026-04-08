@@ -190,6 +190,9 @@ header.sticky {
 nav {
   position: relative;
   z-index: 2100;
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 nav ul {
@@ -238,8 +241,68 @@ nav a:hover::after {
 .controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  width: 25%;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.github-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.75rem;
+  min-width: 9.25rem;
+  padding: 0 0.85rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.github-header-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.24);
+}
+
+.github-header-badge--dark {
+  background: linear-gradient(to top, #020617, #0f172a);
+  color: #f8fafc;
+}
+
+.github-header-badge--light {
+  background: linear-gradient(to top, #f8fafc, #f1f5f9);
+  color: #1c1917;
+}
+
+.github-header-badge__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.github-header-badge__viewport {
+  position: relative;
+  display: block;
+  height: 1.15rem;
+  overflow: hidden;
+  min-width: 7rem;
+}
+
+.github-header-badge__track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease;
+}
+
+.github-header-badge__label {
+  display: flex;
+  align-items: center;
+  height: 1.15rem;
+  white-space: nowrap;
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
 .search-container {
@@ -463,6 +526,7 @@ header.open nav ul {
     top: 100%;
     left: 0;
     width: 100%;
+    display: block;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease;
