@@ -9,6 +9,7 @@ import Link from "next/link";
 import BackToTopButton from "./BackToTop";
 import { useFeedback } from "../context/FeedbackProvider";
 import { faBug } from "@fortawesome/free-solid-svg-icons";
+import useTranslation from "../hooks/useTranslation";
 
 const links = [
   { label: "Home", to: "/", exact: true },
@@ -24,12 +25,15 @@ function Footer() {
   // 2. Inizializza l'hook per ottenere la funzione openFeedback
   const { openFeedback } = useFeedback();
 
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+
   const version = process.env.NEXT_PUBLIC_APP_VERSION
     ? `v${process.env.NEXT_PUBLIC_APP_VERSION}`
     : "Loading...";
 
   return (
-    <footer>
+    <footer className={isCompleted ? "notranslate" : ""}>
       <div className="footer-content">
         <div className="footer-section footer-about">
           <h3>
@@ -44,29 +48,30 @@ function Footer() {
             </a>
           </h3>
           <p>
-            A small web application to help student understand physics with cool
-            interactive simulations and easily understandable theory.
+            {t(
+              "A small web application to help student understand physics with cool interactive simulations and easily understandable theory."
+            )}
           </p>
         </div>
         <div className="footer-section footer-links">
-          <h3 className="footer-center">Quick Links</h3>
+          <h3 className="footer-center">{t("Quick Links")}</h3>
           <ul>
             {links.map(({ to, label }) => (
               <li key={to}>
                 <div className="footer-links-dot" />
-                <Link href={to}>{label}</Link>
+                <Link href={to}>{t(label)}</Link>
               </li>
             ))}
             <li>
               <div className="footer-links-dot" />
               <a onClick={openFeedback} style={{ cursor: "pointer" }}>
-                Leave Feedback
+                {t("Leave Feedback")}
               </a>
             </li>
           </ul>
         </div>
         <div className="footer-section footer-socials">
-          <h3 className="footer-center">Connect</h3>
+          <h3 className="footer-center">{t("Connect")}</h3>
           <div className="footer-socials-inner">
             <a
               href="https://github.com/physicshub/physicshub.github.io"
@@ -92,11 +97,11 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p>
-          &copy; {year} @mattqdev. Released under the{" "}
-          <a href="https://opensource.org/licenses/MIT">MIT License</a>. Credits
-          to <a href="https://p5js.org/">p5.js</a> and{" "}
-          <a href="https://natureofcode.com/">Nature of Code</a> for some
-          simulations concepts.
+          &copy; {year} @mattqdev. {t("Released under the")}{" "}
+          <a href="https://opensource.org/licenses/MIT">{t("MIT License")}</a>.{" "}
+          {t("Credits to")} <a href="https://p5js.org/">p5.js</a> {t("and")}{" "}
+          <a href="https://natureofcode.com/">Nature of Code</a>{" "}
+          {t("for some simulations concepts.")}
         </p>
         <BackToTopButton />
       </div>
