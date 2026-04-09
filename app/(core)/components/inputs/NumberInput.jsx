@@ -6,6 +6,7 @@ function NumberInput({
   disabled = false,
   placeholder,
   onChange,
+  onBlur,
   name,
   step,
 }) {
@@ -32,6 +33,7 @@ function NumberInput({
         placeholder={placeholder}
         className="input-number"
         onChange={onChange}
+        onBlur={onBlur}
         disabled={disabled}
       />
     </div>
