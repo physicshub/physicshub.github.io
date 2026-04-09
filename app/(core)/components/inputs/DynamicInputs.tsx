@@ -42,7 +42,10 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
               max={field.max}
               step={field.step}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const rawValue = e.target.value;
+                let rawValue = e.target.value;
+
+                // Replace comma with dot
+                rawValue = rawValue.replace(/,/g, ".");
 
                 // Allow empty string
                 if (rawValue === "") {
@@ -55,10 +58,25 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
                   onChange(field.name, rawValue);
                   return;
                 }
-                // Check if it's a valid number
-                const num = Number(rawValue);
-                if (!isNaN(num)) {
-                  onChange(field.name, num);
+                // Only validate, don't convert to number yet
+                const isValidNumber = /^\d*\.?\d*$/.test(rawValue);
+
+                if (isValidNumber) {
+                  // Store as string to preserve formatting like "5.0"
+                  onChange(field.name, rawValue);
+                }
+              }}
+              onBlur={() => {
+                const currentValue = val;
+                if (
+                  typeof currentValue === "string" &&
+                  currentValue !== "" &&
+                  currentValue !== "."
+                ) {
+                  const num = Number(currentValue);
+                  if (!isNaN(num)) {
+                    onChange(field.name, num);
+                  }
                 }
               }}
             />
