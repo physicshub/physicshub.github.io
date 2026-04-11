@@ -63,4 +63,11 @@ export const routes = [
     changefreq: "weekly",
     priority: 0.7,
   },
+  {
+    path: "/simulations/ThreeBodyProblem",
+    component: "ThreeBodyProblem",
+    changefreq: "weekly",
+    priority: 0.7,
+  },
 ];
+

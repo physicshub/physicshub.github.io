@@ -138,6 +138,10 @@ const TAGS = {
     name: "Oscillations",
     color: "pink",
   },
+  CHAOS: {
+    name: "Chaos",
+    color: "purple",
+  },
 };
 
 export default TAGS;
