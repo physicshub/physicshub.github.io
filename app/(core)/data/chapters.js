@@ -81,6 +81,14 @@ const chapters = [
     icon: "/icons/circular.png",
   },
   {
+    id: 10,
+    name: "Three Body Problem",
+    desc: "Simulate the chaotic three-body problem in real time. Explore gravitational interactions between three bodies with customizable masses, initial conditions, and preset configurations including figure-8 orbits and chaotic motion.",
+    link: "/simulations/ThreeBodyProblem",
+    tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.GRAVITY, TAGS.CHAOS],
+    icon: "/icons/threebody.png",
+  },
+  {
     id: 0,
     name: "Browser Performance & Stress Test",
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
