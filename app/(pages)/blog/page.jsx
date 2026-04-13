@@ -7,6 +7,7 @@ import { blogsArray } from "../../(core)/data/articles/index.js";
 import { Search } from "../../(core)/components/Search.jsx";
 import { useRouter } from "next/navigation";
 import useMobile from "../../(core)/hooks/useMobile.ts";
+import useTranslation from "../../(core)/hooks/useTranslation.ts";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,18 +19,13 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
-// ─── View modes ───────────────────────────────────────────────────────────────
-const VIEW_MODES = [
-  { id: "card", icon: faTableCells, label: "Card view" },
-  { id: "list", icon: faBars, label: "List view" },
-  { id: "compact", icon: faGrip, label: "Compact view" },
-];
+// View mode toggle moved inside component for translation
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 // ─── ListRow – used only in list view ─────────────────────────────────────────
-function ListRow({ chap }) {
+function ListRow({ chap, t }) {
   const router = useRouter();
   return (
     <article
@@ -45,8 +41,8 @@ function ListRow({ chap }) {
             <Tag key={tag.id || i} tag={tag} />
           ))}
         </div>
-        <h3 className="blog-list-row__title">{chap.name}</h3>
-        <p className="blog-list-row__desc">{chap.desc}</p>
+        <h3 className="blog-list-row__title">{t(chap.name)}</h3>
+        <p className="blog-list-row__desc">{t(chap.desc)}</p>
       </div>
       <span className="blog-list-row__arrow">›</span>
     </article>
@@ -54,7 +50,7 @@ function ListRow({ chap }) {
 }
 
 // ─── CompactCard – used only in compact view ──────────────────────────────────
-function CompactCard({ chap }) {
+function CompactCard({ chap, t }) {
   const router = useRouter();
   return (
     <article
@@ -69,17 +65,17 @@ function CompactCard({ chap }) {
           <Tag key={tag.id || i} tag={tag} />
         ))}
       </div>
-      <h3 className="blog-compact-card__title">{chap.name}</h3>
-      <p className="blog-compact-card__desc">{chap.desc}</p>
+      <h3 className="blog-compact-card__title">{t(chap.name)}</h3>
+      <p className="blog-compact-card__desc">{t(chap.desc)}</p>
     </article>
   );
 }
 
 // ─── ViewToggle ────────────────────────────────────────────────────────────────
-function ViewToggle({ current, onChange }) {
+function ViewToggle({ current, onChange, t, viewModes }) {
   return (
-    <div className="blog-view-toggle" role="group" aria-label="View mode">
-      {VIEW_MODES.map(({ id, icon, label }) => (
+    <div className="blog-view-toggle" role="group" aria-label={t("View mode")}>
+      {viewModes.map(({ id, icon, label }) => (
         <button
           key={id}
           className={`blog-view-btn${current === id ? " blog-view-btn--active" : ""}`}
@@ -96,6 +92,15 @@ function ViewToggle({ current, onChange }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Blog() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+
+  const VIEW_MODES = [
+    { id: "card", icon: faTableCells, label: t("Card view") },
+    { id: "list", icon: faBars, label: t("List view") },
+    { id: "compact", icon: faGrip, label: t("Compact view") },
+  ];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("card"); // "card" | "list" | "compact"
   const router = useRouter();
@@ -131,8 +136,9 @@ export default function Blog() {
         : "blogs-list blogs-list--compact";
 
   const renderBlog = (chap, key) => {
-    if (viewMode === "list") return <ListRow key={key} chap={chap} />;
-    if (viewMode === "compact") return <CompactCard key={key} chap={chap} />;
+    if (viewMode === "list") return <ListRow key={key} chap={chap} t={t} />;
+    if (viewMode === "compact")
+      return <CompactCard key={key} chap={chap} t={t} />;
     return (
       <Chapter
         key={key}
@@ -325,7 +331,9 @@ export default function Blog() {
         }
       `}</style>
 
-      <div className="simulations-container blogs-container">
+      <div
+        className={`simulations-container blogs-container ${isCompleted ? "notranslate" : ""}`}
+      >
         {/* ── header ── */}
         <div className="header-controls">
           <div className="blog-header-row">
@@ -336,15 +344,20 @@ export default function Blog() {
                   <button
                     onClick={handleCreateNewBlog}
                     className="ph-btn ph-btn--primary cursor-pointer"
-                    aria-label="Create a new blog"
+                    aria-label={t("Create a new blog")}
                   >
                     <FontAwesomeIcon icon={faPlus} />
-                    New Blog
+                    {t("New Blog")}
                   </button>
                 ) : undefined
               }
             />
-            <ViewToggle current={viewMode} onChange={setViewMode} />
+            <ViewToggle
+              current={viewMode}
+              onChange={setViewMode}
+              t={t}
+              viewModes={VIEW_MODES}
+            />
           </div>
         </div>
 
@@ -353,7 +366,7 @@ export default function Blog() {
           <section className="pinned-blogs-section">
             <h2 className="blogs-header">
               <FontAwesomeIcon icon={faThumbtack} className="pinned-icon" />
-              Pinned Blogs
+              {t("Pinned Blogs")}
             </h2>
             <div className={gridClass}>
               {pinnedBlogs.map((chap, i) => renderBlog(chap, `pinned-${i}`))}
@@ -366,10 +379,10 @@ export default function Blog() {
           <h2 className="blogs-header">
             {searchTerm === "" ? (
               <>
-                <FontAwesomeIcon icon={faList} /> All the blogs
+                <FontAwesomeIcon icon={faList} /> {t("All the blogs")}
               </>
             ) : (
-              "Search Results"
+              t("Search Results")
             )}
           </h2>
 
@@ -378,7 +391,7 @@ export default function Blog() {
 
             {filteredUnpinnedChapters.length === 0 && searchTerm.length > 0 && (
               <p className="no-results">
-                Nothing found for &quot;{searchTerm}&quot;.
+                {t("Nothing found for")} &quot;{searchTerm}&quot;.
               </p>
             )}
           </div>
@@ -389,7 +402,7 @@ export default function Blog() {
           <button
             onClick={handleCreateNewBlog}
             className="fab-new-blog"
-            aria-label="Create a new blog"
+            aria-label={t("Create a new blog")}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>

@@ -1,5 +1,6 @@
 // app/(core)/components/theory/TheoryList.tsx
 import React, { useMemo } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types.ts";
@@ -18,6 +19,8 @@ export const TheoryList: React.FC<TheoryListProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const items = useMemo(() => normalizeItems(rawItems), [rawItems]);
   const isBlockEditable =
     isEditing &&
@@ -47,7 +50,7 @@ export const TheoryList: React.FC<TheoryListProps> = ({
 
   const handleAddItem = () => {
     if (!isBlockEditable) return;
-    const newItems = [...items, "New Item"];
+    const newItems = [...items, t("New Item")];
     onContentUpdate(
       sectionIndex,
       blockIndex,
@@ -59,7 +62,9 @@ export const TheoryList: React.FC<TheoryListProps> = ({
   const ListTag = ordered ? "ol" : "ul";
 
   return (
-    <div className="theory-list-container">
+    <div
+      className={`theory-list-container ${isCompleted ? "notranslate" : ""}`}
+    >
       <ListTag className="theory-list">
         {items.map((it, i) => (
           <li
@@ -69,7 +74,7 @@ export const TheoryList: React.FC<TheoryListProps> = ({
             suppressContentEditableWarning={suppressWarning}
             onBlur={(e) => handleItemBlur(e, i)}
           >
-            {isBlockEditable ? it : parseBoldText(it)}
+            {isBlockEditable ? it : parseBoldText(t(it))}
           </li>
         ))}
       </ListTag>
@@ -79,7 +84,7 @@ export const TheoryList: React.FC<TheoryListProps> = ({
           onClick={handleAddItem}
           className="ph-btn ph-btn--small add-item-btn"
         >
-          <FontAwesomeIcon icon={faPlus} /> Add Item
+          <FontAwesomeIcon icon={faPlus} /> {t("Add Item")}
         </button>
       )}
     </div>

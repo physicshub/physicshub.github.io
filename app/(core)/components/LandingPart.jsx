@@ -1,5 +1,6 @@
 // app/(core)/components/LandingPart.jsx
 import React, { useState } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
@@ -94,10 +95,12 @@ export function LandingPart({
 }) {
   const reduceMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   return (
     <motion.div
-      className="ph-hero__container"
+      className={`ph-hero__container ${isCompleted ? "notranslate" : ""}`}
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       whileInView="show"
@@ -111,11 +114,11 @@ export function LandingPart({
       )}
 
       <motion.h2 className="ph-hero__title" variants={fadeUp(reduceMotion)}>
-        {title}
+        {t(title)}
       </motion.h2>
 
       <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
-        {subtitle}
+        {t(subtitle)}
       </motion.p>
 
       <Popup
@@ -148,7 +151,7 @@ export function LandingPart({
                   target={target || "_blank"}
                   rel="noopener noreferrer"
                 >
-                  {label}
+                  {t(label)}
                   {icon && (
                     <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />
                   )}
@@ -159,7 +162,7 @@ export function LandingPart({
                   href={to}
                   target={target}
                 >
-                  {label}
+                  {t(label)}
                   {icon && (
                     <FontAwesomeIcon icon={icon} style={{ marginLeft: 8 }} />
                   )}
@@ -174,14 +177,14 @@ export function LandingPart({
       <motion.div
         className="ph-hero__stats"
         role="list"
-        aria-label="Stats"
+        aria-label={t("Stats")}
         variants={fadeUp(reduceMotion)}
       >
         {stats.map((stat, i) => (
           <div className="ph-stat" role="listitem" key={i}>
             <FontAwesomeIcon icon={stat.icon} />
-            <span className="ph-stat__label">{stat.label}</span>
-            <span className="ph-stat__value">{stat.value}</span>
+            <span className="ph-stat__label">{t(stat.label)}</span>
+            <span className="ph-stat__value">{t(stat.value)}</span>
           </div>
         ))}
       </motion.div>

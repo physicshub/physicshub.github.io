@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShareNodes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -16,6 +17,8 @@ interface BlogInteractionsProps {
 }
 
 export default function BlogInteractions({ title }: BlogInteractionsProps) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -42,7 +45,7 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
   };
 
   return (
-    <>
+    <div className={isCompleted ? "notranslate" : ""}>
       {/* 1. PROGRESS BAR */}
       <div
         className="reading-progress-bar"
@@ -53,14 +56,14 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
 
       {/* 3. SHARE BUTTONS SECTION */}
       <div className="share-section">
-        <span className="share-label">Share:</span>
+        <span className="share-label">{t("Share:")}</span>
 
         <a
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn linkedin"
-          aria-label="Share on LinkedIn"
+          aria-label={t("Share on LinkedIn")}
         >
           <FontAwesomeIcon icon={faLinkedin} />
         </a>
@@ -70,7 +73,7 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn twitter"
-          aria-label="Share on Twitter"
+          aria-label={t("Share on Twitter")}
         >
           <FontAwesomeIcon icon={faTwitter} />
         </a>
@@ -80,7 +83,7 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn whatsapp"
-          aria-label="Share on WhatsApp"
+          aria-label={t("Share on WhatsApp")}
         >
           <FontAwesomeIcon icon={faWhatsapp} />
         </a>
@@ -88,12 +91,12 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
         <button
           onClick={copyLink}
           className="share-btn copy"
-          aria-label="Copy Link"
+          aria-label={t("Copy Link")}
         >
           <FontAwesomeIcon icon={copied ? faCheck : faShareNodes} />
-          {copied && <span className="copy-feedback">Copied!</span>}
+          {copied && <span className="copy-feedback">{t("Copied!")}</span>}
         </button>
       </div>
-    </>
+    </div>
   );
 }

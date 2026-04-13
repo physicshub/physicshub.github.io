@@ -9,6 +9,7 @@ import {
   faGift,
   faHandsHelping,
 } from "@fortawesome/free-solid-svg-icons";
+import useTranslation from "../../(core)/hooks/useTranslation.ts";
 import Link from "next/link";
 
 // Lazy load del componente ContributorsSection con ritardo artificiale (3s)
@@ -22,13 +23,17 @@ const ContributorsSection = React.lazy(
 );
 
 export default function Contribute() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="contribution-page-container">
-      <h1 className="title text-3xl">Contribute to PhysicsHub</h1>
+    <div
+      className={`contribution-page-container ${isCompleted ? "notranslate" : ""}`}
+    >
+      <h1 className="title text-3xl">{t("Contribute to PhysicsHub")}</h1>
       <p>
-        PhysicsHub is an open-source project: anyone can help make it better by
-        adding simulations, improving the code, or creating new educational
-        resources.
+        {t(
+          "PhysicsHub is an open-source project: anyone can help make it better by adding simulations, improving the code, or creating new educational resources."
+        )}
       </p>
 
       <div className="contribution-grid">
@@ -36,11 +41,11 @@ export default function Contribute() {
           <div className="card-icon">
             <FontAwesomeIcon icon={faUsers} />
           </div>
-          <h3 className="card-title">Who can contribute</h3>
+          <h3 className="card-title">{t("Who can contribute")}</h3>
           <p className="card-description">
-            Anyone can contribute to this project, even if you aren&apos;t a
-            programmer. We need people that want to write the theory part or
-            just to give us some new ideas.
+            {t(
+              "Anyone can contribute to this project, even if you aren't a programmer. We need people that want to write the theory part or just to give us some new ideas."
+            )}
           </p>
         </div>
 
@@ -48,25 +53,25 @@ export default function Contribute() {
           <div className="card-icon">
             <FontAwesomeIcon icon={faFileCode} />
           </div>
-          <h3 className="card-title">How to contribute</h3>
+          <h3 className="card-title">{t("How to contribute")}</h3>
           <ol className="card-list">
             <li>
-              Open the repository on{" "}
+              {t("Open the repository on")}{" "}
               <a
                 href="https://github.com/physicshub/physicshub.github.io"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GitHub
+                {t("GitHub")}
               </a>
             </li>
-            <li>Read the rules in CONTRIBUTING.md</li>
-            <li>Follow the instruction in the README.md</li>
-            <li>Modify the source code</li>
+            <li>{t("Read the rules in CONTRIBUTING.md")}</li>
+            <li>{t("Follow the instruction in the README.md")}</li>
+            <li>{t("Modify the source code")}</li>
             <li>
-              Submit a <strong>pull request</strong>
+              {t("Submit a")} <strong>{t("pull request")}</strong>
             </li>
-            <li>Wait it to be accepted</li>
+            <li>{t("Wait it to be accepted")}</li>
           </ol>
         </div>
 
@@ -74,13 +79,13 @@ export default function Contribute() {
           <div className="card-icon">
             <FontAwesomeIcon icon={faGift} />
           </div>
-          <h3 className="card-title">What contributors get</h3>
+          <h3 className="card-title">{t("What contributors get")}</h3>
           <ul className="card-list">
-            <li>Discord special role</li>
-            <li>Link profile in the README.md</li>
+            <li>{t("Discord special role")}</li>
+            <li>{t("Link profile in the README.md")}</li>
             <li>
-              Link profile in the section{" "}
-              <Link href="/contribute#contributors">below</Link>
+              {t("Link profile in the section")}{" "}
+              <Link href="/contribute#contributors">{t("below")}</Link>
             </li>
           </ul>
         </div>
@@ -89,25 +94,25 @@ export default function Contribute() {
           <div className="card-icon">
             <FontAwesomeIcon icon={faHandsHelping} />
           </div>
-          <h3 className="card-title">Other ways to help</h3>
+          <h3 className="card-title">{t("Other ways to help")}</h3>
           <ul className="card-list">
-            <li>Report bugs or errors</li>
-            <li>Translate the site into other languages</li>
-            <li>Write theory about simulations</li>
+            <li>{t("Report bugs or errors")}</li>
+            <li>{t("Translate the site into other languages")}</li>
+            <li>{t("Write theory about simulations")}</li>
           </ul>
         </div>
       </div>
 
       <p>
-        Join the community on{" "}
+        {t("Join the community on")}{" "}
         <a
           href="https://discord.gg/hT68DTcwfD"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Discord
+          {t("Discord")}
         </a>{" "}
-        and talk with fans and contributors!
+        {t("and talk with fans and contributors!")}
       </p>
 
       <hr />

@@ -10,6 +10,7 @@ import {
   faGripVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { slugify } from "../../../(core)/utils/blogHandling.ts";
+import useTranslation from "../../../(core)/hooks/useTranslation.ts";
 
 import {
   TheoryRendererProps,
@@ -42,6 +43,7 @@ const BlockEditorControls: React.FC<BlockControlsProps> = ({
   children,
   isEditing,
 }) => {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -66,7 +68,7 @@ const BlockEditorControls: React.FC<BlockControlsProps> = ({
       <div className="theory-block-controls">
         <div
           className="drag-handle"
-          title="Drag to move"
+          title={t("Drag to move")}
           {...attributes}
           {...listeners}
         >
@@ -75,7 +77,7 @@ const BlockEditorControls: React.FC<BlockControlsProps> = ({
         {onDuplicateBlock && (
           <button
             onClick={() => onDuplicateBlock(sectionIndex, blockIndex)}
-            title="Duplicate Block"
+            title={t("Duplicate Block")}
             type="button"
           >
             <FontAwesomeIcon icon={faClone} />
@@ -84,7 +86,7 @@ const BlockEditorControls: React.FC<BlockControlsProps> = ({
         {onDeleteBlock && (
           <button
             onClick={() => onDeleteBlock(sectionIndex, blockIndex)}
-            title="Delete Block"
+            title={t("Delete Block")}
             type="button"
           >
             <FontAwesomeIcon icon={faTimes} />
@@ -191,7 +193,7 @@ const renderBlock = (
 
     case "toggle":
       return (
-        <TheoryToggle {...commonProps} title={block.title || "Details"}>
+        <TheoryToggle {...commonProps} title={t(block.title) || t("Details")}>
           {block.content || ""}
         </TheoryToggle>
       );
@@ -220,7 +222,7 @@ const renderBlock = (
     default:
       return (
         <TheoryParagraph {...commonProps}>
-          Unknown block type: {block.type}
+          {t("Unknown block type")}: {block.type}
         </TheoryParagraph>
       );
   }
@@ -234,14 +236,19 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
   onDeleteBlock,
   onDuplicateBlock,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+
   if (!theory || !theory.sections || !Array.isArray(theory.sections)) {
     return (
-      <div className="error-message">Error: Invalid content structure.</div>
+      <div className="error-message">
+        {t("Error: Invalid content structure.")}
+      </div>
     );
   }
 
   return (
-    <div className="theory-renderer">
+    <div className={`theory-renderer ${isCompleted ? "notranslate" : ""}`}>
       {theory.sections.map((section, i) => (
         <TheorySection
           key={i}

@@ -1,11 +1,16 @@
 import React from "react";
+import useTranslation from "../../hooks/useTranslation.ts";
 import PropTypes from "prop-types";
 
 function ColorInput({ label, name, value, onChange }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="color-input-container">
+    <div
+      className={`color-input-container ${isCompleted ? "notranslate" : ""}`}
+    >
       <label htmlFor={name} className="color-input-label">
-        {label}
+        {t(label)}
       </label>
       <input
         id={name}

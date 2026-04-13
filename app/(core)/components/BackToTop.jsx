@@ -2,9 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import useTranslation from "../hooks/useTranslation.ts";
 
 export default function BackToTopButton({ onlyMobile = true }) {
   const [isVisible, setIsVisible] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,8 +31,10 @@ export default function BackToTopButton({ onlyMobile = true }) {
   return (
     <button
       onClick={scrollToTop}
-      className={`back-to-top ${isVisible ? "visible" : ""}`}
-      aria-label="Back to top"
+      className={`back-to-top ${isVisible ? "visible" : ""} ${
+        isCompleted ? "notranslate" : ""
+      }`}
+      aria-label={t("Back to top")}
     >
       <FontAwesomeIcon icon={faArrowUp} />
     </button>

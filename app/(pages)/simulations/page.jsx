@@ -1,12 +1,14 @@
-"use client";
 import { useState, useRef, useEffect } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
+import useTranslation from "../../(core)/hooks/useTranslation.ts";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
 export default function Simulations() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [searchTerm, setSearchTerm] = useState("");
   const [showHero] = useState(() => {
     if (typeof window !== "undefined") {
@@ -67,20 +69,23 @@ export default function Simulations() {
   });
 
   return (
-    <div className="simulations-container">
+    <div
+      className={`simulations-container ${isCompleted ? "notranslate" : ""}`}
+    >
       {/* RENDERING CONDIZIONALE DELLA HERO */}
       {showHero && (
         <section className="simulations-hero">
-          <h1>Interactive Physics Simulations</h1>
+          <h1>{t("Interactive Physics Simulations")}</h1>
           <p>
-            Explore core physics concepts through real-time, interactive
-            experiments
+            {t(
+              "Explore core physics concepts through real-time, interactive experiments"
+            )}
           </p>
           <button
             className="ph-btn ph-btn--primary main-btn"
             onClick={handleStart}
           >
-            Let&apos;s begin
+            {t("Let's begin")}
           </button>
         </section>
       )}

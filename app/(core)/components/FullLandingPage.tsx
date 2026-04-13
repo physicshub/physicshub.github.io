@@ -9,8 +9,11 @@ import GradientBackground from "./GradientBackground.jsx";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faGlobe, faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import ScrollDown from "./ScrollDown";
+import useTranslation from "../hooks/useTranslation.ts";
 
 export default function FullLandingPage() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [stats, setStats] = useState({
     online: 0,
     visibleMembers: 0,
@@ -47,7 +50,10 @@ export default function FullLandingPage() {
   }, []);
 
   return (
-    <section className="ph-hero" aria-label="Hero">
+    <section
+      className={`ph-hero ${isCompleted ? "notranslate" : ""}`}
+      aria-label={t("Hero")}
+    >
       <GradientBackground />
       <Stars color="var(--stars-color)" opacity={0.3} />
       <Comets
@@ -62,31 +68,32 @@ export default function FullLandingPage() {
       <Hero />
       <ScrollDown />
       <LandingPart
-        title={`Join ${stats.serverName || "the community"}`}
-        subtitle="Join other fans and contributors and talk with them!"
+        title={`${t("Join")} ${stats.serverName || t("the community")}`}
+        subtitle={t("Join other fans and contributors and talk with them!")}
         ctas={[
           {
-            label: "Join our Discord",
+            label: t("Join our Discord"),
             to: "https://discord.gg/hT68DTcwfD",
             type: "ghost",
             icon: faDiscord,
             popup: {
-              title: "Thank you for joining us!",
-              description:
-                "We are excited to have you in our Discord community. Feel free to explore the channels, ask questions, and connect with other fans or contributors.",
+              title: t("Thank you for joining us!"),
+              description: t(
+                "We are excited to have you in our Discord community. Feel free to explore the channels, ask questions, and connect with other fans or contributors."
+              ),
             },
           },
         ]}
         stats={[
-          { label: "Online:", value: stats.online ?? "—", icon: faDiscord },
+          { label: t("Online:"), value: stats.online ?? "—", icon: faDiscord },
           // { label: "Membri visibili:", value: stats.visibleMembers ?? "—", icon: faDiscord },
           {
-            label: "Public Channels:",
+            label: t("Public Channels:"),
             value: stats.channels ?? "—",
             icon: faGlobe,
           },
           {
-            label: "Now In VC:",
+            label: t("Now In VC:"),
             value: stats.voiceActive ?? "—",
             icon: faMicrophone,
           },

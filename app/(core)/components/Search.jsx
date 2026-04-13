@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useCallback } from "react";
 import Tag from "./Tag";
+import useTranslation from "../hooks/useTranslation.ts";
 import TAGS from "../data/tags.js";
 
 const TAGS_MAP = Object.values(TAGS).reduce((acc, tag) => {
@@ -23,6 +24,8 @@ export function Search({ onSearch, extraButton }) {
   const [searchText, setSearchText] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   const handleMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
@@ -57,7 +60,7 @@ export function Search({ onSearch, extraButton }) {
   );
 
   return (
-    <div className="search-wrapper">
+    <div className={`search-wrapper ${isCompleted ? "notranslate" : ""}`}>
       <div className="search-header">
         <form
           className="search-container"
@@ -78,7 +81,7 @@ export function Search({ onSearch, extraButton }) {
                     type="button"
                     className="remove-tag-btn"
                     onClick={() => handleRemoveSelectedTag(tagName)}
-                    aria-label={`Remove filter ${tagName}`}
+                    aria-label={`${t("Remove filter")} ${t(tagName)}`}
                   >
                     <FontAwesomeIcon icon={faTimesCircle} />
                   </button>
@@ -89,8 +92,8 @@ export function Search({ onSearch, extraButton }) {
             <input
               type="search"
               name="query"
-              placeholder="Search..."
-              aria-label="Search"
+              placeholder={t("Search...")}
+              aria-label={t("Search")}
               value={searchText}
               onChange={handleTextChange}
             />
@@ -101,7 +104,7 @@ export function Search({ onSearch, extraButton }) {
           className={`filter-toggle ${isMenuOpen ? "open" : ""}`}
           onClick={handleMenuToggle}
           aria-expanded={isMenuOpen}
-          aria-label="Toggle filters menu"
+          aria-label={t("Toggle filters menu")}
         >
           <FontAwesomeIcon icon={faFilter} />
         </button>
@@ -121,6 +124,7 @@ export function Search({ onSearch, extraButton }) {
                 className="filter-button"
                 onClick={() => handleTagToggle(tagName)}
                 aria-pressed={isSelected}
+                title={t(tagName)}
               >
                 <Tag
                   tag={filter}

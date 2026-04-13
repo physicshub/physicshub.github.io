@@ -1,8 +1,11 @@
 import { useRef } from "react";
+import useTranslation from "../../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 export default function UploadButton({ onLoad, simulation }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -15,10 +18,12 @@ export default function UploadButton({ onLoad, simulation }) {
         const parsed = JSON.parse(event.target.result);
         if (onLoad) onLoad(parsed);
         alert(
-          "Inputs for the simulation" + simulation + " uploaded successfully!"
+          t("Inputs for the simulation") +
+            simulation +
+            t(" uploaded successfully!")
         );
       } catch (err) {
-        alert("Error: JSON file is not valid.");
+        alert(t("Error: JSON file is not valid."));
         console.error(err);
       }
     };
@@ -26,11 +31,11 @@ export default function UploadButton({ onLoad, simulation }) {
   };
 
   return (
-    <>
+    <div className={isCompleted ? "notranslate" : ""}>
       <button
         type="button"
         className="btn-glow"
-        title="Upload simulation settings (JSON)"
+        title={t("Upload simulation settings (JSON)")}
         onClick={() => fileInputRef.current.click()}
       >
         <FontAwesomeIcon icon={faUpload} />
@@ -42,6 +47,6 @@ export default function UploadButton({ onLoad, simulation }) {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-    </>
+    </div>
   );
 }

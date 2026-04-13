@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopyright, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
@@ -25,6 +26,8 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [currentSrc, setCurrentSrc] = useState(src);
 
   useEffect(() => {
@@ -42,7 +45,9 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
   };
 
   return (
-    <figure className={`theory-image-container size-${size}`}>
+    <figure
+      className={`theory-image-container size-${size} ${isCompleted ? "notranslate" : ""}`}
+    >
       {isEditing && (
         <div className="image-editor-toolbar">
           <input
@@ -52,7 +57,7 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
             onBlur={() =>
               onContentUpdate?.(sectionIndex!, blockIndex!, "src", currentSrc)
             }
-            placeholder="Image URL"
+            placeholder={t("Image URL")}
             className="url-input"
           />
           <select
@@ -60,10 +65,10 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
             onChange={handleSizeChange}
             className="size-select"
           >
-            <option value="small">Small</option>
-            <option value="medium">Medium</option>
-            <option value="large">Large</option>
-            <option value="full">Full</option>
+            <option value="small">{t("Small")}</option>
+            <option value="medium">{t("Medium")}</option>
+            <option value="large">{t("Large")}</option>
+            <option value="full">{t("Full")}</option>
           </select>
           <button className="upload-btn add-block-btn">
             <FontAwesomeIcon icon={faUpload} />
@@ -80,7 +85,7 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
           src={
             currentSrc || "https://via.placeholder.com/800x400?text=No+Image"
           }
-          alt={alt}
+          alt={t(alt ?? "")}
           className={isEditing ? "editing-border" : ""}
           width={800}
           height={450}
@@ -109,7 +114,7 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
           }
           className="image-caption"
         >
-          {caption || (isEditing ? "Scrivi una didascalia..." : "")}
+          {isEditing ? caption || t("Write a caption...") : t(caption ?? "")}
         </figcaption>
       )}
     </figure>

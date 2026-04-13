@@ -2,10 +2,13 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import useTranslation from "../../hooks/useTranslation.ts";
 import Popup from "../Popup";
 
 export default function DownloadButton({ inputs, simulation }) {
   const [open, setOpen] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   const handleDownload = () => {
     const dataStr =
@@ -23,11 +26,11 @@ export default function DownloadButton({ inputs, simulation }) {
   };
 
   return (
-    <>
+    <div className={isCompleted ? "notranslate" : ""}>
       <button
         onClick={handleClick}
         className="btn-glow"
-        title="Download inputs as JSON file"
+        title={t("Download inputs as JSON file")}
       >
         <FontAwesomeIcon icon={faDownload} />
       </button>
@@ -36,14 +39,15 @@ export default function DownloadButton({ inputs, simulation }) {
         isOpen={open}
         onClose={() => setOpen(false)}
         popupContent={{
-          title: "Download is starting...",
-          description:
-            "If the download does not start automatically, please click on 'Download'.",
+          title: t("Download is starting..."),
+          description: t(
+            "If the download does not start automatically, please click on 'Download'."
+          ),
           buttons: [
             {
               label: (
                 <span>
-                  <FontAwesomeIcon icon={faDownload} /> Download
+                  <FontAwesomeIcon icon={faDownload} /> {t("Download")}
                 </span>
               ),
               onClick: () => handleDownload(),
@@ -52,6 +56,6 @@ export default function DownloadButton({ inputs, simulation }) {
           ],
         }}
       />
-    </>
+    </div>
   );
 }

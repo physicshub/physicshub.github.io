@@ -1,5 +1,6 @@
 // app/(core)/components/theory/BasicComponents.tsx
 import React from "react";
+import useTranslation from "../../../(core)/hooks/useTranslation.ts";
 import { EditableProps, Children } from "./types";
 import { EditableWrapper } from "./EditableWrapper";
 
@@ -7,10 +8,14 @@ import { EditableWrapper } from "./EditableWrapper";
 export const TheorySection: React.FC<
   { id?: string; title?: string; className?: string } & Children & EditableProps
 > = ({ id, children, className }) => {
+  const { meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
     <section
       id={id}
-      className={["theory-section", className].filter(Boolean).join(" ")}
+      className={["theory-section", className, isCompleted ? "notranslate" : ""]
+        .filter(Boolean)
+        .join(" ")}
     >
       <div className="theory-blocks">{children}</div>
     </section>

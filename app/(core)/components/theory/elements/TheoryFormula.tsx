@@ -1,5 +1,5 @@
-// app/(core)/components/theory/TheoryFormula.tsx
 import React, { useState, useRef, useEffect } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
@@ -24,6 +24,8 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [copied, setCopied] = useState(false);
   const liveRef = useRef<HTMLSpanElement | null>(null);
   const [localViewMode, setLocalViewMode] = useState<"edit" | "preview">(
@@ -59,7 +61,7 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
     try {
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
-      if (liveRef.current) liveRef.current.textContent = "Copied";
+      if (liveRef.current) liveRef.current.textContent = t("Copied");
       setTimeout(() => {
         setCopied(false);
         if (liveRef.current) liveRef.current.textContent = "";
@@ -74,7 +76,7 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
 
     return (
       <div
-        className={`theory-formula ${isBlockEditable ? "editable-block" : ""}`}
+        className={`theory-formula ${isBlockEditable ? "editable-block" : ""} ${isCompleted ? "notranslate" : ""}`}
       >
         {isBlockEditable && (
           <div className="edit-switch-bar">
@@ -83,14 +85,14 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
               onClick={() => setLocalViewMode("edit")}
               className={`switch-btn ${mode === "edit" ? "active" : ""}`}
             >
-              <FontAwesomeIcon icon={faCode} /> Edit
+              <FontAwesomeIcon icon={faCode} /> {t("Edit")}
             </button>
             <button
               type="button"
               onClick={() => setLocalViewMode("preview")}
               className={`switch-btn ${mode === "preview" ? "active" : ""}`}
             >
-              <FontAwesomeIcon icon={faEye} /> Preview
+              <FontAwesomeIcon icon={faEye} /> {t("Preview")}
             </button>
           </div>
         )}
@@ -103,7 +105,7 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
               onBlur={handleLatexBlur}
               className="latex-editor-input"
               rows={inline ? 1 : 5}
-              placeholder="Inserisci qui il codice LaTeX..."
+              placeholder={t("Insert LaTeX code here...")}
             />
           </div>
         ) : (
@@ -116,7 +118,7 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
               )
             ) : (
               <div className="latex-placeholder">
-                <FontAwesomeIcon icon={faSquareRootAlt} /> Empty Formula
+                <FontAwesomeIcon icon={faSquareRootAlt} /> {t("Empty Formula")}
               </div>
             )}
           </div>
@@ -131,13 +133,13 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
   }
 
   return (
-    <div className="theory-formula">
+    <div className={`theory-formula ${isCompleted ? "notranslate" : ""}`}>
       <button
         className="copy-btn"
         onClick={handleCopy}
         aria-pressed={copied}
-        aria-label={copied ? "Copied" : "Copy formula"}
-        title={copied ? "Copied!" : "Copy formula"}
+        aria-label={copied ? t("Copied") : t("Copy formula")}
+        title={copied ? t("Copied!") : t("Copy formula")}
       >
         <FontAwesomeIcon icon={copied ? faCheck : faCopy} color="white" />
       </button>

@@ -2,8 +2,11 @@ import Back from "./Back";
 import simulations from "../data/chapters";
 import { usePathname } from "next/navigation";
 import useMobile from "../hooks/useMobile";
+import useTranslation from "../hooks/useTranslation.ts";
 
 export default function TopSim() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const location = usePathname();
   const idx = simulations.findIndex((sim) => sim.link === location);
   const isMobile = useMobile();
@@ -22,11 +25,11 @@ export default function TopSim() {
 
   function getCurrentName() {
     if (idx === -1) return "";
-    return `${simulations[idx].id} - ${simulations[idx].name}`;
+    return `${simulations[idx].id} - ${t(simulations[idx].name)}`;
   }
 
   return (
-    <div className="top-nav-sim">
+    <div className={`top-nav-sim ${isCompleted ? "notranslate" : ""}`}>
       {!isMobile && (
         <div className="top-nav-sim-back-to-home-wrapper">
           <Back link="/simulations" />
@@ -40,14 +43,14 @@ export default function TopSim() {
           link={getPrevious()}
           type="responsive"
           arrowPosition="left"
-          content="Previous"
+          content={t("Previous")}
         />
         <h3>{getCurrentName()}</h3>
         <Back
           link={getNext()}
           type="responsive"
           arrowPosition="right"
-          content="Next"
+          content={t("Next")}
         />
       </div>
       {!isMobile && <div className="top-nav-sim-filler" />}

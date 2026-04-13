@@ -1,6 +1,7 @@
 // app/components/controls/ShareLinkControl.jsx
 "use client";
 import { useMemo, useState } from "react";
+import useTranslation from "../../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -16,7 +17,9 @@ import Popup from "../Popup";
 
 export default function ShareLinkControl({ simulation, inputs }) {
   const [open, setOpen] = useState(false);
-  const DEFAULT_SHARE_MESSAGE = `Check out this simulation on PhysicsHub, it's ${simulation}! `;
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+  const DEFAULT_SHARE_MESSAGE = `${t("Check out this simulation on PhysicsHub, it's")} ${simulation}! `;
 
   // Build URL with query parameters
   const url = useMemo(() => {
@@ -70,11 +73,11 @@ export default function ShareLinkControl({ simulation, inputs }) {
   ];
 
   return (
-    <>
+    <div className={isCompleted ? "notranslate" : ""}>
       <button
         onClick={handleCopy}
         className="btn-glow"
-        title="Copy shareable link to clipboard"
+        title={t("Copy shareable link to clipboard")}
       >
         <FontAwesomeIcon icon={faShare} />
       </button>
@@ -83,9 +86,10 @@ export default function ShareLinkControl({ simulation, inputs }) {
         isOpen={open}
         onClose={() => setOpen(false)}
         popupContent={{
-          title: "Link Copied!",
-          description:
-            "The shareable link has been copied to your clipboard.\n Share it now on Social Media:",
+          title: t("Link Copied!"),
+          description: t(
+            "The shareable link has been copied to your clipboard.\n Share it now on Social Media:"
+          ),
           buttons: [
             ...shareLinks.map((social) => ({
               label: social.label,
@@ -97,6 +101,6 @@ export default function ShareLinkControl({ simulation, inputs }) {
           ],
         }}
       />
-    </>
+    </div>
   );
 }

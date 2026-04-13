@@ -1,5 +1,6 @@
 // app/(core)/components/theory/TheoryTable.tsx
 import React, { useCallback } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types.ts";
@@ -17,6 +18,8 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const isBlockEditable =
     isEditing &&
     onContentUpdate &&
@@ -80,7 +83,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
     if (!isBlockEditable) return;
 
     const newRow: Record<string, unknown> = {};
-    columns.forEach((col) => (newRow[col] = "New Data"));
+    columns.forEach((col) => (newRow[col] = t("New Data")));
 
     updateTable(columns, [...data, newRow]);
   };
@@ -88,19 +91,19 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
   const handleAddColumn = () => {
     if (!isBlockEditable) return;
 
-    const newColName = `New Column ${columns.length + 1}`;
+    const newColName = `${t("New Column")} ${columns.length + 1}`;
     const newColumns = [...columns, newColName];
 
     const newData = data.map((row) => ({
       ...row,
-      [newColName]: "New Data",
+      [newColName]: t("New Data"),
     }));
 
     updateTable(newColumns, newData);
   };
 
   return (
-    <div className="theory-table-wrap">
+    <div className={`theory-table-wrap ${isCompleted ? "notranslate" : ""}`}>
       {isBlockEditable && (
         <div className="table-controls">
           <button
@@ -108,14 +111,14 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
             onClick={handleAddRow}
             className="ph-btn ph-btn--small table-add-btn"
           >
-            <FontAwesomeIcon icon={faPlus} /> Add Row
+            <FontAwesomeIcon icon={faPlus} /> {t("Add Row")}
           </button>
           <button
             type="button"
             onClick={handleAddColumn}
             className="ph-btn ph-btn--small table-add-btn"
           >
-            <FontAwesomeIcon icon={faPlus} /> Add Column
+            <FontAwesomeIcon icon={faPlus} /> {t("Add Column")}
           </button>
         </div>
       )}
@@ -130,7 +133,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
                 onBlur={(e) => handleHeaderBlur(e, i, c)}
                 className={isBlockEditable ? "editable-block" : ""}
               >
-                {c}
+                {t(c)}
               </th>
             ))}
           </tr>
@@ -146,7 +149,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
                   onBlur={(e) => handleCellBlur(e, r, c)}
                   className={isBlockEditable ? "editable-block" : ""}
                 >
-                  {row[c] as React.ReactNode}
+                  {t(row[c] as string)}
                 </td>
               ))}
             </tr>

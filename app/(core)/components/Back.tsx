@@ -8,6 +8,7 @@ import {
 import React from "react";
 import Link from "next/link";
 import useMobile from "../hooks/useMobile";
+import useTranslation from "../hooks/useTranslation.ts";
 
 interface BaseProps {
   type?: "full" | "icon" | "responsive";
@@ -52,6 +53,8 @@ function Back({
   arrowPosition = "left",
 }: Props) {
   const isMobile = useMobile();
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   const arrowIcon = (
     <span className="back-to-home__icon" aria-hidden="true">
@@ -75,7 +78,7 @@ function Back({
     type === "full" || (type === "responsive" && !isMobile);
 
   const text = shouldShowText && (
-    <span className="back-to-home__text">{content}</span>
+    <span className="back-to-home__text">{t(content as string)}</span>
   );
 
   const className = "btn-glow back-to-home__link";
@@ -89,7 +92,7 @@ function Back({
   );
 
   return (
-    <div className="back-to-home">
+    <div className={`back-to-home ${isCompleted ? "notranslate" : ""}`}>
       {link ? (
         <Link href={link} className={className}>
           {InnerContent}

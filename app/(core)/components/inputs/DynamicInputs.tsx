@@ -2,6 +2,7 @@ import NumberInput from "./NumberInput.jsx";
 import CheckboxInput from "./CheckboxInput.jsx";
 import ColorInput from "./ColorInput.jsx";
 import SelectInput from "./SelectInput.jsx";
+import useTranslation from "../../hooks/useTranslation.ts";
 
 interface FieldConfig {
   name: string;
@@ -21,8 +22,10 @@ interface Props {
 }
 
 export default function DynamicInputs({ config, values, onChange }: Props) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="inputs-container">
+    <div className={`inputs-container ${isCompleted ? "notranslate" : ""}`}>
       {config.map((field) => {
         const commonProps = {
           name: field.name,

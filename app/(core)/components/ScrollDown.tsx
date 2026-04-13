@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 
 export default function ScrollIndicator() {
   const [scrollY, setScrollY] = useState(0);
   const [dotY, setDotY] = useState(0);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   useEffect(() => {
     let rafId: number;
@@ -42,6 +45,7 @@ export default function ScrollIndicator() {
 
   return (
     <div
+      className={isCompleted ? "notranslate" : ""}
       style={{
         position: "fixed",
         left: "50%",
@@ -54,7 +58,7 @@ export default function ScrollIndicator() {
       }}
     >
       <button
-        aria-label="Scroll to explore"
+        aria-label={t("Scroll to explore")}
         onClick={() =>
           window.scrollBy({
             top: heroHeight,
@@ -107,7 +111,7 @@ export default function ScrollIndicator() {
             fontWeight: 500,
           }}
         >
-          SCROLL TO EXPLORE
+          {t("SCROLL TO EXPLORE")}
         </div>
       </button>
     </div>

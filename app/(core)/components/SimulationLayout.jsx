@@ -1,5 +1,6 @@
 // app/components/SimulationLayout.jsx
 import { useEffect, useMemo } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import { resetTime } from "../constants/Time.js";
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
@@ -17,6 +18,9 @@ export default function SimulationLayout({
   children,
   dynamicInputs,
 }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+
   const theory = useMemo(() => {
     const chapter = chapters.find((ch) => ch.link === simulation);
     const slug = chapter?.relatedBlogSlug;
@@ -34,7 +38,7 @@ export default function SimulationLayout({
   }, [simulation]);
 
   return (
-    <>
+    <div className={isCompleted ? "notranslate" : ""}>
       <Stars color="#AEE3FF" opacity={0.3} />
       <GradientBackground />
       <TopSim />
@@ -54,6 +58,6 @@ export default function SimulationLayout({
       {dynamicInputs}
 
       <TheoryRenderer theory={theory} />
-    </>
+    </div>
   );
 }

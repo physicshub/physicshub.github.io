@@ -1,6 +1,7 @@
 // app/(core)/components/Editor.jsx
 "use client";
 import React, { useState, useEffect } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import AceEditor from "react-ace";
 
 import "ace-builds/src-noconflict/mode-javascript";
@@ -34,6 +35,8 @@ const THEME_OPTIONS = [
 const Editor = ({ value, onChange }) => {
   const [selectedTheme, setSelectedTheme] = useState("cobalt");
   const [mounted, setMounted] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   useEffect(() => {
     setMounted(true);
@@ -46,17 +49,18 @@ const Editor = ({ value, onChange }) => {
     });
   };
 
-  if (!mounted) return <div style={{ height: "600px" }}>Loading Editor...</div>;
+  if (!mounted)
+    return <div style={{ height: "600px" }}>{t("Loading Editor...")}</div>;
 
   return (
-    <div>
+    <div className={isCompleted ? "notranslate" : ""}>
       <SelectInput
-        label="Select Theme:"
+        label={t("Select Theme:")}
         name="theme-selector"
         options={THEME_OPTIONS}
         value={selectedTheme}
         onChange={handleThemeChange}
-        placeholder="Select a theme"
+        placeholder={t("Select a theme")}
       />
 
       <div

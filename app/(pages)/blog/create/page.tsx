@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
+import useTranslation from "../../../(core)/hooks/useTranslation.ts";
 import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
@@ -71,11 +72,11 @@ const objectToJSString = (obj: unknown, indent = 2): string => {
   return JSON.stringify(obj);
 };
 
-const jsStringToObject = (str: string): unknown => {
+const jsStringToObject = (str: string, t: (k: string) => string): unknown => {
   try {
     return new Function(`return ${str}`)();
   } catch {
-    throw new Error("Sintassi JS non valida");
+    throw new Error(t("Invalid JS syntax"));
   }
 };
 
@@ -140,7 +141,8 @@ const NEW_BLOCK_TEMPLATES = {
 const VisualEditorRenderer: React.FC<{
   dataContent: BlogContent;
   setDataContent: React.Dispatch<React.SetStateAction<BlogContent>>;
-}> = ({ dataContent, setDataContent }) => {
+  t: (k: string) => string;
+}> = ({ dataContent, setDataContent, t }) => {
   const handleContentUpdate = useCallback(
     (
       sectionIndex: number,
@@ -176,7 +178,7 @@ const VisualEditorRenderer: React.FC<{
 
   const handleDeleteBlock = useCallback(
     (sectionIndex: number, blockIndex: number) => {
-      if (!window.confirm("Are you sure?")) return;
+      if (!window.confirm(t("Are you sure?"))) return;
 
       const newData = { ...dataContent };
       const newSections = [...newData.sections];
@@ -249,7 +251,7 @@ const VisualEditorRenderer: React.FC<{
     if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JS structure must contain &apos;sections&apos;.
+          {t("Error: JS structure must contain 'sections'.")}
         </div>
       );
     }
@@ -269,7 +271,7 @@ const VisualEditorRenderer: React.FC<{
             }
             className="main-blog-title editable-block"
           >
-            {dataContent.title || "Untitled Blog"}
+            {dataContent.title || t("Untitled Blog")}
           </h1>
         </div>
 
@@ -296,7 +298,7 @@ const VisualEditorRenderer: React.FC<{
   } catch (e) {
     return (
       <div className="preview-error">
-        Error parsing JS: {(e as Error).message}
+        {t("Error parsing JS:")} {(e as Error).message}
       </div>
     );
   }
@@ -305,12 +307,13 @@ const VisualEditorRenderer: React.FC<{
 // --- COMPONENTE 2: LIVE PREVIEW (Sola Lettura) ---
 const LivePreviewRenderer: React.FC<{
   dataContent: BlogContent;
-}> = ({ dataContent }) => {
+  t: (k: string) => string;
+}> = ({ dataContent, t }) => {
   try {
     if (!dataContent?.sections || !Array.isArray(dataContent.sections)) {
       return (
         <div className="preview-error">
-          Error: JS structure must contain &apos;sections&apos;.
+          {t("Error: JS structure must contain 'sections'.")}
         </div>
       );
     }
@@ -318,7 +321,7 @@ const LivePreviewRenderer: React.FC<{
     return (
       <div className="preview-output read-mode">
         <h1 className="main-blog-title">
-          {dataContent.title || "Untitled Blog"}
+          {dataContent.title || t("Untitled Blog")}
         </h1>
 
         <TheoryRenderer
@@ -331,7 +334,7 @@ const LivePreviewRenderer: React.FC<{
   } catch (e) {
     return (
       <div className="preview-error">
-        Error parsing JS: {(e as Error).message}
+        {t("Error parsing JS:")} {(e as Error).message}
       </div>
     );
   }
@@ -339,8 +342,10 @@ const LivePreviewRenderer: React.FC<{
 
 // Main Component
 export default function CreateBlogPage() {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const router = useRouter();
-  const [title, setTitle] = useState("New Blog Title");
+  const [title, setTitle] = useState(t("New Blog Title"));
   const [dataContent, setDataContent] = useState<BlogContent>(
     initialContentData as BlogContent
   );
@@ -350,11 +355,11 @@ export default function CreateBlogPage() {
 
   const jsTitle = useMemo(() => {
     try {
-      return dataContent.title || "New Blog Title";
+      return dataContent.title || t("New Blog Title");
     } catch {
-      return "New Blog Title";
+      return t("New Blog Title");
     }
-  }, [dataContent]);
+  }, [dataContent, t]);
 
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
@@ -367,9 +372,27 @@ export default function CreateBlogPage() {
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
-      const newBlock = JSON.parse(
-        JSON.stringify(NEW_BLOCK_TEMPLATES[blockType])
-      );
+      const template = NEW_BLOCK_TEMPLATES[blockType];
+      const newBlock = JSON.parse(JSON.stringify(template));
+
+      // Translate template defaults if they exist
+      if (newBlock.text) newBlock.text = t(newBlock.text);
+      if (newBlock.title) newBlock.title = t(newBlock.title);
+      if (newBlock.caption) newBlock.caption = t(newBlock.caption);
+      if (newBlock.content) newBlock.content = t(newBlock.content);
+      if (newBlock.items)
+        newBlock.items = newBlock.items.map((it: string) => t(it));
+      if (newBlock.data) {
+        newBlock.data = newBlock.data.map((row: Record<string, string>) => {
+          const newRow: Record<string, string> = {};
+          Object.keys(row).forEach((k) => {
+            newRow[t(k)] = t(row[k]);
+          });
+          return newRow;
+        });
+      }
+      if (newBlock.columns)
+        newBlock.columns = newBlock.columns.map((col: string) => t(col));
 
       newBlock.id = crypto.randomUUID();
 
@@ -389,7 +412,7 @@ export default function CreateBlogPage() {
   const handleClearAllBlocks = useCallback(() => {
     if (
       !window.confirm(
-        "Delete ALL blocks and section titles? This cannot be undone!"
+        t("Delete ALL blocks and section titles? This cannot be undone!")
       )
     )
       return;
@@ -420,7 +443,7 @@ export default function CreateBlogPage() {
 
       if (result.success) {
         alert(
-          "Richiesta inviata con successo! Il blog sarà online dopo la revisione."
+          t("Request sent successfully! The blog will be online after review.")
         );
         router.push("/blog"); // Torna alla lista
       } else {
@@ -428,7 +451,7 @@ export default function CreateBlogPage() {
       }
     } catch (error) {
       console.error("Errore durante l'invio:", error);
-      alert("Errore durante la pubblicazione. Riprova più tardi.");
+      alert(t("Error during publication. Please try again later."));
     } finally {
     }
   }, [dataContent, title, router]);
@@ -444,22 +467,24 @@ export default function CreateBlogPage() {
   };
 
   return (
-    <div className="create-blog-container">
+    <div
+      className={`create-blog-container ${isCompleted ? "notranslate" : ""}`}
+    >
       <div className="top-controls-bar">
         <button
           onClick={() => router.back()}
           className="btn-glow back-to-home__link"
-          aria-label="Back to Blog List"
+          aria-label={t("Back to Blog List")}
         >
-          <FontAwesomeIcon icon={faArrowLeft} /> Back
+          <FontAwesomeIcon icon={faArrowLeft} /> {t("Back")}
         </button>
-        <h1 className="editor-title">New Blog</h1>
+        <h1 className="editor-title">{t("New Blog")}</h1>
         <button
           onClick={handleSave}
           className="ph-btn ph-btn--primary cursor-pointer save-button-top"
           type="button"
         >
-          <FontAwesomeIcon icon={faSave} /> Save
+          <FontAwesomeIcon icon={faSave} /> {t("Save")}
         </button>
       </div>
 
@@ -471,11 +496,11 @@ export default function CreateBlogPage() {
           }}
         >
           <div className="form-group title-group">
-            <label htmlFor="title">Title:</label>
+            <label htmlFor="title">{t("Title:")}</label>
             <input
               id="title"
               type="text"
-              placeholder="Title for your blog..."
+              placeholder={t("Title for your blog...")}
               value={title}
               onChange={handleTitleChange}
               required
@@ -489,21 +514,21 @@ export default function CreateBlogPage() {
               onClick={() => setViewMode("Editor")}
               disabled={viewMode === "Editor" && !dataContent}
             >
-              <FontAwesomeIcon icon={faEdit} /> Visual Editor
+              <FontAwesomeIcon icon={faEdit} /> {t("Visual Editor")}
             </button>
             <button
               type="button"
               className={`tab-button ${viewMode === "JS" ? "active" : ""}`}
               onClick={() => setViewMode("JS")}
             >
-              <FontAwesomeIcon icon={faCode} /> JS Editor
+              <FontAwesomeIcon icon={faCode} /> {t("JS Editor")}
             </button>
             <button
               type="button"
               className={`tab-button ${viewMode === "Preview" ? "active" : ""}`}
               onClick={() => setViewMode("Preview")}
             >
-              <FontAwesomeIcon icon={faEye} /> Preview
+              <FontAwesomeIcon icon={faEye} /> {t("Preview")}
             </button>
 
             {viewMode === "Editor" && (
@@ -513,7 +538,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("paragraph")}
                     className="add-block-btn"
-                    title="Add Paragraph"
+                    title={t("Add Paragraph")}
                   >
                     <FontAwesomeIcon icon={faParagraph} />
                   </button>
@@ -521,7 +546,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("sectionTitle")}
                     className="add-block-btn"
-                    title="Add Section Title"
+                    title={t("Add Section Title")}
                   >
                     <FontAwesomeIcon
                       icon={faHeading}
@@ -532,7 +557,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("subheading")}
                     className="add-block-btn"
-                    title="Add H3 Subheading"
+                    title={t("Add H3 Subheading")}
                   >
                     <FontAwesomeIcon icon={faHeading} />
                   </button>
@@ -540,7 +565,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("subtitle")}
                     className="add-block-btn"
-                    title="Add H4/H5 Subtitle"
+                    title={t("Add H4/H5 Subtitle")}
                   >
                     <FontAwesomeIcon
                       icon={faHeading}
@@ -551,7 +576,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("code")}
                     className="add-block-btn"
-                    title="Add Code Block"
+                    title={t("Add Code Block")}
                   >
                     <FontAwesomeIcon icon={faCode} />
                   </button>
@@ -559,7 +584,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("formula")}
                     className="add-block-btn"
-                    title="Add Formula (LaTeX)"
+                    title={t("Add Formula (LaTeX)")}
                   >
                     <FontAwesomeIcon icon={faSquareRootAlt} />
                   </button>
@@ -567,7 +592,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("list")}
                     className="add-block-btn"
-                    title="Add List"
+                    title={t("Add List")}
                   >
                     <FontAwesomeIcon icon={faListOl} />
                   </button>
@@ -575,7 +600,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("callout")}
                     className="add-block-btn"
-                    title="Add Callout/Note"
+                    title={t("Add Callout/Note")}
                   >
                     <FontAwesomeIcon icon={faInfoCircle} />
                   </button>
@@ -583,7 +608,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("example")}
                     className="add-block-btn"
-                    title="Add Example/Quote"
+                    title={t("Add Example/Quote")}
                   >
                     <FontAwesomeIcon icon={faQuoteRight} />
                   </button>
@@ -591,7 +616,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("table")}
                     className="add-block-btn"
-                    title="Add Table"
+                    title={t("Add Table")}
                   >
                     <FontAwesomeIcon icon={faTable} />
                   </button>
@@ -599,7 +624,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("image")}
                     className="add-block-btn"
-                    title="Add Image"
+                    title={t("Add Image")}
                   >
                     <FontAwesomeIcon icon={faImage} />
                   </button>
@@ -607,7 +632,7 @@ export default function CreateBlogPage() {
                     type="button"
                     onClick={() => handleAddBlock("toggle")}
                     className="add-block-btn"
-                    title="Add Toggle/Spoiler"
+                    title={t("Add Toggle/Spoiler")}
                   >
                     <FontAwesomeIcon icon={faChevronCircleDown} />
                   </button>
@@ -617,7 +642,7 @@ export default function CreateBlogPage() {
                   type="button"
                   onClick={handleClearAllBlocks}
                   className="clear-all-btn-toolbar"
-                  title="Delete all blocks"
+                  title={t("Delete all blocks")}
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
@@ -632,7 +657,7 @@ export default function CreateBlogPage() {
                   value={dataContentString}
                   onChange={(newString: string) => {
                     try {
-                      const parsed = jsStringToObject(newString);
+                      const parsed = jsStringToObject(newString, t);
                       if (parsed && typeof parsed === "object") {
                         setDataContent(parsed as BlogContent);
                       }
@@ -648,11 +673,12 @@ export default function CreateBlogPage() {
               <VisualEditorRenderer
                 dataContent={dataContent}
                 setDataContent={setDataContent}
+                t={t}
               />
             )}
 
             {viewMode === "Preview" && (
-              <LivePreviewRenderer dataContent={dataContent} />
+              <LivePreviewRenderer dataContent={dataContent} t={t} />
             )}
           </div>
         </form>
