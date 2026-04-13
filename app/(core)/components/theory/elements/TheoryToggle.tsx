@@ -1,5 +1,6 @@
 // app/(core)/components/theory/ExampleToggle.tsx
 import React, { useState } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps, Children } from "../types.ts";
@@ -18,6 +19,8 @@ export const TheoryExample: React.FC<TheoryExampleProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const isEditable =
     isEditing &&
     onContentUpdate &&
@@ -40,9 +43,11 @@ export const TheoryExample: React.FC<TheoryExampleProps> = ({
 
   return (
     <div
-      className={["theory-example", isEditable ? "editable-block" : ""].join(
-        " "
-      )}
+      className={[
+        "theory-example",
+        isEditable ? "editable-block" : "",
+        isCompleted ? "notranslate" : "",
+      ].join(" ")}
     >
       {title && (
         <div
@@ -51,7 +56,7 @@ export const TheoryExample: React.FC<TheoryExampleProps> = ({
           suppressContentEditableWarning={suppressWarning}
           onBlur={handleTitleBlur}
         >
-          {title}
+          {t(title)}
         </div>
       )}
       <div
@@ -60,7 +65,7 @@ export const TheoryExample: React.FC<TheoryExampleProps> = ({
         suppressContentEditableWarning={suppressWarning}
         onBlur={handleContentBlur}
       >
-        {isEditable ? content : parseBoldText(content)}
+        {isEditable ? content : parseBoldText(t(content))}
       </div>
     </div>
   );
@@ -79,6 +84,8 @@ export const TheoryToggle: React.FC<TheoryToggleProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [open, setOpen] = useState(false);
   const isEditable =
     isEditing &&
@@ -106,6 +113,7 @@ export const TheoryToggle: React.FC<TheoryToggleProps> = ({
         "theory-toggle",
         open ? "open" : "",
         isEditable ? "editable-block" : "",
+        isCompleted ? "notranslate" : "",
       ].join(" ")}
     >
       <button
@@ -121,7 +129,7 @@ export const TheoryToggle: React.FC<TheoryToggleProps> = ({
           onBlur={handleTitleBlur}
           onClick={(e) => isEditable && e.stopPropagation()}
         >
-          {title}
+          {t(title)}
         </span>
         <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} />
       </button>
@@ -133,7 +141,7 @@ export const TheoryToggle: React.FC<TheoryToggleProps> = ({
         suppressContentEditableWarning={suppressWarning}
         onBlur={handleContentBlur}
       >
-        {isEditable ? content : parseBoldText(content)}
+        {isEditable ? content : parseBoldText(t(content))}
       </div>
     </div>
   );

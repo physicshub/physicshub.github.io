@@ -2,9 +2,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import useTranslation from "../hooks/useTranslation.ts";
 
 export default function ContributorsSection() {
   const [contributors, setContributors] = useState([]);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   useEffect(() => {
     async function getContributors(page = 1) {
@@ -32,9 +35,12 @@ export default function ContributorsSection() {
   }, []);
 
   return (
-    <div className="contributors-section" id="contributors">
+    <div
+      className={`contributors-section ${isCompleted ? "notranslate" : ""}`}
+      id="contributors"
+    >
       <h2 className="title text-2xl">
-        Project Contributors{" "}
+        {t("Project Contributors")}{" "}
         {`(${contributors.length ? contributors.length : "-"})`}
       </h2>
       <div className="contributors-grid">
@@ -54,7 +60,8 @@ export default function ContributorsSection() {
                 {c.login}
               </p>
               <p className="contributor-data">
-                {c.contributions} {c.contributions === 1 ? "commit" : "commits"}
+                {c.contributions}{" "}
+                {c.contributions === 1 ? t("commit") : t("commits")}
               </p>
             </div>
           </div>

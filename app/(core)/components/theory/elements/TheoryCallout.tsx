@@ -1,5 +1,5 @@
-// app/(core)/components/theory/TheoryCallout.tsx
 import React from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle,
@@ -15,17 +15,6 @@ interface TheoryCalloutProps extends EditableProps, Children {
   title?: string;
 }
 
-const CALLOUT_CONFIG = {
-  info: { icon: faInfoCircle, cls: "callout-info", label: "Info" },
-  warning: {
-    icon: faExclamationTriangle,
-    cls: "callout-warning",
-    label: "Warning",
-  },
-  tip: { icon: faLightbulb, cls: "callout-tip", label: "Tip" },
-  success: { icon: faCheck, cls: "callout-success", label: "Success" },
-};
-
 export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
   type = "info",
   title,
@@ -35,6 +24,19 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
+  const CALLOUT_CONFIG = {
+    info: { icon: faInfoCircle, cls: "callout-info", label: t("Info") },
+    warning: {
+      icon: faExclamationTriangle,
+      cls: "callout-warning",
+      label: t("Warning"),
+    },
+    tip: { icon: faLightbulb, cls: "callout-tip", label: t("Tip") },
+    success: { icon: faCheck, cls: "callout-success", label: t("Success") },
+  };
+
   const cfg = CALLOUT_CONFIG[type] || CALLOUT_CONFIG.info;
   const isEditable =
     isEditing &&
@@ -69,6 +71,7 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
         "theory-callout",
         cfg.cls,
         isEditable ? "editable-block" : "",
+        isCompleted ? "notranslate" : "",
       ].join(" ")}
       role="note"
     >
@@ -83,9 +86,9 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
               onChange={handleTypeChange}
               className="callout-type-selector"
             >
-              {Object.keys(CALLOUT_CONFIG).map((t) => (
-                <option key={t} value={t}>
-                  {t.toUpperCase()}
+              {Object.keys(CALLOUT_CONFIG).map((tKey) => (
+                <option key={tKey} value={tKey}>
+                  {t(tKey).toUpperCase()}
                 </option>
               ))}
             </select>
@@ -97,7 +100,7 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
               suppressContentEditableWarning={suppressWarning}
               onBlur={handleTitleBlur}
             >
-              {isEditable ? title : parseBoldText(title)}
+              {isEditable ? title : parseBoldText(t(title))}
             </div>
           )}
         </div>
@@ -107,7 +110,7 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
           suppressContentEditableWarning={suppressWarning}
           onBlur={handleContentBlur}
         >
-          {isEditable ? content : parseBoldText(content)}
+          {isEditable ? content : parseBoldText(t(content))}
         </div>
       </div>
     </div>

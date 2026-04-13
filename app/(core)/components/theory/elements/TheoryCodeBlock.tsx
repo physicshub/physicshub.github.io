@@ -1,5 +1,6 @@
 // app/(core)/components/theory/TheoryCodeBlock.tsx
 import React, { useState, useEffect } from "react";
+import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
@@ -27,6 +28,8 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
   sectionIndex,
   blockIndex,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [copied, setCopied] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [localViewMode, setLocalViewMode] = useState<"edit" | "preview">(
@@ -102,14 +105,14 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
 
     return (
       <div
-        className={`theory-codeblock ${isBlockEditable ? "editable-block" : ""}`}
+        className={`theory-codeblock ${isBlockEditable ? "editable-block" : ""} ${isCompleted ? "notranslate" : ""}`}
       >
         <div className="code-actions">
           <input
             type="text"
             value={currentLanguage}
             onChange={handleLanguageChange}
-            placeholder="language"
+            placeholder={t("language")}
             className="code-language-input"
             disabled={!isBlockEditable}
           />
@@ -120,7 +123,7 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
                 type="button"
                 onClick={() => setLocalViewMode("edit")}
                 className={`switch-btn code-switch ${mode === "edit" ? "active" : ""}`}
-                title="Edit Code"
+                title={t("Edit Code")}
               >
                 <FontAwesomeIcon icon={faCode} />
               </button>
@@ -128,7 +131,7 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
                 type="button"
                 onClick={() => setLocalViewMode("preview")}
                 className={`switch-btn code-switch ${mode === "preview" ? "active" : ""}`}
-                title="Preview Code"
+                title={t("Preview Code")}
               >
                 <FontAwesomeIcon icon={faEye} />
               </button>
@@ -138,7 +141,7 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
             className="copy-btn"
             onClick={handleCopy}
             aria-pressed={copied}
-            title={copied ? "Copied" : "Copy code"}
+            title={copied ? t("Copied") : t("Copy code")}
           >
             <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
           </button>
@@ -170,14 +173,14 @@ export const TheoryCodeBlock: React.FC<TheoryCodeBlockProps> = ({
   }
 
   return (
-    <div className="theory-codeblock">
+    <div className={`theory-codeblock ${isCompleted ? "notranslate" : ""}`}>
       <div className="code-actions">
         <span className="code-lang">{language}</span>
         <button
           className="copy-btn"
           onClick={handleCopy}
           aria-pressed={copied}
-          title={copied ? "Copied" : "Copy code"}
+          title={copied ? t("Copied") : t("Copy code")}
         >
           <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
         </button>

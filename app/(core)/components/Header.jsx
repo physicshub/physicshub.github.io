@@ -1,6 +1,7 @@
 // app/components/Header.jsx
 "use client";
 import { useState, useCallback } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import { Logo } from "./Logo";
 import NavMenu from "./Nav";
 import { Theme } from "./Theme";
@@ -17,6 +18,8 @@ export default function Header() {
   const isSticky = useSticky(50);
   const { mode, toggleMode } = useTheme();
   const pathname = usePathname();
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   // Close menu when route changes
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -29,7 +32,7 @@ export default function Header() {
 
   return (
     <header
-      className={`header ${isSticky ? "sticky" : ""} ${isMenuOpen ? "open" : ""}`.trim()}
+      className={`header ${isSticky ? "sticky" : ""} ${isMenuOpen ? "open" : ""} ${isCompleted ? "notranslate" : ""}`.trim()}
     >
       <div className="header-inner">
         <Logo />
@@ -38,7 +41,7 @@ export default function Header() {
           className="menu-toggle"
           onClick={handleMenuToggle}
           aria-expanded={isMenuOpen}
-          aria-label="Open/close menu"
+          aria-label={t("Open/close menu")}
         >
           <FontAwesomeIcon icon={faHamburger} />
         </button>

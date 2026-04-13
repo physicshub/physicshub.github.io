@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import PlayPauseButton from "./controls/PlayPauseButton.jsx";
 import SpeedControl from "./controls/SpeedControl.jsx";
 import ResetButton from "./controls/ResetButton.jsx";
@@ -14,16 +15,26 @@ import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 export default function Controls({ onReset, inputs, simulation, onLoad }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   simulation = simulation.replaceAll(/[/#]/g, "");
 
   return (
-    <div className={`simulation-controls ${isOpen ? "is-open" : ""}`}>
+    <div
+      className={`simulation-controls ${isOpen ? "is-open" : ""} ${
+        isCompleted ? "notranslate" : ""
+      }`}
+    >
       <div className="main-controls-wrapper">
         <SpeedControl />
         <PlayPauseButton />
         <ResetButton onReset={onReset} />
 
-        <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
+        <button
+          className="mobile-toggle"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={t("Toggle controls")}
+        >
           <FontAwesomeIcon
             icon={isOpen ? faArrowUp : faArrowDown}
             color="var(--accent-color)"

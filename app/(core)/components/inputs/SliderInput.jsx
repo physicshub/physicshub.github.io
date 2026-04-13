@@ -1,7 +1,11 @@
+import useTranslation from "../../hooks/useTranslation.ts";
+
 function SliderInput({ label, val, min, max, step, onChange }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="control-group">
-      <label className="input-label">{label}</label>
+    <div className={`control-group ${isCompleted ? "notranslate" : ""}`}>
+      <label className="input-label">{t(label)}</label>
       <input
         type="range"
         id="inputSlider"

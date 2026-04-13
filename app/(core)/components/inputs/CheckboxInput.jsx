@@ -1,8 +1,11 @@
 import React from "react";
+import useTranslation from "../../hooks/useTranslation.ts";
 
 function CheckboxInput({ label, name, checked, onChange, ...rest }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="checkbox-container">
+    <div className={`checkbox-container ${isCompleted ? "notranslate" : ""}`}>
       <input
         type="checkbox"
         id={name}
@@ -14,7 +17,7 @@ function CheckboxInput({ label, name, checked, onChange, ...rest }) {
       />
       <label htmlFor={name} className="checkbox-label">
         <span className="checkbox-toggle" />
-        {label}
+        {t(label)}
       </label>
     </div>
   );

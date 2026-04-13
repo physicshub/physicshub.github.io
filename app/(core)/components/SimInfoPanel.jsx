@@ -1,5 +1,5 @@
-// app/components/SimInfoPanel.jsx
 import React, { useState, useEffect, useRef } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGear,
@@ -15,6 +15,8 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [settingsMode, setSettingsMode] = useState(false);
   const [hiddenKeys, setHiddenKeys] = useState(new Set());
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   const lastUpdateRef = useRef(0);
   const dataRef = useRef(data);
@@ -51,13 +53,17 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
   };
 
   return (
-    <div className={`sim-info-panel ${!isPanelVisible ? "collapsed" : ""}`}>
+    <div
+      className={`sim-info-panel ${!isPanelVisible ? "collapsed" : ""} ${
+        isCompleted ? "notranslate" : ""
+      }`}
+    >
       <div className="sim-info-header">
         {/* Button collapse/expand */}
         <button
           className="sim-info-btn"
           onClick={() => setIsPanelVisible((v) => !v)}
-          title={isPanelVisible ? "Hide panel" : "Show panel"}
+          title={isPanelVisible ? t("Hide panel") : t("Show panel")}
         >
           <FontAwesomeIcon
             icon={isPanelVisible ? faChevronDown : faChevronUp}
@@ -69,7 +75,7 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
           <button
             className="sim-info-btn"
             onClick={() => setSettingsMode((m) => !m)}
-            title="Toggle show/hide mode"
+            title={t("Toggle show/hide mode")}
           >
             <FontAwesomeIcon icon={settingsMode ? faCheck : faGear} />
           </button>
@@ -84,7 +90,7 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
               // Settings mode: show all entries with toggle buttons
               return (
                 <div key={key} className="sim-info-row">
-                  <span className="sim-info-label">{key}:</span>
+                  <span className="sim-info-label">{t(key)}:</span>
                   {isHidden ? (
                     <button
                       className="sim-info-toggle"
@@ -110,7 +116,7 @@ export default function SimInfoPanel({ data, cooldown = 100 }) {
               if (isHidden) return null;
               return (
                 <div key={key} className="sim-info-row">
-                  <span className="sim-info-label">{key}:</span>
+                  <span className="sim-info-label">{t(key)}:</span>
                   <span className="sim-info-value">{value}</span>
                 </div>
               );

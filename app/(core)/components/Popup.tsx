@@ -1,5 +1,6 @@
 // app/(core)/components/Popup.tsx
 import React, { useEffect, useState } from "react";
+import useTranslation from "../hooks/useTranslation.ts";
 import ReactDOM from "react-dom";
 import "../styles/popup.css";
 
@@ -69,6 +70,8 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
   popupContent,
   children,
 }) => {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   const [visible, setVisible] = useState(false);
 
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
@@ -89,21 +92,27 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
   const { title, description, buttons = [] } = popupContent;
 
   const popupNode = (
-    <div className={`popup-overlay ${isOpen ? "show" : "hide"}`}>
+    <div
+      className={`popup-overlay ${isOpen ? "show" : "hide"} ${
+        isCompleted ? "notranslate" : ""
+      }`}
+    >
       <div
         className={`popup-container ${isOpen ? "popup-enter" : "popup-exit"}`}
       >
         <div className="popup-header">
           <div>
-            <h2 className="ph-hero__title">{title}</h2>
-            {description && <p className="ph-hero__subtitle">{description}</p>}
+            <h2 className="ph-hero__title">{t(title)}</h2>
+            {description && (
+              <p className="ph-hero__subtitle">{t(description)}</p>
+            )}
           </div>
           <button
             onClick={onClose}
             className="popup-close-btn ph-btn ph-btn--ghost"
-            aria-label="Close modal"
+            aria-label={t("Close modal")}
           >
-            Close
+            {t("Close")}
           </button>
         </div>
         <div className="popup-custom-content">{children}</div>
@@ -115,7 +124,7 @@ const Popup: React.FC<PopupProps & { children?: React.ReactNode }> = ({
               onClick={btn.onClick}
               className={`ph-btn ph-btn--${btn.type === "primary" ? "primary" : "ghost"}`}
             >
-              {btn.label}
+              {t(btn.label)}
             </a>
           ))}
         </div>

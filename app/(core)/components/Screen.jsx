@@ -1,10 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import p5 from "p5";
 import { FPS_FOR_SIMULATIONS } from "../constants/Config";
+import useTranslation from "../hooks/useTranslation.ts";
 
 function Screen({ sketch }) {
   const containerRef = useRef(null);
   const p5Instance = useRef(null);
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
 
   useEffect(() => {
     // EN: Defensive cleanup in case dev StrictMode mounts twice
@@ -35,7 +38,13 @@ function Screen({ sketch }) {
     };
   }, [sketch]);
 
-  return <div ref={containerRef} className="screen" id="Screen"></div>;
+  return (
+    <div
+      ref={containerRef}
+      className={`screen ${isCompleted ? "notranslate" : ""}`}
+      id="Screen"
+    ></div>
+  );
 }
 
 export default Screen;

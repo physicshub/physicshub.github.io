@@ -1,3 +1,5 @@
+import useTranslation from "../../hooks/useTranslation.ts";
+
 function NumberInput({
   label,
   val,
@@ -10,6 +12,8 @@ function NumberInput({
   name,
   step,
 }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   // Convert to string for display, handling all cases
   let displayValue = "";
   if (val === "" || val === undefined || val === null) {
@@ -18,9 +22,9 @@ function NumberInput({
     displayValue = String(val);
   }
   return (
-    <div className="control-group">
+    <div className={`control-group ${isCompleted ? "notranslate" : ""}`}>
       <label className="input-label" htmlFor={name}>
-        {label}
+        {t(label)}
       </label>
       <input
         type="text"
@@ -30,7 +34,7 @@ function NumberInput({
         min={min}
         max={max}
         step={step || 1}
-        placeholder={placeholder}
+        placeholder={t(placeholder)}
         className="input-number"
         onChange={onChange}
         onBlur={onBlur}

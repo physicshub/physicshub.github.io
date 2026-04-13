@@ -1,13 +1,16 @@
 // app/(core)/components/inputs/SelectInput.jsx
 import React from "react";
+import useTranslation from "../../hooks/useTranslation.ts";
 import PropTypes from "prop-types";
 
 function SelectInput({ label, name, options, value, onChange, placeholder }) {
+  const { t, meta } = useTranslation();
+  const isCompleted = meta?.completed || false;
   return (
-    <div className="select-container">
+    <div className={`select-container ${isCompleted ? "notranslate" : ""}`}>
       {label && (
         <label htmlFor={name} className="select-label">
-          {label}
+          {t(label)}
         </label>
       )}
       <div className="select-wrapper">
@@ -20,12 +23,12 @@ function SelectInput({ label, name, options, value, onChange, placeholder }) {
         >
           {placeholder && (
             <option value="" disabled>
-              {placeholder}
+              {t(placeholder)}
             </option>
           )}
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              {opt.label}
+              {t(opt.label)}
             </option>
           ))}
         </select>
