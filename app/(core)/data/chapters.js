@@ -81,12 +81,20 @@ const chapters = [
     icon: "/icons/circular.png",
   },
   {
-    id: 0,
+    id: 10,
     name: "Browser Performance & Stress Test",
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
     link: "/simulations/test",
     tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
     icon: "/icons/test.png",
+  },
+  {
+    id: 11,
+    name: "Horizontal Spring",
+    desc: "A spring attached to the left wall with a draggable mass. Explore Hooke's Law and oscillation on a horizontal plane.",
+    link: "/simulations/HorizontalSpring",
+    tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
+    icon: "/icons/spring.png",
   },
 ];
 
