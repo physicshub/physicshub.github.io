@@ -28,6 +28,9 @@ Before requesting a review, please ensure that you have:
 
 ## 🎨 Visual Changes (if UI-related)
 
+IF CHANGES ARE RELATED TO SIMULATIONS PLEASE SEND A SHORT CLIP ABOUT IT
+(OBLIGATORY)
+
 <!-- Attach screenshots, GIFs, or screen recordings to illustrate UI/UX changes. -->
 
 ---
