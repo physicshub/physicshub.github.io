@@ -35,6 +35,9 @@ import useSimulationState from "../app/(core)/hooks/useSimulationState";
 import useSimInfo from "../app/(core)/hooks/useSimInfo";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor";
 
+// Ground height in physics meters from bottom of canvas
+const GROUND_Y = 0.5;
+
 export default function HorizontalSpring() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
@@ -67,10 +70,8 @@ export default function HorizontalSpring() {
   const sketch = useCallback(
     (p) => {
       const setupSimulation = () => {
-        const canvasWidth = p.width;
         const canvasHeight = p.height;
 
-        // Update canvas height for coordinate conversions
         setCanvasHeight(canvasHeight);
 
         const {
@@ -83,25 +84,15 @@ export default function HorizontalSpring() {
           anchorColor,
         } = inputsRef.current;
 
-        const canvasWidthMeters = toMeters(canvasWidth);
-        const canvasHeightMeters = toMeters(canvasHeight);
+        // Anchor sits on the ground, near the left wall
+        const anchorPhysics = p.createVector(0.2, GROUND_Y);
 
-        // Anchor position: left wall, vertically centered
-        // In physics coords (Y-up, origin bottom-left):
-        //   X = 0.2 m from left wall
-        //   Y = canvasHeightMeters / 2 (vertical center)
-        const anchorPhysics = p.createVector(
-          0.2, // near left wall
-          canvasHeightMeters / 2
-        );
-
-        // Initial body position: to the right of anchor by rest length
+        // Body starts at rest length away from anchor, on the same ground Y
         const initialPhysics = p.createVector(
           anchorPhysics.x + springRestLength,
-          anchorPhysics.y // same Y — horizontal axis
+          GROUND_Y
         );
 
-        // Initialize body
         bodyRef.current = new PhysicsBody(p, {
           mass: bobMass,
           size: bobSize,
@@ -109,10 +100,8 @@ export default function HorizontalSpring() {
           shape: "circle",
         });
         bodyRef.current.state.position.set(initialPhysics);
-        // Horizontal only — zero out vertical velocity always
         bodyRef.current.state.velocity.set(0, 0);
 
-        // Initialize spring anchored at the left wall
         springRef.current = new Spring(
           p,
           anchorPhysics,
@@ -144,19 +133,16 @@ export default function HorizontalSpring() {
         const dt = computeDelta(p);
         if (dt <= 0) return;
 
-        const {
-          springK,
-          springRestLength,
-          bobMass,
-          bobDamping,
-          minLength,
-          maxLength,
-        } = inputsRef.current;
+        const { springK, springRestLength, bobMass, minCompressionLength } =
+          inputsRef.current;
 
-        // Update canvas height for coordinate conversions
+        const effectiveMinLength = Math.min(
+          minCompressionLength,
+          springRestLength
+        );
+
         setCanvasHeight(p.height);
 
-        // 1. Sync live parameters
         springRef.current.k = springK;
         springRef.current.restLength = springRestLength;
         bodyRef.current.updateParams({
@@ -165,45 +151,58 @@ export default function HorizontalSpring() {
           color: inputsRef.current.bobColor,
         });
 
-        // 2. Physics update (only when not dragging)
         if (!dragControllerRef.current.isDragging()) {
           const anchorX = springRef.current.anchor.x;
           const bodyX = bodyRef.current.state.position.x;
-
-          // Current spring length (horizontal distance only — body is on X axis)
           const currentLength = bodyX - anchorX;
 
-          // Clamp to min/max length limits
-          const clampedLength = Math.max(
-            minLength,
-            Math.min(maxLength, currentLength)
-          );
-          if (clampedLength !== currentLength) {
-            // Enforce hard length constraint by repositioning body on X
-            bodyRef.current.state.position.x = anchorX + clampedLength;
-            bodyRef.current.state.velocity.x = 0;
+          // Only restrict LEFT side (compression limit)
+          if (currentLength < effectiveMinLength) {
+            bodyRef.current.state.position.x = anchorX + effectiveMinLength;
+            bodyRef.current.state.velocity.x = Math.max(
+              0,
+              bodyRef.current.state.velocity.x
+            );
           }
 
-          // Hooke's Law: F = -k * (currentLength - restLength)
-          // Positive displacement (body to the right of rest) → force pulls left (negative X)
-          // Negative displacement (body compressed left)      → force pushes right (positive X)
-          const displacement = clampedLength - springRestLength;
-          const springForceX = -springK * displacement;
-          bodyRef.current.applyForce(p.createVector(springForceX, 0));
+          const displacement = currentLength - springRestLength;
 
-          // Damping: F = -c * vx  (horizontal only)
+          // Spring only pushes (compression)
+          if (displacement < 0) {
+            const springForceX = -springK * displacement;
+            bodyRef.current.applyForce(p.createVector(springForceX, 0));
+          }
+
           const vx = bodyRef.current.state.velocity.x;
-          if (Math.abs(vx) > 0.001) {
-            bodyRef.current.applyForce(p.createVector(-bobDamping * vx, 0));
+          if (Math.abs(vx) > 0.0001) {
+            const friction = -Math.sign(vx) * inputsRef.current.bobDamping;
+            bodyRef.current.applyForce(p.createVector(friction, 0));
           }
 
-          // Physics integration (Euler step via built-in step())
+          // Damping ONLY while compressed (simulates spring's internal damping)
+          // Once body is free, no damping — it slides freely
+          // if (displacement < 0) {
+          //   const vx = bodyRef.current.state.velocity.x;
+          //   if (Math.abs(vx) > 0.001) {
+          //     bodyRef.current.applyForce(p.createVector(-bobDamping * vx, 0));
+          //   }
+          // }
+
           bodyRef.current.step(dt);
 
-          // ── HARD HORIZONTAL CONSTRAINT ──
-          // Zero out any Y drift that PhysicsBody.step() may have introduced
-          bodyRef.current.state.position.y = springRef.current.anchor.y;
+          // Hard horizontal constraint — lock Y to ground
+          bodyRef.current.state.position.y = GROUND_Y;
           bodyRef.current.state.velocity.y = 0;
+
+          // Body can't travel left past minLength from anchor
+          const minX = anchorX + effectiveMinLength;
+          if (bodyRef.current.state.position.x < minX) {
+            bodyRef.current.state.position.x = minX;
+            bodyRef.current.state.velocity.x = Math.max(
+              0,
+              bodyRef.current.state.velocity.x
+            );
+          }
         }
 
         // 3. Render
@@ -211,14 +210,14 @@ export default function HorizontalSpring() {
 
         // 4. Update info panel
         const canvasHeightMeters = toMeters(p.height);
-
-        // Horizontal-only spring measurements
         const anchorX = springRef.current.anchor.x;
         const currentLengthM = bodyRef.current.state.position.x - anchorX;
         const displacement = currentLengthM - springRestLength;
-        const springForceMag = -springK * displacement; // Hooke's Law (signed)
+
+        // Spring force is only real when compressed
+        const springForceMag = displacement < 0 ? -springK * displacement : 0;
         const potentialEnergyElastic =
-          0.5 * springK * displacement * displacement;
+          displacement < 0 ? 0.5 * springK * displacement * displacement : 0;
 
         updateSimInfo(
           p,
@@ -241,50 +240,78 @@ export default function HorizontalSpring() {
       const renderScene = (p) => {
         p.background(getBackgroundColor());
 
-        // Draw left wall
+        drawGround(p);
         drawWall(p);
 
-        // Draw spring line and anchor dot
-        springRef.current.showLine(bodyRef.current, true);
+        // Spring visual: only draw line up to body when compressed,
+        // retract to rest length visually when body is beyond rest length.
+        const anchorX = springRef.current.anchor.x;
+        const bodyX = bodyRef.current.state.position.x;
+        const currentLength = bodyX - anchorX;
+        const { springRestLength } = inputsRef.current;
+
+        if (currentLength <= springRestLength) {
+          // Compressed or at rest — draw spring connected to body
+          springRef.current.showLine(bodyRef.current, true);
+        } else {
+          // Body has moved past rest length — spring retracts to rest length
+          const springTipX = anchorX + springRestLength;
+          const springTipY = GROUND_Y;
+          const fakeBody = {
+            state: {
+              position: p.createVector(springTipX, springTipY),
+            },
+          };
+          springRef.current.showLine(fakeBody, true);
+        }
         springRef.current.show();
 
-        // Draw body with hover effect
         bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
         const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
 
-        // Draw spring force vector (horizontal only)
-        const renderer = forceRendererRef.current;
-
-        const anchorX = springRef.current.anchor.x;
-        const currentLength = bodyRef.current.state.position.x - anchorX;
-        const displacement = currentLength - inputsRef.current.springRestLength;
-        const springForceMagnitude = -inputsRef.current.springK * displacement; // signed: negative = leftward
-
-        renderer.drawVector(
-          p,
-          screenPos.x,
-          screenPos.y,
-          springForceMagnitude, // X component (positive = rightward on screen)
-          0, // Y component — horizontal spring, no vertical force
-          inputsRef.current.springColor,
-          "Spring"
-        );
+        const displacement = currentLength - springRestLength;
+        if (displacement < 0) {
+          const renderer = forceRendererRef.current;
+          const springForceMagnitude =
+            -inputsRef.current.springK * displacement;
+          renderer.drawVector(
+            p,
+            screenPos.x,
+            screenPos.y,
+            springForceMagnitude,
+            0,
+            inputsRef.current.springColor,
+            "Spring"
+          );
+        }
       };
 
-      /**
-       * Draws a simple left-wall indicator so the anchor attachment is obvious.
-       */
+      const drawGround = (p) => {
+        const groundScreenY = p.height - toPixels(GROUND_Y);
+
+        // Ground surface line
+        p.stroke(180, 180, 190, 230);
+        p.strokeWeight(2);
+        p.line(0, groundScreenY, p.width, groundScreenY);
+
+        // Hatching below ground
+        p.stroke(140, 140, 150, 90);
+        p.strokeWeight(1);
+        const spacing = 18;
+        for (let x = 0; x < p.width + spacing; x += spacing) {
+          p.line(x, groundScreenY, x - 14, groundScreenY + 14);
+        }
+        p.noStroke();
+      };
+
       const drawWall = (p) => {
         const anchorScreenX = toPixels(springRef.current.anchor.x);
-        const wallThickness = 14;
         const wallHeight = p.height;
 
-        // Wall fill
         p.noStroke();
         p.fill(100, 100, 110, 180);
         p.rect(0, 0, anchorScreenX, wallHeight);
 
-        // Hatching lines for a mechanical "wall" look
         p.stroke(140, 140, 150, 120);
         p.strokeWeight(1);
         const spacing = 18;
@@ -292,14 +319,13 @@ export default function HorizontalSpring() {
           p.line(0, y, anchorScreenX, y + anchorScreenX);
         }
 
-        // Bright edge line
         p.stroke(200, 200, 210, 220);
         p.strokeWeight(2);
         p.line(anchorScreenX, 0, anchorScreenX, wallHeight);
         p.noStroke();
       };
 
-      // ── Mouse interaction ──────────────────────────────────────────────────
+      // ── Mouse interaction
 
       p.mousePressed = () => {
         const mousePhysics = p.createVector(
@@ -311,13 +337,13 @@ export default function HorizontalSpring() {
 
       p.mouseDragged = () => {
         if (dragControllerRef.current.isDragging()) {
-          // Constrain drag to horizontal axis — keep Y fixed to anchor Y
-          const clampedX = toMeters(p.mouseX);
-          bodyRef.current.state.position.set(
-            clampedX,
-            springRef.current.anchor.y // lock Y
-          );
-          bodyRef.current.state.velocity.set(0, 0);
+          // Horizontal drag only — clamp X to valid range
+          const { minCompressionLength } = inputsRef.current;
+          const anchorX = springRef.current.anchor.x;
+          const rawX = toMeters(p.mouseX);
+          const clampedX = Math.max(anchorX + minCompressionLength, rawX);
+          bodyRef.current.state.position.set(clampedX, GROUND_Y);
+          bodyRef.current.state.velocity.set(0, 0); // clear velocity while dragging
         }
       };
 
@@ -356,17 +382,10 @@ export default function HorizontalSpring() {
     >
       <div className="flex-1 relative">
         <P5Wrapper sketch={sketch} key={resetVersion} />
-
-        {/* RIGHT PANEL inside canvas */}
         <div className="absolute top-4 right-4 w-[300px]">
           <SimInfoPanel data={simData} />
         </div>
       </div>
-      {/* <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      /> */}
     </SimulationLayout>
   );
 }

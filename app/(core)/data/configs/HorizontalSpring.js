@@ -2,16 +2,15 @@ import { EARTH_G_SI } from "../../constants/Config.js";
 
 // Initial values (SI units, Y-up physics coordinates)
 export const INITIAL_INPUTS = {
-  bobMass: 1, // kg
-  bobDamping: 0.5, // damping coefficient (N·s/m)
-  springK: 200, // N/m
-  springRestLength: 1.5, // m
-  minLength: 0.2, // m
-  maxLength: 4.0, // m
+  bobMass: 1,
+  bobDamping: 0.5,
+  springK: 200,
+  springRestLength: 1.5,
+  minCompressionLength: 0.1,
   bobColor: "#7f7f7f",
   anchorColor: "#7f7f7f",
   springColor: "#00e6e6",
-  bobSize: 0.5, // m (diameter)
+  bobSize: 0.5,
 };
 
 // Fields for DynamicInputs
@@ -57,21 +56,14 @@ export const INPUT_FIELDS = [
     step: 0.1,
   },
   {
-    name: "minLength",
-    label: "Lₘᵢₙ - Minimum length (m):",
+    name: "minCompressionLength",
+    label: "Minimum spring length (m):",
     type: "number",
     min: 0.05,
-    max: 1,
+    max: 5, // UI allows full range; physics clamps it to <= rest length
     step: 0.01,
   },
-  {
-    name: "maxLength",
-    label: "Lₘₐₓ - Maximum length (m):",
-    type: "number",
-    min: 1,
-    max: 5,
-    step: 0.1,
-  },
+
   { name: "bobColor", label: "Bob color:", type: "color" },
   { name: "anchorColor", label: "Anchor color:", type: "color" },
   { name: "springColor", label: "Spring color:", type: "color" },
@@ -108,7 +100,7 @@ export const SimInfoMapper = (state, context) => {
   return {
     "Position (x)": `${posXM.toFixed(2)} m`,
     "Distance from wall": `${(posXM - anchorX).toFixed(2)} m`,
-    "L (current length)": `${currentLengthM.toFixed(2)} m`,
+    "L (spring length)": `${currentLengthM.toFixed(2)} m`,
     "L₀ (rest length)": `${restLength.toFixed(2)} m`,
     "Δx (displacement)": `${displacement.toFixed(2)} m`,
     "v (velocity)": `${speedMs.toFixed(2)} m/s`,
