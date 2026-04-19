@@ -1,10 +1,11 @@
 import { physicsYToScreenY } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
-  ballCount: 2,
+  radius: 1,
   speed: 2,
-  size: 0.3,
-  restitution: 1,
+  mass: 1,
+  size: 0.2,
+  trailEnabled: true,
   color: "#3b82f6",
 };
 

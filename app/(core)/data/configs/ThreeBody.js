@@ -13,7 +13,7 @@ export const INPUT_FIELDS = [
     label: "Configuration",
     type: "select",
     options: [
-      { value: "figure8", label: "Stable – Figure-8 (Chenciner-Montgomery)" },
+      { value: "figure8", label: "Stable – Figure-8" },
       { value: "lagrange", label: "Stable – Lagrange Triangle" },
       { value: "chaotic", label: "Unstable / Chaotic" },
     ],
