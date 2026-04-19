@@ -104,7 +104,6 @@ const chapters = [
     tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
     icon: "/icons/test.png",
   },
-  
 ];
 
 export default chapters;
