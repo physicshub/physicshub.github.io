@@ -193,7 +193,7 @@ const renderBlock = (
 
     case "toggle":
       return (
-        <TheoryToggle {...commonProps} title={t(block.title) || t("Details")}>
+        <TheoryToggle {...commonProps} title={block.title || "Details"}>
           {block.content || ""}
         </TheoryToggle>
       );
@@ -222,7 +222,7 @@ const renderBlock = (
     default:
       return (
         <TheoryParagraph {...commonProps}>
-          {t("Unknown block type")}: {block.type}
+          {"Unknown block type"}: {block.type}
         </TheoryParagraph>
       );
   }

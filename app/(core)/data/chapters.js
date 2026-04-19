@@ -75,18 +75,18 @@ const chapters = [
   {
     id: 9,
     name: "Circular Motion",
-    desc: "Explore uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed interactively.",
+    desc: "Simulate uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed interactively.",
     link: "/simulations/CircularMotion",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.KINEMATICS, TAGS.VECTORS],
     icon: "/icons/circular.png",
   },
   {
     id: 10,
-    name: "Browser Performance & Stress Test",
-    desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
-    link: "/simulations/test",
-    tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
-    icon: "/icons/test.png",
+    name: "Three Body Problem",
+    desc: "Simulate a classic physics problem of three bodies operating under the gravity of each other. Visualise the effects of their mass and radius.",
+    link: "/simulations/ThreeBody",
+    tags: [TAGS.ADVANCED, TAGS.GRAVITY, TAGS.KINEMATICS, TAGS.FORCES],
+    icon: "/icons/collision.png",
   },
   {
     id: 11,
@@ -95,6 +95,14 @@ const chapters = [
     link: "/simulations/HorizontalSpring",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
     icon: "/icons/spring.png",
+  },
+  {
+    id: 0,
+    name: "Browser Performance & Stress Test",
+    desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
+    link: "/simulations/test",
+    tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
+    icon: "/icons/test.png",
   },
 ];
 

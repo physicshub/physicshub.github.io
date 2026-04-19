@@ -4,10 +4,10 @@ export const INITIAL_INPUTS = {
   radius: 1,
   speed: 2,
   mass: 1,
-  size: 0.3,
-  color: "#7f7f7f",
+  size: 0.2,
   trailEnabled: true,
-}; //radius, tangential speed, mass, size, color, trailEnabled defaults
+  color: "#3b82f6",
+};
 
 export const INPUT_FIELDS = [
   {
