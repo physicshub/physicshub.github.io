@@ -11,7 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { slugify } from "../../../(core)/utils/blogHandling.ts";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
-
 import {
   TheoryRendererProps,
   BlockData,
@@ -104,7 +103,8 @@ const renderBlock = (
   sectionIndex: number,
   blockIndex: number,
   isEditing: boolean,
-  onContentUpdate: OnContentUpdate
+  onContentUpdate: OnContentUpdate,
+  t: (key: string) => string
 ) => {
   // Prepariamo l'id se il blocco è un titolo
   const blockId =
@@ -193,7 +193,10 @@ const renderBlock = (
 
     case "toggle":
       return (
-        <TheoryToggle {...commonProps} title={t(block.title) || t("Details")}>
+        <TheoryToggle
+          {...commonProps}
+          title={t(block.title || "") || t("Details")}
+        >
           {block.content || ""}
         </TheoryToggle>
       );
@@ -267,7 +270,7 @@ export const TheoryRenderer: React.FC<TheoryRendererProps> = ({
                 onDuplicateBlock={onDuplicateBlock}
                 isEditing={isEditing}
               >
-                {renderBlock(block, i, j, isEditing, onContentUpdate)}
+                {renderBlock(block, i, j, isEditing, onContentUpdate, t)}
               </BlockEditorControls>
             );
           })}

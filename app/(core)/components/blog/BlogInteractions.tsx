@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import useTranslation from "../hooks/useTranslation.ts";
+import useTranslation from "../../../(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShareNodes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import {

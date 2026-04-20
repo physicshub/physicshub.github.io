@@ -1,3 +1,4 @@
+"use client";
 // app/components/Search.jsx
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
