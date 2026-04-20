@@ -225,7 +225,7 @@ const renderBlock = (
     default:
       return (
         <TheoryParagraph {...commonProps}>
-          {t("Unknown block type")}: {block.type}
+          {"Unknown block type"}: {block.type}
         </TheoryParagraph>
       );
   }

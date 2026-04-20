@@ -1,5 +1,6 @@
 "use client";
 // app/components/Search.jsx
+"use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
