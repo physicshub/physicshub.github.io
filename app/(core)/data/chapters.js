@@ -87,6 +87,7 @@ const chapters = [
     link: "/simulations/ThreeBody",
     tags: [TAGS.ADVANCED, TAGS.GRAVITY, TAGS.KINEMATICS, TAGS.FORCES],
     icon: "/icons/threebody.png",
+    relatedBlogSlug: "physics-behind-three-body-problem",
   },
   {
     id: 11,
