@@ -29,7 +29,6 @@ export default function Simulations() {
   const handleStart = () => {
     localStorage.setItem("hasVisitedSimulations", "true");
     scrollToContent();
-    //setTimeout(() => setShowHero(false), duration);
   };
 
   const scrollToContent = () => {
@@ -60,12 +59,28 @@ export default function Simulations() {
       .trim()
       .split(/\s+/)
       .filter((term) => term.length > 0);
+
     if (searchTerms.length === 0) return true;
+
     const chapterTagNames = getChapterTagNames(chap.tags);
+
     return searchTerms.every((term) => {
+      const normalizedTerm = term.replace(/\s+/g, "");
+
       const matchesName = chap.name.toLowerCase().includes(term);
+
       const matchesTag = chapterTagNames.includes(term);
-      return matchesName || matchesTag;
+
+      const matchesChapterNumber = chap.id && chap.id.toString().includes(term);
+
+      const matchesChapterLabel =
+        chap.id &&
+        (`chapter${chap.id}`.includes(normalizedTerm) ||
+          `ch${chap.id}`.includes(normalizedTerm));
+
+      return (
+        matchesName || matchesTag || matchesChapterNumber || matchesChapterLabel
+      );
     });
   });
 
@@ -73,7 +88,6 @@ export default function Simulations() {
     <div
       className={`simulations-container ${isCompleted ? "notranslate" : ""}`}
     >
-      {/* RENDERING CONDIZIONALE DELLA HERO */}
       {showHero && (
         <section className="simulations-hero">
           <h1>{t("Interactive Physics Simulations")}</h1>
