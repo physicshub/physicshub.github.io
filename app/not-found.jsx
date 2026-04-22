@@ -1,3 +1,4 @@
+"use client";
 import Button from "./(core)/components/Button.jsx";
 import useTranslation from "./(core)/hooks/useTranslation.ts";
 

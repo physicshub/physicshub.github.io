@@ -9,5 +9,10 @@
     "pills": "round",
     "accentLine": "dots"
   },
-  "ignore": ["husky", "github-actions", "npm", "postcss"]
+  "ignore": [
+    "husky",
+    "github-actions",
+    "npm",
+    "postcss"
+  ]
 }
