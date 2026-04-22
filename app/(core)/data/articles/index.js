@@ -8,6 +8,7 @@ import { pendulumBlog } from "./physics-of-pendulum-explained.js";
 import { projectileParabolicBlog } from "./projectile-parabolic-motion.js";
 import { class12PhysicsBlog } from "./class-12-physics.js";
 import { whatIsPhysicsBlog } from "./what-is-physics.js";
+import { threeBodyProblemBlog } from "./physics-behind-three-body-problem.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
@@ -19,6 +20,7 @@ export const allBlogs = {
   [springConnectionBlog.slug]: springConnectionBlog,
   [pendulumBlog.slug]: pendulumBlog,
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
+  [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
 };
 
 export const blogsArray = Object.values(allBlogs);

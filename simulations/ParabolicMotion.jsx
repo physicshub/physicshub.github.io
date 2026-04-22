@@ -1,7 +1,7 @@
 // app/(pages)/simulations/ParabolicMotion/page.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
@@ -18,7 +18,6 @@ import {
   SimInfoMapper,
   computeProjectileAnalytics,
 } from "../app/(core)/data/configs/ParabolicMotion.js";
-import chapters from "../app/(core)/data/chapters.js";
 
 // --- Centralized Physics Components ---
 import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
@@ -72,11 +71,6 @@ export default function ParabolicMotion() {
       needsRelaunchRef.current = true;
     },
     [setInputs]
-  );
-
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
   );
 
   const sketch = useCallback(
@@ -503,7 +497,6 @@ export default function ParabolicMotion() {
         needsRelaunchRef.current = true;
         setResetVersion((v) => v + 1);
       }}
-      theory={theory}
       dynamicInputs={
         <DynamicInputs
           config={INPUT_FIELDS}

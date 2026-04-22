@@ -1,7 +1,7 @@
 export const INITIAL_INPUTS = {
   mass: 10,
   G: 1,
-  size: 0.1,
+  size: 0.5,
   trailEnabled: true,
   chaos: 0,
   configuration: "figure8",

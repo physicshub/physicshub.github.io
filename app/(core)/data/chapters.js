@@ -86,7 +86,8 @@ const chapters = [
     desc: "Simulate a classic physics problem of three bodies operating under the gravity of each other. Visualise the effects of their mass and radius.",
     link: "/simulations/ThreeBody",
     tags: [TAGS.ADVANCED, TAGS.GRAVITY, TAGS.KINEMATICS, TAGS.FORCES],
-    icon: "/icons/collision.png",
+    icon: "/icons/threebody.png",
+    relatedBlogSlug: "physics-behind-three-body-problem",
   },
   {
     id: 11,
