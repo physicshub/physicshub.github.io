@@ -91,13 +91,17 @@ class PendulumBody extends PhysicsBody {
   /**
    * Set angle directly (for dragging)
    */
-  setAngle(angleRad) {
+  /* 
+
+  * Unnecesary function with the new dragging system, but keeping it here just in case 
+
+    setAngle(angleRad) {
     this.state.position.x = this.anchor.x + this.length * Math.sin(angleRad);
     this.state.position.y = this.anchor.y - this.length * Math.cos(angleRad);
     this.angularVel = 0;
     this.state.velocity.set(0, 0);
   }
-
+*/
   /**
    * Get current angle from vertical
    */
@@ -411,20 +415,32 @@ export default function Pendulum() {
         dragControllerRef.current.handlePress(p, bodyRef.current);
       };
 
+      //Mouse dragg modified for pendulum
       p.mouseDragged = () => {
-        if (!dragControllerRef.current.isDragging()) return;
+        if (!bodyRef.current) return;
 
-        // Calculate angle from mouse position
         const anchorScreen = {
           x: toPixels(bodyRef.current.anchor.x),
-          y: toPixels(bodyRef.current.anchor.y),
+          y: physicsYToScreenY(bodyRef.current.anchor.y),
         };
 
         const dx = p.mouseX - anchorScreen.x;
         const dy = p.mouseY - anchorScreen.y;
-        const angle = Math.atan2(dx, dy);
 
-        bodyRef.current.setAngle(angle);
+        const angle = Math.atan2(dx, dy);
+        const L = toPixels(bodyRef.current.length);
+
+        const constrainedX = anchorScreen.x + Math.sin(angle) * L;
+        const constrainedY = anchorScreen.y + Math.cos(angle) * L;
+
+        // use the original dragg system to avoid issues,
+
+        // copying the mouse position but with the constrained coordinates
+        dragControllerRef.current.handleDrag({
+          ...p,
+          mouseX: constrainedX,
+          mouseY: constrainedY,
+        });
       };
 
       p.mouseReleased = () => {
