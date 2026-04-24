@@ -1,4 +1,3 @@
-// app/(core)/components/blog/BlogInteractions.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,8 +18,15 @@ interface BlogInteractionsProps {
 export default function BlogInteractions({ title }: BlogInteractionsProps) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copied, setCopied] = useState(false);
+
+  // ✅ SSR-safe, lint-safe, no hydration mismatch
+  const [shareUrl] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return window.location.href;
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,21 +34,25 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
       const windowHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
-      const scroll = totalScroll / windowHeight;
-      setScrollProgress(Number(scroll));
+
+      const scroll = windowHeight > 0 ? totalScroll / windowHeight : 0;
+      setScrollProgress(scroll);
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-
   const copyLink = () => {
+    if (!shareUrl) return;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const isReady = shareUrl !== "";
 
   return (
     <div className={isCompleted ? "notranslate" : ""}>
@@ -54,12 +64,16 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
 
       <BackToTopButton onlyMobile={false} />
 
-      {/* 3. SHARE BUTTONS SECTION */}
+      {/* 2. SHARE BUTTONS SECTION */}
       <div className="share-section">
         <span className="share-label">{t("Share:")}</span>
 
         <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+          href={
+            isReady
+              ? `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`
+              : "#"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn linkedin"
@@ -69,7 +83,11 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
         </a>
 
         <a
-          href={`https://twitter.com/intent/tweet?text=${title}&url=${shareUrl}`}
+          href={
+            isReady
+              ? `https://twitter.com/intent/tweet?text=${title}&url=${shareUrl}`
+              : "#"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn twitter"
@@ -79,7 +97,11 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
         </a>
 
         <a
-          href={`https://api.whatsapp.com/send?text=${title} ${shareUrl}`}
+          href={
+            isReady
+              ? `https://api.whatsapp.com/send?text=${title} ${shareUrl}`
+              : "#"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn whatsapp"

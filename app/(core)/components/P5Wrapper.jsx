@@ -4,86 +4,172 @@ import { useEffect, useRef } from "react";
 import { resetTime, cleanupInstance } from "../constants/Time.js";
 import { setCanvasHeight } from "../constants/Utils.js";
 
+// --------------------------------------------------------------------------
+// Turbopack intercepts ALL fetch() calls that originate from within its
+// module graph during construction — including the passthrough to realFetch.
+// The only reliable fix is to swallow every fetch that fires during
+// `new P5Constructor(...)` and let p5 handle the empty responses gracefully.
+// The real fetch is restored immediately after the constructor returns.
+// --------------------------------------------------------------------------
+function withP5FetchGuard(fn) {
+  const realFetch = window.fetch;
+
+  // Swallow ALL fetches during p5 instantiation
+  window.fetch = function guardedFetch() {
+    return Promise.resolve(
+      new Response(new ArrayBuffer(0), {
+        status: 200,
+        headers: { "Content-Type": "application/octet-stream" },
+      })
+    );
+  };
+
+  try {
+    return fn();
+  } finally {
+    window.fetch = realFetch;
+  }
+}
+
+// --------------------------------------------------------------------------
+// p5 loader — tries npm import first, falls back to CDN script injection.
+// --------------------------------------------------------------------------
+const loadP5Library = (() => {
+  let cached = null;
+
+  return () =>
+    new Promise(async (resolve, reject) => {
+      if (cached) return resolve(cached);
+
+      try {
+        const mod = await import("p5");
+        const P5 = mod?.default ?? mod;
+        if (typeof P5 === "function") {
+          cached = P5;
+          return resolve(cached);
+        }
+      } catch (_) {}
+
+      if (typeof window.p5 === "function") {
+        cached = window.p5;
+        return resolve(cached);
+      }
+
+      const script = document.createElement("script");
+      script.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js";
+      script.async = true;
+      script.onload = () => {
+        if (typeof window.p5 === "function") {
+          cached = window.p5;
+          resolve(cached);
+        } else {
+          reject(new Error("p5 CDN loaded but window.p5 is not a function"));
+        }
+      };
+      script.onerror = () => reject(new Error("Failed to load p5 from CDN"));
+      document.head.appendChild(script);
+    });
+})();
+
+// --------------------------------------------------------------------------
+// Instantiate p5 inside a macrotask so we are outside Turbopack's module
+// execution frame, with the fetch guard active for the entire constructor.
+// --------------------------------------------------------------------------
+function createP5Instance(P5Constructor, sketchFn, container) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const instance = withP5FetchGuard(
+          () => new P5Constructor(sketchFn, container)
+        );
+        resolve(instance);
+      } catch (err) {
+        reject(err);
+      }
+    }, 0);
+  });
+}
+
+// --------------------------------------------------------------------------
+// Component
+// --------------------------------------------------------------------------
 export default function P5Wrapper({ sketch, simInfos }) {
-  // containerRef: the <div> where p5 will attach the canvas
   const containerRef = useRef(null);
-  // p5InstanceRef: keeps track of the current p5 instance (so it can be removed on unmount)
   const p5InstanceRef = useRef(null);
 
-  // Cleanup helper function to safely remove a p5 instance
   const safeRemove = (instance) => {
     if (!instance) return;
     try {
       cleanupInstance(instance);
       instance.remove();
-    } catch (err) {}
+    } catch (_) {}
   };
 
-  // --- LOGICA DI RESIZE CENTRALIZZATA ---
+  // Centralised resize logic
   useEffect(() => {
     const handleResize = () => {
       if (!containerRef.current || !p5InstanceRef.current) return;
-
-      // 1. Ottieni le nuove dimensioni dal contenitore DOM
       const { clientWidth, clientHeight } = containerRef.current;
-
-      // 2. Aggiorna il valore globale della fisica
       setCanvasHeight(clientHeight);
-
-      // 3. Comunica a p5.js di ridimensionare il canvas
       p5InstanceRef.current.resizeCanvas(clientWidth, clientHeight);
-
-      // Opzionale: se hai bisogno di resettare qualcosa nello sketch al resize
       if (p5InstanceRef.current.onResize) {
         p5InstanceRef.current.onResize(clientWidth, clientHeight);
       }
     };
 
     window.addEventListener("resize", handleResize);
-
-    // Eseguiamo una chiamata iniziale per sincronizzare le dimensioni al montaggio
     handleResize();
-
     return () => window.removeEventListener("resize", handleResize);
   }, [sketch]);
 
+  // p5 instance lifecycle
   useEffect(() => {
     let active = true;
-    let tempP5Instance = null;
 
-    (async () => {
+    const loadP5 = async () => {
       try {
-        const { default: p5 } = await import("p5");
-        if (!active || !containerRef.current || !sketch) return;
+        if (typeof window === "undefined") return;
+        if (!containerRef.current || !sketch) return;
+
+        const P5Constructor = await loadP5Library();
+        if (!active) return;
 
         safeRemove(p5InstanceRef.current);
+        p5InstanceRef.current = null;
 
-        tempP5Instance = new p5((p) => {
-          p._instanceId =
-            crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
+        const instance = await createP5Instance(
+          P5Constructor,
+          (p) => {
+            p._instanceId =
+              crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
 
-          resetTime();
-          sketch(p);
+            resetTime();
+            sketch(p);
 
-          p.setup = ((originalSetup) => () => {
-            if (originalSetup) originalSetup();
-            const h = containerRef.current.clientHeight;
-            const w = containerRef.current.clientWidth;
-            p.resizeCanvas(w, h);
-            setCanvasHeight(h);
-          })(p.setup);
-        }, containerRef.current);
+            p.setup = ((originalSetup) => () => {
+              if (originalSetup) originalSetup();
+              const h = containerRef.current?.clientHeight ?? 0;
+              const w = containerRef.current?.clientWidth ?? 0;
+              p.resizeCanvas(w, h);
+              setCanvasHeight(h);
+            })(p.setup);
+          },
+          containerRef.current
+        );
 
         if (!active) {
-          safeRemove(tempP5Instance);
+          safeRemove(instance);
           return;
         }
 
-        p5InstanceRef.current = tempP5Instance;
+        p5InstanceRef.current = instance;
       } catch (err) {
-        console.error("Failed to load P5:", err);
+        console.error("Failed to initialize P5 safely:", err);
       }
-    })();
+    };
+
+    loadP5();
 
     return () => {
       active = false;

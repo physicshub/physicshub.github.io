@@ -58,7 +58,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Create the JSON-LD object
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -69,11 +68,33 @@ export default function RootLayout({
   return (
     <FeedbackProvider>
       <html lang="en" dir="ltr">
-        <body>
+        <body suppressHydrationWarning>
+          {/* Theme initialization — runs inline before paint to avoid flash */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    const key = 'physicshub-theme';
+                    const saved = localStorage.getItem(key);
+                    const theme = saved && ['light','dark'].includes(saved) ? saved : 'dark';
+                    document.body.dataset.theme = theme;
+                    if (theme === 'light') {
+                      document.body.style.backgroundColor = '#ffffff';
+                    }
+                  } catch(e) {}
+                })();
+              `,
+            }}
+          />
+
+          {/* JSON-LD structured data */}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
+
+          {/* Google Analytics */}
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
             strategy="afterInteractive"
@@ -84,23 +105,6 @@ export default function RootLayout({
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-ELZTKTE86N');
-            `}
-          </Script>
-
-          {/* Theme initialization script */}
-          <Script id="theme-init" strategy="beforeInteractive">
-            {`
-              (function() {
-                const THEME_STORAGE_KEY = 'physicshub-theme';
-                const saved = localStorage.getItem(THEME_STORAGE_KEY);
-                const theme = saved && ['light','dark'].includes(saved) ? saved : 'dark';
-                document.addEventListener("DOMContentLoaded", () => {
-                  document.body.dataset.theme = theme;
-                  if (theme === 'light') {
-                    document.body.style.backgroundColor = '#ffffff';
-                  }
-                });
-              })();
             `}
           </Script>
 
