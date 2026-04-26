@@ -110,7 +110,9 @@ async function generateSitemap() {
   console.log("\n📋 Sitemap Summary:");
   console.log(`   - Total URLs: ${allRoutes.length}`);
   console.log(`   - Lastmod date: ${currentDate}`);
-  console.log(`   - Unused namespaces removed for better crawler compatibility`);
+  console.log(
+    `   - Unused namespaces removed for better crawler compatibility`,
+  );
 }
 
 generateSitemap().catch((err) => {
