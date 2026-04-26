@@ -222,8 +222,9 @@ export default function VectorsOperations() {
               // Parallelogram method — translate to canvas centre so both vectors
               // share the same origin and remain properly to scale.
               p.translate(p.width / 2, p.height / 2);
-              const aMag   = inputsRef.current.vectorAMag   ?? 150;
-              const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+              const aMag = inputsRef.current.vectorAMag ?? 150;
+              const aAngle =
+                ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
               const Avec_add_par = p.createVector(
                 Math.cos(aAngle) * aMag,
                 Math.sin(aAngle) * aMag
@@ -265,18 +266,19 @@ export default function VectorsOperations() {
             } else {
               // Parallelogram method — translate to canvas centre for correct scale
               p.translate(p.width / 2, p.height / 2);
-              const aMag   = inputsRef.current.vectorAMag   ?? 150;
-              const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-              const Avec_sub_par    = p.createVector(
+              const aMag = inputsRef.current.vectorAMag ?? 150;
+              const aAngle =
+                ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+              const Avec_sub_par = p.createVector(
                 Math.cos(aAngle) * aMag,
                 Math.sin(aAngle) * aMag
               );
-              const Bvec_sub_par    = p.createVector(
+              const Bvec_sub_par = p.createVector(
                 p.mouseX - p.width / 2,
                 p.mouseY - p.height / 2
               );
               const negAvec_sub_par = Avec_sub_par.copy().mult(-1);
-              const Rvec_sub_par    = p.constructor.Vector.add(
+              const Rvec_sub_par = p.constructor.Vector.add(
                 Bvec_sub_par,
                 negAvec_sub_par
               );
@@ -293,8 +295,18 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight);
               p.drawingContext.setLineDash([6, 6]);
               p.line(0, 0, negAvec_sub_par.x, negAvec_sub_par.y);
-              p.line(Bvec_sub_par.x, Bvec_sub_par.y, Rvec_sub_par.x, Rvec_sub_par.y);
-              p.line(negAvec_sub_par.x, negAvec_sub_par.y, Rvec_sub_par.x, Rvec_sub_par.y);
+              p.line(
+                Bvec_sub_par.x,
+                Bvec_sub_par.y,
+                Rvec_sub_par.x,
+                Rvec_sub_par.y
+              );
+              p.line(
+                negAvec_sub_par.x,
+                negAvec_sub_par.y,
+                Rvec_sub_par.x,
+                Rvec_sub_par.y
+              );
               p.drawingContext.setLineDash([]);
 
               p.noStroke();
@@ -309,7 +321,12 @@ export default function VectorsOperations() {
 
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(Math.max(1, strokeWeight - 0.2));
-              p.line(Avec_sub_par.x, Avec_sub_par.y, Bvec_sub_par.x, Bvec_sub_par.y);
+              p.line(
+                Avec_sub_par.x,
+                Avec_sub_par.y,
+                Bvec_sub_par.x,
+                Bvec_sub_par.y
+              );
 
               p.noStroke();
               p.fill(255, 220, 120);
@@ -433,8 +450,9 @@ export default function VectorsOperations() {
 
         switch (operation) {
           case "+": {
-            const aMag   = inputsRef.current.vectorAMag   ?? 150;
-            const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const aMag = inputsRef.current.vectorAMag ?? 150;
+            const aAngle =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
             const parallelA = p.createVector(
               Math.cos(aAngle) * aMag,
               Math.sin(aAngle) * aMag
@@ -455,14 +473,23 @@ export default function VectorsOperations() {
           }
 
           case "-": {
-            const aMag   = inputsRef.current.vectorAMag   ?? 150;
-            const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const parallelA = visualizeMode === "parallelogram"
-              ? p.createVector(Math.cos(aAngle) * aMag, Math.sin(aAngle) * aMag)
-              : A;
-            const B_eff = visualizeMode === "parallelogram" ? B_from_center : B_from_origin;
+            const aMag = inputsRef.current.vectorAMag ?? 150;
+            const aAngle =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const parallelA =
+              visualizeMode === "parallelogram"
+                ? p.createVector(
+                    Math.cos(aAngle) * aMag,
+                    Math.sin(aAngle) * aMag
+                  )
+                : A;
+            const B_eff =
+              visualizeMode === "parallelogram" ? B_from_center : B_from_origin;
             const R = p.constructor.Vector.sub(B_eff, parallelA);
-            const Rpar = p.constructor.Vector.add(B_eff, parallelA.copy().mult(-1));
+            const Rpar = p.constructor.Vector.add(
+              B_eff,
+              parallelA.copy().mult(-1)
+            );
             const negA = p.constructor.Vector.mult(parallelA, -1);
             const Bcheck = p.constructor.Vector.add(parallelA, R);
             const checkErr = p.constructor.Vector.sub(Bcheck, B_eff).mag();
