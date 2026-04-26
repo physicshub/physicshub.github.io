@@ -8,6 +8,8 @@ export const INITIAL_INPUTS = {
   physicsEnabled: false,
   massKg: 5,
   pxPerNewton: 100,
+  vectorAMag: 150,
+  vectorAAngle: 30,
 };
 
 export const INPUT_FIELDS = [
@@ -50,6 +52,28 @@ export const INPUT_FIELDS = [
     ],
     showCondition: (inputs) =>
       inputs.operation === "+" || inputs.operation === "-",
+  },
+  {
+    type: "number",
+    name: "vectorAMag",
+    label: "Vector A magnitude (px):",
+    min: 10,
+    max: 500,
+    step: 10,
+    showCondition: (inputs) =>
+      inputs.visualizeMode === "parallelogram" &&
+      (inputs.operation === "+" || inputs.operation === "-"),
+  },
+  {
+    type: "number",
+    name: "vectorAAngle",
+    label: "Vector A angle (deg):",
+    min: -180,
+    max: 180,
+    step: 5,
+    showCondition: (inputs) =>
+      inputs.visualizeMode === "parallelogram" &&
+      (inputs.operation === "+" || inputs.operation === "-"),
   },
   {
     type: "number",

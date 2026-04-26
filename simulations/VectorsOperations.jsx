@@ -219,30 +219,30 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight + 1);
               p.line(0, 0, mouse.x, mouse.y); // resultant
             } else {
-              // Parallelogram method
-              const Btip_from_origin = p.constructor.Vector.add(
-                Avec_add,
-                Bvec_add
+              // Parallelogram method — translate to canvas centre so both vectors
+              // share the same origin and remain properly to scale.
+              p.translate(p.width / 2, p.height / 2);
+              const aMag   = inputsRef.current.vectorAMag   ?? 150;
+              const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+              const Avec_add_par = p.createVector(
+                Math.cos(aAngle) * aMag,
+                Math.sin(aAngle) * aMag
               );
-              p.line(0, 0, Avec_add.x, Avec_add.y);
-              p.line(0, 0, Bvec_add.x, Bvec_add.y);
+              const Bvec_add_par = p.createVector(
+                p.mouseX - p.width / 2,
+                p.mouseY - p.height / 2
+              );
+              const Btip = p.constructor.Vector.add(Avec_add_par, Bvec_add_par);
+
+              p.line(0, 0, Avec_add_par.x, Avec_add_par.y);
+              p.line(0, 0, Bvec_add_par.x, Bvec_add_par.y);
               p.drawingContext.setLineDash([6, 6]);
-              p.line(
-                Avec_add.x,
-                Avec_add.y,
-                Btip_from_origin.x,
-                Btip_from_origin.y
-              );
-              p.line(
-                Bvec_add.x,
-                Bvec_add.y,
-                Btip_from_origin.x,
-                Btip_from_origin.y
-              );
+              p.line(Avec_add_par.x, Avec_add_par.y, Btip.x, Btip.y);
+              p.line(Bvec_add_par.x, Bvec_add_par.y, Btip.x, Btip.y);
               p.drawingContext.setLineDash([]);
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, Btip_from_origin.x, Btip_from_origin.y);
+              p.line(0, 0, Btip.x, Btip.y);
             }
             break;
           }
@@ -263,40 +263,57 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight + 1);
               p.line(center.x, center.y, mouse.x, mouse.y);
             } else {
+              // Parallelogram method — translate to canvas centre for correct scale
+              p.translate(p.width / 2, p.height / 2);
+              const aMag   = inputsRef.current.vectorAMag   ?? 150;
+              const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+              const Avec_sub_par    = p.createVector(
+                Math.cos(aAngle) * aMag,
+                Math.sin(aAngle) * aMag
+              );
+              const Bvec_sub_par    = p.createVector(
+                p.mouseX - p.width / 2,
+                p.mouseY - p.height / 2
+              );
+              const negAvec_sub_par = Avec_sub_par.copy().mult(-1);
+              const Rvec_sub_par    = p.constructor.Vector.add(
+                Bvec_sub_par,
+                negAvec_sub_par
+              );
+
               p.stroke(strokeColor);
               p.strokeWeight(Math.max(1, strokeWeight - 0.5));
-              p.line(0, 0, Avec_sub.x, Avec_sub.y);
+              p.line(0, 0, Avec_sub_par.x, Avec_sub_par.y);
 
               p.stroke(strokeColor);
               p.strokeWeight(strokeWeight);
-              p.line(0, 0, Bvec_sub.x, Bvec_sub.y);
+              p.line(0, 0, Bvec_sub_par.x, Bvec_sub_par.y);
 
               p.stroke(180, 180, 180, 180);
               p.strokeWeight(strokeWeight);
               p.drawingContext.setLineDash([6, 6]);
-              p.line(0, 0, negAvec_sub.x, negAvec_sub.y);
-
-              p.line(Bvec_sub.x, Bvec_sub.y, Rvec_sub.x, Rvec_sub.y);
-              p.line(negAvec_sub.x, negAvec_sub.y, Rvec_sub.x, Rvec_sub.y);
+              p.line(0, 0, negAvec_sub_par.x, negAvec_sub_par.y);
+              p.line(Bvec_sub_par.x, Bvec_sub_par.y, Rvec_sub_par.x, Rvec_sub_par.y);
+              p.line(negAvec_sub_par.x, negAvec_sub_par.y, Rvec_sub_par.x, Rvec_sub_par.y);
               p.drawingContext.setLineDash([]);
 
               p.noStroke();
               p.fill(220);
               p.textSize(14);
               p.textAlign(p.CENTER, p.CENTER);
-              p.text("-A", negAvec_sub.x * 0.55, negAvec_sub.y * 0.55);
+              p.text("-A", negAvec_sub_par.x * 0.55, negAvec_sub_par.y * 0.55);
 
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, Rvec_sub.x, Rvec_sub.y);
+              p.line(0, 0, Rvec_sub_par.x, Rvec_sub_par.y);
 
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(Math.max(1, strokeWeight - 0.2));
-              p.line(Avec_sub.x, Avec_sub.y, Bvec_sub.x, Bvec_sub.y);
+              p.line(Avec_sub_par.x, Avec_sub_par.y, Bvec_sub_par.x, Bvec_sub_par.y);
 
               p.noStroke();
               p.fill(255, 220, 120);
-              p.circle(Avec_sub.x, Avec_sub.y, 7);
+              p.circle(Avec_sub_par.x, Avec_sub_par.y, 7);
             }
             break;
           }
@@ -416,10 +433,16 @@ export default function VectorsOperations() {
 
         switch (operation) {
           case "+": {
+            const aMag   = inputsRef.current.vectorAMag   ?? 150;
+            const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const parallelA = p.createVector(
+              Math.cos(aAngle) * aMag,
+              Math.sin(aAngle) * aMag
+            );
             const R =
               visualizeMode === "triangle"
                 ? B_from_origin
-                : p.constructor.Vector.add(A, B_from_center);
+                : p.constructor.Vector.add(parallelA, B_from_center);
             info["Addition resultant R"] = `(${R.x.toFixed(2)}, ${R.y.toFixed(
               2
             )}) px`;
@@ -432,14 +455,17 @@ export default function VectorsOperations() {
           }
 
           case "-": {
-            const R = p.constructor.Vector.sub(mouse, center);
-            const Rpar = p.constructor.Vector.sub(B_from_origin, A);
-            const negA = p.constructor.Vector.mult(A, -1);
-            const Bcheck = p.constructor.Vector.add(A, R);
-            const checkErr = p.constructor.Vector.sub(
-              Bcheck,
-              B_from_origin
-            ).mag();
+            const aMag   = inputsRef.current.vectorAMag   ?? 150;
+            const aAngle = ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const parallelA = visualizeMode === "parallelogram"
+              ? p.createVector(Math.cos(aAngle) * aMag, Math.sin(aAngle) * aMag)
+              : A;
+            const B_eff = visualizeMode === "parallelogram" ? B_from_center : B_from_origin;
+            const R = p.constructor.Vector.sub(B_eff, parallelA);
+            const Rpar = p.constructor.Vector.add(B_eff, parallelA.copy().mult(-1));
+            const negA = p.constructor.Vector.mult(parallelA, -1);
+            const Bcheck = p.constructor.Vector.add(parallelA, R);
+            const checkErr = p.constructor.Vector.sub(Bcheck, B_eff).mag();
 
             info["Subtraction resultant R = B - A"] = `(${R.x.toFixed(
               2
