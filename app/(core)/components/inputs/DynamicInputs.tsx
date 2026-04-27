@@ -3,6 +3,7 @@ import CheckboxInput from "./CheckboxInput.jsx";
 import ColorInput from "./ColorInput.jsx";
 import SelectInput from "./SelectInput.jsx";
 import useTranslation from "../../hooks/useTranslation.ts";
+import { useState } from "react";
 
 interface FieldConfig {
   name: string;
@@ -24,6 +25,9 @@ interface Props {
 export default function DynamicInputs({ config, values, onChange }: Props) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const [lastValidValues, setLastValidValues] =
+    useState<Record<string, string | number | boolean>>(values);
+
   return (
     <div className={`inputs-container ${isCompleted ? "notranslate" : ""}`}>
       {config.map((field) => {
@@ -63,23 +67,33 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
                 }
                 // Only validate, don't convert to number yet
                 const isValidNumber = /^\d*\.?\d*$/.test(rawValue);
-
                 if (isValidNumber) {
                   // Store as string to preserve formatting like "5.0"
                   onChange(field.name, rawValue);
                 }
               }}
               onBlur={() => {
-                const currentValue = val;
+                const currentValue = values[field.name];
+
                 if (
                   typeof currentValue === "string" &&
                   currentValue !== "" &&
                   currentValue !== "."
                 ) {
                   const num = Number(currentValue);
+
                   if (!isNaN(num)) {
-                    onChange(field.name, num);
+                    const newValue = num;
+                    onChange(field.name, newValue);
+                    //commit as last valid value
+                    setLastValidValues((prev) => ({
+                      ...prev,
+                      [field.name]: newValue,
+                    }));
                   }
+                } else {
+                  //revert if invalid
+                  onChange(field.name, lastValidValues[field.name]);
                 }
               }}
             />
