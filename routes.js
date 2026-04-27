@@ -64,3 +64,5 @@ export const routes = [
     priority: 0.7,
   },
 ];
+
+// Contributed via automated bounty system
