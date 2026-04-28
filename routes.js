@@ -63,4 +63,10 @@ export const routes = [
     changefreq: "weekly",
     priority: 0.7,
   },
+  {
+    path: "/simulations/DoublePendulum",
+    component: "DoublePendulum",
+    changefreq: "weekly",
+    priority: 0.7,
+  },
 ];

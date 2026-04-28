@@ -90,6 +90,14 @@ const chapters = [
     relatedBlogSlug: "physics-behind-three-body-problem",
   },
   {
+    id: 12,
+    name: "Double Pendulum",
+    desc: "Simulate a double pendulum and explore chaotic motion. Watch how small changes in initial conditions lead to completely different trajectories — a classic example of chaos theory.",
+    link: "/simulations/DoublePendulum",
+    tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
+    icon: "/icons/pendulam.png",
+  },
+  {
     id: 11,
     name: "Horizontal Spring",
     desc: "A spring attached to the left wall with a draggable mass. Explore Hooke's Law and oscillation on a horizontal plane.",
