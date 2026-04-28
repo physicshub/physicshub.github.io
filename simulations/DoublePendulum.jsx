@@ -45,9 +45,6 @@ class DoublePendulumSystem {
     this.angVel2 = angVel2;
   }
 
-  /**
-   * Equations of motion for double pendulum (Lagrangian mechanics)
-   */
   static derivatives(state, m1, m2, L1, L2, g, damping) {
     const { angle1, angle2, angVel1, angVel2 } = state;
     const d = angle1 - angle2;
@@ -55,7 +52,6 @@ class DoublePendulumSystem {
     const denom1 = 2 * m1 + m2 - m2 * Math.cos(2 * d);
     const denom2 = (L2 / L1) * denom1;
 
-    // Angular acceleration for pendulum 1
     const acc1 =
       (-g * (2 * m1 + m2) * Math.sin(angle1) -
         m2 * g * Math.sin(angle1 - 2 * angle2) -
@@ -66,7 +62,6 @@ class DoublePendulumSystem {
         damping * angVel1) /
       (L1 * denom1);
 
-    // Angular acceleration for pendulum 2
     const acc2 =
       (2 *
         Math.sin(d) *
@@ -84,9 +79,6 @@ class DoublePendulumSystem {
     };
   }
 
-  /**
-   * RK4 integration step
-   */
   static rk4Step(state, m1, m2, L1, L2, g, damping, dt) {
     const deriv = (s) =>
       DoublePendulumSystem.derivatives(s, m1, m2, L1, L2, g, damping);
@@ -115,9 +107,6 @@ class DoublePendulumSystem {
     );
   }
 
-  /**
-   * Get positions of both bobs given anchor in meters
-   */
   getPositions(anchorX, anchorY, L1, L2) {
     const x1 = anchorX + L1 * Math.sin(this.angle1);
     const y1 = anchorY - L1 * Math.cos(this.angle1);
@@ -126,9 +115,6 @@ class DoublePendulumSystem {
     return { x1, y1, x2, y2 };
   }
 
-  /**
-   * Compute total kinetic energy
-   */
   getKineticEnergy(m1, m2, L1, L2) {
     const { angle1, angle2, angVel1, angVel2 } = this;
     const v1sq = (L1 * angVel1) ** 2;
@@ -139,13 +125,9 @@ class DoublePendulumSystem {
     return 0.5 * m1 * v1sq + 0.5 * m2 * v2sq;
   }
 
-  /**
-   * Compute total potential energy (relative to anchor)
-   */
   getPotentialEnergy(m1, m2, L1, L2, g, anchorY) {
     const y1 = anchorY - L1 * Math.cos(this.angle1);
     const y2 = y1 - L2 * Math.cos(this.angle2);
-    // Negate because physics y is flipped vs screen
     return -m1 * g * y1 - m2 * g * y2;
   }
 }
@@ -162,6 +144,7 @@ export default function DoublePendulum() {
 
   const systemRef = useRef(null);
   const anchorRef = useRef({ x: 0, y: 0 });
+  const scaledLengthsRef = useRef({ L1: 1, L2: 1 });
   const trailRef = useRef([]);
 
   const { simData, updateSimInfo } = useSimInfo();
@@ -181,9 +164,23 @@ export default function DoublePendulum() {
         const w = p.width;
         const h = p.height;
 
+        // Anchor near the top-center
+        const anchorYpx = h * 0.55;
         anchorRef.current = {
           x: toMeters(w / 2),
-          y: toMeters(h * 0.25),
+          y: toMeters(anchorYpx),
+        };
+
+        // Scale arms so L1+L2 fits within 80% of the remaining canvas height
+        const L1 = inputsRef.current.length1;
+        const L2 = inputsRef.current.length2;
+        const totalPx = toPixels(L1 + L2);
+        const maxPx = (h - anchorYpx) * 0.8;
+        const scale = totalPx > maxPx ? maxPx / totalPx : 1;
+
+        scaledLengthsRef.current = {
+          L1: L1 * scale,
+          L2: L2 * scale,
         };
 
         const angle1 = (inputsRef.current.initialAngle1 * Math.PI) / 180;
@@ -210,8 +207,8 @@ export default function DoublePendulum() {
 
         const dt = computeDelta(p);
         const inp = inputsRef.current;
+        const { L1, L2 } = scaledLengthsRef.current;
 
-        // Physics: multiple sub-steps for stability
         if (dt > 0) {
           const subSteps = 8;
           const subDt = dt / subSteps;
@@ -220,8 +217,8 @@ export default function DoublePendulum() {
               systemRef.current,
               inp.mass1,
               inp.mass2,
-              inp.length1,
-              inp.length2,
+              L1,
+              L2,
               inp.gravity,
               inp.damping,
               subDt
@@ -232,11 +229,10 @@ export default function DoublePendulum() {
         const { x1, y1, x2, y2 } = systemRef.current.getPositions(
           anchorRef.current.x,
           anchorRef.current.y,
-          inp.length1,
-          inp.length2
+          L1,
+          L2
         );
 
-        // Trail: record position of bob 2 (in screen coords)
         if (inp.trailEnabled) {
           trailRef.current.push({
             x: toPixels(x2),
@@ -251,18 +247,17 @@ export default function DoublePendulum() {
 
         renderScene(p, x1, y1, x2, y2);
 
-        // Energies
         const ke = systemRef.current.getKineticEnergy(
           inp.mass1,
           inp.mass2,
-          inp.length1,
-          inp.length2
+          L1,
+          L2
         );
         const pe = systemRef.current.getPotentialEnergy(
           inp.mass1,
           inp.mass2,
-          inp.length1,
-          inp.length2,
+          L1,
+          L2,
           inp.gravity,
           anchorRef.current.y
         );
@@ -287,7 +282,6 @@ export default function DoublePendulum() {
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         const inp = inputsRef.current;
 
-        // Trail layer
         if (!inp.trailEnabled) {
           trailLayer.background(r, g, b);
         } else {
@@ -296,7 +290,6 @@ export default function DoublePendulum() {
           trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
         }
 
-        // Draw trail on trail layer
         const trail = trailRef.current;
         if (trail.length > 1) {
           for (let i = 1; i < trail.length; i++) {
@@ -317,7 +310,6 @@ export default function DoublePendulum() {
         p.clear();
         p.image(trailLayer, 0, 0);
 
-        // Screen coords
         const ax = toPixels(anchorRef.current.x);
         const ay = physicsYToScreenY(anchorRef.current.y);
         const sx1 = toPixels(x1);
