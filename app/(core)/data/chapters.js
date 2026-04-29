@@ -98,6 +98,14 @@ const chapters = [
     icon: "/icons/spring.png",
   },
   {
+    id: 12,
+    name: "Double Pendulum",
+    desc: "Simulate a double pendulum and explore chaotic motion. Watch how small changes in initial conditions lead to completely different trajectories — a classic example of chaos theory.",
+    link: "/simulations/DoublePendulum",
+    tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
+    icon: "/icons/pendulam.png",
+  },
+  {
     id: 0,
     name: "Browser Performance & Stress Test",
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
