@@ -148,11 +148,29 @@ export default function P5Wrapper({ sketch, simInfos }) {
             sketch(p);
 
             p.setup = ((originalSetup) => () => {
-              if (originalSetup) originalSetup();
+              // Fix #194: Set CANVAS_HEIGHT to the real container size BEFORE
+              // running the simulation's own setup(), so that coordinate
+              // conversions (physicsYToScreenY, toMeters, etc.) and initial
+              // body spawn positions use the correct canvas dimensions even
+              // when p._userNode.clientHeight is still 0 at this point.
               const h = containerRef.current?.clientHeight ?? 0;
               const w = containerRef.current?.clientWidth ?? 0;
-              p.resizeCanvas(w, h);
-              setCanvasHeight(h);
+              if (h > 0) setCanvasHeight(h);
+
+              // Run the sketch's own setup (calls p.createCanvas internally).
+              if (originalSetup) originalSetup();
+
+              // After the canvas element exists, resize it to the real
+              // container dimensions and sync CANVAS_HEIGHT again.
+              const finalH = containerRef.current?.clientHeight ?? 0;
+              const finalW = containerRef.current?.clientWidth ?? 0;
+              if (finalW > 0 && finalH > 0) {
+                p.resizeCanvas(finalW, finalH);
+                setCanvasHeight(finalH);
+                // Let the simulation re-clamp or re-position bodies now that
+                // the canvas has its definitive size.
+                if (typeof p.windowResized === "function") p.windowResized();
+              }
             })(p.setup);
           },
           containerRef.current

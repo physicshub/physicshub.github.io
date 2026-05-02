@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters } from "../app/(core)/constants/Utils.js";
+import { toMeters, setCanvasHeight } from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
@@ -275,6 +275,7 @@ export default function Test() {
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
+        setCanvasHeight(h);
 
         trailLayerRef.current = p.createGraphics(w, h);
         trailLayerRef.current.pixelDensity(1);
@@ -282,6 +283,16 @@ export default function Test() {
         const bg = getBackgroundColor();
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         trailLayerRef.current.background(r, g, b);
+
+        // Fix #194: If bodies were never created (zero-height canvas at
+        // setup time), initialise them now that we have real dimensions.
+        if (!bodiesRef.current || bodiesRef.current.length === 0) {
+          bodiesRef.current = createBodies(
+            p,
+            inputsRef.current.numBodies,
+            inputsRef.current
+          );
+        }
       };
     },
     [inputsRef, createBodies, updateSimInfo]
