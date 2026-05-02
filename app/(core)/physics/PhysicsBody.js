@@ -14,7 +14,11 @@ export class PhysicsBody {
   constructor(p, params = {}) {
     this.p = p;
 
-    setCanvasHeight(p.height); // Set canvas height again
+    // Sync the global CANVAS_HEIGHT conversion constant, but only when the
+    // canvas has been properly sized (p.height > 100 guards against the p5
+    // default 100-px canvas that exists before createCanvas is called, and
+    // against a zero-height canvas from an early setup race — fix #194).
+    if (p.height > 100) setCanvasHeight(p.height);
     // Physical properties
     this.params = {
       mass: params.mass || 1,

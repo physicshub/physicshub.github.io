@@ -16,7 +16,11 @@ import {
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/BallAcceleration.js";
-import { toMeters, screenYToPhysicsY } from "../app/(core)/constants/Utils.js";
+import {
+  toMeters,
+  screenYToPhysicsY,
+  setCanvasHeight,
+} from "../app/(core)/constants/Utils.js";
 
 // --- Centralized Physics Components ---
 import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
@@ -250,11 +254,14 @@ export default function BallAcceleration() {
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
+        setCanvasHeight(h);
 
         trailLayer = p.createGraphics(w, h);
         trailLayer.pixelDensity(1);
         trailLayer.clear();
 
+        // Fix #194: If the body was never created (zero-height canvas at
+        // setup time), initialise it now that we have real dimensions.
         setupSimulation();
       };
     },

@@ -5,7 +5,11 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // --- Core Physics & Constants ---
-import { toMeters, collideBoundary } from "../app/(core)/constants/Utils.js";
+import {
+  toMeters,
+  collideBoundary,
+  setCanvasHeight,
+} from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
   resetTime,
@@ -268,6 +272,7 @@ export default function BouncingBall() {
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
+        setCanvasHeight(h);
 
         if (trailLayer) trailLayer.remove();
         trailLayer = p.createGraphics(w, h);
@@ -277,21 +282,26 @@ export default function BouncingBall() {
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
         trailLayer.background(r, g, b);
 
-        if (bodyRef.current) {
-          const { size } = bodyRef.current.params;
-          const radius = size / 2;
-          const maxX = toMeters(w) - radius;
-          const maxY = toMeters(h) - radius;
-
-          if (bodyRef.current.state.position.x > maxX)
-            bodyRef.current.state.position.x = maxX;
-          if (bodyRef.current.state.position.y > maxY)
-            bodyRef.current.state.position.y = maxY;
-          if (bodyRef.current.state.position.x < radius)
-            bodyRef.current.state.position.x = radius;
-          if (bodyRef.current.state.position.y < radius)
-            bodyRef.current.state.position.y = radius;
+        // Fix #194: If the body was never created (zero-height canvas at
+        // setup time), initialise it now that we have real dimensions.
+        if (!bodyRef.current) {
+          setupSimulation();
+          return;
         }
+
+        const { size } = bodyRef.current.params;
+        const radius = size / 2;
+        const maxX = toMeters(w) - radius;
+        const maxY = toMeters(h) - radius;
+
+        if (bodyRef.current.state.position.x > maxX)
+          bodyRef.current.state.position.x = maxX;
+        if (bodyRef.current.state.position.y > maxY)
+          bodyRef.current.state.position.y = maxY;
+        if (bodyRef.current.state.position.x < radius)
+          bodyRef.current.state.position.x = radius;
+        if (bodyRef.current.state.position.y < radius)
+          bodyRef.current.state.position.y = radius;
       };
     },
     [inputsRef, maxHeightRef, fallStartTimeRef, updateSimInfo]
