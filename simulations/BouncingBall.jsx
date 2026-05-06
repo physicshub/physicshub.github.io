@@ -165,12 +165,15 @@ export default function BouncingBall() {
 
         // Physics step + collision (if not dragging)
         if (!dragControllerRef.current.isDragging()) {
+          // FIX: Save acceleration BEFORE step() resets it to 0.
+          // collideBoundary needs the real gravity value to correctly
+          // conserve energy during floor penetration sub-steps.
+          // Without this, gravity is always 0, work is 0, and the ball
+          // loses energy on every bounce even with restitution = 1.
+          const accBeforeStep = bodyRef.current.state.acceleration.copy();
+
           bodyRef.current.step(dt);
 
-          // collideBoundary is energy-conserving: it accounts for how much
-          // energy gravity added during the penetration sub-step and removes
-          // it before reflecting, so restitution=1 gives a perfectly elastic
-          // bounce with no height loss.
           const bounds = {
             w: toMeters(p.width),
             h: toMeters(p.height),
@@ -181,7 +184,7 @@ export default function BouncingBall() {
             bounds,
             size / 2,
             restitution,
-            bodyRef.current.state.acceleration // already reset to 0 after step(), but kept for API correctness
+            accBeforeStep
           );
           bodyRef.current.state.position = pos;
           bodyRef.current.state.velocity = vel;
