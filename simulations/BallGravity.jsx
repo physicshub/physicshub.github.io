@@ -17,7 +17,7 @@ import {
   SimInfoMapper,
 } from "../app/(core)/data/configs/BallGravity.js";
 import chapters from "../app/(core)/data/chapters.js";
-import { toMeters } from "../app/(core)/constants/Utils.js";
+import { toMeters, collideBoundary } from "../app/(core)/constants/Utils.js";
 
 // --- Centralized Physics Components ---
 import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
@@ -79,9 +79,8 @@ export default function BallGravity() {
         const w = p.width;
         const h = p.height;
 
-        // Initialize body using PhysicsBody
         const initialX = toMeters(w / 2);
-        const initialY = toMeters((h / 4) * 3.5); // 3.5/4 canvas height
+        const initialY = toMeters((h / 4) * 3.5);
 
         if (!bodyRef.current) {
           bodyRef.current = new PhysicsBody(p, {
@@ -93,7 +92,6 @@ export default function BallGravity() {
             position: p.createVector(initialX, initialY),
           });
 
-          // Enable trail
           bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
           bodyRef.current.trail.maxLength = 150;
           bodyRef.current.trail.color = inputsRef.current.color;
@@ -103,10 +101,8 @@ export default function BallGravity() {
           });
         }
 
-        // Reset max height
         maxHeightRef.current = 0;
 
-        // Initialize force renderer
         if (!forceRendererRef.current) {
           forceRendererRef.current = new ForceRenderer({
             showLabels: true,
@@ -114,7 +110,6 @@ export default function BallGravity() {
           });
         }
 
-        // Initialize drag controller
         if (!dragControllerRef.current) {
           dragControllerRef.current = new DragController({
             snapBack: false,
@@ -176,15 +171,14 @@ export default function BallGravity() {
 
         // Ground friction (simplified)
         const bottomM = toMeters(p.height);
-        const onGround =
-          bodyRef.current.state.position.y + size / 2 >= bottomM - 0.01;
+        const onGround = bodyRef.current.state.position.y - size / 2 <= 0.01;
         if (
           onGround &&
           bodyRef.current.state.velocity.mag() > 0.01 &&
           frictionMu > 0
         ) {
           const friction = ForceCalculator.friction(
-            mass * gravity, // Normal force
+            mass * gravity,
             frictionMu,
             frictionMu * 0.8,
             bodyRef.current.state.velocity.x,
@@ -195,15 +189,28 @@ export default function BallGravity() {
 
         // Physics step (if not dragging)
         if (!dragControllerRef.current.isDragging()) {
+          // FIX: Save acceleration BEFORE step() resets it to 0.
+          // collideBoundary needs the real gravity value to correctly
+          // conserve energy on bounce. Without this, gravity reads as 0,
+          // work is always 0, and the ball loses energy every collision.
+          const accBeforeStep = bodyRef.current.state.acceleration.copy();
+
           bodyRef.current.step(dt);
 
-          // Constrain to bounds
-          bodyRef.current.constrainToBounds(
+          const bounds = {
+            w: toMeters(p.width),
+            h: toMeters(p.height),
+          };
+          const { pos, vel } = collideBoundary(
+            bodyRef.current.state.position,
+            bodyRef.current.state.velocity,
+            bounds,
             size / 2,
-            toMeters(p.width) - size / 2,
-            size / 2,
-            toMeters(p.height) - size / 2
+            restitution,
+            accBeforeStep
           );
+          bodyRef.current.state.position = pos;
+          bodyRef.current.state.velocity = vel;
         }
 
         // Update max height
@@ -242,7 +249,6 @@ export default function BallGravity() {
         const bg = getBackgroundColor();
         const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
 
-        // Trail layer
         if (!inputsRef.current.trailEnabled) {
           trailLayer.background(r, g, b);
         } else {
@@ -251,18 +257,14 @@ export default function BallGravity() {
           trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
         }
 
-        // Main canvas
         p.clear();
         p.image(trailLayer, 0, 0);
 
-        // Draw body
         bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
         const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
 
-        // Draw forces
         const renderer = forceRendererRef.current;
 
-        // Gravity
         renderer.drawWeight(
           p,
           screenPos.x,
@@ -271,7 +273,6 @@ export default function BallGravity() {
           inputsRef.current.gravity
         );
 
-        // Wind (if active)
         if (forces.windForce && inputsRef.current.wind > 0) {
           renderer.drawVector(
             p,
@@ -284,7 +285,6 @@ export default function BallGravity() {
           );
         }
 
-        // Ground line
         if (forces.onGround) {
           p.stroke(100, 100, 120);
           p.strokeWeight(2);
@@ -292,17 +292,14 @@ export default function BallGravity() {
         }
       };
 
-      // Mouse events
       p.mousePressed = () => {
         if (!bodyRef.current) return;
 
-        // Check if clicking on ball for drag
         const clicked = dragControllerRef.current.handlePress(
           p,
           bodyRef.current
         );
 
-        // If not dragging, then wind is blowing
         if (!clicked) {
           setIsBlowing(true);
         }
@@ -317,7 +314,6 @@ export default function BallGravity() {
         setIsBlowing(false);
       };
 
-      // Window resize
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
         p.resizeCanvas(w, h);
