@@ -168,6 +168,7 @@ Or see the [full instructions here](https://github.com/physicshub/physicshub.git
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Stratos-Kass"><img src="https://avatars.githubusercontent.com/u/183495058?v=4?s=100" width="100px;" alt="Efstratios Kassaras"/><br /><sub><b>Efstratios Kassaras</b></sub></a><br /><a href="#design-Stratos-Kass" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/GigaWHATT"><img src="https://avatars.githubusercontent.com/u/146768856?v=4?s=100" width="100px;" alt="Etienne"/><br /><sub><b>Etienne</b></sub></a><br /><a href="#code-GigaWHATT" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://madebynitin.netlify.app/"><img src="https://avatars.githubusercontent.com/u/166863746?v=4?s=100" width="100px;" alt="Nitin Tanwar"/><br /><sub><b>Nitin Tanwar</b></sub></a><br /><a href="#code-Nitin23123" title="Code">💻</a> <a href="#bug-Nitin23123" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/TechGenius-Karan"><img src="https://avatars.githubusercontent.com/u/132046818?v=4?s=100" width="100px;" alt="Karan"/><br /><sub><b>Karan</b></sub></a><br /><a href="#code-TechGenius-Karan" title="Code">💻</a> <a href="#bug-TechGenius-Karan" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
