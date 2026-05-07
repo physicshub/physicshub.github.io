@@ -18,7 +18,7 @@ export const gravityTypes = ((earthG = EARTH_G_SI) => [
   { value: 0.063 * earthG, label: "Pluto (0.62 m/s²)" },
   { value: 0.165 * earthG, label: "Moon (1.62 m/s²)" },
   { value: 0.378 * earthG, label: "Mercury (3.70 m/s²)" },
-  { value: 0.379 * earthG, label: "Mars (3.71 m/s²)" },
+  { value: 0.379 * earthG, label: "Mars (3.72 m/s²)" },
   { value: 0.886 * earthG, label: "Uranus (8.69 m/s²)" },
   { value: 0.904 * earthG, label: "Venus (8.87 m/s²)" },
   { value: 1.0 * earthG, label: "Earth (9.81 m/s²)" },
