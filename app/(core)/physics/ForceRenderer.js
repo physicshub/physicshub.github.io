@@ -251,10 +251,17 @@ export class ForceRenderer {
     const showComponents = options.showComponents !== false;
 
     // Weight (always vertical)
-    this.drawWeight(p, x, y, forces.weight.magnitude / forces.gravity, forces.gravity, {
-      label: "mg",
-      ...options.weightOptions,
-    });
+    this.drawWeight(
+      p,
+      x,
+      y,
+      forces.weight.magnitude / forces.gravity,
+      forces.gravity,
+      {
+        label: "mg",
+        ...options.weightOptions,
+      }
+    );
 
     // Normal force
     this.drawNormal(p, x, y, forces.normal, angleRad, options.normalOptions);
