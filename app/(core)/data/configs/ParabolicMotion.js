@@ -66,7 +66,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "dragCoeff",
-    label: "c_d - Linear drag (1/s):",
+    label: "c_d - Quadratic drag (kg/m):",
     type: "number",
     placeholder: "Insert drag coeff...",
     min: 0,
