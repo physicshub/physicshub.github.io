@@ -260,7 +260,7 @@ export class InclinedPlaneForces {
       }
     } else {
       // Kinetic friction
-      const vel = body.state.velocity?.x || body.state.vel || 0;
+      const vel = body.planeState?.velAlongPlane ?? body.state.velocity?.x ?? 0;
       friction = ForceCalculator.kineticFriction(normal, frictionKinetic, vel);
     }
 
@@ -282,6 +282,7 @@ export class InclinedPlaneForces {
       },
       netParallel,
       angle: angleRad,
+      gravity,
     };
   }
 

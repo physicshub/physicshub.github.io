@@ -251,7 +251,7 @@ export class ForceRenderer {
     const showComponents = options.showComponents !== false;
 
     // Weight (always vertical)
-    this.drawWeight(p, x, y, forces.weight.magnitude / 9.81, 9.81, {
+    this.drawWeight(p, x, y, forces.weight.magnitude / forces.gravity, forces.gravity, {
       label: "mg",
       ...options.weightOptions,
     });
