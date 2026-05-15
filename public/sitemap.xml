@@ -66,6 +66,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://physicshub.github.io/simulations/DoublePendulum</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://physicshub.github.io/blog/what-is-physics</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -111,7 +116,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/blog/three-body-problem-physics-explained</loc>
+    <loc>https://physicshub.github.io/blog/physics-behind-three-body-problem</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

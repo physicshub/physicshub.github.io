@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import useTranslation from "../../(core)/hooks/useTranslation";
 
 const menuItems = [
@@ -12,7 +14,11 @@ const menuItems = [
   { href: "/contribute", label: "Contribute" },
 ];
 
-export default function NavMenu() {
+type NavMenuProps = {
+  onNavigate?: () => void;
+};
+
+export default function NavMenu({ onNavigate }: NavMenuProps) {
   const pathname = usePathname();
   const navRef = useRef<HTMLUListElement>(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
@@ -44,14 +50,27 @@ export default function NavMenu() {
     return () => window.removeEventListener("resize", updateUnderline);
   }, [updateUnderline]);
 
+  const handleNavigate = useCallback(() => {
+    onNavigate?.();
+  }, [onNavigate]);
+
   return (
     <nav className={`nav-menu ${isCompleted ? "notranslate" : ""}`}>
+      <button
+        className="nav-close"
+        type="button"
+        aria-label={t("Close menu")}
+        onClick={handleNavigate}
+      >
+        <FontAwesomeIcon icon={faXmark} aria-hidden="true" />
+      </button>
       <ul className="nav-list" ref={navRef}>
         {menuItems.map(({ href, label }) => (
           <li key={href}>
             <Link
               href={href}
               className={`nav-link ${pathname === href ? "active" : ""}`}
+              onClick={handleNavigate}
             >
               {t(label)}
             </Link>
