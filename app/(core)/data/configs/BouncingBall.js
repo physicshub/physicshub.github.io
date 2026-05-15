@@ -1,5 +1,4 @@
 // app/data/configs/bouncingBall.js
-import { invertYAxis } from "../../constants/Utils.js";
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
 export const INITIAL_INPUTS = {
@@ -86,7 +85,7 @@ export const FORCES = [
  */
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel, mass } = state;
-  const { gravity, canvasHeight } = context;
+  const { gravity } = context;
   const { maxHeightRef } = refs;
 
   // FIX: pos is already in meters — no unit conversion needed.

@@ -1,5 +1,4 @@
 // app/data/configs/BallAcceleration.js
-import { physicsYToScreenY } from "../../constants/Utils.js";
 
 export const INITIAL_INPUTS = {
   size: 0.5, // diametro palla in metri

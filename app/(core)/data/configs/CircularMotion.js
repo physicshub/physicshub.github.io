@@ -1,5 +1,3 @@
-import { physicsYToScreenY } from "../../constants/Utils.js";
-
 export const INITIAL_INPUTS = {
   radius: 1,
   speed: 2,
@@ -50,7 +48,7 @@ export const FORCES = [
   {
     key: "centripetal",
     color: "blue",
-    computeFn: ({ pos, center, mass, speed, radius }) => {
+    computeFn: ({ pos, center, speed, radius }) => {
       if (!pos || !center) return null;
 
       const dx = center.x - pos.x;

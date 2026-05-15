@@ -193,7 +193,7 @@ const VisualEditorRenderer: React.FC<{
 
       setDataContent(newData);
     },
-    [dataContent, setDataContent]
+    [dataContent, setDataContent, t]
   );
 
   const handleDuplicateBlock = useCallback(
@@ -406,7 +406,7 @@ export default function CreateBlogPage() {
         return { ...prev, sections: newSections };
       });
     },
-    [setDataContent]
+    [setDataContent, t]
   );
 
   const handleClearAllBlocks = useCallback(() => {
@@ -426,7 +426,7 @@ export default function CreateBlogPage() {
     } catch (e) {
       console.error("Error clearing blocks:", e);
     }
-  }, [dataContent, setDataContent]);
+  }, [dataContent, setDataContent, t]);
 
   const handleSave = useCallback(async () => {
     try {
@@ -454,7 +454,7 @@ export default function CreateBlogPage() {
       alert(t("Error during publication. Please try again later."));
     } finally {
     }
-  }, [dataContent, title, router]);
+  }, [dataContent, title, router, t]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
