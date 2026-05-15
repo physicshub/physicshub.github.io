@@ -1,5 +1,4 @@
 // app/data/configs/SimplePendulum.js
-import { EARTH_G_SI, gravityTypes } from "../../constants/Config.js";
 
 // Valori iniziali della simulazione (SI)
 export const INITIAL_INPUTS = {

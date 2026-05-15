@@ -1,5 +1,3 @@
-import { EARTH_G_SI } from "../../constants/Config.js";
-
 // Initial values (SI units, Y-up physics coordinates)
 export const INITIAL_INPUTS = {
   bobMass: 1,
@@ -69,7 +67,7 @@ export const INPUT_FIELDS = [
   { name: "springColor", label: "Spring color:", type: "color" },
 ];
 
-export const SimInfoMapper = (state, context) => {
+export const SimInfoMapper = (state) => {
   const {
     pos,
     vel,

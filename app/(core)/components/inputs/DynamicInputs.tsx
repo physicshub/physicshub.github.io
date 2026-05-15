@@ -23,7 +23,7 @@ interface Props {
 }
 
 export default function DynamicInputs({ config, values, onChange }: Props) {
-  const { t, meta } = useTranslation();
+  const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const [lastValidValues, setLastValidValues] =
     useState<Record<string, string | number | boolean>>(values);
