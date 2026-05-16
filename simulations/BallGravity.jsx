@@ -226,7 +226,7 @@ export default function BallGravity() {
             kineticEnergy: bodyRef.current.getKineticEnergy(),
             potentialEnergy: bodyRef.current.getPotentialEnergy(
               gravity,
-              toMeters(p.height)
+              size / 2
             ),
           },
           {
