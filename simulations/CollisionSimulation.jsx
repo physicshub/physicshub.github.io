@@ -146,24 +146,6 @@ export default function CollisionSimulation() {
           inputsRef.current.velocity2
         );
 
-        // Store Initial Simulation State
-        initialStateRef.current = {
-          u1: Math.abs(inputsRef.current.velocity1),
-          u2: Math.abs(inputsRef.current.velocity2),
-        };
-
-        // Update Simulation Info Panel
-        updateSimInfo(
-          p,
-          {
-            body1: bodiesRef.current[0],
-            body2: bodiesRef.current[1],
-            initialState: initialStateRef.current,
-          },
-          {},
-          SimInfoMapper
-        );
-
         // Configure Trail Rendering
         bodiesRef.current[0].trail.enabled = inputsRef.current.trailEnabled;
 
@@ -213,6 +195,23 @@ export default function CollisionSimulation() {
             smoothing: 0.3,
           });
         }
+        // Store Initial Simulation State
+        initialStateRef.current = {
+          u1: Math.abs(inputsRef.current.velocity1),
+          u2: Math.abs(inputsRef.current.velocity2),
+        };
+
+        // Update Simulation Info Panel
+        updateSimInfo(
+          p,
+          {
+            body1: bodiesRef.current[0],
+            body2: bodiesRef.current[1],
+            initialState: initialStateRef.current,
+          },
+          {},
+          SimInfoMapper
+        );
       };
 
       p.setup = () => {
@@ -321,18 +320,18 @@ export default function CollisionSimulation() {
         }
 
         // Update Simulation Info
-        if (p.frameCount % 5 === 0) {
-          updateSimInfo(
-            p,
-            {
-              body1: bodiesRef.current[0],
-              body2: bodiesRef.current[1],
-              initialState: initialStateRef.current,
-            },
-            {},
-            SimInfoMapper
-          );
-        }
+
+        updateSimInfo(
+          p,
+          {
+            body1: bodiesRef.current[0],
+            body2: bodiesRef.current[1],
+            initialState: initialStateRef.current,
+          },
+          {},
+          SimInfoMapper
+        );
+
         renderScene(p);
       };
 
@@ -468,13 +467,11 @@ export default function CollisionSimulation() {
 
     resetTime();
 
-    setTimeout(() => {
-      // Preserve paused state after reset
-      if (wasPaused) setPause(true);
+    // Preserve paused state after reset
+    if (wasPaused) setPause(true);
 
-      // Force p5 canvas remount
-      setResetVersion((v) => v + 1);
-    }, 0);
+    // Force p5 canvas remount
+    setResetVersion((v) => v + 1);
   }, []);
 
   return (

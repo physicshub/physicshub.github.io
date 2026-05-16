@@ -101,9 +101,9 @@ export const INPUT_FIELDS = [
 // for SimInfoPanel
 export const SimInfoMapper = ({ body1, body2, initialState }) => {
   // Initial velocities
-  const u1 = Math.abs(initialState?.u1 ?? 2);
+  const u1 = Math.abs(initialState?.u1 ?? 0);
 
-  const u2 = Math.abs(initialState?.u2 ?? 2);
+  const u2 = Math.abs(initialState?.u2 ?? 0);
 
   // Mass values
   const m1 = body1.params.mass;
