@@ -106,7 +106,15 @@ const chapters = [
     icon: "/icons/pendulam.png",
   },
   {
-    id: 0,
+    id: 13,
+    name: "1D Collision simulation",
+    desc: "Simulate 1D elastic collisions with velocity vectors, momentum, and kinetic energy visualization.",
+    link: "/simulations/CollisionSimulation",
+    tags: [TAGS.PHYSICS, TAGS.MEDIUM, TAGS.COLLISION, TAGS.VECTORS],
+    icon: "/icons/collision.png",
+  },
+  {
+    id: 14,
     name: "Browser Performance & Stress Test",
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
     link: "/simulations/test",
