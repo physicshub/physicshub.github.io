@@ -24,7 +24,7 @@ export class InclinedPlaneBody extends PhysicsBody {
   /**
    * Physics step constrained to plane
    */
-  stepAlongPlane(dt, netForceParallel) {
+  stepAlongPlane(dt, netForceParallel, angleRad = 0) {
     if (dt <= 0) return;
 
     // Calculate acceleration from net force
@@ -36,12 +36,14 @@ export class InclinedPlaneBody extends PhysicsBody {
     // Update position along plane
     this.planeState.posAlongPlane += this.planeState.velAlongPlane * dt;
 
-    // Sync with base state for compatibility
-    this.state.acceleration.set(this.planeState.accAlongPlane, 0);
-    this.state.velocity.set(this.planeState.velAlongPlane, 0);
+    // Sync with base state — project scalar plane values onto 2D axes
+    const v = this.planeState.velAlongPlane;
+    const a = this.planeState.accAlongPlane;
+    this.state.velocity.set(v * Math.cos(angleRad), v * Math.sin(angleRad));
+    this.state.acceleration.set(a * Math.cos(angleRad), a * Math.sin(angleRad));
 
     // Update moving state
-    this.isMoving = Math.abs(this.planeState.velAlongPlane) > 0.001;
+    this.isMoving = Math.abs(v) > 0.001;
   }
 
   /**
