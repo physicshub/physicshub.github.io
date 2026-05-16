@@ -41,7 +41,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Three-body_Problem_Animation_with_COM.gif",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Three-body_Problem_Animation_with_COM.gif",
             alt: "Animation of the figure-eight three-body orbit solution showing three equal masses chasing each other.",
             caption:
               "The famous figure-eight solution: three equal masses chasing each other in a perfect figure-eight orbit. This is one of only a handful of stable, periodic solutions ever found to the three-body problem — and it took until 1993 to discover it.",
@@ -174,7 +174,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/PSM_V82_D416_Henri_Poincare.png/500px-PSM_V82_D416_Henri_Poincare.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/PSM_V82_D416_Henri_Poincare.png",
             alt: "Portrait photograph of Henri Poincaré, the French mathematician who discovered chaos in the three-body problem.",
             caption:
               "Henri Poincaré (1854–1912). His 1890 paper on the three-body problem contained the first rigorous description of chaotic dynamics in a deterministic system — a discovery so disturbing that he tried to suppress it.",
@@ -242,7 +242,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Lagrange_points_simple.svg/960px-Lagrange_points_simple.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Lagrange_points_simple.svg",
             alt: "Diagram showing the five Lagrange points of the Sun-Earth system including the stable L4 and L5 equilateral triangle positions.",
             caption:
               "The five Lagrange points of a two-body system. L4 and L5 (the equilateral-triangle points) are stable — objects placed there naturally stay. L1, L2, L3 are unstable saddle points. The James Webb Space Telescope orbits the Sun-Earth L2 point.",
@@ -524,7 +524,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Hydra%2C_Nix%2C_Styx_conjunctions_cycle.png/1280px-Hydra%2C_Nix%2C_Styx_conjunctions_cycle.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Hydra%2C_Nix%2C_Styx_conjunctions_cycle.png",
             alt: "Animation of the Galilean moons Io, Europa, and Ganymede showing the Laplace orbital resonance.",
             caption:
               "The Laplace resonance of Jupiter's moons: Io (innermost), Europa (middle), and Ganymede (outermost) orbit in a precise 4:2:1 ratio. This three-body gravitational resonance has lasted billions of years and drives Io's extreme volcanism.",
@@ -737,7 +737,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/LIGO_measurement_of_gravitational_waves.svg/960px-LIGO_measurement_of_gravitational_waves.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/LIGO_measurement_of_gravitational_waves.svg",
             alt: "Graph of the LIGO gravitational wave signal from the first binary black hole merger detection GW150914.",
             caption:
               "The first gravitational wave detection by LIGO in 2015 (GW150914): two black holes merging, 1.3 billion light-years away. Three-body scattering in dense stellar clusters is one of the leading mechanisms for creating such tight black hole binaries in the first place.",

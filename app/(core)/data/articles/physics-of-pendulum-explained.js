@@ -34,11 +34,11 @@ export const pendulumBlog = {
           },
           {
             type: "image",
-            src: "https://www.school-for-champions.com/science/images/pendulum_period_small_angle.gif",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Pendulum_animation.gif",
             alt: "Animated diagram showing a simple pendulum's back-and-forth motion with labeled components.",
             caption:
               "The fundamental geometry of simple pendulum motion, illustrating the bob's trajectory, the restoring arc, and the angular displacement from equilibrium.",
-            href: "https://www.school-for-champions.com/science/pendulum_period.htm",
+            href: "https://en.wikipedia.org/wiki/Pendulum",
             size: "medium",
           },
           {
@@ -104,7 +104,7 @@ export const pendulumBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Simple_gravity_pendulum.svg",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Simple_gravity_pendulum.svg",
             alt: "Free body diagram showing force vectors on a pendulum bob at maximum displacement.",
             caption:
               "Force decomposition diagram illustrating gravitational components, tension, and the net restoring force tangent to the circular arc. The tangential component $F_t = -mg\\sin\\theta$ drives the oscillation.",
@@ -296,10 +296,10 @@ export const pendulumBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Pendulum_energy_graph.svg/800px-Pendulum_energy_graph.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Energy_in_SHM.gif",
             alt: "Graph showing kinetic and potential energy curves over one complete pendulum cycle.",
             caption:
-              "Energy transformation diagram: potential energy (blue) peaks at maximum displacement while kinetic energy (red) peaks at equilibrium. Their sum (green) remains constant, demonstrating mechanical energy conservation.",
+              "Energy transformation diagram: potential energy (red) peaks at maximum displacement while kinetic energy (blue) peaks at equilibrium. Their sum (black) remains constant, demonstrating mechanical energy conservation.",
             href: "https://en.wikipedia.org/wiki/Pendulum",
             size: "large",
           },
@@ -443,12 +443,12 @@ export const pendulumBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Pendulum_phase_portrait.svg/600px-Pendulum_phase_portrait.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Pendulum_phase_portrait.svg",
             alt: "Phase portrait showing oscillatory trajectories inside the separatrix and rotational trajectories outside.",
             caption:
               "Complete phase portrait of the nonlinear pendulum. Inner closed orbits represent oscillations; the figure-eight separatrix (red) divides oscillatory from rotational regimes; outer waves represent continuous rotations.",
             href: "https://en.wikipedia.org/wiki/Pendulum_(mechanics)",
-            size: "large",
+            size: "medium",
           },
           {
             type: "paragraph",
@@ -760,7 +760,7 @@ export const pendulumBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/4/45/Double-compound-pendulum.gif",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Double-compound-pendulum.gif",
             alt: "Animation of double pendulum motion showing chaotic trajectory.",
             caption:
               "Chaotic motion of a double pendulum. The lower bob traces an intricate, non-repeating path. Two simulations with nearly identical initial conditions diverge rapidly, illustrating sensitivity to initial conditions.",

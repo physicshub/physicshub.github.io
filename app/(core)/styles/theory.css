@@ -361,6 +361,10 @@
 }
 
 /* Gestione Dimensioni Responsive */
+.size-xsmall {
+  width: 20%;
+  min-width: 180px;
+}
 .size-small {
   width: 30%;
   min-width: 250px;

@@ -3,7 +3,7 @@ import TAGS from "../tags.js";
 export const springConnectionBlog = {
   id: "bb-005",
   slug: "spring-connection",
-  name: "How works a spring?",
+  name: "How does a Spring work?",
   desc: "All you need to know about springs.",
   tags: [TAGS.ADVANCED, TAGS.PHYSICS, TAGS.OSCILLATIONS, TAGS.SPRINGS],
   theory: {
