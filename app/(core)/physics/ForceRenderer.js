@@ -110,7 +110,8 @@ export class ForceRenderer {
 
     let labelText = text;
     if (showMag && magnitude !== undefined) {
-      labelText = `${text} (${magnitude.toFixed(1)}N)`;
+      const unit = options.unit ?? "N";
+      labelText = `${text} (${magnitude.toFixed(1)}${unit})`;
     }
 
     p.push();
