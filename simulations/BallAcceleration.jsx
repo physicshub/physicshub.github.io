@@ -222,7 +222,8 @@ export default function BallAcceleration() {
             accelerationForce.x / bodyRef.current.params.mass,
             -(accelerationForce.y / bodyRef.current.params.mass),
             "#ef4444",
-            "Acceleration"
+            "Acceleration",
+            { unit: "m/s²" }
           );
         }
 
