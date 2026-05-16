@@ -5,7 +5,7 @@ import { faCopyright, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
 import Image from "next/image";
 
-type ImageSize = "small" | "medium" | "large" | "full";
+type ImageSize = "xsmall" | "small" | "medium" | "large" | "full";
 
 interface TheoryImageProps extends EditableProps {
   src: string;
@@ -65,6 +65,7 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
             onChange={handleSizeChange}
             className="size-select"
           >
+            <option value="xsmall">{t("Extra Small")}</option>
             <option value="small">{t("Small")}</option>
             <option value="medium">{t("Medium")}</option>
             <option value="large">{t("Large")}</option>

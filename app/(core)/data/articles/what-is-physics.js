@@ -34,12 +34,12 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Physics_and_other_sciences.png/640px-Physics_and_other_sciences.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Physics_and_other_sciences.png",
             alt: "Diagram showing physics as the foundation of all natural sciences.",
             caption:
               "Physics sits at the foundation of all natural sciences. Chemistry, biology, and engineering all depend on physical laws — making physics the most fundamental experimental science.",
             href: "https://en.wikipedia.org/wiki/Physics",
-            size: "large",
+            size: "xsmall",
           },
           {
             type: "callout",
@@ -109,12 +109,12 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/GodfreyKneller-IsaacNewton-1689.jpg/440px-GodfreyKneller-IsaacNewton-1689.jpg",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/GodfreyKneller-IsaacNewton-1689.jpg",
             alt: "Portrait of Isaac Newton, the father of classical mechanics.",
             caption:
               "Isaac Newton (1643–1727), whose three laws of motion and law of universal gravitation unified earthly and celestial mechanics into a single mathematical framework — one of the greatest intellectual achievements in history.",
             href: "https://en.wikipedia.org/wiki/Isaac_Newton",
-            size: "medium",
+            size: "small",
           },
           {
             type: "paragraph",
@@ -342,12 +342,12 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Sine_wave_amplitude.svg/640px-Sine_wave_amplitude.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Sine_wave_amplitude.svg",
             alt: "Diagram of a sine wave showing amplitude, wavelength, and frequency.",
             caption:
               "A wave is characterized by its wavelength $\\lambda$ (distance between peaks), frequency $f$ (cycles per second), amplitude (peak height), and speed $v = f\\lambda$. These parameters describe everything from ocean swells to gamma rays.",
             href: "https://en.wikipedia.org/wiki/Wave",
-            size: "medium",
+            size: "large",
           },
         ],
       },
@@ -442,12 +442,12 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Double_slit_interference.svg/640px-Double_slit_interference.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Double_slit_interference.png",
             alt: "Diagram of the double-slit experiment showing wave interference from particles.",
             caption:
               "The double-slit experiment — often called 'the most beautiful experiment in physics.' A single electron fired at a double slit creates an interference pattern on the detector, as though it passed through both slits simultaneously as a wave. This result demolished classical intuitions about the nature of matter.",
             href: "https://en.wikipedia.org/wiki/Double-slit_experiment",
-            size: "large",
+            size: "medium",
           },
           {
             type: "subtitle",
@@ -535,7 +535,7 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/GPS_Satellite_NASA_art-iif.jpg/640px-GPS_Satellite_NASA_art-iif.jpg",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/GPS_Satellite_NASA_art-iif.jpg",
             alt: "GPS satellite orbiting Earth in space.",
             caption:
               "GPS satellites must correct for both Special and General Relativistic time dilation to provide accurate positioning. Without Einstein's theories of relativity — developed 60 years before GPS — modern navigation would be impossible.",
@@ -717,7 +717,7 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/The_Scientific_Method.svg/600px-The_Scientific_Method.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/The_Scientific_Method.svg",
             alt: "Diagram showing the cyclical steps of the scientific method.",
             caption:
               "The scientific method is cyclical, not linear. Experiments refine theories; theories guide experiments. A theory that fails a precise experimental test must be revised or replaced — even if it has worked for centuries.",
@@ -906,12 +906,12 @@ export const whatIsPhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg/640px-Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg",
             alt: "The Milky Way galaxy visible in a dark night sky over a desert landscape.",
             caption:
               "The Milky Way: 200–400 billion stars, each a nuclear furnace forging elements that will one day become planets, life, and eventually conscious beings that look up and wonder. Physics is the attempt to understand how all of this is possible.",
             href: "https://en.wikipedia.org/wiki/Milky_Way",
-            size: "large",
+            size: "small",
           },
           {
             type: "callout",

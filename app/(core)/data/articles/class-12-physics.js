@@ -155,7 +155,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Dipole_field.svg/600px-Dipole_field.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Dipole_field.svg",
             alt: "Electric field lines of an electric dipole.",
             caption:
               "Electric field lines of a dipole. Lines emerge from the positive charge and converge into the negative charge, showing the characteristic dipole pattern.",
@@ -306,7 +306,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Ohm%27s_Law_with_Voltage_source_TeX.svg/600px-Ohm%27s_Law_with_Voltage_source_TeX.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Ohm%27s_Law_with_Voltage_source_TeX.svg",
             alt: "Simple Ohm's Law circuit diagram with battery, resistor and labels.",
             caption:
               "A basic Ohm's Law circuit: a voltage source V drives current I through resistance R. The relationship V = IR is the cornerstone of circuit analysis.",
@@ -616,12 +616,12 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/RLC_series_circuit_v1.svg/600px-RLC_series_circuit_v1.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/RLC_series_circuit_v1.svg",
             alt: "Series RLC circuit diagram showing resistor, inductor, capacitor in series with AC source.",
             caption:
               "A series RLC circuit. At resonance the inductive and capacitive reactances cancel, giving minimum impedance and maximum current.",
             href: "https://en.wikipedia.org/wiki/RLC_circuit",
-            size: "medium",
+            size: "small",
           },
           {
             type: "paragraph",
@@ -682,7 +682,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/EM-Wave.gif/300px-EM-Wave.gif",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/EM-Wave.gif",
             alt: "Animation of an electromagnetic wave showing perpendicular E and B fields.",
             caption:
               "An electromagnetic wave: the electric field (E, blue) and magnetic field (B, red) oscillate perpendicular to each other and to the direction of propagation.",
@@ -854,7 +854,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Single_slit_and_double_slit2.jpg/600px-Single_slit_and_double_slit2.jpg",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Single_slit_and_double_slit2.jpg",
             alt: "Photograph of single-slit and double-slit diffraction patterns on a screen.",
             caption:
               "Double-slit interference pattern (bottom): evenly spaced bright fringes modulated by the single-slit diffraction envelope (top). The central maximum is brightest.",
@@ -1017,7 +1017,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Hydrogen_transitions.svg/600px-Hydrogen_transitions.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/Hydrogen_transitions.svg",
             alt: "Energy level diagram of hydrogen atom showing Lyman, Balmer and Paschen series transitions.",
             caption:
               "Energy levels of the hydrogen atom. Electron transitions between levels emit photons of specific energies, producing the characteristic emission spectrum. The Balmer series (transitions to n=2) falls in the visible range.",
@@ -1116,7 +1116,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "image",
-            src: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PN_diode_with_electrical_symbol.svg/600px-PN_diode_with_electrical_symbol.svg.png",
+            src: "https://commons.wikimedia.org/wiki/Special:FilePath/PN_diode_with_electrical_symbol.svg",
             alt: "Diagram of a p-n junction diode with circuit symbol showing depletion region.",
             caption:
               "A p-n junction diode. The depletion region acts as a barrier. Forward bias reduces this barrier; reverse bias increases it, giving the diode its one-way current property.",

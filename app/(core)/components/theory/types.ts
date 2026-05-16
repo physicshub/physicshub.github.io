@@ -21,7 +21,7 @@ export interface Children {
   children?: React.ReactNode;
 }
 
-export type ImageSize = "small" | "medium" | "large" | "full";
+export type ImageSize = "xsmall" | "small" | "medium" | "large" | "full";
 
 export interface BlockData {
   type: string;
