@@ -184,7 +184,7 @@ export default function InclinedPlane() {
         );
 
         // Physics step (if not dragging)
-        if (!dragControllerRef.current.isDragging() && dt > 0) {
+        if (!dragControllerRef.current.isDragging() && dt !== 0) {
           bodyRef.current.stepAlongPlane(dt, forces.netParallel, angleRad);
 
           // Update trail

@@ -146,7 +146,7 @@ export default function BouncingBall() {
         if (!bodyRef.current || !trailLayer) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         const { size, gravity, trailEnabled, ballColor, mass, restitution } =
           inputsRef.current;

@@ -235,7 +235,7 @@ export default function CollisionSimulation() {
         if (!bodiesRef.current.length || !trailLayer) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         // Sync Visual Properties
         const { ballColor1, ballColor2, trailEnabled } = inputsRef.current;

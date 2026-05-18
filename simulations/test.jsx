@@ -117,7 +117,7 @@ export default function Test() {
         const { gravity, numBodies, trailEnabled, restitution, frictionMu } =
           inputsRef.current;
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         // Recreate bodies if count changed
         if (numBodies !== lastNumBodies) {

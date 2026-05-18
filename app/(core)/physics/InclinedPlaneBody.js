@@ -25,7 +25,7 @@ export class InclinedPlaneBody extends PhysicsBody {
    * Physics step constrained to plane
    */
   stepAlongPlane(dt, netForceParallel, angleRad = 0) {
-    if (dt <= 0) return;
+    if (dt === 0) return;
 
     // Calculate acceleration from net force
     this.planeState.accAlongPlane = netForceParallel / this.params.mass;

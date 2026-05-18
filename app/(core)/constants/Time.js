@@ -1,6 +1,7 @@
 // constants/Time.js
 let timeScale = 1;
 let paused = false;
+let manualStepDelta = 0;
 let simulationInstances = new Map(); // Mappa per tenere traccia di ogni istanza
 
 /**
@@ -8,6 +9,11 @@ let simulationInstances = new Map(); // Mappa per tenere traccia di ogni istanza
  * Uses p.millis() to compute real delta.
  */
 export function computeDelta(p) {
+  if (manualStepDelta !== 0) {
+    const dt = manualStepDelta;
+    manualStepDelta = 0;
+    return dt;
+  }
   if (paused) return 0;
 
   const now = p.millis();
@@ -49,6 +55,12 @@ export function setPause(value) {
   if (paused) {
     simulationInstances.clear();
   }
+}
+
+export function stepSimulation(delta) {
+  if (!paused) return;
+
+  manualStepDelta += delta;
 }
 
 export function resetTime() {
