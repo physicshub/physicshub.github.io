@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - feature/collision-simulation
     paths.ignore:
       - ".all-contributorsrc"
   workflow_dispatch:
@@ -31,9 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-
-      - name: Debug GH_TOKEN
-        run: echo "GH_TOKEN exists: ${{ secrets.GH_TOKEN != '' }}"
 
       - name: Run contributors script
         run: npm run contributors
