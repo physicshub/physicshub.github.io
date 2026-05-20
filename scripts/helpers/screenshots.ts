@@ -1,5 +1,5 @@
 // scripts/helpers/screenshots.ts
-import { join } from "node:path";
+
 import Puppeteer from "puppeteer";
 import { pathToFileURL } from "url";
 
