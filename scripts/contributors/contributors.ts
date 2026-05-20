@@ -16,7 +16,7 @@ import {
   getPercentagesAdditions,
   getPercentagesDeletions,
 } from "../helpers/percentage.ts";
-import { getRemoteStats } from "../helpers/gitStats.ts";
+import { fetchAllStats, getStatsForAuthor } from "../helpers/gitStats.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -56,8 +56,12 @@ const fetchContributors = (
     const config: AxiosRequestConfig = {
       method: "get",
       url: `https://api.github.com/repos/physicshub/physicshub.github.io/contributors`,
-      params: { page },
+      params: {
+        page,
+        per_page: 100,
+      },
       headers: {
+        Authorization: `Bearer ${process.env.GH_TOKEN}`,
         accept: "application/json",
         "User-Agent": "Contributors script",
       },
@@ -69,13 +73,13 @@ const fetchContributors = (
         const { nextPage, lastPage, prevPage } = parseLinkHeader(
           res.headers?.link?.toString() ?? ""
         );
+        const totalPages =
+          lastPage?.[1] ??
+          (prevPage?.[1] ? String(Number(prevPage[1]) + 1) : "?");
+
         console.log(
           "> PhysicsHub:",
-          yellow(
-            `[${page}/${
-              lastPage ? lastPage[1] : +prevPage[1] + 1
-            }] Loading contributors from GitHub...`
-          )
+          yellow(`[${page}/${totalPages}] Loading contributors from GitHub...`)
         );
 
         resolve({ contributorsOfPage: res.data, nextPage: nextPage?.[1] });
@@ -176,18 +180,20 @@ const init = async () => {
     "> PhysicsHub:",
     yellow("Fetching remote stats for sorting by additions...")
   );
-  const contributorsStats: ContributorStats[] = await Promise.all(
-    contributorsList.map(async (c) => {
-      const stats = await getRemoteStats(c.login);
-      return {
-        login: c.login,
-        additions: stats.additions ?? 0,
-        deletions: stats.deletions ?? 0,
-        commits: stats.commits ?? 0,
-        originalContributor: c, // Mantiene l'oggetto originale
-      };
-    })
-  );
+  const allStats = await fetchAllStats();
+
+  const contributorsStats: ContributorStats[] = [];
+  for (const c of contributorsList) {
+    const stats = getStatsForAuthor(allStats, c.login);
+
+    contributorsStats.push({
+      login: c.login,
+      additions: stats.additions,
+      deletions: stats.deletions,
+      commits: stats.commits,
+      originalContributor: c,
+    });
+  }
 
   // 3. ORDINA LE STATISTICHE PER "ADDITIONS" IN ORDINE DISCENDENTE
   contributorsStats.sort((a, b) => b.additions - a.additions);
@@ -206,7 +212,7 @@ const init = async () => {
   // 6. CREA L'IMMAGINE
   console.log("> PhysicsHub:", yellow("Creating image..."));
   const fileName = "contributors";
-  createScreenshot(outputPath, fileName)
+  await createScreenshot(outputPath, fileName)
     .then(() => {
       console.log(
         "> PhysicsHub:",
