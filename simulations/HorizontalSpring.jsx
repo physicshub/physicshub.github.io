@@ -131,7 +131,7 @@ export default function HorizontalSpring() {
         if (!bodyRef.current || !springRef.current) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         const { springK, springRestLength, bobMass, minCompressionLength } =
           inputsRef.current;

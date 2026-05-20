@@ -79,7 +79,7 @@ export class PhysicsBody {
    * ALL CALCULATIONS IN PHYSICS COORDS (Y-UP)
    */
   step(dt) {
-    if (dt <= 0) return;
+    if (dt === 0) return;
 
     // Linear motion
     this.state.velocity.add(
@@ -111,7 +111,7 @@ export class PhysicsBody {
    * Update physics - Verlet integration (more stable for constraints)
    */
   stepVerlet(dt, previousPosition) {
-    if (dt <= 0) return;
+    if (dt === 0) return;
 
     const currentPos = this.state.position.copy();
     const prevPos = previousPosition || this.state.position.copy();

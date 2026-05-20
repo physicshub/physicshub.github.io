@@ -53,7 +53,7 @@ class PendulumBody extends PhysicsBody {
    * Update using pendulum physics with constraint
    */
   stepPendulum(dt, gravity, damping) {
-    if (dt <= 0) return;
+    if (dt === 0) return;
 
     // Get current angle from vertical
     const dx = this.state.position.x - this.anchor.x;
@@ -268,7 +268,7 @@ export default function Pendulum() {
         bodyRef.current.trail.color = inputsRef.current.bobColor;
 
         // Physics step (if not dragging)
-        if (!dragControllerRef.current.isDragging() && dt > 0) {
+        if (!dragControllerRef.current.isDragging() && dt !== 0) {
           bodyRef.current.stepPendulum(
             dt,
             inputsRef.current.gravity,

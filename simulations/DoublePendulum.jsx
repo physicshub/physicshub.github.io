@@ -209,7 +209,7 @@ export default function DoublePendulum() {
         const inp = inputsRef.current;
         const { L1, L2 } = scaledLengthsRef.current;
 
-        if (dt > 0) {
+        if (dt !== 0) {
           const subSteps = 8;
           const subDt = dt / subSteps;
           for (let i = 0; i < subSteps; i++) {

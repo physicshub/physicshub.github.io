@@ -176,7 +176,7 @@ export default function ThreeBody() {
 
       p.draw = () => {
         const dt = Math.min(computeDelta(p), 1 / 30);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         const { G } = inputsRef.current;
         const bodies = bodiesRef.current;

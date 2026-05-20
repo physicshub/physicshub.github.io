@@ -9,6 +9,7 @@ import DownloadButton from "./controls/DownloadButton.jsx";
 import UploadButton from "./controls/UploadButton.jsx";
 import ShareLinkControl from "./controls/ShareLinkControl.jsx";
 import EmbedCodeControl from "./controls/EmbedCodeControl.jsx";
+import StepButton from "./controls/StepButton.jsx";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -27,7 +28,9 @@ export default function Controls({ onReset, inputs, simulation, onLoad }) {
     >
       <div className="main-controls-wrapper">
         <SpeedControl />
+        <StepButton direction="backward" />
         <PlayPauseButton />
+        <StepButton direction="forward" />
         <ResetButton onReset={onReset} />
 
         <button

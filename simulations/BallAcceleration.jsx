@@ -118,7 +118,8 @@ export default function BallAcceleration() {
         if (!bodyRef.current) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+
+        if (dt === 0) return;
 
         const { size, acceleration, maxspeed, color, trailEnabled } =
           inputsRef.current;

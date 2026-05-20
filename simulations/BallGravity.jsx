@@ -138,7 +138,7 @@ export default function BallGravity() {
         if (!bodyRef.current) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         const {
           mass,

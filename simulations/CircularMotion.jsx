@@ -117,7 +117,7 @@ export default function CircularMotion() {
         if (!bodyRef.current) return;
 
         const dt = computeDelta(p);
-        if (dt <= 0) return;
+        if (dt === 0) return;
 
         const { radius, speed, mass, size, color, trailEnabled } =
           inputsRef.current;
