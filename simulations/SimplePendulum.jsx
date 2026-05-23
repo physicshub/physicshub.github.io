@@ -292,6 +292,9 @@ export default function Pendulum() {
             velocity: bodyRef.current.state.velocity,
             angularVel: bodyRef.current.angularVel,
             angleRad: bodyRef.current.getAngle(),
+            height:
+              bodyRef.current.state.position.y -
+              (bodyRef.current.anchor.y - bodyRef.current.length),
             kineticEnergy: bodyRef.current.getKineticEnergy(),
             potentialEnergy: bodyRef.current.getPotentialEnergy(
               inputsRef.current.gravity

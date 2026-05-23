@@ -11,6 +11,7 @@ import {
   resetTime,
   isPaused,
   setPause,
+  getTimeScale,
 } from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
@@ -151,7 +152,7 @@ export default function VectorsOperations() {
         }
 
         // Apply global time scale and pause
-        const scale = 0; //getTimeScale();
+        const scale = getTimeScale();
         if (!isPaused()) {
           accumulator += dt * Math.max(0, scale);
         }
