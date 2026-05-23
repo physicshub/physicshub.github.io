@@ -253,7 +253,7 @@ export default function Test() {
               const velAlongNormal = relVel.dot(normal);
 
               // Don't resolve if velocities are separating
-              if (velAlongNormal < 0) continue;
+              if (velAlongNormal > 0) continue;
 
               // Calculate restitution (average of both bodies)
               const restitution =
