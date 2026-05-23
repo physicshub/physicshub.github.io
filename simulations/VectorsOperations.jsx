@@ -212,25 +212,12 @@ export default function VectorsOperations() {
             p.stroke(strokeColor);
 
             if (visualizeMode === "triangle") {
-              // Triangle method — translate to centre so vectors share a common origin
-              p.translate(p.width / 2, p.height / 2);
-              const aMag = inputsRef.current.vectorAMag ?? 150;
-              const aAngle =
-                ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-              const Avec_add_tri = p.createVector(
-                Math.cos(aAngle) * aMag,
-                Math.sin(aAngle) * aMag
-              );
-              const Bvec_add_tri = p.createVector(
-                p.mouseX - p.width / 2,
-                p.mouseY - p.height / 2
-              );
-              const tip = p.constructor.Vector.add(Avec_add_tri, Bvec_add_tri);
-              p.line(0, 0, Avec_add_tri.x, Avec_add_tri.y);
-              p.line(Avec_add_tri.x, Avec_add_tri.y, tip.x, tip.y);
+              // Triangle method
+              p.line(0, 0, Avec_add.x, Avec_add.y);
+              p.line(Avec_add.x, Avec_add.y, mouse.x, mouse.y);
               p.stroke(adjustColor(strokeColor));
               p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, tip.x, tip.y); // resultant
+              p.line(0, 0, mouse.x, mouse.y); // resultant
             } else {
               // Parallelogram method — translate to canvas centre so both vectors
               // share the same origin and remain properly to scale.
