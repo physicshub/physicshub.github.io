@@ -49,7 +49,10 @@ export const metadata: Metadata = {
     apple: "/Logo.png",
   },
   verification: {
-    google: "mZD-GZIQxWFBVVNpzrQ_V1Vmf8do93uwLkKfn10dJrA",
+    google: [
+      "mZD-GZIQxWFBVVNpzrQ_V1Vmf8do93uwLkKfn10dJrA",
+      "kkjcQbru_GaoTFpR7cIshWnCbYCi4Xl0lAaclaF_Fy0",
+    ],
   },
 };
 
