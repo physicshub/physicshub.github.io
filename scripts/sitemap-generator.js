@@ -5,6 +5,7 @@ import xmlFormat from "xml-formatter";
 
 import { routes as staticRoutes } from "../routes.js";
 import { blogsArray } from "../app/(core)/data/articles/index.js";
+import chapters from "../app/(core)/data/chapters.js";
 
 const hostname = "https://physicshub.github.io";
 const sitemapName = "sitemap";
@@ -22,9 +23,14 @@ async function generateSitemap() {
     priority: 0.8,
   }));
 
-  const combinedRoutes = [...staticRoutes, ...blogRoutes];
+  const simulationRoutes = chapters.map((chapter) => ({
+    path: chapter.link,
+    changefreq: "weekly",
+    priority: 0.7,
+  }));
 
-  // Deduplicate routes based on path
+  const combinedRoutes = [...staticRoutes, ...blogRoutes, ...simulationRoutes];
+
   const uniqueRoutesMap = new Map();
   combinedRoutes.forEach((route) => {
     uniqueRoutesMap.set(route.path, route);
@@ -52,7 +58,6 @@ async function generateSitemap() {
   writeFileSync(`./public/${sitemapName}.xml`, formatted);
   console.log(`✅ Sitemap generated with ${allRoutes.length} links!`);
 
-  // Also write to out/ if it exists (for deployment consistency)
   try {
     const fs = await import("fs");
     if (fs.existsSync("./out")) {

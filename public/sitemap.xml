@@ -31,46 +31,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://physicshub.github.io/simulations/BouncingBall</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/VectorsOperations</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/BallAcceleration</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/BallGravity</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/SpringConnection</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/SimplePendulum</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/ParabolicMotion</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://physicshub.github.io/simulations/DoublePendulum</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://physicshub.github.io/blog/what-is-physics</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -119,5 +79,75 @@
     <loc>https://physicshub.github.io/blog/physics-behind-three-body-problem</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/BouncingBall</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/VectorsOperations</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/BallAcceleration</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/BallGravity</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/SpringConnection</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/SimplePendulum</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/ParabolicMotion</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/InclinedPlane</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/CircularMotion</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/ThreeBody</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/HorizontalSpring</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/DoublePendulum</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/CollisionSimulation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://physicshub.github.io/simulations/test</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
