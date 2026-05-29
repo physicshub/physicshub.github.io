@@ -61,8 +61,10 @@ export const INPUT_FIELDS = [
     max: 500,
     step: 10,
     showCondition: (inputs) =>
-      inputs.visualizeMode === "parallelogram" &&
-      (inputs.operation === "+" || inputs.operation === "-"),
+      inputs.operation === "dot" ||
+      inputs.operation === "cross" ||
+      (inputs.visualizeMode === "parallelogram" &&
+        (inputs.operation === "+" || inputs.operation === "-")),
   },
   {
     type: "number",
@@ -72,8 +74,10 @@ export const INPUT_FIELDS = [
     max: 180,
     step: 5,
     showCondition: (inputs) =>
-      inputs.visualizeMode === "parallelogram" &&
-      (inputs.operation === "+" || inputs.operation === "-"),
+      inputs.operation === "dot" ||
+      inputs.operation === "cross" ||
+      (inputs.visualizeMode === "parallelogram" &&
+        (inputs.operation === "+" || inputs.operation === "-")),
   },
   {
     type: "number",
