@@ -1,55 +1,147 @@
-// app/pages/simulations/PiCollisions.jsx
+// app/pages/simulations/PiCollision.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-// --- Core Physics & Constants ---
-import { toMeters, setCanvasHeight } from "../app/(core)/constants/Utils.js";
+import { setCanvasHeight } from "../app/(core)/constants/Utils.js";
 import {
   computeDelta,
-  resetTime,
   isPaused,
+  resetTime,
   setPause,
 } from "../app/(core)/constants/Time.js";
+
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
-} from "../app/(core)/data/configs/test.js";
+} from "../app/(core)/data/configs/PiCollisions.js";
+
 import chapters from "../app/(core)/data/chapters.js";
 
-// --- Centralized Physics Components ---
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
-
-// --- Reusable UI Components ---
 import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
 import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
 import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
 import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
 
-// --- Hooks & Utils ---
 import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
 import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
 import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
 
-export default function PiCollisions() {
+const normalizePiCollisionInputs = (values) => {
+  const normalized = {
+    ...INITIAL_INPUTS,
+    ...values,
+  };
+
+  if (values?.smallBlockMass === undefined && values?.smallMass !== undefined) {
+    normalized.smallBlockMass = values.smallMass;
+  }
+
+  if (values?.largeBlockMass === undefined && values?.largeMass !== undefined) {
+    normalized.largeBlockMass = values.largeMass;
+  }
+
+  if (
+    values?.smallBlockVelocityInitial === undefined &&
+    values?.smallVelocityInitial !== undefined
+  ) {
+    normalized.smallBlockVelocityInitial = values.smallVelocityInitial;
+  }
+
+  if (
+    values?.smallBlockVelocityInitial === undefined &&
+    values?.smallBlockInitialVelocity !== undefined
+  ) {
+    normalized.smallBlockVelocityInitial = values.smallBlockInitialVelocity;
+  }
+
+  if (
+    values?.largeBlockVelocityInitial === undefined &&
+    values?.largeVelocityInitial !== undefined
+  ) {
+    normalized.largeBlockVelocityInitial = values.largeVelocityInitial;
+  }
+
+  if (
+    values?.largeBlockVelocityInitial === undefined &&
+    values?.largeBlockInitialVelocity !== undefined
+  ) {
+    normalized.largeBlockVelocityInitial = values.largeBlockInitialVelocity;
+  }
+
+  if (
+    values?.largeBlockColor === undefined &&
+    values?.largeMBlockColor !== undefined
+  ) {
+    normalized.largeBlockColor = values.largeMBlockColor;
+  }
+
+  return normalized;
+};
+
+const RESET_ON_CHANGE_INPUTS = new Set([
+  "smallBlockSize",
+  "largeBlockSize",
+  "smallBlockVelocityInitial",
+  "largeBlockVelocityInitial",
+  "wallGap",
+]);
+
+export default function CollisionSimulation() {
   const location = usePathname();
   const storageKey = location.replaceAll(/[/#]/g, "");
+
   const { inputs, setInputs, inputsRef } = useSimulationState(
     INITIAL_INPUTS,
     storageKey
   );
+
   const [resetVersion, setResetVersion] = useState(0);
 
-  const { simData, updateSimInfo } = useSimInfo();
-  const bodiesRef = useRef([]);
-  const trailLayerRef = useRef(null);
+  const { simData, updateSimInfo, resetSimInfo } = useSimInfo();
+
+  const smallBlockRef = useRef(null);
+  const largeBlockRef = useRef(null);
+  const totalCollisionsRef = useRef(0);
+  const eventsLimitedRef = useRef(false);
+
+  useEffect(() => {
+    const normalizedInputs = normalizePiCollisionInputs(inputsRef.current);
+
+    if (
+      JSON.stringify(normalizedInputs) !== JSON.stringify(inputsRef.current)
+    ) {
+      setInputs(normalizedInputs);
+      setResetVersion((v) => v + 1);
+    }
+  }, [inputsRef, setInputs]);
 
   const handleInputChange = useCallback(
-    (name, value) => setInputs((prev) => ({ ...prev, [name]: value })),
-    [setInputs]
+    (name, value) => {
+      const nextInputs = {
+        ...inputsRef.current,
+        [name]: value,
+      };
+
+      inputsRef.current = nextInputs;
+      setInputs(nextInputs);
+
+      if (RESET_ON_CHANGE_INPUTS.has(name)) {
+        const wasPaused = isPaused();
+
+        totalCollisionsRef.current = 0;
+        eventsLimitedRef.current = false;
+        resetSimInfo();
+        resetTime();
+
+        if (wasPaused) setPause(true);
+
+        setResetVersion((v) => v + 1);
+      }
+    },
+    [inputsRef, resetSimInfo, setInputs]
   );
 
   const theory = useMemo(
@@ -57,260 +149,449 @@ export default function PiCollisions() {
     [location]
   );
 
-  const createBodies = useCallback((p, numBodies, params) => {
-    const { mass, size, restitution } = params;
-    const { clientWidth: w, clientHeight: h } = p._userNode;
-
-    return Array.from({ length: numBodies }, () => {
-      const randomColor = p.color(
-        p.random(100, 255),
-        p.random(100, 255),
-        p.random(100, 255)
-      );
-
-      const randomX = toMeters(p.random(50, w - 50));
-      const randomY = toMeters(p.random(50, h / 2));
-
-      const body = new PhysicsBody(p, {
-        mass: mass * p.random(0.5, 2),
-        size: size * p.random(0.5, 1.5),
-        color: randomColor.toString("#rrggbb"),
-        shape: "circle",
-        restitution,
-        position: p.createVector(randomX, randomY),
-      });
-
-      // Enable trails
-      body.trail.enabled = params.trailEnabled;
-      body.trail.maxLength = 100;
-      body.trail.color = randomColor.toString("#rrggbb");
-
-      return body;
-    });
-  }, []);
-
   const sketch = useCallback(
     (p) => {
-      let lastNumBodies = inputsRef.current.numBodies;
+      const PIXELS_PER_METER = 100;
+      const EPSILON = 1e-12;
+      const CONTACT_EPSILON = 1e-10;
+      const MAX_EVENTS_PER_FRAME = 10000;
+      let trailLayer = null;
+
+      const metersToPixels = (meters) => meters * PIXELS_PER_METER;
+      const pixelsToMeters = (pixels) => pixels / PIXELS_PER_METER;
+
+      const getNumber = (value, fallback = 0) => {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : fallback;
+      };
+
+      const getPositiveNumber = (value, fallback) => {
+        return Math.max(EPSILON, getNumber(value, fallback));
+      };
+
+      const getBackground = () => {
+        const bg = getBackgroundColor();
+        return Array.isArray(bg) ? bg : [20, 20, 30];
+      };
+
+      const makeInfoBody = (block) => ({
+        params: {
+          id: block.id,
+          mass: block.mass,
+          size: block.size,
+          color: block.color,
+        },
+        state: {
+          position: {
+            x: block.x,
+            y: block.y,
+          },
+          velocity: {
+            x: block.v,
+            y: 0,
+          },
+        },
+      });
+
+      const updateInfoPanel = () => {
+        updateSimInfo(
+          p,
+          {
+            smallBlock: smallBlockRef.current
+              ? makeInfoBody(smallBlockRef.current)
+              : null,
+            largeBlock: largeBlockRef.current
+              ? makeInfoBody(largeBlockRef.current)
+              : null,
+            totalCollisions: totalCollisionsRef.current,
+            eventsLimited: eventsLimitedRef.current,
+          },
+          {},
+          SimInfoMapper
+        );
+      };
+
+      const getBlockBottomY = () => p.height;
+
+      const getBlockCenterYPixels = (sizeMeters) => {
+        return getBlockBottomY() - metersToPixels(sizeMeters) / 2;
+      };
+
+      const syncLiveInputs = () => {
+        if (!smallBlockRef.current || !largeBlockRef.current) return;
+
+        smallBlockRef.current.mass = getPositiveNumber(
+          inputsRef.current.smallBlockMass,
+          1
+        );
+
+        largeBlockRef.current.mass = getPositiveNumber(
+          inputsRef.current.largeBlockMass,
+          100
+        );
+
+        smallBlockRef.current.color = inputsRef.current.smallBlockColor;
+        largeBlockRef.current.color = inputsRef.current.largeBlockColor;
+      };
+
+      const resetTrailLayer = () => {
+        if (!trailLayer) return;
+
+        const [r, g, b] = getBackground();
+        trailLayer.background(r, g, b);
+      };
+
+      const keepBlocksOnBottom = () => {
+        if (!smallBlockRef.current || !largeBlockRef.current) return;
+
+        smallBlockRef.current.y = pixelsToMeters(
+          getBlockCenterYPixels(smallBlockRef.current.size)
+        );
+
+        largeBlockRef.current.y = pixelsToMeters(
+          getBlockCenterYPixels(largeBlockRef.current.size)
+        );
+      };
+
+      const setupSimulation = () => {
+        const smallSize = getPositiveNumber(
+          inputsRef.current.smallBlockSize,
+          0.5
+        );
+        const largeSize = getPositiveNumber(
+          inputsRef.current.largeBlockSize,
+          1
+        );
+
+        const smallHalf = smallSize / 2;
+        const wallGap = Math.max(
+          0,
+          getNumber(inputsRef.current.wallGap, INITIAL_INPUTS.wallGap)
+        );
+        const smallStartX = smallHalf + wallGap;
+        const largeStartX = Math.max(
+          smallStartX + smallHalf + largeSize / 2 + 0.5,
+          pixelsToMeters(p.width * 0.72)
+        );
+
+        totalCollisionsRef.current = 0;
+        eventsLimitedRef.current = false;
+
+        smallBlockRef.current = {
+          id: "Small Block",
+          x: smallStartX,
+          y: pixelsToMeters(getBlockCenterYPixels(smallSize)),
+          v: getNumber(inputsRef.current.smallBlockVelocityInitial, 0),
+          mass: getPositiveNumber(inputsRef.current.smallBlockMass, 1),
+          size: smallSize,
+          color: inputsRef.current.smallBlockColor,
+        };
+
+        largeBlockRef.current = {
+          id: "Large Block",
+          x: largeStartX,
+          y: pixelsToMeters(getBlockCenterYPixels(largeSize)),
+          v: -Math.abs(
+            getNumber(inputsRef.current.largeBlockVelocityInitial, -1)
+          ),
+          mass: getPositiveNumber(inputsRef.current.largeBlockMass, 100),
+          size: largeSize,
+          color: inputsRef.current.largeBlockColor,
+        };
+
+        updateInfoPanel();
+        resetTrailLayer();
+      };
+
+      const advanceBlocks = (dt) => {
+        smallBlockRef.current.x += smallBlockRef.current.v * dt;
+        largeBlockRef.current.x += largeBlockRef.current.v * dt;
+
+        keepBlocksOnBottom();
+      };
+
+      const getTimeToLeftWallCollision = () => {
+        const small = smallBlockRef.current;
+
+        if (small.v >= 0) return Infinity;
+
+        const leftEdge = small.x - small.size / 2;
+
+        if (leftEdge <= 0) return 0;
+
+        return (0 - leftEdge) / small.v;
+      };
+
+      const getTimeToBlockCollision = () => {
+        const small = smallBlockRef.current;
+        const large = largeBlockRef.current;
+
+        const smallRightEdge = small.x + small.size / 2;
+        const largeLeftEdge = large.x - large.size / 2;
+
+        const gap = largeLeftEdge - smallRightEdge;
+        const closingSpeed = small.v - large.v;
+
+        if (closingSpeed <= EPSILON) return Infinity;
+        if (gap <= CONTACT_EPSILON) return 0;
+
+        return gap / closingSpeed;
+      };
+
+      const resolveLeftWallCollision = () => {
+        const small = smallBlockRef.current;
+
+        small.x = small.size / 2;
+
+        if (small.v < 0) {
+          small.v *= -1;
+          totalCollisionsRef.current += 1;
+        }
+      };
+
+      const resolveBlockCollision = () => {
+        const small = smallBlockRef.current;
+        const large = largeBlockRef.current;
+
+        const m1 = small.mass;
+        const m2 = large.mass;
+
+        const v1 = small.v;
+        const v2 = large.v;
+
+        const newV1 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
+        const newV2 = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
+
+        small.v = newV1;
+        large.v = newV2;
+
+        large.x = small.x + small.size / 2 + large.size / 2;
+
+        totalCollisionsRef.current += 1;
+      };
+
+      const simulateFrame = (dt) => {
+        let remainingTime = dt;
+        let eventsThisFrame = 0;
+        eventsLimitedRef.current = false;
+
+        while (
+          remainingTime > EPSILON &&
+          eventsThisFrame < MAX_EVENTS_PER_FRAME
+        ) {
+          const timeToWall = getTimeToLeftWallCollision();
+          const timeToBlocks = getTimeToBlockCollision();
+
+          const nextCollisionTime = Math.min(timeToWall, timeToBlocks);
+
+          if (
+            !Number.isFinite(nextCollisionTime) ||
+            nextCollisionTime > remainingTime
+          ) {
+            advanceBlocks(remainingTime);
+            remainingTime = 0;
+            break;
+          }
+
+          const safeTime = Math.max(0, nextCollisionTime);
+
+          advanceBlocks(safeTime);
+          remainingTime -= safeTime;
+
+          if (timeToWall <= timeToBlocks) {
+            resolveLeftWallCollision();
+          } else {
+            resolveBlockCollision();
+          }
+
+          eventsThisFrame += 1;
+        }
+
+        if (eventsThisFrame >= MAX_EVENTS_PER_FRAME) {
+          eventsLimitedRef.current = true;
+        }
+
+        keepBlocksOnBottom();
+      };
+
+      const drawBlock = (block) => {
+        const sizePx = metersToPixels(block.size);
+        const centerX = metersToPixels(block.x);
+        const centerY = getBlockCenterYPixels(block.size);
+
+        p.fill(block.color);
+        p.noStroke();
+
+        p.rectMode(p.CENTER);
+        p.rect(centerX, centerY, sizePx, sizePx);
+
+        p.fill(255);
+        p.noStroke();
+        p.textAlign(p.CENTER);
+        p.textSize(p.width < 600 ? 12 : 16);
+        p.textFont("Poppins");
+
+        p.text(block.id, centerX, centerY - sizePx / 2 - 14);
+      };
+
+      const drawTrace = (block) => {
+        if (!trailLayer) return;
+
+        const sizePx = metersToPixels(block.size);
+        const centerX = metersToPixels(block.x);
+        const centerY = getBlockCenterYPixels(block.size);
+
+        trailLayer.noStroke();
+        trailLayer.fill(`${block.color}88`);
+        trailLayer.rectMode(p.CENTER);
+        trailLayer.rect(centerX, centerY, sizePx, sizePx);
+      };
+
+      const drawVelocityVector = (block) => {
+        if (!inputsRef.current.showVectors) return;
+
+        const centerX = metersToPixels(block.x);
+        const centerY = getBlockCenterYPixels(block.size);
+        const arrowLength = Math.max(-120, Math.min(120, block.v * 45));
+
+        if (Math.abs(arrowLength) < 1) return;
+
+        p.stroke(230);
+        p.strokeWeight(2);
+        p.line(centerX, centerY, centerX + arrowLength, centerY);
+
+        const direction = Math.sign(arrowLength);
+        const arrowX = centerX + arrowLength;
+
+        p.line(arrowX, centerY, arrowX - direction * 10, centerY - 6);
+        p.line(arrowX, centerY, arrowX - direction * 10, centerY + 6);
+      };
+
+      const renderScene = (recordTrace) => {
+        const [r, g, b] = getBackground();
+
+        if (trailLayer) {
+          if (inputsRef.current.trailEnabled) {
+            trailLayer.fill(r, g, b, 60);
+            trailLayer.noStroke();
+            trailLayer.rectMode(p.CORNER);
+            trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
+
+            if (recordTrace) {
+              if (smallBlockRef.current) drawTrace(smallBlockRef.current);
+              if (largeBlockRef.current) drawTrace(largeBlockRef.current);
+            }
+
+            p.clear();
+            p.image(trailLayer, 0, 0);
+          } else {
+            trailLayer.background(r, g, b);
+            p.background(r, g, b);
+          }
+        } else {
+          p.background(r, g, b);
+        }
+
+        const floorY = p.height - 1;
+
+        p.stroke(150);
+        p.strokeWeight(4);
+
+        p.line(0, floorY, p.width, floorY);
+
+        p.strokeWeight(5);
+        p.line(0, p.height - 220, 0, p.height);
+
+        if (smallBlockRef.current) {
+          drawBlock(smallBlockRef.current);
+          drawVelocityVector(smallBlockRef.current);
+        }
+
+        if (largeBlockRef.current) {
+          drawBlock(largeBlockRef.current);
+          drawVelocityVector(largeBlockRef.current);
+        }
+      };
 
       p.setup = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
+
         p.createCanvas(w, h);
+        setCanvasHeight(h);
 
-        trailLayerRef.current = p.createGraphics(w, h);
-        trailLayerRef.current.pixelDensity(1);
-        trailLayerRef.current.clear();
+        trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
+        trailLayer.clear();
 
-        bodiesRef.current = createBodies(
-          p,
-          inputsRef.current.numBodies,
-          inputsRef.current
-        );
-
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-        trailLayerRef.current.background(r, g, b);
-        p.background(r, g, b);
+        setupSimulation();
       };
 
       p.draw = () => {
-        const { gravity, numBodies, trailEnabled, restitution, frictionMu } =
-          inputsRef.current;
+        if (!smallBlockRef.current || !largeBlockRef.current) return;
+
         const dt = computeDelta(p);
-        if (dt === 0) return;
+        const shouldStep = dt !== 0;
 
-        // Recreate bodies if count changed
-        if (numBodies !== lastNumBodies) {
-          bodiesRef.current = createBodies(p, numBodies, inputsRef.current);
-          lastNumBodies = numBodies;
-
-          // Clear trail
-          const bg = getBackgroundColor();
-          const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-          trailLayerRef.current.background(r, g, b);
+        if (shouldStep) {
+          syncLiveInputs();
+          simulateFrame(dt);
+          updateInfoPanel();
         }
 
-        // Render trail layer
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-
-        if (!trailEnabled) {
-          trailLayerRef.current.background(r, g, b);
-        } else {
-          trailLayerRef.current.fill(r, g, b, 60);
-          trailLayerRef.current.noStroke();
-          trailLayerRef.current.rect(
-            0,
-            0,
-            trailLayerRef.current.width,
-            trailLayerRef.current.height
-          );
-        }
-
-        // Main canvas
-        p.clear();
-        p.image(trailLayerRef.current, 0, 0);
-
-        // Update and draw all bodies
-        bodiesRef.current.forEach((body, i) => {
-          // Sync parameters
-          body.updateParams({
-            restitution,
-          });
-          body.trail.enabled = trailEnabled;
-
-          // Apply gravity
-          const gravityForce = ForceCalculator.gravity(
-            body.params.mass,
-            gravity
-          );
-          body.applyForce(p.createVector(gravityForce.x, gravityForce.y));
-
-          // Ground friction (simplified)
-          const bottomM = toMeters(p.height);
-          const onGround =
-            body.state.position.y + body.params.size / 2 >= bottomM - 0.01;
-          if (onGround && body.state.velocity.mag() > 0.01 && frictionMu > 0) {
-            const friction = ForceCalculator.friction(
-              body.params.mass * gravity,
-              frictionMu,
-              frictionMu * 0.8,
-              body.state.velocity.x,
-              0
-            );
-            body.applyForce(p.createVector(friction, 0));
-          }
-
-          // Physics step
-          body.step(dt);
-
-          // Constrain to bounds
-          const radius = body.params.size / 2;
-          body.constrainToBounds(
-            radius,
-            toMeters(p.width) - radius,
-            radius,
-            toMeters(p.height) - radius
-          );
-
-          // Draw
-          body.checkHover(p, body.toScreenPosition());
-          body.draw(p, { hoverEffect: true });
-
-          // Update sim info for first body
-          if (i === 0) {
-            updateSimInfo(
-              p,
-              {
-                pos: body.state.position,
-                vel: body.state.velocity,
-                mass: body.params.mass,
-                kineticEnergy: body.getKineticEnergy(),
-                potentialEnergy: body.getPotentialEnergy(
-                  gravity,
-                  toMeters(p.height)
-                ),
-              },
-              { p },
-              SimInfoMapper
-            );
-          }
-        });
-
-        // Simple collision detection between bodies
-        for (let i = 0; i < bodiesRef.current.length; i++) {
-          for (let j = i + 1; j < bodiesRef.current.length; j++) {
-            const body1 = bodiesRef.current[i];
-            const body2 = bodiesRef.current[j];
-
-            const dist = p.constructor.Vector.dist(
-              body1.state.position,
-              body2.state.position
-            );
-            const minDist = (body1.params.size + body2.params.size) / 2;
-
-            if (dist < minDist) {
-              // Collision detected - simple elastic response
-              const normal = p.constructor.Vector.sub(
-                body2.state.position,
-                body1.state.position
-              ).normalize();
-
-              // Separate bodies
-              const overlap = minDist - dist;
-              body1.state.position.sub(
-                p.constructor.Vector.mult(normal, overlap / 2)
-              );
-              body2.state.position.add(
-                p.constructor.Vector.mult(normal, overlap / 2)
-              );
-
-              // Calculate relative velocity
-              const relVel = p.constructor.Vector.sub(
-                body2.state.velocity,
-                body1.state.velocity
-              );
-              const velAlongNormal = relVel.dot(normal);
-
-              // Don't resolve if velocities are separating
-              if (velAlongNormal > 0) continue;
-
-              // Calculate restitution (average of both bodies)
-              const restitution =
-                (body1.params.restitution + body2.params.restitution) / 2;
-
-              // Calculate impulse
-              const impulse =
-                (-(1 + restitution) * velAlongNormal) /
-                (1 / body1.params.mass + 1 / body2.params.mass);
-
-              // Apply impulse
-              body1.applyImpulse(p.constructor.Vector.mult(normal, -impulse));
-              body2.applyImpulse(p.constructor.Vector.mult(normal, impulse));
-            }
-          }
-        }
+        renderScene(shouldStep);
       };
 
       p.windowResized = () => {
         const { clientWidth: w, clientHeight: h } = p._userNode;
+
         p.resizeCanvas(w, h);
         setCanvasHeight(h);
 
-        trailLayerRef.current = p.createGraphics(w, h);
-        trailLayerRef.current.pixelDensity(1);
+        if (trailLayer) trailLayer.remove();
+        trailLayer = p.createGraphics(w, h);
+        trailLayer.pixelDensity(1);
+        trailLayer.clear();
 
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-        trailLayerRef.current.background(r, g, b);
-
-        // Fix #194: If bodies were never created (zero-height canvas at
-        // setup time), initialise them now that we have real dimensions.
-        if (!bodiesRef.current || bodiesRef.current.length === 0) {
-          bodiesRef.current = createBodies(
-            p,
-            inputsRef.current.numBodies,
-            inputsRef.current
-          );
-        }
+        setupSimulation();
       };
     },
-    [inputsRef, createBodies, updateSimInfo]
+    [inputsRef, updateSimInfo]
   );
+
+  useEffect(() => {
+    return () => {
+      smallBlockRef.current = null;
+      largeBlockRef.current = null;
+      totalCollisionsRef.current = 0;
+      eventsLimitedRef.current = false;
+    };
+  }, []);
+
+  const handleReset = useCallback(() => {
+    const wasPaused = isPaused();
+
+    totalCollisionsRef.current = 0;
+    eventsLimitedRef.current = false;
+    resetSimInfo();
+
+    resetTime();
+
+    if (wasPaused) setPause(true);
+
+    setResetVersion((v) => v + 1);
+  }, [resetSimInfo]);
 
   return (
     <SimulationLayout
       resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
-        setResetVersion((v) => v + 1);
-      }}
+      onReset={handleReset}
       inputs={inputs}
       simulation={location}
       onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
+        setInputs(normalizePiCollisionInputs(loadedInputs));
+        totalCollisionsRef.current = 0;
+        eventsLimitedRef.current = false;
+        resetSimInfo();
         setResetVersion((v) => v + 1);
       }}
       theory={theory}

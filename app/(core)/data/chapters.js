@@ -125,7 +125,7 @@ const chapters = [
     id: 15,
     name: "Pi From Collisions",
     desc: "",
-    link: "/simulations/test",
+    link: "/simulations/PiCollisions",
     tags: [TAGS.MATH, TAGS.FORCES, TAGS.DYNAMICS],
     icon: "/icons/test.png",
   },
