@@ -95,12 +95,7 @@ export const INPUT_FIELDS = [
 
 // Mapper specifico per benchmarking
 export const SimInfoMapper = (context) => {
-  const {
-    smallBlock,
-    largeBlock,
-    totalCollisions = 0,
-    eventsLimited = false,
-  } = context;
+  const { smallBlock, largeBlock, totalCollisions = 0 } = context;
 
   const smallVelocity = smallBlock?.state?.velocity?.x ?? 0;
   const largeVelocity = largeBlock?.state?.velocity?.x ?? 0;
@@ -109,6 +104,5 @@ export const SimInfoMapper = (context) => {
     "Total Collisions": `${totalCollisions} collisions`,
     "Small Block Velocity": `${smallVelocity.toFixed(3)} m/s`,
     "Large Block Velocity": `${largeVelocity.toFixed(3)} m/s`,
-    "Frame Limit": eventsLimited ? "Reached" : "OK",
   };
 };
