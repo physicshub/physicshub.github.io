@@ -124,7 +124,7 @@ const chapters = [
   {
     id: 15,
     name: "Pi From Collisions",
-    desc: "",
+    desc: "Simulate two colliding blocks of different masses to derive pi. Adjust the mass of the larger block by a power of 100 to see further precision of pi.",
     link: "/simulations/PiCollisions",
     tags: [TAGS.MATH, TAGS.FORCES, TAGS.DYNAMICS],
     icon: "/icons/test.png",
