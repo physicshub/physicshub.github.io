@@ -121,6 +121,14 @@ const chapters = [
     tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
     icon: "/icons/test.png",
   },
+  {
+    id: 15,
+    name: "Pi From Collisions",
+    desc: "Simulate two colliding blocks of different masses to derive pi. Adjust the mass of the larger block by a power of 100 to see further precision of pi.",
+    link: "/simulations/PiCollisions",
+    tags: [TAGS.MATH, TAGS.FORCES, TAGS.DYNAMICS],
+    icon: "/icons/test.png",
+  },
 ];
 
 export default chapters;
