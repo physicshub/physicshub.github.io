@@ -18,6 +18,7 @@ export default function Controls({ onReset, inputs, simulation, onLoad }) {
   const [isOpen, setIsOpen] = useState(false);
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const simulationPath = simulation;
   simulation = simulation.replaceAll(/[/#]/g, "");
 
   return (
@@ -55,7 +56,7 @@ export default function Controls({ onReset, inputs, simulation, onLoad }) {
           <UploadButton onLoad={onLoad} simulation={simulation} />
         </div>
         <div className="controls-group">
-          <ShareLinkControl inputs={inputs} simulation={simulation} />
+          <ShareLinkControl inputs={inputs} simulation={simulationPath} />
           <EmbedCodeControl inputs={inputs} simulation={simulation} />
         </div>
       </div>
