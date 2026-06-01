@@ -128,6 +128,7 @@ const chapters = [
     link: "/simulations/PiCollisions",
     tags: [TAGS.MATH, TAGS.FORCES, TAGS.DYNAMICS],
     icon: "/icons/test.png",
+    relatedBlogSlug: "pi-from-block-collisions-explained",
   },
 ];
 
