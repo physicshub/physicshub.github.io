@@ -9,12 +9,23 @@ import useTranslation from "../hooks/useTranslation.ts";
 function Chapter(props) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
-
+  console.log("Chapter props:", props); // Debug log to check props
   return (
     <section
       id={props.id}
       className={`chapter-card ${isCompleted ? "notranslate" : ""}`}
     >
+      {/* Hero thumbnail */}
+      <div className="chapter-card-hero">
+        <div className="chapter-card-hero-glow" />
+
+        <Image
+          src={props.thumbnail}
+          alt={`${t(props.name)} thumbnail`}
+          fill={true}
+        />
+      </div>
+
       <div className="chapter-card-overlay">
         {/* Tags */}
         <div className="chapter-card-tags-container">
@@ -23,20 +34,11 @@ function Chapter(props) {
           ))}
         </div>
 
-        {/* Title with optional icon */}
+        {/* Title */}
         <h2 className="text-2xl flex items-center gap-2">
           {props.isABlog
             ? `${t(props.name)}`
             : `${t("Chapter")} ${props.id}: ${t(props.name)}`}
-          {props.icon && (
-            <Image
-              src={props.icon}
-              alt={`${t(props.name)} ${t("icon")}`}
-              width={24}
-              height={24}
-              className="chapter-icon"
-            />
-          )}
         </h2>
 
         {/* Description */}

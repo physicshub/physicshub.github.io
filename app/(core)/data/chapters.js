@@ -7,7 +7,7 @@ const chapters = [
     desc: "Simulation of the ball bouncing off the walls.",
     link: "/simulations/BouncingBall",
     tags: [TAGS.EASY, TAGS.KINEMATICS, TAGS.COLLISION],
-    icon: "/icons/bouncingBall.png",
+    thumbnail: "/thumbnails/bouncing-ball.webp",
     relatedBlogSlug: "physics-bouncing-ball-comprehensive-educational-guide",
   },
   {
@@ -16,7 +16,7 @@ const chapters = [
     desc: "Interactive 2D vector calculator — visualize addition, subtraction, and dot products in real time. Free online tool for students learning vector physics.",
     link: "/simulations/VectorsOperations",
     tags: [TAGS.EASY, TAGS.MATH, TAGS.VECTORS, TAGS.TRIGONOMETRY],
-    icon: "/icons/vector.png",
+    thumbnail: "/thumbnails/vector-operations.webp",
     relatedBlogSlug: "operations-with-vectors",
   },
   {
@@ -25,7 +25,7 @@ const chapters = [
     desc: "Simulate a ball accelerating toward your cursor in real time. Explore Newton's second law, velocity, and uniform acceleration interactively — free online.",
     link: "/simulations/BallAcceleration",
     tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.ACCELERATION, TAGS.INTERACTIVE],
-    icon: "/icons/acceleration.png",
+    thumbnail: "/thumbnails/ball-acceleration.webp",
     relatedBlogSlug: "ball-uniformly-accelerated-motion",
   },
   {
@@ -34,7 +34,7 @@ const chapters = [
     desc: "Watch a ball fall and bounce under gravity and external forces in real time. Adjust mass, elasticity, and gravitational force to explore Newton's laws — free interactive simulation.",
     link: "/simulations/BallGravity",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.GRAVITY, TAGS.COLLISION],
-    icon: "/icons/gravity.png",
+    thumbnail: "/thumbnails/ball-gravity.webp",
     relatedBlogSlug: "ball-free-fall-comprehensive-guide",
   },
   {
@@ -43,7 +43,7 @@ const chapters = [
     desc: "Explore Hooke's Law and Simple Harmonic Motion interactively. Adjust mass and spring constant to visualize oscillations and energy conservation in real time.",
     link: "/simulations/SpringConnection",
     tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
-    icon: "/icons/spring.png",
+    thumbnail: "/thumbnails/spring-mass.webp",
     relatedBlogSlug: "spring-connection",
   },
   {
@@ -52,7 +52,7 @@ const chapters = [
     desc: "Simulate a pendulum and calculate its period and frequency in real time. Explore how length, gravity, and energy are related — free interactive physics tool.",
     link: "/simulations/SimplePendulum",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
-    icon: "/icons/pendulam.png",
+    thumbnail: "/thumbnails/simple-pendulum.webp",
     relatedBlogSlug: "pendulum-motion",
   },
   {
@@ -61,7 +61,7 @@ const chapters = [
     desc: "Simulate projectile motion and predict trajectory, range, and max height instantly. Interactive parabolic motion calculator — free online physics tool.",
     link: "/simulations/ParabolicMotion",
     tags: [TAGS.MEDIUM, TAGS.KINEMATICS, TAGS.GRAVITY, TAGS.MATH],
-    icon: "/icons/parabola.png",
+    thumbnail: "/thumbnails/projectile.webp",
     relatedBlogSlug: "projectile-parabolic-motion",
   },
   {
@@ -70,7 +70,7 @@ const chapters = [
     desc: "Simulate a block sliding down an inclined plane with friction. Adjust angle, mass, and surface to explore forces, acceleration, and Newton's laws interactively.",
     link: "/simulations/InclinedPlane",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
-    icon: "/icons/inclined.png",
+    thumbnail: "/thumbnails/incline-plane.webp",
   },
   {
     id: 9,
@@ -78,7 +78,7 @@ const chapters = [
     desc: "Simulate uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed interactively.",
     link: "/simulations/CircularMotion",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.KINEMATICS, TAGS.VECTORS],
-    icon: "/icons/circular.png",
+    thumbnail: "/thumbnails/circular.webp",
   },
   {
     id: 10,
@@ -86,7 +86,7 @@ const chapters = [
     desc: "Simulate a classic physics problem of three bodies operating under the gravity of each other. Visualise the effects of their mass and radius.",
     link: "/simulations/ThreeBody",
     tags: [TAGS.ADVANCED, TAGS.GRAVITY, TAGS.KINEMATICS, TAGS.FORCES],
-    icon: "/icons/threebody.png",
+    thumbnail: "/thumbnails/three-body.webp",
     relatedBlogSlug: "physics-behind-three-body-problem",
   },
   {
@@ -95,7 +95,7 @@ const chapters = [
     desc: "A spring attached to the left wall with a draggable mass. Explore Hooke's Law and oscillation on a horizontal plane.",
     link: "/simulations/HorizontalSpring",
     tags: [TAGS.MEDIUM, TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
-    icon: "/icons/spring.png",
+    thumbnail: "/thumbnails/horizontal-spring.webp",
   },
   {
     id: 12,
@@ -103,7 +103,7 @@ const chapters = [
     desc: "Simulate a double pendulum and explore chaotic motion. Watch how small changes in initial conditions lead to completely different trajectories — a classic example of chaos theory.",
     link: "/simulations/DoublePendulum",
     tags: [TAGS.ADVANCED, TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
-    icon: "/icons/pendulam.png",
+    thumbnail: "/thumbnails/double-pendulum.webp",
   },
   {
     id: 13,
@@ -111,7 +111,7 @@ const chapters = [
     desc: "Simulate 1D elastic collisions with velocity vectors, momentum, and kinetic energy visualization.",
     link: "/simulations/CollisionSimulation",
     tags: [TAGS.PHYSICS, TAGS.MEDIUM, TAGS.COLLISION, TAGS.VECTORS],
-    icon: "/icons/collision.png",
+    thumbnail: "/thumbnails/1d-collision.webp",
   },
   {
     id: 14,
@@ -119,7 +119,7 @@ const chapters = [
     desc: "Push your browser to its limits with this physics-based stress test. Benchmark your device's rendering performance with hundreds of simultaneous physics simulations.",
     link: "/simulations/test",
     tags: [TAGS.EXPERIMENTAL, TAGS.BENCHMARK, TAGS.PERFORMANCE],
-    icon: "/icons/test.png",
+    thumbnail: "/thumbnails/test.webp",
   },
   {
     id: 15,
@@ -127,7 +127,7 @@ const chapters = [
     desc: "Simulate two colliding blocks of different masses to derive pi. Adjust the mass of the larger block by a power of 100 to see further precision of pi.",
     link: "/simulations/PiCollisions",
     tags: [TAGS.MATH, TAGS.FORCES, TAGS.DYNAMICS],
-    icon: "/icons/test.png",
+    thumbnail: "/thumbnails/pi.webp",
     relatedBlogSlug: "pi-from-block-collisions-explained",
   },
 ];
