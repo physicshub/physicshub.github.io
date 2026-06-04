@@ -327,7 +327,7 @@ const LivePreviewRenderer: React.FC<{
         <TheoryRenderer
           theory={dataContent}
           isEditing={false} // Modalità Read-Only
-          onContentUpdate={() => { }}
+          onContentUpdate={() => {}}
         />
       </div>
     );
