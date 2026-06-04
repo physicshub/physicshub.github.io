@@ -327,7 +327,7 @@ const LivePreviewRenderer: React.FC<{
         <TheoryRenderer
           theory={dataContent}
           isEditing={false} // Modalità Read-Only
-          onContentUpdate={() => {}}
+          onContentUpdate={() => { }}
         />
       </div>
     );
@@ -354,12 +354,10 @@ export default function CreateBlogPage() {
   );
 
   const jsTitle = useMemo(() => {
-    try {
-      return dataContent.title || t("New Blog Title");
-    } catch {
-      return t("New Blog Title");
-    }
-  }, [dataContent, t]);
+
+    return dataContent.title ?? "";
+
+  }, [dataContent]);
 
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
@@ -429,13 +427,19 @@ export default function CreateBlogPage() {
   }, [dataContent, setDataContent, t]);
 
   const handleSave = useCallback(async () => {
+
+    if (!dataContent.title?.trim()) {
+      alert("Please enter a blog title");
+      return;
+    }
+
     try {
       const response = await fetch("/api/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: title,
-          dataContent: dataContent,
+          jsonContent: dataContent,
         }),
       });
 
