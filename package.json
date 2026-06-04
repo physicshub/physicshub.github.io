@@ -54,7 +54,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-katex": "^3.0.4",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.53.0",
     "axios": "^1.16.0",
     "dotenv": "^17.2.3",
