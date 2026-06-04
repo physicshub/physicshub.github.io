@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    
+
     const owner = "AgnibhaDebnath"; // TODO: Replace with authenticated GitHub username once OAuth is implemented
     const repo = "physicshub.github.io";
 
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       sha: mainBranch.object.sha,
     });
 
-   // 3. Create the file in the new branch
+    // 3. Create the file in the new branch
     await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -56,12 +56,12 @@ export async function POST(req: Request) {
 
     // 4. Open the Pull Request
     const { data: pr } = await octokit.pulls.create({
-      owner:"physicshub",
+      owner: "physicshub",
       repo,
       title: `📝 Blog Proposal: ${title}`,
       head: `${owner}:${branchName}`,
       base: "main",
-      body: `New blog proposal submitted through the website editor.\n\nTitle: ${title}`
+      body: `New blog proposal submitted through the website editor.\n\nTitle: ${title}`,
     });
 
     return NextResponse.json({ success: true, url: pr.html_url });

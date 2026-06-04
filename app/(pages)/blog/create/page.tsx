@@ -354,9 +354,7 @@ export default function CreateBlogPage() {
   );
 
   const jsTitle = useMemo(() => {
-
     return dataContent.title ?? "";
-
   }, [dataContent]);
 
   const dataContentString = useMemo(
@@ -427,7 +425,6 @@ export default function CreateBlogPage() {
   }, [dataContent, setDataContent, t]);
 
   const handleSave = useCallback(async () => {
-
     if (!dataContent.title?.trim()) {
       alert("Please enter a blog title");
       return;
