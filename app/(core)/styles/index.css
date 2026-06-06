@@ -841,8 +841,8 @@ main.simulations-page {
 /* ─── Chapter Card ─────────────────────────────────────────── */
 
 .chapter-card {
-  background: #0d2137;
-  border: 1px solid #1a3a52;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   overflow: hidden;
   display: flex;
@@ -855,8 +855,8 @@ main.simulations-page {
 
 .chapter-card:hover {
   box-shadow:
-    0 0 24px 4px #2dd4a055,
-    0 8px 32px #0a162899;
+    0 0 24px 4px var(--accent-color) 55,
+    0 8px 32px var(--bg-color) 99;
   transform: translateY(-4px);
 }
 
@@ -865,17 +865,21 @@ main.simulations-page {
 .chapter-card-hero {
   width: 100%;
   aspect-ratio: 16 / 10;
-  background: #0b1d30;
+  background: var(--bg-color);
   position: relative;
   overflow: hidden;
-  border-bottom: 1px solid #1a3a52;
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Gradient overlay fading image into card body */
 .chapter-card-hero-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 50%, #0d2137e6 100%);
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    var(--card-bg) e6 100%
+  );
   z-index: 1;
   pointer-events: none;
 }
@@ -921,7 +925,7 @@ main.simulations-page {
 .chapter-card-hero-fallback {
   position: absolute;
   inset: 0;
-  background: #0b1d30;
+  background: var(--bg-color);
 }
 
 /* ─── Body ──────────────────────────────────────────────────── */
@@ -947,7 +951,7 @@ main.simulations-page {
 .chapter-card-overlay h2.text-2xl {
   font-size: 16px;
   font-weight: 700;
-  color: #e2f0ff;
+  color: var(--text-color);
   line-height: 1.35;
   margin: 0;
 }
@@ -957,7 +961,7 @@ main.simulations-page {
 .chapter-card-overlay p {
   font-size: 12.5px;
   font-weight: 500;
-  color: #8fb4cc;
+  color: var(--subtitle-color);
   line-height: 1.65;
   margin: 0;
   flex: 1;
@@ -970,11 +974,11 @@ main.simulations-page {
   align-items: center;
   justify-content: space-between;
   padding: 10px 0 0;
-  border-top: 1px solid #1a3a52;
+  border-top: 1px solid var(--border-color);
   margin-top: auto;
   font-size: 13px;
   font-weight: 600;
-  color: #2dd4a0;
+  color: var(--accent-color);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -994,7 +998,7 @@ main.simulations-page {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   padding: 24px;
-  background: #0a1628;
+  background: var(--bg-color);
   border-radius: 16px;
 }
 
