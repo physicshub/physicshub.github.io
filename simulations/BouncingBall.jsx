@@ -55,6 +55,7 @@ export default function BouncingBall() {
   const dragControllerRef = useRef(null);
   const maxHeightRef = useRef(0);
   const fallStartTimeRef = useRef(0);
+  const accumulatorRef = useRef(0);
 
   // Sim info
   const { simData, updateSimInfo } = useSimInfo({
@@ -145,8 +146,17 @@ export default function BouncingBall() {
       p.draw = () => {
         if (!bodyRef.current || !trailLayer) return;
 
-        const dt = computeDelta(p);
-        if (dt === 0) return;
+        const rawDt = computeDelta(p);
+        if (rawDt === 0) return;
+
+        // Fixed timestep accumulator — prevents energy drift from variable frame rate
+        const FIXED_DT = 1 / 120; // 120Hz physics steps
+        accumulatorRef.current += rawDt;
+        // Cap accumulator to prevent spiral of death
+        if (accumulatorRef.current > 0.1) accumulatorRef.current = 0.1;
+        const dt = FIXED_DT;
+        if (accumulatorRef.current < FIXED_DT) return;
+        accumulatorRef.current -= FIXED_DT;
 
         const { size, gravity, trailEnabled, ballColor, mass, restitution } =
           inputsRef.current;
