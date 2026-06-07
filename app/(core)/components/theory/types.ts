@@ -53,6 +53,8 @@ export interface SectionData {
 
 export interface BlogContent {
   title: string;
+  desc: string;
+  tags: string[];
   sections: SectionData[];
 }
 

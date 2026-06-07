@@ -22,6 +22,9 @@ import {
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
+import TAGS from "@/app/(core)/data/tags.js";
+import { COLORS } from "@/app/(core)/data/tags.js";
+
 import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
@@ -345,7 +348,6 @@ export default function CreateBlogPage() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const router = useRouter();
-  const [title, setTitle] = useState(t("New Blog Title"));
   const [dataContent, setDataContent] = useState<BlogContent>(
     initialContentData as BlogContent
   );
@@ -361,10 +363,6 @@ export default function CreateBlogPage() {
     () => objectToJSString(dataContent),
     [dataContent]
   );
-
-  useEffect(() => {
-    setTitle(jsTitle);
-  }, [jsTitle]);
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
@@ -430,12 +428,21 @@ export default function CreateBlogPage() {
       return;
     }
 
+    if (!dataContent.desc?.trim()) {
+      alert("Please enter a blog description");
+      return;
+    }
+
+    if (!dataContent.tags || dataContent.tags.length < 2) {
+      alert("Please select at least 2 tags");
+      return;
+    }
+
     try {
       const response = await fetch("/api/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title,
           jsonContent: dataContent,
         }),
       });
@@ -455,18 +462,25 @@ export default function CreateBlogPage() {
       alert(t("Error during publication. Please try again later."));
     } finally {
     }
-  }, [dataContent, title, router, t]);
+  }, [dataContent, router, t]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
-    setTitle(newTitle);
 
     setDataContent({
       ...dataContent,
       title: newTitle,
     });
   };
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDescription = e.target.value;
 
+    setDataContent({
+      ...dataContent,
+      desc: newDescription,
+    });
+  };
+  console.log(dataContent);
   return (
     <div
       className={`create-blog-container ${isCompleted ? "notranslate" : ""}`}
@@ -502,10 +516,53 @@ export default function CreateBlogPage() {
               id="title"
               type="text"
               placeholder={t("Title for your blog...")}
-              value={title}
+              value={dataContent.title}
               onChange={handleTitleChange}
               required
             />
+          </div>
+          <div className="form-group title-group">
+            <label htmlFor="desc">{t("Desc:")}</label>
+            <input
+              id="desc"
+              type="text"
+              placeholder={t("Write a brief summary of your blog...")}
+              value={dataContent.desc}
+              onChange={handleDescriptionChange}
+              required
+            />
+          </div>
+          <div className=" mb-20!">
+            <label htmlFor="">Add Tags</label>
+            <div className="flex gap-x-10 gap-4 flex-wrap px-3!">
+              {Object.entries(TAGS).map(([key, innerObject]) => {
+                const colorData =
+                  COLORS[innerObject.color as keyof typeof COLORS];
+
+                return (
+                  <button
+                    onClick={() => {
+                      setDataContent((prev) => ({
+                        ...prev,
+                        tags: prev.tags.includes(key)
+                          ? prev.tags.filter((t) => t !== key)
+                          : [...prev.tags, key],
+                      }));
+                    }}
+                    key={key}
+                    className="cursor-pointer hover:-translate-y-1 hover:scale-105 hover:brightness-110  px-4! py-1.5! rounded-xl text-white text-sm font-medium transition-all duration-300"
+                    type="button"
+                    style={{
+                      backgroundColor: colorData.primary,
+                      boxShadow: `0 4px 6px -1px ${colorData.secondary}, 0 2px 4px -2px ${colorData.secondary}`,
+                    }}
+                  >
+                    {dataContent.tags.includes(key) && "✓ "}
+                    {key}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="tab-switcher">
