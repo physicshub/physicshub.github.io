@@ -1,6 +1,6 @@
 // app/(pages)/blog/create/page.tsx
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCode,
@@ -354,10 +354,6 @@ export default function CreateBlogPage() {
   const [viewMode, setViewMode] = useState<"Editor" | "JS" | "Preview">(
     "Editor"
   );
-
-  const jsTitle = useMemo(() => {
-    return dataContent.title ?? "";
-  }, [dataContent]);
 
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
