@@ -11,6 +11,7 @@ import {
   resetTime,
   isPaused,
   setPause,
+  getTimeScale,
 } from "../app/(core)/constants/Time.js";
 import {
   INITIAL_INPUTS,
@@ -151,7 +152,7 @@ export default function VectorsOperations() {
         }
 
         // Apply global time scale and pause
-        const scale = 0; //getTimeScale();
+        const scale = getTimeScale();
         if (!isPaused()) {
           accumulator += dt * Math.max(0, scale);
         }
@@ -319,15 +320,6 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight + 1);
               p.line(0, 0, Rvec_sub_par.x, Rvec_sub_par.y);
 
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(Math.max(1, strokeWeight - 0.2));
-              p.line(
-                Avec_sub_par.x,
-                Avec_sub_par.y,
-                Bvec_sub_par.x,
-                Bvec_sub_par.y
-              );
-
               p.noStroke();
               p.fill(255, 220, 120);
               p.circle(Avec_sub_par.x, Avec_sub_par.y, 7);
@@ -371,22 +363,112 @@ export default function VectorsOperations() {
           }
 
           case "dot": {
+            p.translate(p.width / 2, p.height / 2);
+            const aMag_dot = inputsRef.current.vectorAMag ?? 150;
+            const aAngle_dot =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const A_dot = p.createVector(
+              Math.cos(aAngle_dot) * aMag_dot,
+              Math.sin(aAngle_dot) * aMag_dot
+            );
+            const B_dot = p.createVector(
+              p.mouseX - p.width / 2,
+              p.mouseY - p.height / 2
+            );
+
+            // Draw A
             p.strokeWeight(strokeWeight);
             p.stroke(strokeColor);
-            p.line(0, 0, center.x, center.y);
-            p.line(center.x, center.y, mouse.x, mouse.y);
+            p.line(0, 0, A_dot.x, A_dot.y);
+
+            // Draw B
             p.stroke(adjustColor(strokeColor));
-            p.line(0, 0, mouse.x, mouse.y);
+            p.line(0, 0, B_dot.x, B_dot.y);
+
+            // Arc showing angle θ between A and B
+            const arcR_dot = 40;
+            const angA_dot = Math.atan2(A_dot.y, A_dot.x);
+            const angB_dot = Math.atan2(B_dot.y, B_dot.x);
+            p.noFill();
+            p.stroke(255, 255, 255, 150);
+            p.strokeWeight(1);
+            p.arc(
+              0,
+              0,
+              arcR_dot * 2,
+              arcR_dot * 2,
+              Math.min(angA_dot, angB_dot),
+              Math.max(angA_dot, angB_dot)
+            );
+
+            // Projection of B onto A: foot = (A·B / |A|²) * A
+            const dot_val = A_dot.x * B_dot.x + A_dot.y * B_dot.y;
+            const aMagSq_dot = A_dot.magSq();
+            const projScalar_dot = aMagSq_dot > 0 ? dot_val / aMagSq_dot : 0;
+            const proj_dot = A_dot.copy().mult(projScalar_dot);
+
+            // Dashed perpendicular from B tip to foot on A
+            p.stroke(255, 255, 0, 200);
+            p.strokeWeight(1.5);
+            p.drawingContext.setLineDash([5, 5]);
+            p.line(B_dot.x, B_dot.y, proj_dot.x, proj_dot.y);
+            p.drawingContext.setLineDash([]);
+
+            // Mark projection foot
+            p.noStroke();
+            p.fill(255, 255, 0);
+            p.circle(proj_dot.x, proj_dot.y, 7);
             break;
           }
 
           case "cross": {
+            p.translate(p.width / 2, p.height / 2);
+            const aMag_cross = inputsRef.current.vectorAMag ?? 150;
+            const aAngle_cross =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const A_cross = p.createVector(
+              Math.cos(aAngle_cross) * aMag_cross,
+              Math.sin(aAngle_cross) * aMag_cross
+            );
+            const B_cross = p.createVector(
+              p.mouseX - p.width / 2,
+              p.mouseY - p.height / 2
+            );
+
+            // z-component of cross product
+            const z_cross = A_cross.x * B_cross.y - A_cross.y * B_cross.x;
+
+            // Filled parallelogram: vertices O, A, A+B, B
+            const ApB_cross = p.constructor.Vector.add(A_cross, B_cross);
+            p.noStroke();
+            if (z_cross > 0) {
+              p.fill(0, 200, 100, 80); // green — CCW / out of plane
+            } else if (z_cross < 0) {
+              p.fill(200, 50, 50, 80); // red — CW / into plane
+            } else {
+              p.fill(150, 150, 150, 80);
+            }
+            p.beginShape();
+            p.vertex(0, 0);
+            p.vertex(A_cross.x, A_cross.y);
+            p.vertex(ApB_cross.x, ApB_cross.y);
+            p.vertex(B_cross.x, B_cross.y);
+            p.endShape(p.CLOSE);
+
+            // Dashed sides completing the parallelogram
+            p.stroke(200, 200, 200, 150);
+            p.strokeWeight(1);
+            p.drawingContext.setLineDash([6, 6]);
+            p.line(A_cross.x, A_cross.y, ApB_cross.x, ApB_cross.y);
+            p.line(B_cross.x, B_cross.y, ApB_cross.x, ApB_cross.y);
+            p.drawingContext.setLineDash([]);
+
+            // Draw A and B
             p.strokeWeight(strokeWeight);
             p.stroke(strokeColor);
-            p.line(0, 0, center.x, center.y);
-            p.line(center.x, center.y, mouse.x, mouse.y);
+            p.line(0, 0, A_cross.x, A_cross.y);
             p.stroke(adjustColor(strokeColor));
-            p.line(0, 0, mouse.x, mouse.y);
+            p.line(0, 0, B_cross.x, B_cross.y);
             break;
           }
 
@@ -541,7 +623,13 @@ export default function VectorsOperations() {
           }
 
           case "dot": {
-            const A = center.copy();
+            const aMag_info_dot = inputsRef.current.vectorAMag ?? 150;
+            const aAngle_info_dot =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const A = p.createVector(
+              Math.cos(aAngle_info_dot) * aMag_info_dot,
+              Math.sin(aAngle_info_dot) * aMag_info_dot
+            );
             const B = p.constructor.Vector.sub(mouse, center);
             const dot = A.x * B.x + A.y * B.y;
             const magA = A.mag();
@@ -556,7 +644,13 @@ export default function VectorsOperations() {
           }
 
           case "cross": {
-            const A = center.copy();
+            const aMag_info_cross = inputsRef.current.vectorAMag ?? 150;
+            const aAngle_info_cross =
+              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
+            const A = p.createVector(
+              Math.cos(aAngle_info_cross) * aMag_info_cross,
+              Math.sin(aAngle_info_cross) * aMag_info_cross
+            );
             const B = p.constructor.Vector.sub(mouse, center);
             const z = A.x * B.y - A.y * B.x;
             const sign =

@@ -63,23 +63,6 @@ export const springK_SI_to_px = (k_SI) => k_SI / SCALE;
 export const springK_px_to_SI = (k_px) => k_px * SCALE;
 
 /**
- * Velocity verlet integration
- */
-export function integrate(pos, vel, acc, dt) {
-  const newPos = pos.copy();
-  const newVel = vel.copy();
-
-  const velDt = vel.copy().mult(dt);
-  const accDt2 = acc.copy().mult(0.5 * dt * dt);
-  newPos.add(velDt).add(accDt2);
-
-  const accDt = acc.copy().mult(dt);
-  newVel.add(accDt);
-
-  return { pos: newPos, vel: newVel };
-}
-
-/**
  * Collision with Energy Conservation.
  * bounds: { w, h } in meters
  * radius: meters

@@ -58,7 +58,12 @@ export default function useSimInfo<
       const { updateIntervalMs: interval, customRefs: refs } =
         internalConfigRef.current;
 
-      if (now - lastInfoUpdateMs.current < interval) return;
+      if (
+        lastInfoUpdateMs.current !== 0 &&
+        now - lastInfoUpdateMs.current < interval
+      ) {
+        return;
+      }
 
       try {
         const data = mapper(state, context, (refs || {}) as TRefs);

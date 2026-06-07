@@ -3,6 +3,8 @@ let timeScale = 1;
 let paused = false;
 let manualStepDelta = 0;
 let simulationInstances = new Map(); // Mappa per tenere traccia di ogni istanza
+let accumulators = new Map(); // Fixed timestep accumulators per instance
+const FIXED_DT = 1 / 120; // 120Hz fixed physics timestep
 
 /**
  * Returns dt in seconds, limited to a max step for stability.
@@ -26,16 +28,25 @@ export function computeDelta(p) {
   }
 
   let lastInstanceMillis = simulationInstances.get(instanceId);
-  let dt = (now - lastInstanceMillis) / 1000; // seconds
+  let rawDt = (now - lastInstanceMillis) / 1000; // seconds
 
   // Aggiorna lastMillis per questa istanza
   simulationInstances.set(instanceId, now);
 
   // limit burst (e.g. when tab regains focus)
   const maxStep = 1 / 30; // ~33ms
-  if (dt > maxStep) dt = maxStep;
+  if (rawDt > maxStep) rawDt = maxStep;
 
-  return dt * timeScale;
+  rawDt *= timeScale;
+
+  // Fixed timestep accumulator — prevents energy drift from variable frame rate
+  const acc = (accumulators.get(instanceId) || 0) + rawDt;
+  if (acc < FIXED_DT) {
+    accumulators.set(instanceId, acc);
+    return 0;
+  }
+  accumulators.set(instanceId, acc - FIXED_DT);
+  return FIXED_DT;
 }
 
 export function setTimeScale(scale) {
@@ -47,6 +58,7 @@ export function togglePause() {
   // Quando mettiamo in pausa, resettiamo i lastMillis per evitare salti al resume
   if (paused) {
     simulationInstances.clear();
+    accumulators.clear();
   }
 }
 
@@ -54,6 +66,7 @@ export function setPause(value) {
   paused = value;
   if (paused) {
     simulationInstances.clear();
+    accumulators.clear();
   }
 }
 
@@ -66,6 +79,7 @@ export function stepSimulation(delta) {
 export function resetTime() {
   paused = false;
   simulationInstances.clear(); // Pulisci tutte le istanze
+  accumulators.clear();
 }
 
 export function isPaused() {

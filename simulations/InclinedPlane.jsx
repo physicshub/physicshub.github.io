@@ -17,7 +17,7 @@ import {
   SimInfoMapper,
 } from "../app/(core)/data/configs/InclinedPlane.js";
 import chapters from "../app/(core)/data/chapters.js";
-import { toPixels } from "../app/(core)/constants/Utils.js";
+import { toPixels, toMeters } from "../app/(core)/constants/Utils.js";
 
 // --- Physics Classes ---
 import { InclinedPlaneBody } from "../app/(core)/physics/InclinedPlaneBody.js";
@@ -81,7 +81,7 @@ export default function InclinedPlane() {
         planeRef.current = {
           startX: w * 0.25,
           startY: h * 0.75,
-          length: planeLength / 100, // Convert to meters
+          length: toMeters(planeLength),
         };
 
         // Initialize body

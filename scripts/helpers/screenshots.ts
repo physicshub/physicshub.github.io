@@ -1,6 +1,7 @@
 // scripts/helpers/screenshots.ts
-import { join } from "node:path";
+
 import Puppeteer from "puppeteer";
+import { pathToFileURL } from "url";
 
 /**
  * Create a screenshot from an HTML file and save it as image.
@@ -12,7 +13,7 @@ export const createScreenshot = async (filePath: string, fileName: string) => {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
-  const htmlFilePath = join("file:", filePath);
+  const htmlFilePath = pathToFileURL(filePath).href;
 
   try {
     const page = await browser.newPage();

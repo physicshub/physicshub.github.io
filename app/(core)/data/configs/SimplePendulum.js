@@ -91,7 +91,7 @@ export const SimInfoMapper = (bodyState) => {
   return {
     Angle: `${angle.toFixed(1)}°`,
     "Angular Velocity": `${bodyState.angularVel.toFixed(2)} rad/s`,
-    Height: `${(-bodyState.position.y).toFixed(2)} m`,
+    Height: `${bodyState.height.toFixed(2)} m`,
     Speed: `${bodyState.velocity.mag().toFixed(2)} m/s`,
     KE: `${bodyState.kineticEnergy.toFixed(2)} J`,
     PE: `${bodyState.potentialEnergy.toFixed(2)} J`,
