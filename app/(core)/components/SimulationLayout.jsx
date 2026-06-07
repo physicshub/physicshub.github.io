@@ -18,7 +18,7 @@ export default function SimulationLayout({
   children,
   dynamicInputs,
 }) {
-  const { t, meta } = useTranslation();
+  const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
   const theory = useMemo(() => {

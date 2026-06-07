@@ -1,17 +1,6 @@
 import { blogsArray } from "../../../(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
-import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer.tsx";
-import Tag from "../../../(core)/components/Tag.jsx";
-import BlogInteractions from "../../../(core)/components/blog/BlogInteractions.tsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClock,
-  faChevronRight,
-  faArrowLeft,
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import Image from "next/image";
+
 import {
   getReadingTime,
   getTitles,
