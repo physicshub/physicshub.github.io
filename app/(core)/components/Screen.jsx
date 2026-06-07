@@ -6,7 +6,7 @@ import useTranslation from "../hooks/useTranslation.ts";
 function Screen({ sketch }) {
   const containerRef = useRef(null);
   const p5Instance = useRef(null);
-  const { t, meta } = useTranslation();
+  const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
   useEffect(() => {
