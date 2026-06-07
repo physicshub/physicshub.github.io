@@ -320,15 +320,6 @@ export default function VectorsOperations() {
               p.strokeWeight(strokeWeight + 1);
               p.line(0, 0, Rvec_sub_par.x, Rvec_sub_par.y);
 
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(Math.max(1, strokeWeight - 0.2));
-              p.line(
-                Avec_sub_par.x,
-                Avec_sub_par.y,
-                Bvec_sub_par.x,
-                Bvec_sub_par.y
-              );
-
               p.noStroke();
               p.fill(255, 220, 120);
               p.circle(Avec_sub_par.x, Avec_sub_par.y, 7);

@@ -838,179 +838,168 @@ main.simulations-page {
   background-color: transparent;
 }
 
-.chapter-icon {
-  width: 50px;
-  height: 50px;
-}
+/* ─── Chapter Card ─────────────────────────────────────────── */
 
 .chapter-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   overflow: hidden;
-  border: 0 solid transparent;
-  border-radius: var(--border-radius);
-  box-shadow: 0 0 4px var(--accent-color);
+  display: flex;
+  flex-direction: column;
   transition:
-    transform 0.3s,
-    box-shadow 0.3s,
-    border-width 0.3s,
-    border-color 0.3s;
-  padding: 0.5rem;
-  color: var(--ph-fg);
-  height: 100%;
-  will-change: transform, box-shadow;
+    border-color 0.25s ease,
+    transform 0.25s ease;
+  cursor: pointer;
 }
 
 .chapter-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-color);
-  border-width: 1px;
   box-shadow:
-    0 10px 20px rgba(0, 123, 255, 0.4),
-    0 0 30px rgba(0, 123, 255, 0.3);
-  animation: glowPulse 1s infinite alternate;
+    0 0 24px 4px var(--accent-color) 55,
+    0 8px 32px var(--bg-color) 99;
+  transform: translateY(-4px);
 }
 
-.chapter-card::before {
-  content: "";
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle at top left,
-    var(--accent-color),
-    transparent 75%
-  );
-  /* animation: spinStroke 6s ease-in-out infinite; */
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 0;
-}
+/* ─── Hero ──────────────────────────────────────────────────── */
 
-.chapter-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-20deg);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.chapter-card:hover::after {
-  opacity: 1;
-  animation: shineSweep 2.5s ease-in-out infinite;
-}
-
-.chapter-card > * {
-  position: relative;
-  z-index: 1;
-}
-
-.chapter-card-overlay {
-  /* background: var(--card-bg); */
-  background: color-mix(in oklab, var(--ph-accent), transparent 90%);
-  border-radius: var(--border-radius);
-  z-index: 2;
-  height: 100%;
+.chapter-card-hero {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 1.5rem;
-  background-color: var(--bg-color);
-  box-shadow: 0 0 12px var(--accent-color);
+  aspect-ratio: 16 / 10;
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.chapter-card-overlay::after {
-  content: "";
-  opacity: 0.35;
-  background: radial-gradient(
-    circle at 80% 0%,
-    color-mix(in oklab, var(--accent-color), transparent 20%),
-    transparent 60%
-  );
-  pointer-events: none;
+/* Gradient overlay fading image into card body */
+.chapter-card-hero-glow {
   position: absolute;
   inset: 0;
-  border-radius: var(--border-radius);
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    var(--card-bg) e6 100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
-.chapter-card-overlay > a {
-  margin-top: auto;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--accent-color);
-  border-radius: var(--border-radius);
-  text-align: center;
-  color: var(--accent-color);
+.chapter-card-hero-img {
+  object-fit: cover;
+  object-position: center top;
   transition:
-    background 0.3s,
-    box-shadow 0.3s;
-  margin-top: auto;
-  white-space: nowrap;
-  display: inline-flex;
+    transform 0.35s ease,
+    opacity 0.25s ease;
+  opacity: 0.9;
+}
+
+.chapter-card:hover .chapter-card-hero-img {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+/* Fallback centered icon (when no thumbnail) */
+.chapter-card-hero-icon-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
-.chapter-card-overlay > a:hover {
-  background: var(--accent-color);
-  color: #000;
-  box-shadow: 0 0 8px var(--accent-color);
+.chapter-icon {
+  opacity: 0.85;
+  filter: brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(118deg);
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 
-.chapter-card-overlay > a:hover > svg {
-  transition: transform 0.3s;
-  transform: translateX(5px);
+.chapter-card:hover .chapter-icon {
+  transform: scale(1.08);
+  opacity: 1;
 }
 
-.chapter-card-overlay > p {
-  margin-bottom: 0.8rem;
+/* Empty fallback panel */
+.chapter-card-hero-fallback {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-color);
 }
 
-.chapter-card-overlay > h2 {
-  line-height: normal;
-  margin-bottom: 0.8rem;
-  text-shadow: 0 0 1px var(--glow-color);
+/* ─── Body ──────────────────────────────────────────────────── */
+
+.chapter-card-overlay {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
 
-/* Light theme chapter cards */
-[data-theme="light"] .chapter-card-overlay {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+/* ─── Tags ──────────────────────────────────────────────────── */
+
+.chapter-card-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-[data-theme="light"] .chapter-card-overlay > h2 {
-  text-shadow: none;
-  color: #1a1a1a;
+/* ─── Title ─────────────────────────────────────────────────── */
+
+.chapter-card-overlay h2.text-2xl {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1.35;
+  margin: 0;
 }
 
-[data-theme="light"] .chapter-card-overlay > p {
-  color: #4a4a4a;
+/* ─── Description ───────────────────────────────────────────── */
+
+.chapter-card-overlay p {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--subtitle-color);
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
 }
 
-[data-theme="light"] .chapter-card-overlay > a {
-  background-color: transparent;
+/* ─── Link ──────────────────────────────────────────────────── */
+
+.chapter-card-overlay a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--accent-color);
-  border-color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-[data-theme="light"] .chapter-card-overlay > a:hover {
-  background-color: var(--accent-color);
-  color: #ffffff;
+.chapter-card-overlay a svg {
+  transition: transform 0.2s ease;
+}
+
+.chapter-card:hover .chapter-card-overlay a svg {
+  transform: translateX(4px);
+}
+
+/* ─── Grid (parent page) ────────────────────────────────────── */
+
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 24px;
+  background: var(--bg-color);
+  border-radius: 16px;
 }
 
 @keyframes glowPulse {
