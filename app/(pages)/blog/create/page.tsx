@@ -528,9 +528,64 @@ export default function CreateBlogPage() {
               required
             />
           </div>
-          <div className=" mb-20!">
+          {dataContent.tags.length > 0 && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-2">
+                  Selected Tags ({dataContent.tags.length})
+                </label>
+
+                <div className="flex gap-2 flex-wrap mb-3!">
+                  {dataContent.tags.map((tagKey) => {
+                    const tag = TAGS[tagKey as keyof typeof TAGS];
+                    const colorData = COLORS[tag.color as keyof typeof COLORS];
+
+                    return (
+                      <div key={tagKey} className="flex items-center gap-1">
+                        <span
+                          className="px-3! py-1! rounded-xl text-white text-sm font-medium"
+                          style={{
+                            background: `linear-gradient(135deg, ${colorData.primary}, ${colorData.secondary})`,
+                            boxShadow: `0 0 8px ${colorData.secondary}`,
+                          }}
+                        >
+                          {tagKey}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setDataContent((prev) => ({
+                              ...prev,
+                              tags: prev.tags.filter((t) => t !== tagKey),
+                            }))
+                          }
+                          className="remove-tag-btn "
+                        >
+                          <svg
+                            data-prefix="fas"
+                            data-icon="circle-xmark"
+                            className="svg-inline--fa fa-circle-xmark"
+                            role="img"
+                            viewBox="0 0 512 512"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM167 167c9.4-9.4 24.6-9.4 33.9 0l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9z"
+                            ></path>
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+          <div className=" mb-16!">
             <label htmlFor="">Add Tags</label>
-            <div className="flex gap-x-10 gap-4 flex-wrap px-3!">
+            <div className="flex gap-4 overflow-x-auto whitespace-nowrap px-3! py-3! hide-scrollbar">
               {Object.entries(TAGS).map(([key, innerObject]) => {
                 const colorData =
                   COLORS[innerObject.color as keyof typeof COLORS];
@@ -549,8 +604,8 @@ export default function CreateBlogPage() {
                     className="cursor-pointer hover:-translate-y-1 hover:scale-105 hover:brightness-110  px-4! py-1.5! rounded-xl text-white text-sm font-medium transition-all duration-300"
                     type="button"
                     style={{
-                      backgroundColor: colorData.primary,
-                      boxShadow: `0 4px 6px -1px ${colorData.secondary}, 0 2px 4px -2px ${colorData.secondary}`,
+                      background: `linear-gradient(135deg, ${colorData.primary}, ${colorData.secondary})`,
+                      boxShadow: `0 0 8px ${colorData.secondary}`,
                     }}
                   >
                     {dataContent.tags.includes(key) && "✓ "}
