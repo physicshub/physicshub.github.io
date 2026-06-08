@@ -1,17 +1,26 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
-
+import prettier from "prettier";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, jsonContent } = body;
-
-    if (!title?.trim() || !jsonContent) {
+    const { jsonContent } = body;
+    if (
+      !jsonContent ||
+      !jsonContent.title?.trim() ||
+      !jsonContent.desc?.trim() ||
+      !jsonContent.tags ||
+      jsonContent.tags.length < 2
+    ) {
       return NextResponse.json(
-        { success: false, error: "Missing title or content" },
+        {
+          success: false,
+          error: "Title, description, and at least 2 tags are required",
+        },
         { status: 400 }
       );
     }
+    const { title } = jsonContent;
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
@@ -28,6 +37,16 @@ export async function POST(req: Request) {
 
     const fileName = `content/blogs/${slug}-${Date.now()}.json`;
     const branchName = `blog-proposal-${slug}-${Math.floor(Math.random() * 1000)}`;
+    // Add generated metadata to the blog content
+    const blogData = {
+      id: Date.now(),
+      slug,
+      ...jsonContent,
+    };
+    // Format the JSON according to project Prettier rules
+    const formattedContent = await prettier.format(JSON.stringify(blogData), {
+      parser: "json",
+    });
 
     // 1. Get the reference to the main branch
     const { data: mainBranch } = await octokit.git.getRef({
@@ -50,7 +69,7 @@ export async function POST(req: Request) {
       repo,
       path: fileName,
       message: `New blog proposal: ${title}`,
-      content: Buffer.from(JSON.stringify(jsonContent)).toString("base64"),
+      content: Buffer.from(formattedContent).toString("base64"),
       branch: branchName,
     });
 
