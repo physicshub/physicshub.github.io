@@ -1,0 +1,13 @@
+{
+  "id": 1780904466785,
+  "slug": "test-blog-publishing-workflow",
+  "title": "Test Blog Publishing Workflow",
+  "desc": "Testing the new workflow",
+  "tags": ["EASY", "EXPERIMENTAL"],
+  "sections": [
+    { "blocks": [] },
+    { "blocks": [] },
+    { "blocks": [] },
+    { "blocks": [] }
+  ]
+}
