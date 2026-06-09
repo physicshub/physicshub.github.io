@@ -3122,3 +3122,12 @@ footer {
   background-color: var(--bg-color-light);
   min-height: 400px;
 }
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

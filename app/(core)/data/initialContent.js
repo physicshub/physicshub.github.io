@@ -5,6 +5,8 @@
  */
 export const initialContentData = {
   title: "Visual Editor Guide",
+  desc: "",
+  tags: [],
   sections: [
     {
       blocks: [

@@ -1,6 +1,6 @@
 // app/(pages)/blog/create/page.tsx
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCode,
@@ -22,6 +22,9 @@ import {
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
+import TAGS from "@/app/(core)/data/tags.js";
+import { COLORS } from "@/app/(core)/data/tags.js";
+import Tag from "@/app/(core)/components/Tag.jsx";
 import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
@@ -345,7 +348,6 @@ export default function CreateBlogPage() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const router = useRouter();
-  const [title, setTitle] = useState(t("New Blog Title"));
   const [dataContent, setDataContent] = useState<BlogContent>(
     initialContentData as BlogContent
   );
@@ -353,22 +355,10 @@ export default function CreateBlogPage() {
     "Editor"
   );
 
-  const jsTitle = useMemo(() => {
-    try {
-      return dataContent.title || t("New Blog Title");
-    } catch {
-      return t("New Blog Title");
-    }
-  }, [dataContent, t]);
-
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
     [dataContent]
   );
-
-  useEffect(() => {
-    setTitle(jsTitle);
-  }, [jsTitle]);
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
@@ -429,13 +419,27 @@ export default function CreateBlogPage() {
   }, [dataContent, setDataContent, t]);
 
   const handleSave = useCallback(async () => {
+    if (!dataContent.title?.trim()) {
+      alert("Please enter a blog title");
+      return;
+    }
+
+    if (!dataContent.desc?.trim()) {
+      alert("Please enter a blog description");
+      return;
+    }
+
+    if (!dataContent.tags || dataContent.tags.length < 2) {
+      alert("Please select at least 2 tags");
+      return;
+    }
+
     try {
       const response = await fetch("/api/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title,
-          dataContent: dataContent,
+          jsonContent: dataContent,
         }),
       });
 
@@ -454,18 +458,25 @@ export default function CreateBlogPage() {
       alert(t("Error during publication. Please try again later."));
     } finally {
     }
-  }, [dataContent, title, router, t]);
+  }, [dataContent, router, t]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
-    setTitle(newTitle);
 
     setDataContent({
       ...dataContent,
       title: newTitle,
     });
   };
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDescription = e.target.value;
 
+    setDataContent({
+      ...dataContent,
+      desc: newDescription,
+    });
+  };
+  console.log(dataContent);
   return (
     <div
       className={`create-blog-container ${isCompleted ? "notranslate" : ""}`}
@@ -501,10 +512,96 @@ export default function CreateBlogPage() {
               id="title"
               type="text"
               placeholder={t("Title for your blog...")}
-              value={title}
+              value={dataContent.title}
               onChange={handleTitleChange}
               required
             />
+          </div>
+          <div className="form-group title-group">
+            <label htmlFor="desc">{t("Desc:")}</label>
+            <input
+              id="desc"
+              type="text"
+              placeholder={t("Write a brief summary of your blog...")}
+              value={dataContent.desc}
+              onChange={handleDescriptionChange}
+              required
+            />
+          </div>
+          {dataContent.tags.length > 0 && (
+            <div className="mb-4">
+              <label className="block mb-2">
+                Selected Tags ({dataContent.tags.length})
+              </label>
+
+              <div className="flex gap-2 flex-wrap mb-3!">
+                {dataContent.tags.map((tagKey) => {
+                  const tag = TAGS[tagKey as keyof typeof TAGS];
+
+                  return (
+                    <div key={tagKey} className="flex items-center gap-1">
+                      <Tag tag={tag} />
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDataContent((prev) => ({
+                            ...prev,
+                            tags: prev.tags.filter((t) => t !== tagKey),
+                          }))
+                        }
+                        className="remove-tag-btn mb-2! "
+                      >
+                        <svg
+                          data-prefix="fas"
+                          data-icon="circle-xmark"
+                          className="svg-inline--fa fa-circle-xmark"
+                          role="img"
+                          viewBox="0 0 512 512"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM167 167c9.4-9.4 24.6-9.4 33.9 0l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="mb-16!">
+            <label>Add Tags</label>
+
+            <div className="flex gap-4 overflow-x-auto whitespace-nowrap px-3! py-3! hide-scrollbar">
+              {Object.entries(TAGS).map(([key, tag]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    setDataContent((prev) => ({
+                      ...prev,
+                      tags: prev.tags.includes(key)
+                        ? prev.tags.filter((t) => t !== key)
+                        : [...prev.tags, key],
+                    }));
+                  }}
+                  className={`cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 ${
+                    dataContent.tags.includes(key)
+                      ? "opacity-100"
+                      : "opacity-70"
+                  }`}
+                >
+                  <Tag tag={tag} />
+
+                  {dataContent.tags.includes(key) && (
+                    <span className="ml-1">✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="tab-switcher">
