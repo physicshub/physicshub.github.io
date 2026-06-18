@@ -32,7 +32,7 @@ export default function TopSim() {
     <div className={`top-nav-sim ${isCompleted ? "notranslate" : ""}`}>
       {!isMobile && (
         <div className="top-nav-sim-back-to-home-wrapper">
-          <Back link="/simulations" />
+          <Back link="/" />
         </div>
       )}
       <div

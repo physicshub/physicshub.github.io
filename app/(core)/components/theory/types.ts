@@ -54,6 +54,7 @@ export interface SectionData {
 export interface BlogContent {
   title: string;
   desc: string;
+  thumbnail?: string;
   tags: string[];
   sections: SectionData[];
 }
