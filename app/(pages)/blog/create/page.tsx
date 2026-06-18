@@ -18,12 +18,12 @@ import {
   faImage,
   faChevronCircleDown,
   faEye,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
 import TAGS from "@/app/(core)/data/tags.js";
-import { COLORS } from "@/app/(core)/data/tags.js";
 import Tag from "@/app/(core)/components/Tag.jsx";
 import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
@@ -82,6 +82,43 @@ const jsStringToObject = (str: string, t: (k: string) => string): unknown => {
     throw new Error(t("Invalid JS syntax"));
   }
 };
+
+const createThumbnailDataUrl = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const maxWidth = 1200;
+        const maxHeight = 675;
+        const scale = Math.min(
+          maxWidth / image.width,
+          maxHeight / image.height,
+          1
+        );
+        const width = Math.round(image.width * scale);
+        const height = Math.round(image.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+        if (!context) {
+          reject(new Error("Unable to prepare thumbnail"));
+          return;
+        }
+
+        context.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => reject(new Error("Invalid image file"));
+      image.src = String(reader.result);
+    };
+
+    reader.onerror = () => reject(new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
 
 // Block Templates
 const NEW_BLOCK_TEMPLATES = {
@@ -476,7 +513,40 @@ export default function CreateBlogPage() {
       desc: newDescription,
     });
   };
-  console.log(dataContent);
+
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert(t("Please upload an image file."));
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      const thumbnail = await createThumbnailDataUrl(file);
+      setDataContent((prev) => ({
+        ...prev,
+        thumbnail,
+      }));
+    } catch (error) {
+      console.error("Error preparing thumbnail:", error);
+      alert(t("Could not prepare this thumbnail. Please try another image."));
+    } finally {
+      e.target.value = "";
+    }
+  };
+
+  const handleThumbnailRemove = () => {
+    setDataContent((prev) => ({
+      ...prev,
+      thumbnail: "",
+    }));
+  };
+
   return (
     <div
       className={`create-blog-container ${isCompleted ? "notranslate" : ""}`}
@@ -527,6 +597,52 @@ export default function CreateBlogPage() {
               onChange={handleDescriptionChange}
               required
             />
+          </div>
+          <div className="form-group title-group thumbnail-upload-group">
+            <label htmlFor="thumbnail-upload">{t("Blog thumbnail:")}</label>
+            <div className="thumbnail-upload-card">
+              {dataContent.thumbnail ? (
+                // Thumbnail may be a local data URL or external URL.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={dataContent.thumbnail}
+                  alt={t("Blog thumbnail preview")}
+                  className="thumbnail-upload-preview"
+                />
+              ) : (
+                <div className="thumbnail-upload-placeholder">
+                  <FontAwesomeIcon icon={faImage} />
+                  <span>{t("No thumbnail selected")}</span>
+                </div>
+              )}
+
+              <div className="thumbnail-upload-actions">
+                <label
+                  htmlFor="thumbnail-upload"
+                  className="ph-btn ph-btn--ghost thumbnail-upload-button"
+                >
+                  <FontAwesomeIcon icon={faUpload} />
+                  {t("Upload thumbnail")}
+                </label>
+                <input
+                  id="thumbnail-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailUpload}
+                  className="thumbnail-upload-input"
+                />
+                {dataContent.thumbnail && (
+                  <button
+                    type="button"
+                    className="ph-btn ph-btn--ghost thumbnail-remove-button"
+                    onClick={handleThumbnailRemove}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    {t("Remove")}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
           {dataContent.tags.length > 0 && (
             <div className="mb-4">
