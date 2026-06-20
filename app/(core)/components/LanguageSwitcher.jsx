@@ -31,6 +31,12 @@ const setLangCookie = (languageCode) => {
   const hostname = window.location.hostname;
   const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
   const domainAttr = isLocal ? "" : `; domain=.${hostname}`;
+
+  if (languageCode === "en") {
+    document.cookie = `googtrans=; path=/${domainAttr}; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+    return;
+  }
+
   document.cookie = `googtrans=/en/${languageCode}; path=/${domainAttr}; SameSite=Lax`;
 };
 
@@ -44,11 +50,6 @@ export default function LanguageSwitcher() {
   useEffect(() => {
     setCurrentLanguage(getStoredLang());
   }, []);
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    document.documentElement.lang = currentLanguage === "ru" ? "ru" : "en";
-  }, [currentLanguage]);
 
   const changeLanguage = useCallback((languageCode) => {
     setCurrentLanguage(languageCode);

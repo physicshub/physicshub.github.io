@@ -1,37 +1,37 @@
-// app/components/ContributorsSection.jsx
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import useTranslation from "../hooks/useTranslation.ts";
+import {
+  getGithubContributorsFallback,
+  loadGithubContributors,
+} from "../lib/githubStats.js";
+
+const avatarFallback = (login) =>
+  `https://github.com/identicons/${encodeURIComponent(login)}.png`;
 
 export default function ContributorsSection() {
   const [contributors, setContributors] = useState([]);
+  const [brokenAvatars, setBrokenAvatars] = useState({});
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
   useEffect(() => {
-    async function getContributors(page = 1) {
-      const res = await fetch(
-        `https://api.github.com/repos/physicshub/physicshub.github.io/contributors?per_page=100&page=${page}`
-      );
-      return res.ok ? res.json() : [];
+    let cancelled = false;
+
+    const fallback = getGithubContributorsFallback();
+    if (fallback.length > 0) {
+      setContributors(fallback);
     }
 
-    async function getAllContributors() {
-      let all = [];
-      let page = 1;
-      let batch = [];
+    loadGithubContributors().then((nextContributors) => {
+      if (!cancelled && nextContributors.length > 0) {
+        setContributors(nextContributors);
+      }
+    });
 
-      do {
-        batch = await getContributors(page);
-        all = all.concat(batch);
-        page++;
-      } while (batch.length > 0);
-
-      return all;
-    }
-
-    getAllContributors().then(setContributors);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -47,12 +47,22 @@ export default function ContributorsSection() {
         {contributors.map((c) => (
           <div key={c.id} className="contributor-card">
             <a href={c.html_url} target="_blank" rel="noopener noreferrer">
-              <Image
-                src={c.avatar_url}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={
+                  brokenAvatars[c.id] ? avatarFallback(c.login) : c.avatar_url
+                }
                 alt={c.login}
                 className="contributor-avatar"
-                width={50}
-                height={50}
+                width={80}
+                height={80}
+                loading="lazy"
+                decoding="async"
+                onError={() =>
+                  setBrokenAvatars((current) =>
+                    current[c.id] ? current : { ...current, [c.id]: true }
+                  )
+                }
               />
             </a>
             <div className="contributor-info">

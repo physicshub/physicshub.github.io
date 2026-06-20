@@ -22,5 +22,9 @@
   "ar": {
     "name": "Arabic",
     "completed": false
+  },
+  "ru": {
+    "name": "Russian",
+    "completed": true
   }
 }

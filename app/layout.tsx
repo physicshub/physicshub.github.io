@@ -70,7 +70,7 @@ export default function RootLayout({
 
   return (
     <FeedbackProvider>
-      <html lang="en" dir="ltr">
+      <html lang="en" dir="ltr" suppressHydrationWarning>
         <body suppressHydrationWarning>
           {/* Theme initialization — runs inline before paint to avoid flash */}
           <script

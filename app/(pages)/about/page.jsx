@@ -11,6 +11,10 @@ import {
   faCodeBranch,
 } from "@fortawesome/free-solid-svg-icons";
 import chaptersData from "../../(core)/data/chapters.js";
+import {
+  getGithubStatsFallback,
+  loadGithubStats,
+} from "../../(core)/lib/githubStats.js";
 
 // Define the shape of our stats state (JSDoc for editor hints)
 /**
@@ -31,8 +35,8 @@ export default function About() {
   // Get the status from GitHub API
   // I set default values to ensure the page looks good before data loads
   const [ghStats, setGhStats] = useState({
-    stars: "-", // Fallback value
-    contributors: "-", // Fallback value
+    stars: "-",
+    contributors: "-",
   });
 
   // Compute chapters count
@@ -44,33 +48,28 @@ export default function About() {
 
   // Fetch data from GitHub API on component mount
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const repoRes = await fetch(
-          "https://api.github.com/repos/physicshub/physicshub.github.io"
-        );
-        const repoData = await repoRes.json();
+    let cancelled = false;
 
-        const contribRes = await fetch(
-          "https://api.github.com/repos/physicshub/physicshub.github.io/contributors?per_page=100"
-        );
-        const contribData = await contribRes.json();
+    const fallback = getGithubStatsFallback();
+    setGhStats({
+      stars: fallback.stars ?? "-",
+      contributors: fallback.contributors ?? "-",
+    });
 
-        if (repoData.stargazers_count) {
-          setGhStats({
-            stars: repoData.stargazers_count,
-            contributors: Array.isArray(contribData)
-              ? contribData.length
-              : "20+",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch GitHub stats:", error);
+    loadGithubStats().then((stats) => {
+      if (cancelled) return;
+      if (stats.stars != null || stats.contributors != null) {
+        setGhStats({
+          stars: stats.stars ?? "-",
+          contributors: stats.contributors ?? "20+",
+        });
       }
-    };
+    });
 
-    fetchStats();
-  }, [setGhStats]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const stats = [
     {

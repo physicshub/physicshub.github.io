@@ -2735,6 +2735,8 @@ footer {
   margin-bottom: 15px;
   border: 3px solid rgba(255, 255, 255, 0.2);
   transition: border-color 0.3s ease;
+  object-fit: cover;
+  display: block;
 }
 
 .contributor-card:hover .contributor-avatar {

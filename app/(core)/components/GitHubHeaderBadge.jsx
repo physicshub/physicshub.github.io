@@ -3,71 +3,70 @@
 import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { getGithubStatsFallback, loadGithubStats } from "../lib/githubStats.js";
 
 const REPO_URL = "https://github.com/physicshub/physicshub.github.io";
-const REPO_API = "https://api.github.com/repos/physicshub/physicshub.github.io";
-const CONTRIBUTORS_API = `${REPO_API}/contributors?per_page=100`;
+
+const PLACEHOLDER_MESSAGES = [
+  "Open source",
+  "Built in public",
+  "Star the repo",
+];
 
 export default function GitHubHeaderBadge({ mode }) {
+  const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState({ stars: null, contributors: null });
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadStats() {
-      try {
-        const [repoRes, contributorsRes] = await Promise.all([
-          fetch(REPO_API),
-          fetch(CONTRIBUTORS_API),
-        ]);
+    setMounted(true);
 
-        const repoData = await repoRes.json();
-        const contributorsData = await contributorsRes.json();
+    const fallback = getGithubStatsFallback();
+    setStats({
+      stars: fallback.stars,
+      contributors: fallback.contributors,
+    });
 
-        if (cancelled) return;
-
-        setStats({
-          stars:
-            typeof repoData?.stargazers_count === "number"
-              ? repoData.stargazers_count
-              : null,
-          contributors: Array.isArray(contributorsData)
-            ? contributorsData.length
-            : null,
-        });
-      } catch {
-        if (!cancelled) {
-          setStats({ stars: null, contributors: null });
-        }
-      }
-    }
-
-    loadStats();
+    loadGithubStats().then((nextStats) => {
+      if (cancelled) return;
+      setStats({
+        stars: nextStats.stars,
+        contributors: nextStats.contributors,
+      });
+    });
 
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const messages = useMemo(
-    () => [
+  const messages = useMemo(() => {
+    if (!mounted) return PLACEHOLDER_MESSAGES;
+
+    return [
       stats.stars != null ? `${stats.stars} stars` : "Open source",
       stats.contributors != null
         ? `${stats.contributors} contributors`
         : "Built in public",
       "Star the repo",
-    ],
-    [stats]
-  );
+    ];
+  }, [mounted, stats]);
 
   useEffect(() => {
+    if (!mounted) return;
+
     const intervalId = window.setInterval(() => {
       setMessageIndex((current) => (current + 1) % messages.length);
     }, 2600);
 
     return () => window.clearInterval(intervalId);
-  }, [messages.length]);
+  }, [mounted, messages.length]);
+
+  useEffect(() => {
+    setMessageIndex(0);
+  }, [messages]);
 
   return (
     <a
@@ -83,9 +82,10 @@ export default function GitHubHeaderBadge({ mode }) {
         <span
           className="github-header-badge__track"
           style={{ transform: `translateY(-${messageIndex * 1.15}rem)` }}
+          suppressHydrationWarning
         >
-          {messages.map((message) => (
-            <span className="github-header-badge__label" key={message}>
+          {messages.map((message, index) => (
+            <span className="github-header-badge__label" key={index}>
               {message}
             </span>
           ))}

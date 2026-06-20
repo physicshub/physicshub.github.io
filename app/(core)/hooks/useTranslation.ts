@@ -21,6 +21,23 @@ interface UseTranslationResult {
   meta: LanguageMeta | null;
 }
 
+const LOCALE_LOADERS: Record<string, () => Promise<{ default: Translations }>> =
+  {
+    en: () => import("../locales/en.json"),
+    ru: () => import("../locales/ru.json"),
+    it: () => import("../locales/it.json"),
+    es: () => import("../locales/es.json"),
+    fr: () => import("../locales/fr.json"),
+    de: () => import("../locales/de.json"),
+    ar: () => import("../locales/ar.json"),
+  };
+
+const loadLocale = async (lang: string): Promise<Translations> => {
+  const loader = LOCALE_LOADERS[lang] ?? LOCALE_LOADERS.en;
+  const localeModule = await loader();
+  return localeModule.default;
+};
+
 const getCookie = (name: string) => {
   if (typeof document === "undefined") return null;
   const value = `; ${document.cookie}`;
@@ -34,7 +51,8 @@ const getGoogleTransLang = () => {
   if (cookie) {
     const parts = cookie.split("/");
     if (parts.length >= 3) {
-      return parts[2]; // e.g., /en/it -> it
+      const code = parts[2];
+      if (code && code !== "en") return code;
     }
   }
   return DEFAULT_LANG;
@@ -46,15 +64,13 @@ export const useTranslation = (lang?: string): UseTranslationResult => {
   const [language, setLanguage] = useState(lang || DEFAULT_LANG);
   const [ready, setReady] = useState(false);
 
-  // Sync language via custom event instead of polling, so the switch is
-  // always synchronous with what GoogleTranslator dispatches.
+  // Sync language via custom event from LanguageSwitcher.
   useEffect(() => {
     if (lang) {
       setLanguage(lang);
       return;
     }
 
-    // Initial sync on mount
     setLanguage(getGoogleTransLang());
 
     const handler = (e: Event) => {
@@ -69,30 +85,22 @@ export const useTranslation = (lang?: string): UseTranslationResult => {
     const loadData = async () => {
       setReady(false);
       try {
-        // Load meta.json
         const metaModule = await import("../locales/meta.json");
         const meta = metaModule.default as MetaConfig;
         setMetaConfig(meta);
 
         const currentMeta = meta[language];
-        // so that Google Translate can translate it normally.
         const langToLoad = currentMeta?.completed ? language : DEFAULT_LANG;
 
-        const transModule = await import(`../locales/${langToLoad}.json`);
-        // Spread into a new object so React always sees a new reference,
-        // even when two different languages resolve to the same cached module
-        // (e.g. en → es both load en.json).
-        setTranslations({ ...transModule.default });
+        const loadedTranslations = await loadLocale(langToLoad);
+        setTranslations({ ...loadedTranslations });
         setReady(true);
       } catch (error) {
         console.error(`Error loading translations for ${language}`, error);
 
-        // Fallback to English
         try {
-          const fallbackModule = await import(
-            `../locales/${DEFAULT_LANG}.json`
-          );
-          setTranslations({ ...fallbackModule.default });
+          const loadedTranslations = await loadLocale(DEFAULT_LANG);
+          setTranslations({ ...loadedTranslations });
           setReady(true);
         } catch (e) {
           console.error(
@@ -106,16 +114,12 @@ export const useTranslation = (lang?: string): UseTranslationResult => {
     loadData();
   }, [language]);
 
-  // After React commits fresh English strings to the DOM for fallback languages,
-  // re-trigger Google Translate so t()-wrapped text gets translated too.
   useEffect(() => {
     if (!ready || !metaConfig) return;
 
     const currentMeta = metaConfig[language];
-    if (currentMeta?.completed) return; // hand-translated, Google Translate not needed
+    if (currentMeta?.completed) return;
 
-    // Wait one frame to ensure React has committed the new DOM nodes
-    // before asking Google Translate to do its pass.
     const id = setTimeout(() => {
       window.dispatchEvent(
         new CustomEvent("gtrans:retranslate", { detail: { lang: language } })

@@ -1,6 +1,10 @@
+"use client";
+
 import { COLORS } from "../data/tags";
+import useTranslation from "../hooks/useTranslation.ts";
 
 function Tag({ tag, className = "" }) {
+  const { t } = useTranslation();
   const colorData = COLORS[tag.color] || COLORS.grey;
 
   const inlineStyle = {
@@ -10,7 +14,7 @@ function Tag({ tag, className = "" }) {
 
   return (
     <span className={`tag ${className}`} style={inlineStyle}>
-      {tag.name}
+      {t(tag.name)}
     </span>
   );
 }
