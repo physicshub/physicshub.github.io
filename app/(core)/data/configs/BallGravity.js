@@ -57,7 +57,7 @@ export const INPUT_FIELDS = [
   },
   {
     name: "restitution",
-    label: "ζ - Damping:",
+    label: "e - Coefficient of restitution (0–1):",
     type: "number",
     min: 0,
     max: 1,
