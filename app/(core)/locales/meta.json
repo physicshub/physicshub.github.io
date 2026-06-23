@@ -5,22 +5,22 @@
   },
   "it": {
     "name": "Italian",
-    "completed": false
+    "completed": true
   },
   "es": {
     "name": "Spanish",
-    "completed": false
+    "completed": true
   },
   "fr": {
     "name": "French",
-    "completed": false
+    "completed": true
   },
   "de": {
     "name": "German",
-    "completed": false
+    "completed": true
   },
   "ar": {
     "name": "Arabic",
-    "completed": false
+    "completed": true
   }
 }
