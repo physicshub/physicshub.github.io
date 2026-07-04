@@ -658,6 +658,13 @@ nav a:hover::after {
   }
 
   .controls {
+    display: flex;
+    gap: 0.45rem;
+    position: relative;
+    z-index: 2200;
+  }
+
+  .github-header-badge {
     display: none;
   }
 
