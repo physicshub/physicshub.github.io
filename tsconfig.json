@@ -11,7 +11,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "allowImportingTsExtensions": true,
     "plugins": [
@@ -32,7 +32,8 @@
     "**/*.mts",
     "app/hooks/useSimInfo.ts",
     "app/components/LandingPart.jsx",
-    "app/(pages)/blog/[slug]/page.jsx"
+    "app/(pages)/blog/[slug]/page.jsx",
+    "app/(core)/components/Funfact.jsx"
   ],
   "exclude": ["node_modules"]
 }

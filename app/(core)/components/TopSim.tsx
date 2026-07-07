@@ -3,6 +3,8 @@ import simulations from "../data/chapters";
 import { usePathname } from "next/navigation";
 import useMobile from "../hooks/useMobile";
 import useTranslation from "../hooks/useTranslation.ts";
+import Funfact from "./Funfact.jsx";
+import { useEffect, useState } from "react";
 
 export default function TopSim() {
   const { t, meta } = useTranslation();
@@ -10,6 +12,12 @@ export default function TopSim() {
   const location = usePathname();
   const idx = simulations.findIndex((sim) => sim.link === location);
   const isMobile = useMobile();
+  const [show, setshow] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setshow(false);
+    }, 5000);
+  }, [simulations[idx].id]);
 
   function getPrevious() {
     if (idx === -1) return "/";
@@ -53,7 +61,11 @@ export default function TopSim() {
           content={t("Next")}
         />
       </div>
-      {!isMobile && <div className="top-nav-sim-filler" />}
+      {!isMobile && idx !== -1 && (
+        <div className={`top-nav-sim-filler ${show ? "show" : "hide"}`}>
+          <Funfact chapterId={simulations[idx].id} setshow={setshow} />
+        </div>
+      )}
     </div>
   );
 }

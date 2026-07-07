@@ -148,9 +148,12 @@ export default function CircularMotion() {
           bodyRef.current.applyForce(centripetalForce);
         }
 
-        // Enforce constant speed
-        if (bodyRef.current.state.velocity.mag() > 0) {
-          bodyRef.current.state.velocity.setMag(speed);
+        // Gently correct for numerical drift (instead of forcing speed every frame)
+        const currentSpeed = bodyRef.current.state.velocity.mag();
+        if (currentSpeed > 0) {
+          const correctionFactor =
+            1 + ((speed - currentSpeed) / currentSpeed) * 0.05;
+          bodyRef.current.state.velocity.mult(correctionFactor);
         }
 
         // Step physics

@@ -10,7 +10,7 @@ import { useSticky } from "../hooks/useSticky";
 import { useTheme } from "../hooks/useTheme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHamburger } from "@fortawesome/free-solid-svg-icons";
-import GoogleTranslator from "./GoogleTranslator.jsx";
+import LanguageSwitcher from "./LanguageSwitcher.jsx";
 import { usePathname } from "next/navigation.js";
 
 export default function Header() {
@@ -129,8 +129,8 @@ export default function Header() {
         <NavMenu onNavigate={handleMenuClose} />
 
         <div className="controls">
-          <GoogleTranslator />
           <GitHubHeaderBadge mode={mode} />
+          <LanguageSwitcher />
           <Theme mode={mode} onToggle={toggleMode} />
         </div>
       </div>
