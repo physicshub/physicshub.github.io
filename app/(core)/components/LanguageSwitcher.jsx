@@ -9,6 +9,7 @@ import "../styles/translator.css";
 const LANGUAGES = {
   en: "English",
   ru: "Русский",
+  rw: "Kinyarwanda",
 };
 
 const getStoredLang = () => {
@@ -47,7 +48,7 @@ export default function LanguageSwitcher() {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    document.documentElement.lang = currentLanguage === "ru" ? "ru" : "en";
+    document.documentElement.lang = currentLanguage;
   }, [currentLanguage]);
 
   const changeLanguage = useCallback((languageCode) => {

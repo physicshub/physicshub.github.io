@@ -1,5 +1,6 @@
 "use client";
 
+import useTranslation from "../hooks/useTranslation.ts";
 import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -11,6 +12,7 @@ const CONTRIBUTORS_API = `${REPO_API}/contributors?per_page=100`;
 export default function GitHubHeaderBadge({ mode }) {
   const [stats, setStats] = useState({ stars: null, contributors: null });
   const [messageIndex, setMessageIndex] = useState(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let cancelled = false;
@@ -52,13 +54,13 @@ export default function GitHubHeaderBadge({ mode }) {
 
   const messages = useMemo(
     () => [
-      stats.stars != null ? `${stats.stars} stars` : "Open source",
+      stats.stars != null ? `${stats.stars} ${t("stars")}` : t("Open source"),
       stats.contributors != null
-        ? `${stats.contributors} contributors`
-        : "Built in public",
-      "Star the repo",
+        ? `${stats.contributors} ${t("contributors")}`
+        : t("Built in public"),
+      t("Star the repo"),
     ],
-    [stats]
+    [stats, t]
   );
 
   useEffect(() => {
