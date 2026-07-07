@@ -5,12 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLanguage, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import useTranslation from "../hooks/useTranslation.ts";
 import "../styles/translator.css";
+import meta from "../locales/meta.json";
 
-const LANGUAGES = {
-  en: "English",
-  ru: "Русский",
-  rw: "Kinyarwanda",
-};
+const LANGUAGES = Object.fromEntries(
+  Object.entries(meta).map(([code, info]) => [code, info.name])
+);
 
 const getStoredLang = () => {
   if (typeof document === "undefined") return "en";
