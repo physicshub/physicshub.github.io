@@ -34,6 +34,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { BlogContent } from "../../../(core)/components/theory/types";
+import AuthStatus from "../../../(core)/components/AuthStatus";
 
 // --- INTERFACCE TYPESCRIPT ---
 
@@ -391,6 +392,7 @@ export default function CreateBlogPage() {
   const [viewMode, setViewMode] = useState<"Editor" | "JS" | "Preview">(
     "Editor"
   );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
@@ -487,6 +489,9 @@ export default function CreateBlogPage() {
           t("Request sent successfully! The blog will be online after review.")
         );
         router.push("/blog"); // Torna alla lista
+      } else if (result.requiresAuth) {
+        alert("Please sign in with GitHub first, then try saving again.");
+        window.location.href = "/api/auth/github";
       } else {
         throw new Error(result.error);
       }
@@ -564,10 +569,18 @@ export default function CreateBlogPage() {
           onClick={handleSave}
           className="ph-btn ph-btn--primary cursor-pointer save-button-top"
           type="button"
+          disabled={!isAuthenticated}
+          title={
+            !isAuthenticated ? "Sign in with GitHub to publish" : undefined
+          }
         >
           <FontAwesomeIcon icon={faSave} /> {t("Save")}
         </button>
       </div>
+
+      <AuthStatus
+        onAuthChange={(state) => setIsAuthenticated(state.authenticated)}
+      />
 
       <main className="blog-editor-area">
         <form

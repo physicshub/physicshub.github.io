@@ -61,4 +61,5 @@ next-env.d.ts
 .VSCodeCounter
 
 # ──────────────── Contributor generated files ────────────────
-scripts/contributors/*.html
+scripts/contributors/*.html.env.local
+.env.*.local

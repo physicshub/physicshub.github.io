@@ -3275,6 +3275,42 @@ footer {
   font-weight: 600;
 }
 
+.auth-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+  font-size: 0.9rem;
+}
+
+.auth-status-signed-in {
+  justify-content: flex-start;
+}
+
+.auth-status-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.auth-status-signout {
+  margin-left: auto;
+}
+
+.auth-status-error {
+  color: var(--danger-color, #e53e3e);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.auth-status-signin {
+  text-decoration: none;
+}
+
 .blog-editor-area {
   padding: 0;
 }

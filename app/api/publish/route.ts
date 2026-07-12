@@ -1,8 +1,57 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 import prettier from "prettier";
+import { getSessionToken } from "../../(core)/lib/githubSession";
+
+const UPSTREAM_OWNER = "physicshub";
+const REPO = "physicshub.github.io";
+
+// Forking is asynchronous on GitHub's side — right after createFork(),
+// the fork may not be immediately ready to accept getRef()/createRef() calls.
+// Poll briefly until it's available rather than failing outright.
+async function waitForForkReady(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  attempts = 6
+) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      await octokit.git.getRef({ owner, repo, ref: "heads/main" });
+      return; // fork is ready
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+  }
+  throw new Error(
+    "Timed out waiting for your fork to become ready. Please try again in a moment."
+  );
+}
+
+async function ensureForkExists(octokit: Octokit, username: string) {
+  try {
+    await octokit.repos.get({ owner: username, repo: REPO });
+    // Fork already exists, nothing to do.
+  } catch {
+    await octokit.repos.createFork({ owner: UPSTREAM_OWNER, repo: REPO });
+    await waitForForkReady(octokit, username, REPO);
+  }
+}
+
 export async function POST(req: Request) {
   try {
+    const token = await getSessionToken();
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "You need to sign in with GitHub before publishing.",
+          requiresAuth: true,
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
     const { jsonContent } = body;
     if (
@@ -22,10 +71,14 @@ export async function POST(req: Request) {
     }
     const { title } = jsonContent;
 
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const octokit = new Octokit({ auth: token });
 
-    const owner = "AgnibhaDebnath"; // TODO: Replace with authenticated GitHub username once OAuth is implemented
-    const repo = "physicshub.github.io";
+    // Determine the contributor's own GitHub identity from their token,
+    // rather than a hardcoded username.
+    const { data: authenticatedUser } = await octokit.users.getAuthenticated();
+    const owner = authenticatedUser.login;
+
+    await ensureForkExists(octokit, owner);
 
     // Generate a clean slug
     const slug = title
@@ -48,39 +101,40 @@ export async function POST(req: Request) {
       parser: "json",
     });
 
-    // 1. Get the reference to the main branch
-    const { data: mainBranch } = await octokit.git.getRef({
-      owner,
-      repo,
+    // 1. Get the latest commit from upstream's main, so the proposal branches
+    //    from fresh code rather than a potentially stale fork.
+    const { data: upstreamMain } = await octokit.git.getRef({
+      owner: UPSTREAM_OWNER,
+      repo: REPO,
       ref: "heads/main",
     });
 
-    // 2. Create a new branch for the proposal
+    // 2. Create a new branch in the contributor's fork
     await octokit.git.createRef({
       owner,
-      repo,
+      repo: REPO,
       ref: `refs/heads/${branchName}`,
-      sha: mainBranch.object.sha,
+      sha: upstreamMain.object.sha,
     });
 
     // 3. Create the file in the new branch
     await octokit.repos.createOrUpdateFileContents({
       owner,
-      repo,
+      repo: REPO,
       path: fileName,
       message: `New blog proposal: ${title}`,
       content: Buffer.from(formattedContent).toString("base64"),
       branch: branchName,
     });
 
-    // 4. Open the Pull Request
+    // 4. Open the Pull Request against upstream
     const { data: pr } = await octokit.pulls.create({
-      owner: "physicshub",
-      repo,
+      owner: UPSTREAM_OWNER,
+      repo: REPO,
       title: `📝 Blog Proposal: ${title}`,
       head: `${owner}:${branchName}`,
       base: "main",
-      body: `New blog proposal submitted through the website editor.\n\nTitle: ${title}`,
+      body: `New blog proposal submitted through the website editor by @${owner}.\n\nTitle: ${title}`,
     });
 
     return NextResponse.json({ success: true, url: pr.html_url });
