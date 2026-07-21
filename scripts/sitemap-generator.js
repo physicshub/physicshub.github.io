@@ -81,7 +81,7 @@ async function generateSitemap() {
     lineSeparator: "\n",
   });
 
-  const xmlOutput = `<?xml version="1.0" encoding="UTF-8"?>\n${formatted}`;
+  const xmlOutput = formatted;
 
   // Ensure public directory exists
   const publicDir = join(__dirname, "../public");
