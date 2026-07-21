@@ -90,6 +90,17 @@ export const INPUT_FIELDS = [
   { name: "ballColor", label: "Ball color:", type: "color" },
 ];
 
+/**
+ * Drag-free projectile analytics.
+ *
+ * `h0` is the drop height: how far the projectile falls between launch and
+ * landing. The simulation passes the ball's *centre* height above its resting
+ * centre height, so the predicted flight time ends when the ball touches the
+ * floor rather than when its centre reaches y = 0.
+ *
+ * Everything returned is measured from the landing level, so `apexHeight` is
+ * directly comparable with the live height readout.
+ */
 export const computeProjectileAnalytics = ({ v0, angleDeg, h0, gravity }) => {
   const speed = Math.max(0, v0);
   const g = Math.abs(gravity ?? EARTH_G_SI);
@@ -105,8 +116,10 @@ export const computeProjectileAnalytics = ({ v0, angleDeg, h0, gravity }) => {
       angleRad: rad,
       flightTime: Infinity,
       range: Infinity,
-      apexTime: vy0 === 0 ? 0 : Infinity,
-      apexHeight: vy0 === 0 ? safeH0 : Infinity,
+      // Without gravity nothing ever falls back: a projectile launched upward
+      // rises forever, one launched level or downward peaks at the start.
+      apexTime: vy0 <= 0 ? 0 : Infinity,
+      apexHeight: vy0 <= 0 ? safeH0 : Infinity,
     };
   }
 
@@ -129,12 +142,13 @@ export const computeProjectileAnalytics = ({ v0, angleDeg, h0, gravity }) => {
 
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel } = state;
-  const { canvasHeightMeters, elapsedTime, radius } = context;
+  const { elapsedTime, radius } = context;
   const launchMeta = refs?.launchMetadataRef?.current;
   const analytics = launchMeta?.stats;
 
-  const groundY = canvasHeightMeters;
-  const heightFromGround = Math.max(0, groundY - pos.y - radius);
+  // Physics coordinates are Y-up with the floor at y = 0, so the height of the
+  // ball above the ground is simply its centre minus its radius.
+  const heightFromGround = Math.max(0, pos.y - radius);
   const currentSpeed = vel?.mag?.() ?? Math.hypot(vel?.x ?? 0, vel?.y ?? 0);
   const vx = vel?.x ?? 0;
   const vy = vel?.y ?? 0;
@@ -142,12 +156,15 @@ export const SimInfoMapper = (state, context, refs) => {
   const info = {
     "v (speed)": `${currentSpeed.toFixed(2)} m/s`,
     vₓ: `${vx.toFixed(2)} m/s`,
-    vᵧ: `${(-vy).toFixed(2)} m/s`,
+    // Positive vᵧ means rising: same convention as the physics.
+    vᵧ: `${vy.toFixed(2)} m/s`,
     "h (height)": `${heightFromGround.toFixed(2)} m`,
   };
 
   if (launchMeta?.startPos) {
-    const range = Math.max(0, pos.x - launchMeta.startPos.x);
+    // Signed, so a steep angle or a headwind that carries the ball backwards
+    // reads as a negative displacement instead of being clamped to zero.
+    const range = pos.x - launchMeta.startPos.x;
     info["x (range)"] = `${range.toFixed(2)} m`;
   }
 

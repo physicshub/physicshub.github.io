@@ -42,7 +42,9 @@ export default createSimulation({
       size: () => inputs.size,
       color: () => inputs.ballColor,
       restitution: 0,
-      at: [Math.max(toMeters(80), bounds.width * 0.12), inputs.h0],
+      // Positioned by launch() at the end of build, which owns the whole
+      // launch state so there is only one definition of where the ball starts.
+      at: [0, 0],
       trail: () => inputs.trailEnabled,
       trailLength: 200,
     });
@@ -62,7 +64,9 @@ export default createSimulation({
     world.add(
       Gravity({ g: () => inputs.gravity }),
       Drag({ c: () => inputs.dragCoeff }),
-      Wind({ strength: () => inputs.wind }),
+      // The input is an acceleration (m/s²), so it has to scale with mass to
+      // become a force — otherwise a heavier ball would drift just as far.
+      Wind({ strength: () => inputs.wind, perMass: true }),
 
       // Only a floor: the projectile is meant to be able to fly off screen.
       Ground({ y: 0, friction: 0.05 }),
@@ -102,7 +106,6 @@ export default createSimulation({
         vel: handles.ball.state.velocity,
       },
       context: {
-        canvasHeightMeters: toMeters(p.height),
         radius: handles.ball.radius,
         elapsedTime: Math.max(0, (p.millis() - startMs) / 1000),
       },
@@ -114,12 +117,20 @@ export default createSimulation({
 function launch({ ball, p, inputs, bounds, refs, infoRefs }) {
   const radius = inputs.size / 2;
   const startX = Math.max(toMeters(80), bounds.width * 0.12);
-  const startY = Math.max(radius, inputs.h0);
+
+  // h₀ is the height of the ball above the ground, so its centre sits one
+  // radius higher. This keeps the input, the height readout and the drop
+  // height used below all measuring the same thing.
+  const dropHeight = Math.max(0, inputs.h0);
+  const startY = dropHeight + radius;
 
   const analytics = computeProjectileAnalytics({
     v0: inputs.v0,
     angleDeg: inputs.angle,
-    h0: startY,
+    // The ball lands when it *touches* the floor, i.e. when its centre is back
+    // at y = radius — the fall is measured between those two centres, not down
+    // to y = 0. Using startY here overstated both flight time and range.
+    h0: dropHeight,
     gravity: inputs.gravity,
   });
 
