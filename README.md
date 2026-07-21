@@ -1,135 +1,79 @@
 <div align="center">
-  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width="35%" style="border-radius: 12px;" />
-
-  <h1>PhysicsHub</h1>
-  <p><em>Learn physics the visual way — interactive simulations, clear theory and free resources.</em></p>
-
-  <p>
-    <a href="https://github.com/PhysicsHub/physicshub.github.io/stargazers">
-      <img src="https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io?style=for-the-badge&color=FFD700&logo=github" alt="Stars" />
-    </a>
-    <a href="https://github.com/PhysicsHub/physicshub.github.io/forks">
-      <img src="https://img.shields.io/github/forks/PhysicsHub/physicshub.github.io?style=for-the-badge&color=blue&logo=github" alt="Forks" />
-    </a>
-    <a href="https://github.com/PhysicsHub/physicshub.github.io/issues">
-      <img src="https://img.shields.io/github/issues/PhysicsHub/physicshub.github.io?style=for-the-badge&color=orange" alt="Issues" />
-    </a>
-    <a href="https://github.com/PhysicsHub/physicshub.github.io/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/PhysicsHub/physicshub.github.io?style=for-the-badge" alt="License" />
-    </a>
-    <img src="https://img.shields.io/github/all-contributors/physicshub/physicshub.github.io?style=for-the-badge&color=ee8449" alt="Contributors" />
-  </p>
-
-  <p>
-    <a href="https://physicshub.github.io">
-      <img src="https://img.shields.io/badge/🌐%20Visit%20Live%20Site-physicshub.github.io-blueviolet?style=for-the-badge" alt="Live Site" />
-    </a>
-  </p>
-
----
-
-### ⭐ If PhysicsHub helps you learn, please consider giving it a star — it helps the project grow!
-
-[![Star this repo](https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io?style=social)](https://github.com/PhysicsHub/physicshub.github.io/stargazers)
-
-</div>
-
----
-
-## 📸 Preview
-
-<p align="center">
-  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v3.24.0/main.png?raw=true" alt="PhysicsHub Screenshot" width="85%" style="border-radius: 10px;" />
+<img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/Logo.png?raw=true" width=40% height=40%  style="border-radius: 8px;" />
+<h1>PhysicsHub</h1>
+<h3><em>Best website to learn physics easily, with cool interactive simulations. </em></h3>
+<p>
+<img src="https://img.shields.io/github/all-contributors/physicshub/physicshub.github.io?color=ee8449&style=flat-square" alt="Contributors">
+<img src="https://img.shields.io/github/forks/PhysicsHub/physicshub.github.io" alt="Forks">
+<img src="https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io" alt="Stars">
+<img src="https://img.shields.io/github/issues/PhysicsHub/physicshub.github.io" alt="Issues">
+<img src="https://img.shields.io/github/languages/count/PhysicsHub/physicshub.github.io" alt="Languages">
+<img src="https://img.shields.io/github/repo-size/PhysicsHub/physicshub.github.io" alt="Repository Size">
 </p>
-
----
+</div>
 
 ## 📚 About
 
-![Stack Fingerprint](https://stackfingerprint.vercel.app/api/card?repo=physicshub/physicshub.github.io&theme=abyss&layout=classic&size=md&icons=icononly&pills=round)
+A small web application to help student understand physics with cool interactive simulations and easily understandable theory.
 
-**PhysicsHub** is a free, open-source web app that makes physics accessible through interactive simulations and clearly written theory. Whether you're a student preparing for exams or just curious about how the universe works, PhysicsHub makes complex formulas click.
 
-- 🔬 **Interactive simulations** to visualize physics concepts in real time
-- 📖 **Easy-to-understand theory** written for learners, not textbooks
-- 🆓 **Completely free** — no ads, no paywalls, no accounts needed
-- 🌍 **Open source** — built by the community, for the community
+## 🌐 Live Demo
 
----
+Try PhysicsHub directly in your browser:  
+🔗 **[Visit the Website](https://physicshub.github.io)**
 
-## 🚀 Quick Start
+<p align="center">
+  <img src="https://github.com/PhysicsHub/physicshub.github.io/blob/main/public/screenshots/v1.3/main.png?raw=true" alt="PhysicsHub Screenshot" width="80%" style="border-radius: 8px;" >
+</p>
 
-Try it instantly in your browser — no setup needed:
 
-🔗 **[physicshub.github.io](https://physicshub.github.io)**
+## 🛠️ Steps to run it locally
 
----
-
-## 🛠️ Run Locally
-
-Want to contribute or explore the codebase? Get up and running in minutes:
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/physicshub/physicshub.github.io.git
-
-# 2. Navigate to the project directory
-cd physicshub.github.io
-
-# 3. Install dependencies
-npm install
-# or
-yarn install
-
-# 4. Start the development server
-npm run dev
-```
-
-Then open **http://localhost:3000** in your browser. That's it! 🎉
-
----
+1. Clone the repository to your computer <br>
+   ``` bash
+   git clone https://github.com/physicshub/physicshub.github.io.git
+2. Navigate to the app directory <br>
+   ``` bash
+   cd physicshub.github.io
+3. Install the necessary dependencies <br>
+   ```bash
+    npm install
+    # or
+    yarn install
+    ```
+6. Start the local development server <br>
+   ```bash
+   npm run dev
+7. Open your browser to http://localhost:3000
 
 ## 🤝 Contributing
 
-We love contributions — and this project is **perfect for first-time contributors!**
+We welcome contributions from the community!  
+We welcome all kinds of contributions:
+- 🐛 **Report a bug**
+- 💡 **Suggest a new feature or simulation**
+- 🎨 **Improve the UI/UX**
+- 📝 **Write theory content**
+- 🔧 **Fix an existing issue**
+and more...
 
-Here's how you can help:
+Our project is **perfect for first-contribution!**
 
-| Type                      | Description                                |
-| ------------------------- | ------------------------------------------ |
-| 🐛 **Bug Report**         | Found something broken? Open an issue      |
-| 💡 **Feature Request**    | Got an idea for a new simulation? Share it |
-| 🎨 **UI/UX Improvements** | Make the interface more beautiful          |
-| 📝 **Theory Content**     | Write or improve physics explanations      |
-| 🔧 **Code Fixes**         | Pick up an open issue and submit a PR      |
+Check the [***FULL GUIDE***](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md) for starting now!
 
-📖 Read the full **[Contributing Guide](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md)** before getting started.
 
----
+<br>
+<hr>
 
-## ⭐ Star History
+### 👥 Contributors
 
-If you find PhysicsHub useful, **starring the repo** is the simplest and most impactful way to support us — it helps more students and contributors discover the project.
+We recognize all types of contributions. This project follows the [all-contributors specification](https://github.com/all-contributors/all-contributors) and the [Emoji Key](https://allcontributors.org/docs/en/emoji-key) ✨ for contribution types. Instructions to add yourself or add contribution emojis to your name are [here](https://github.com/physicshub/physicshub.github.io/issues/25). You can also post an issue or comment on a pull request with the text: `@all-contributors add @YOUR-USERNAME for THINGS` (where `THINGS` is a comma-separated list of entries from the [list of possible contribution types](https://github.com/all-contributors/all-contributors/blob/master/docs/emoji-key.md)) and all-contributors bot will add you.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=PhysicsHub/physicshub.github.io&type=Date)](https://star-history.com/#PhysicsHub/physicshub.github.io&Date)
-
----
-
-## 👥 Contributors
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. We recognize **all types** of contributions — not just code!
-
-To add yourself after contributing, comment on any issue or PR:
-
-```
-@all-contributors add @YOUR-USERNAME for code, design, content
-```
-
-Or see the [full instructions here](https://github.com/physicshub/physicshub.github.io/issues/25).
-
-**Contributions sorted by additions:**
-
+Contribution list sorted by amount of commits:
 [![Contributors](https://raw.githubusercontent.com/physicshub/physicshub.github.io/main/images/contributors.png)](https://github.com/physicshub/physicshub.github.io/graphs/contributors)
+
+
+Contribution list sorted by order of contribution and based on what they did:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -166,8 +110,6 @@ Or see the [full instructions here](https://github.com/physicshub/physicshub.git
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Talos0248"><img src="https://avatars.githubusercontent.com/u/68732421?v=4?s=100" width="100px;" alt="Talos0248"/><br /><sub><b>Talos0248</b></sub></a><br /><a href="#bug-Talos0248" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Stratos-Kass"><img src="https://avatars.githubusercontent.com/u/183495058?v=4?s=100" width="100px;" alt="Efstratios Kassaras"/><br /><sub><b>Efstratios Kassaras</b></sub></a><br /><a href="#design-Stratos-Kass" title="Design">🎨</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/GigaWHATT"><img src="https://avatars.githubusercontent.com/u/146768856?v=4?s=100" width="100px;" alt="Etienne"/><br /><sub><b>Etienne</b></sub></a><br /><a href="#code-GigaWHATT" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://madebynitin.netlify.app/"><img src="https://avatars.githubusercontent.com/u/166863746?v=4?s=100" width="100px;" alt="Nitin Tanwar"/><br /><sub><b>Nitin Tanwar</b></sub></a><br /><a href="#code-Nitin23123" title="Code">💻</a> <a href="#bug-Nitin23123" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
@@ -177,43 +119,30 @@ Or see the [full instructions here](https://github.com/physicshub/physicshub.git
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
----
 
-## 💖 Support the Project
+### 💖 Supporters
 
-PhysicsHub is and will always be **free and open-source**. If it's been helpful to you, here are the best ways to support us:
+PhysicsHub is and will always be free and open-source. If you find it helpful, consider supporting us to help fuel future development.
 
-| Action                                                                                               | Impact                                   |
-| ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| ⭐ [Star this repo](https://github.com/PhysicsHub/physicshub.github.io/stargazers)                   | Helps others discover the project        |
-| 🔀 [Fork & contribute](https://github.com/physicshub/physicshub.github.io/blob/main/CONTRIBUTING.md) | Makes the project better for everyone    |
-| 📣 Share with friends                                                                                | Spreads the word to students who need it |
-| ☕ [Donate on Ko-Fi](https://ko-fi.com/W7W41MA4Y1)                                                   | Helps us get a custom domain & beyond    |
+> ⚠️ **Note:**
+>
+> Hello everyone,\
+> I am the owner of this project.
+>
+> If we were to receive a substantial amount of donations, or monthly donations, the project could have its own domain.
+> But if you have any idea of what to do with donation, we will be very happy to hear your opinions.
+> If you can't support us financially, just share the site and the project with anyone, in person or on social media.
 
-> 💬 _Have ideas for what donations should fund? We'd love to hear from you — open a discussion or join our Discord!_
+Become a supporter by donating on Ko-Fi:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W41MA4Y1)
 
----
+### 🌍 Community 
+Have questions, ideas, or just want to chat about this website? Join our Discord server!
 
-## 🌍 Community
+[![](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
 
-Questions, ideas, or just want to chat? Join our Discord!
 
-[![Discord](https://dcbadge.limes.pink/api/server/hT68DTcwfD)](https://discord.gg/hT68DTcwfD)
+### 📜 License
 
----
-
-## 📜 License
-
-Distributed under the **MIT License**. See [`LICENSE`](https://github.com/PhysicsHub/physicshub.github.io/blob/main/LICENSE) for details.
-
----
-
-<div align="center">
-  <sub>Made with ❤️ by the PhysicsHub community · <a href="https://physicshub.github.io">physicshub.github.io</a></sub>
-  <br><br>
-  <a href="https://github.com/PhysicsHub/physicshub.github.io/stargazers">
-    <img src="https://img.shields.io/github/stars/PhysicsHub/physicshub.github.io?style=social" alt="Star on GitHub" />
-  </a>
-</div>
+<img src="https://img.shields.io/github/license/PhysicsHub/physicshub.github.io" alt="Licence">
