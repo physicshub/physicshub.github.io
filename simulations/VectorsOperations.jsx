@@ -1,749 +1,425 @@
-// app/pages/simulations/VectorsOperations.jsx
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
-import { usePathname } from "next/navigation";
-
-// --- Core Physics & Constants ---
-import { SCALE } from "../app/(core)/constants/Config.js";
 import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-  getTimeScale,
-} from "../app/(core)/constants/Time.js";
+  createSimulation,
+  Constant,
+  Bounds,
+} from "../app/(core)/engine/index.js";
+import { adjustColor } from "../app/(core)/utils/adjustColor.ts";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
 } from "../app/(core)/data/configs/VectorsOperations.js";
-import chapters from "../app/(core)/data/chapters.js";
 
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
+/** Radius of the optional test body, in metres. */
+const PROBE_RADIUS = 0.2;
 
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-import { adjustColor } from "../app/(core)/utils/adjustColor.ts";
+/**
+ * Vector operations.
+ *
+ * Mostly a geometry lesson drawn in pixel space — addition by the triangle and
+ * parallelogram rules, subtraction, scaling, normalisation, dot and cross
+ * products. The optional physics probe turns the two vectors into actual forces
+ * so the abstract arithmetic has a visible consequence.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper: mapSimInfo },
 
-// --- Planck Physics ---
-import * as planck from "planck";
+  build({ world, p, inputs, bounds }) {
+    const probe = world.addBody({
+      label: "probe",
+      // Density chosen so the disc has the requested mass.
+      mass: () => inputs.massKg,
+      size: PROBE_RADIUS * 2,
+      color: () => adjustColor(inputs.strokeColor),
+      visible: () => inputs.physicsEnabled,
+      draggable: false,
+      restitution: 0.2,
+      at: [bounds.width / 2, bounds.height / 2],
+    });
 
-export default function VectorsOperations() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
+    world.add(
+      // A and B, expressed as forces. `pxPerNewton` is the conversion the user
+      // controls: it says how many screen pixels of arrow are worth one newton.
+      Constant({
+        enabled: () => inputs.physicsEnabled,
+        x: () => vectorForces(p, inputs).total.x,
+        y: () => vectorForces(p, inputs).total.y,
+        bodies: probe,
+      }),
+      Bounds({ restitution: 0.2, enabled: () => inputs.physicsEnabled })
+    );
 
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
+    return { probe };
+  },
 
-  // Centralized sim info system
-  const { simData, updateSimInfo } = useSimInfo();
+  draw({ p, inputs }) {
+    drawOperation(p, inputs);
+    drawAxisProjections(p);
+  },
 
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
-    },
-    [setInputs]
-  );
+  info: ({ p, inputs }) => ({ state: { p, inputs }, context: {} }),
+});
 
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
-  );
+// -----------------------------------------------------------------------------
+// Vectors
+// -----------------------------------------------------------------------------
 
-  const sketch = useCallback(
-    (p) => {
-      // -- PHYSICS STATE & UTILITY FUNCTIONS --
-      const worldRef = { current: null };
-      const bodyRef = { current: null };
-      const boundsRef = { current: null };
-      const lastMassRef = { current: null };
+/** Screen-space centre of the canvas, the shared origin of both vectors. */
+const centreOf = (p) => ({ x: p.width / 2, y: p.height / 2 });
 
-      let accumulator = 0;
-      const FIXED_DT = 1 / 60;
-      const MAX_STEPS = 5;
+/** Vector A, fixed by the inputs; screen pixels, Y-down. */
+function vectorA(inputs) {
+  const magnitude = inputs.vectorAMag ?? 150;
+  const angle = ((inputs.vectorAAngle ?? 30) * Math.PI) / 180;
+  return {
+    x: Math.cos(angle) * magnitude,
+    y: Math.sin(angle) * magnitude,
+  };
+}
 
-      function createBounds(w, h) {
-        const world = worldRef.current;
-        if (!world) return;
-        const metersW = w / SCALE;
-        const metersH = h / SCALE;
-        const ground = world.createBody();
-        ground.createFixture(
-          planck.Edge(planck.Vec2(0, 0), planck.Vec2(metersW, 0))
-        );
-        ground.createFixture(
-          planck.Edge(planck.Vec2(0, metersH), planck.Vec2(metersW, metersH))
-        );
-        ground.createFixture(
-          planck.Edge(planck.Vec2(0, 0), planck.Vec2(0, metersH))
-        );
-        ground.createFixture(
-          planck.Edge(planck.Vec2(metersW, 0), planck.Vec2(metersW, metersH))
-        );
-        boundsRef.current = ground;
-      }
+/** Vector B, from the canvas centre to the pointer. */
+function vectorB(p) {
+  const centre = centreOf(p);
+  return { x: p.mouseX - centre.x, y: p.mouseY - centre.y };
+}
 
-      function createWorldAndBody(w, h) {
-        const world = planck.World(planck.Vec2(0, 0));
-        worldRef.current = world;
-        createBounds(w, h);
+/**
+ * The two vectors converted into forces on the probe, in newtons.
+ * Y is negated because the drawing is Y-down and physics is Y-up.
+ */
+function vectorForces(p, inputs) {
+  const perNewton = Math.max(1, inputs.pxPerNewton);
+  const centre = centreOf(p);
 
-        const metersW = w / SCALE;
-        const metersH = h / SCALE;
-        const pos = planck.Vec2(metersW / 2, metersH / 2);
-        const body = world.createBody({
-          type: "dynamic",
-          position: pos,
-          bullet: true,
+  let A = { x: centre.x / perNewton, y: centre.y / perNewton };
+  let B = { x: vectorB(p).x / perNewton, y: vectorB(p).y / perNewton };
+
+  if (inputs.operation === "-") {
+    B = { x: -B.x, y: -B.y };
+  } else if (inputs.operation === "x") {
+    B = { x: B.x * inputs.multiVector, y: B.y * inputs.multiVector };
+    A = { x: 0, y: 0 };
+  }
+
+  return { A, B, total: { x: A.x + B.x, y: -(A.y + B.y) } };
+}
+
+// -----------------------------------------------------------------------------
+// Drawing — all in screen pixels, since these are geometric constructions
+// rather than physical quantities.
+// -----------------------------------------------------------------------------
+
+function drawOperation(p, inputs) {
+  const { strokeColor, strokeWeight, multiVector, operation, visualizeMode } =
+    inputs;
+  const centre = centreOf(p);
+  const mouse = { x: p.mouseX, y: p.mouseY };
+  const A = vectorA(inputs);
+  const B = vectorB(p);
+  const accent = adjustColor(strokeColor);
+
+  const line = (from, to) => p.line(from.x, from.y, to.x, to.y);
+  const dashed = (draw) => {
+    p.drawingContext.setLineDash([6, 6]);
+    draw();
+    p.drawingContext.setLineDash([]);
+  };
+  const origin = { x: 0, y: 0 };
+
+  p.push();
+  p.strokeWeight(strokeWeight);
+  p.stroke(strokeColor);
+
+  switch (operation) {
+    case "+": {
+      if (visualizeMode === "triangle") {
+        // Tip-to-tail: A from the origin, B continuing from A's tip.
+        line(origin, centre);
+        line(centre, mouse);
+        p.stroke(accent);
+        p.strokeWeight(strokeWeight + 1);
+        line(origin, mouse); // the resultant closes the triangle
+      } else {
+        p.translate(centre.x, centre.y);
+        const tip = { x: A.x + B.x, y: A.y + B.y };
+        line(origin, A);
+        line(origin, B);
+        dashed(() => {
+          line(A, tip);
+          line(B, tip);
         });
+        p.stroke(accent);
+        p.strokeWeight(strokeWeight + 1);
+        line(origin, tip); // the diagonal is the sum
+      }
+      break;
+    }
 
-        const radiusM = 0.2;
-        const massKg = inputsRef.current.massKg;
-        const area = Math.PI * radiusM * radiusM;
-        const density = massKg / area;
+    case "-": {
+      if (visualizeMode === "triangle") {
+        line(origin, centre);
+        line(origin, mouse);
+        p.stroke(accent);
+        p.strokeWeight(strokeWeight + 1);
+        line(centre, mouse); // R = B − A points from A's tip to B's
+      } else {
+        p.translate(centre.x, centre.y);
+        const negA = { x: -A.x, y: -A.y };
+        const R = { x: B.x + negA.x, y: B.y + negA.y };
 
-        body.createFixture(planck.Circle(radiusM), {
-          density,
-          restitution: 0.2,
-          friction: 0.2,
+        p.strokeWeight(Math.max(1, strokeWeight - 0.5));
+        line(origin, A);
+        p.strokeWeight(strokeWeight);
+        line(origin, B);
+
+        // B − A built as B + (−A) on the parallelogram.
+        p.stroke(180, 180, 180, 180);
+        dashed(() => {
+          line(origin, negA);
+          line(B, R);
+          line(negA, R);
         });
-
-        bodyRef.current = body;
-        lastMassRef.current = massKg;
-        accumulator = 0;
-      }
-
-      function destroyWorld() {
-        worldRef.current = null;
-        bodyRef.current = null;
-        boundsRef.current = null;
-      }
-
-      function updatePhysics(dt) {
-        if (
-          !inputsRef.current.physicsEnabled ||
-          !worldRef.current ||
-          !bodyRef.current
-        )
-          return;
-
-        // Update body mass if changed
-        const radiusM = 0.2;
-        const desiredMass = inputsRef.current.massKg;
-        if (
-          lastMassRef.current == null ||
-          Math.abs(desiredMass - lastMassRef.current) > 1e-6
-        ) {
-          const area = Math.PI * radiusM * radiusM;
-          const newDensity = desiredMass / area;
-          const fixture = bodyRef.current.getFixtureList();
-          fixture.setDensity(newDensity);
-          bodyRef.current.resetMassData();
-          lastMassRef.current = desiredMass;
-        }
-
-        // Apply global time scale and pause
-        const scale = getTimeScale();
-        if (!isPaused()) {
-          accumulator += dt * Math.max(0, scale);
-        }
-
-        // Apply forces based on vector operation
-        const center = p.createVector(p.width / 2, p.height / 2);
-        const mouse = p.createVector(p.mouseX, p.mouseY);
-        const op = inputsRef.current.operation;
-        const pxPerNewton = Math.max(1, inputsRef.current.pxPerNewton);
-
-        const A = { x: center.x, y: center.y };
-        const B = { x: mouse.x - center.x, y: mouse.y - center.y };
-
-        let FA = { x: A.x / pxPerNewton, y: A.y / pxPerNewton };
-        let FB = { x: B.x / pxPerNewton, y: B.y / pxPerNewton };
-
-        if (op === "-") {
-          FB = { x: -FB.x, y: -FB.y };
-        } else if (op === "x") {
-          FB = {
-            x: FB.x * inputsRef.current.multiVector,
-            y: FB.y * inputsRef.current.multiVector,
-          };
-          FA = { x: 0, y: 0 };
-        }
-
-        // Physics stepping
-        let steps = 0;
-        while (accumulator >= FIXED_DT && steps < MAX_STEPS) {
-          const body = bodyRef.current;
-          body.applyForce(planck.Vec2(FA.x, FA.y), body.getWorldCenter());
-          body.applyForce(planck.Vec2(FB.x, FB.y), body.getWorldCenter());
-          worldRef.current.step(FIXED_DT);
-          steps++;
-          accumulator -= FIXED_DT;
-        }
-      }
-
-      function drawVectorVisualizations() {
-        const {
-          strokeColor,
-          strokeWeight,
-          multiVector,
-          operation,
-          visualizeMode,
-        } = inputsRef.current;
-        const mouse = p.createVector(p.mouseX, p.mouseY);
-        const center = p.createVector(p.width / 2, p.height / 2);
-
-        p.push();
-
-        switch (operation) {
-          case "+": {
-            const Avec_add = center.copy();
-            const Bvec_add = p.constructor.Vector.sub(mouse, center);
-
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-
-            if (visualizeMode === "triangle") {
-              // Triangle method
-              p.line(0, 0, Avec_add.x, Avec_add.y);
-              p.line(Avec_add.x, Avec_add.y, mouse.x, mouse.y);
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, mouse.x, mouse.y); // resultant
-            } else {
-              // Parallelogram method — translate to canvas centre so both vectors
-              // share the same origin and remain properly to scale.
-              p.translate(p.width / 2, p.height / 2);
-              const aMag = inputsRef.current.vectorAMag ?? 150;
-              const aAngle =
-                ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-              const Avec_add_par = p.createVector(
-                Math.cos(aAngle) * aMag,
-                Math.sin(aAngle) * aMag
-              );
-              const Bvec_add_par = p.createVector(
-                p.mouseX - p.width / 2,
-                p.mouseY - p.height / 2
-              );
-              const Btip = p.constructor.Vector.add(Avec_add_par, Bvec_add_par);
-
-              p.line(0, 0, Avec_add_par.x, Avec_add_par.y);
-              p.line(0, 0, Bvec_add_par.x, Bvec_add_par.y);
-              p.drawingContext.setLineDash([6, 6]);
-              p.line(Avec_add_par.x, Avec_add_par.y, Btip.x, Btip.y);
-              p.line(Bvec_add_par.x, Bvec_add_par.y, Btip.x, Btip.y);
-              p.drawingContext.setLineDash([]);
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, Btip.x, Btip.y);
-            }
-            break;
-          }
-
-          case "-": {
-            const Avec_sub = center.copy();
-            const Bvec_sub = mouse.copy(); // B: origin -> mouse
-            const negAvec_sub = p.constructor.Vector.mult(Avec_sub, -1); // -A
-            const Rvec_sub = p.constructor.Vector.add(Bvec_sub, negAvec_sub); // R = B + (-A) = B - A
-
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-
-            if (visualizeMode === "triangle") {
-              p.line(0, 0, Avec_sub.x, Avec_sub.y);
-              p.line(0, 0, mouse.x, mouse.y);
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(strokeWeight + 1);
-              p.line(center.x, center.y, mouse.x, mouse.y);
-            } else {
-              // Parallelogram method — translate to canvas centre for correct scale
-              p.translate(p.width / 2, p.height / 2);
-              const aMag = inputsRef.current.vectorAMag ?? 150;
-              const aAngle =
-                ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-              const Avec_sub_par = p.createVector(
-                Math.cos(aAngle) * aMag,
-                Math.sin(aAngle) * aMag
-              );
-              const Bvec_sub_par = p.createVector(
-                p.mouseX - p.width / 2,
-                p.mouseY - p.height / 2
-              );
-              const negAvec_sub_par = Avec_sub_par.copy().mult(-1);
-              const Rvec_sub_par = p.constructor.Vector.add(
-                Bvec_sub_par,
-                negAvec_sub_par
-              );
-
-              p.stroke(strokeColor);
-              p.strokeWeight(Math.max(1, strokeWeight - 0.5));
-              p.line(0, 0, Avec_sub_par.x, Avec_sub_par.y);
-
-              p.stroke(strokeColor);
-              p.strokeWeight(strokeWeight);
-              p.line(0, 0, Bvec_sub_par.x, Bvec_sub_par.y);
-
-              p.stroke(180, 180, 180, 180);
-              p.strokeWeight(strokeWeight);
-              p.drawingContext.setLineDash([6, 6]);
-              p.line(0, 0, negAvec_sub_par.x, negAvec_sub_par.y);
-              p.line(
-                Bvec_sub_par.x,
-                Bvec_sub_par.y,
-                Rvec_sub_par.x,
-                Rvec_sub_par.y
-              );
-              p.line(
-                negAvec_sub_par.x,
-                negAvec_sub_par.y,
-                Rvec_sub_par.x,
-                Rvec_sub_par.y
-              );
-              p.drawingContext.setLineDash([]);
-
-              p.noStroke();
-              p.fill(220);
-              p.textSize(14);
-              p.textAlign(p.CENTER, p.CENTER);
-              p.text("-A", negAvec_sub_par.x * 0.55, negAvec_sub_par.y * 0.55);
-
-              p.stroke(adjustColor(strokeColor));
-              p.strokeWeight(strokeWeight + 1);
-              p.line(0, 0, Rvec_sub_par.x, Rvec_sub_par.y);
-
-              p.noStroke();
-              p.fill(255, 220, 120);
-              p.circle(Avec_sub_par.x, Avec_sub_par.y, 7);
-            }
-            break;
-          }
-
-          case "x": {
-            mouse.sub(center);
-            p.translate(p.width / 2, p.height / 2);
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-            p.line(0, 0, mouse.x, mouse.y);
-
-            let multiplied = mouse.copy().mult(multiVector);
-            p.strokeWeight(strokeWeight * 0.8);
-            p.stroke(adjustColor(strokeColor));
-            p.line(mouse.x, mouse.y, multiplied.x, multiplied.y);
-
-            if (multiVector < 0) {
-              p.stroke(200, 200, 200);
-              p.strokeWeight(1);
-              const flipped = mouse.copy().mult(-1);
-              p.line(0, 0, flipped.x, flipped.y);
-            }
-            break;
-          }
-
-          case "normalize": {
-            const v = p.constructor.Vector.sub(mouse, center);
-            const len = v.mag() || 1;
-            const unit = v.copy().div(len);
-
-            p.translate(p.width / 2, p.height / 2);
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-            p.line(0, 0, v.x, v.y);
-            p.stroke(adjustColor(strokeColor));
-            p.line(0, 0, unit.x * 100, unit.y * 100);
-            break;
-          }
-
-          case "dot": {
-            p.translate(p.width / 2, p.height / 2);
-            const aMag_dot = inputsRef.current.vectorAMag ?? 150;
-            const aAngle_dot =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const A_dot = p.createVector(
-              Math.cos(aAngle_dot) * aMag_dot,
-              Math.sin(aAngle_dot) * aMag_dot
-            );
-            const B_dot = p.createVector(
-              p.mouseX - p.width / 2,
-              p.mouseY - p.height / 2
-            );
-
-            // Draw A
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-            p.line(0, 0, A_dot.x, A_dot.y);
-
-            // Draw B
-            p.stroke(adjustColor(strokeColor));
-            p.line(0, 0, B_dot.x, B_dot.y);
-
-            // Arc showing angle θ between A and B
-            const arcR_dot = 40;
-            const angA_dot = Math.atan2(A_dot.y, A_dot.x);
-            const angB_dot = Math.atan2(B_dot.y, B_dot.x);
-            p.noFill();
-            p.stroke(255, 255, 255, 150);
-            p.strokeWeight(1);
-            p.arc(
-              0,
-              0,
-              arcR_dot * 2,
-              arcR_dot * 2,
-              Math.min(angA_dot, angB_dot),
-              Math.max(angA_dot, angB_dot)
-            );
-
-            // Projection of B onto A: foot = (A·B / |A|²) * A
-            const dot_val = A_dot.x * B_dot.x + A_dot.y * B_dot.y;
-            const aMagSq_dot = A_dot.magSq();
-            const projScalar_dot = aMagSq_dot > 0 ? dot_val / aMagSq_dot : 0;
-            const proj_dot = A_dot.copy().mult(projScalar_dot);
-
-            // Dashed perpendicular from B tip to foot on A
-            p.stroke(255, 255, 0, 200);
-            p.strokeWeight(1.5);
-            p.drawingContext.setLineDash([5, 5]);
-            p.line(B_dot.x, B_dot.y, proj_dot.x, proj_dot.y);
-            p.drawingContext.setLineDash([]);
-
-            // Mark projection foot
-            p.noStroke();
-            p.fill(255, 255, 0);
-            p.circle(proj_dot.x, proj_dot.y, 7);
-            break;
-          }
-
-          case "cross": {
-            p.translate(p.width / 2, p.height / 2);
-            const aMag_cross = inputsRef.current.vectorAMag ?? 150;
-            const aAngle_cross =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const A_cross = p.createVector(
-              Math.cos(aAngle_cross) * aMag_cross,
-              Math.sin(aAngle_cross) * aMag_cross
-            );
-            const B_cross = p.createVector(
-              p.mouseX - p.width / 2,
-              p.mouseY - p.height / 2
-            );
-
-            // z-component of cross product
-            const z_cross = A_cross.x * B_cross.y - A_cross.y * B_cross.x;
-
-            // Filled parallelogram: vertices O, A, A+B, B
-            const ApB_cross = p.constructor.Vector.add(A_cross, B_cross);
-            p.noStroke();
-            if (z_cross > 0) {
-              p.fill(0, 200, 100, 80); // green — CCW / out of plane
-            } else if (z_cross < 0) {
-              p.fill(200, 50, 50, 80); // red — CW / into plane
-            } else {
-              p.fill(150, 150, 150, 80);
-            }
-            p.beginShape();
-            p.vertex(0, 0);
-            p.vertex(A_cross.x, A_cross.y);
-            p.vertex(ApB_cross.x, ApB_cross.y);
-            p.vertex(B_cross.x, B_cross.y);
-            p.endShape(p.CLOSE);
-
-            // Dashed sides completing the parallelogram
-            p.stroke(200, 200, 200, 150);
-            p.strokeWeight(1);
-            p.drawingContext.setLineDash([6, 6]);
-            p.line(A_cross.x, A_cross.y, ApB_cross.x, ApB_cross.y);
-            p.line(B_cross.x, B_cross.y, ApB_cross.x, ApB_cross.y);
-            p.drawingContext.setLineDash([]);
-
-            // Draw A and B
-            p.strokeWeight(strokeWeight);
-            p.stroke(strokeColor);
-            p.line(0, 0, A_cross.x, A_cross.y);
-            p.stroke(adjustColor(strokeColor));
-            p.line(0, 0, B_cross.x, B_cross.y);
-            break;
-          }
-
-          default:
-            break;
-        }
-        p.pop();
-      }
-
-      function drawAxisProjections() {
-        const center = p.createVector(p.width / 2, p.height / 2);
-        const mouse = p.createVector(p.mouseX, p.mouseY);
-        const v_proj = p.constructor.Vector.sub(mouse, center);
-
-        p.push();
-        p.stroke(255, 255, 255, 120);
-        p.drawingContext.setLineDash([4, 4]);
-        p.line(center.x, center.y, mouse.x, center.y);
-        p.line(mouse.x, center.y, mouse.x, mouse.y);
-        p.drawingContext.setLineDash([]);
-
-        const arcR = 40;
-        p.noFill();
-        p.stroke(255, 255, 255, 150);
-        const ang = Math.atan2(v_proj.y, v_proj.x);
-        p.arc(center.x, center.y, arcR * 2, arcR * 2, 0, ang);
-        p.pop();
-      }
-
-      function drawPhysicsBody() {
-        if (!inputsRef.current.physicsEnabled || !bodyRef.current) return;
-
-        const pos = bodyRef.current.getPosition();
-        const rPx = 0.2 * SCALE * 2;
-        const { strokeColor } = inputsRef.current;
 
         p.noStroke();
-        p.fill(adjustColor(strokeColor));
-        p.circle(pos.x * SCALE, pos.y * SCALE, rPx);
+        p.fill(220);
+        p.textSize(14);
+        p.textAlign(p.CENTER, p.CENTER);
+        p.text("-A", negA.x * 0.55, negA.y * 0.55);
+
+        p.stroke(accent);
+        p.strokeWeight(strokeWeight + 1);
+        line(origin, R);
+
+        p.noStroke();
+        p.fill(255, 220, 120);
+        p.circle(A.x, A.y, 7);
       }
+      break;
+    }
 
-      function computeSimInfo() {
-        const center = p.createVector(p.width / 2, p.height / 2);
-        const mouse = p.createVector(p.mouseX, p.mouseY);
-        const { operation, visualizeMode, multiVector } = inputsRef.current;
+    case "x": {
+      p.translate(centre.x, centre.y);
+      line(origin, B);
 
-        const A = center.copy();
-        const B_from_center = p.constructor.Vector.sub(mouse, center);
-        const B_from_origin = mouse.copy();
+      const scaled = { x: B.x * multiVector, y: B.y * multiVector };
+      p.strokeWeight(strokeWeight * 0.8);
+      p.stroke(accent);
+      line(B, scaled);
 
-        let info = {};
-        const mag = B_from_center.mag();
-        const angleRad = Math.atan2(B_from_center.y, B_from_center.x);
-        const angleDeg = (angleRad * 180) / Math.PI;
-
-        info["Vector |B|"] = `${mag.toFixed(2)} px`;
-        info["Vector angle θ"] = `${angleDeg.toFixed(1)} deg`;
-        info["B components"] = `(${B_from_center.x.toFixed(
-          2
-        )}, ${B_from_center.y.toFixed(2)}) px`;
-
-        switch (operation) {
-          case "+": {
-            const aMag = inputsRef.current.vectorAMag ?? 150;
-            const aAngle =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const parallelA = p.createVector(
-              Math.cos(aAngle) * aMag,
-              Math.sin(aAngle) * aMag
-            );
-            const R =
-              visualizeMode === "triangle"
-                ? B_from_origin
-                : p.constructor.Vector.add(parallelA, B_from_center);
-            info["Addition resultant R"] = `(${R.x.toFixed(2)}, ${R.y.toFixed(
-              2
-            )}) px`;
-            info["|R|"] = `${R.mag().toFixed(2)} px`;
-            info["Formula"] =
-              visualizeMode === "triangle"
-                ? "Triangle: R = B (origin→mouse)"
-                : "Parallelogram: R = A + B";
-            break;
-          }
-
-          case "-": {
-            const aMag = inputsRef.current.vectorAMag ?? 150;
-            const aAngle =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const parallelA =
-              visualizeMode === "parallelogram"
-                ? p.createVector(
-                    Math.cos(aAngle) * aMag,
-                    Math.sin(aAngle) * aMag
-                  )
-                : A;
-            const B_eff =
-              visualizeMode === "parallelogram" ? B_from_center : B_from_origin;
-            const R = p.constructor.Vector.sub(B_eff, parallelA);
-            const Rpar = p.constructor.Vector.add(
-              B_eff,
-              parallelA.copy().mult(-1)
-            );
-            const negA = p.constructor.Vector.mult(parallelA, -1);
-            const Bcheck = p.constructor.Vector.add(parallelA, R);
-            const checkErr = p.constructor.Vector.sub(Bcheck, B_eff).mag();
-
-            info["Subtraction resultant R = B - A"] = `(${R.x.toFixed(
-              2
-            )}, ${R.y.toFixed(2)}) px`;
-            info["Parallelogram diagonal B + (-A)"] = `(${Rpar.x.toFixed(
-              2
-            )}, ${Rpar.y.toFixed(2)}) px`;
-            info["|R|"] = `${R.mag().toFixed(2)} px`;
-            info["Auxiliary -A"] = `(${negA.x.toFixed(2)}, ${negA.y.toFixed(
-              2
-            )}) px`;
-            info["Parallelogram check B = A + R"] = `(${Bcheck.x.toFixed(
-              2
-            )}, ${Bcheck.y.toFixed(2)}) px`;
-            info["Check error |(A + R) - B|"] = `${checkErr.toFixed(4)} px`;
-            info["Formula"] =
-              visualizeMode === "triangle"
-                ? "Triangle: R = B - A (center→mouse)"
-                : "Parallelogram: use B and -A as adjacent sides, diagonal is R = B + (-A)";
-            break;
-          }
-
-          case "x": {
-            const v = p.constructor.Vector.sub(mouse, center);
-            const scalar = multiVector;
-            const R = v.copy().mult(scalar);
-            const angleR = (Math.atan2(R.y, R.x) * 180) / Math.PI;
-            info["Scalar s"] = scalar.toFixed(2);
-            info["Scaled vector s·v"] = `(${R.x.toFixed(2)}, ${R.y.toFixed(
-              2
-            )}) px`;
-            info["|s·v|"] = `${R.mag().toFixed(2)} px`;
-            info["Angle of s·v"] = `${angleR.toFixed(1)} deg`;
-            info["Formula"] = "s·v = (s·vx, s·vy); if s < 0, orientation flips";
-            break;
-          }
-
-          case "normalize": {
-            const v = p.constructor.Vector.sub(mouse, center);
-            const len = v.mag();
-            const unit = len ? v.copy().div(len) : p.createVector(0, 0);
-            info["|v|"] = len.toFixed(2);
-            info["unit v̂"] = `(${unit.x.toFixed(3)}, ${unit.y.toFixed(3)})`;
-            info["Formula"] = "v̂ = v / |v|";
-            break;
-          }
-
-          case "dot": {
-            const aMag_info_dot = inputsRef.current.vectorAMag ?? 150;
-            const aAngle_info_dot =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const A = p.createVector(
-              Math.cos(aAngle_info_dot) * aMag_info_dot,
-              Math.sin(aAngle_info_dot) * aMag_info_dot
-            );
-            const B = p.constructor.Vector.sub(mouse, center);
-            const dot = A.x * B.x + A.y * B.y;
-            const magA = A.mag();
-            const magB = B.mag();
-            const cosTheta = magA && magB ? dot / (magA * magB) : 0;
-            const theta =
-              (Math.acos(Math.max(-1, Math.min(1, cosTheta))) * 180) / Math.PI;
-            info["A·B"] = `${dot.toFixed(2)} px²`;
-            info["θ between A and B (deg)"] = theta.toFixed(1);
-            info["Formula"] = "A·B = |A||B| cosθ = AxBx + AyBy";
-            break;
-          }
-
-          case "cross": {
-            const aMag_info_cross = inputsRef.current.vectorAMag ?? 150;
-            const aAngle_info_cross =
-              ((inputsRef.current.vectorAAngle ?? 30) * Math.PI) / 180;
-            const A = p.createVector(
-              Math.cos(aAngle_info_cross) * aMag_info_cross,
-              Math.sin(aAngle_info_cross) * aMag_info_cross
-            );
-            const B = p.constructor.Vector.sub(mouse, center);
-            const z = A.x * B.y - A.y * B.x;
-            const sign =
-              z > 0 ? "+ (counterclockwise)" : z < 0 ? "- (clockwise)" : "0";
-            info["A×B (z-component)"] = `${z.toFixed(2)} ${sign} px²`;
-            info["Formula"] = "A×B (2D) = AxBy − AyBx (z-axis out of plane)";
-            break;
-          }
-        }
-
-        return info;
+      // A negative scalar reverses the direction; show where it lands.
+      if (multiVector < 0) {
+        p.stroke(200, 200, 200);
+        p.strokeWeight(1);
+        line(origin, { x: -B.x, y: -B.y });
       }
+      break;
+    }
 
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
+    case "normalize": {
+      p.translate(centre.x, centre.y);
+      const length = Math.hypot(B.x, B.y) || 1;
+      line(origin, B);
+      p.stroke(accent);
+      line(origin, { x: (B.x / length) * 100, y: (B.y / length) * 100 });
+      break;
+    }
 
-        if (inputsRef.current.physicsEnabled) {
-          createWorldAndBody(w, h);
-        }
-      };
+    case "dot": {
+      p.translate(centre.x, centre.y);
+      line(origin, A);
+      p.stroke(accent);
+      line(origin, B);
 
-      p.draw = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
+      // Angle between the two.
+      const angleA = Math.atan2(A.y, A.x);
+      const angleB = Math.atan2(B.y, B.x);
+      p.noFill();
+      p.stroke(255, 255, 255, 150);
+      p.strokeWeight(1);
+      p.arc(0, 0, 80, 80, Math.min(angleA, angleB), Math.max(angleA, angleB));
 
-        // Handle physics toggle at runtime
-        if (inputsRef.current.physicsEnabled && !worldRef.current) {
-          createWorldAndBody(w, h);
-        } else if (!inputsRef.current.physicsEnabled && worldRef.current) {
-          destroyWorld();
-        }
+      // Projection of B onto A: the dot product is |A| times this length.
+      const magASq = A.x * A.x + A.y * A.y;
+      const scalar = magASq > 0 ? (A.x * B.x + A.y * B.y) / magASq : 0;
+      const foot = { x: A.x * scalar, y: A.y * scalar };
 
-        // Background
-        p.background(getBackgroundColor());
+      p.stroke(255, 255, 0, 200);
+      p.strokeWeight(1.5);
+      p.drawingContext.setLineDash([5, 5]);
+      line(B, foot);
+      p.drawingContext.setLineDash([]);
 
-        // Update physics
-        updatePhysics(computeDelta(p));
+      p.noStroke();
+      p.fill(255, 255, 0);
+      p.circle(foot.x, foot.y, 7);
+      break;
+    }
 
-        // Draw vector visualizations
-        drawVectorVisualizations();
+    case "cross": {
+      p.translate(centre.x, centre.y);
+      const z = A.x * B.y - A.y * B.x;
+      const tip = { x: A.x + B.x, y: A.y + B.y };
 
-        // Draw axis projections
-        drawAxisProjections();
+      // |A×B| is the area of the parallelogram; its sign is the orientation.
+      p.noStroke();
+      if (z > 0) p.fill(0, 200, 100, 80);
+      else if (z < 0) p.fill(200, 50, 50, 80);
+      else p.fill(150, 150, 150, 80);
 
-        // Draw physics body
-        drawPhysicsBody();
+      p.beginShape();
+      p.vertex(0, 0);
+      p.vertex(A.x, A.y);
+      p.vertex(tip.x, tip.y);
+      p.vertex(B.x, B.y);
+      p.endShape(p.CLOSE);
 
-        // Update sim info using the centralized system
-        updateSimInfo(p, {}, {}, () => computeSimInfo());
-      };
+      p.stroke(200, 200, 200, 150);
+      p.strokeWeight(1);
+      dashed(() => {
+        line(A, tip);
+        line(B, tip);
+      });
 
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
+      p.strokeWeight(strokeWeight);
+      p.stroke(strokeColor);
+      line(origin, A);
+      p.stroke(accent);
+      line(origin, B);
+      break;
+    }
 
-        if (inputsRef.current.physicsEnabled) {
-          destroyWorld();
-          createWorldAndBody(w, h);
-        }
-      };
-    },
-    [inputsRef, updateSimInfo]
-  );
+    default:
+      break;
+  }
 
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        setResetVersion((v) => v + 1);
-      }}
-      theory={theory}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
+  p.pop();
+}
+
+/** Dashed x/y components of B, plus its angle from the x-axis. */
+function drawAxisProjections(p) {
+  const centre = centreOf(p);
+  const B = vectorB(p);
+
+  p.push();
+  p.noFill();
+  p.stroke(255, 255, 255, 120);
+  p.drawingContext.setLineDash([4, 4]);
+  p.line(centre.x, centre.y, p.mouseX, centre.y);
+  p.line(p.mouseX, centre.y, p.mouseX, p.mouseY);
+  p.drawingContext.setLineDash([]);
+
+  p.stroke(255, 255, 255, 150);
+  p.arc(centre.x, centre.y, 80, 80, 0, Math.atan2(B.y, B.x));
+  p.pop();
+}
+
+// -----------------------------------------------------------------------------
+// Readout
+// -----------------------------------------------------------------------------
+
+/**
+ * Everything shown in the info panel is derived from the two vectors, so it is
+ * computed here rather than in the config module.
+ */
+function mapSimInfo({ p, inputs }) {
+  if (!p) return {};
+
+  const centre = centreOf(p);
+  const A = vectorA(inputs);
+  const B = vectorB(p);
+  const Bfromorigin = { x: p.mouseX, y: p.mouseY };
+  const { operation, visualizeMode, multiVector } = inputs;
+
+  const format = (v) => `(${v.x.toFixed(2)}, ${v.y.toFixed(2)}) px`;
+  const magnitude = (v) => Math.hypot(v.x, v.y);
+
+  const info = {
+    "Vector |B|": `${magnitude(B).toFixed(2)} px`,
+    "Vector angle θ": `${((Math.atan2(B.y, B.x) * 180) / Math.PI).toFixed(1)} deg`,
+    "B components": format(B),
+  };
+
+  switch (operation) {
+    case "+": {
+      const R =
+        visualizeMode === "triangle"
+          ? Bfromorigin
+          : { x: A.x + B.x, y: A.y + B.y };
+      info["Addition resultant R"] = format(R);
+      info["|R|"] = `${magnitude(R).toFixed(2)} px`;
+      info["Formula"] =
+        visualizeMode === "triangle"
+          ? "Triangle: R = B (origin→mouse)"
+          : "Parallelogram: R = A + B";
+      break;
+    }
+
+    case "-": {
+      const base = visualizeMode === "parallelogram" ? A : centre;
+      const effective = visualizeMode === "parallelogram" ? B : Bfromorigin;
+      const R = { x: effective.x - base.x, y: effective.y - base.y };
+      const check = { x: base.x + R.x, y: base.y + R.y };
+
+      info["Subtraction resultant R = B - A"] = format(R);
+      info["|R|"] = `${magnitude(R).toFixed(2)} px`;
+      info["Auxiliary -A"] = format({ x: -base.x, y: -base.y });
+      info["Parallelogram check B = A + R"] = format(check);
+      info["Check error |(A + R) - B|"] =
+        `${magnitude({ x: check.x - effective.x, y: check.y - effective.y }).toFixed(4)} px`;
+      info["Formula"] =
+        visualizeMode === "triangle"
+          ? "Triangle: R = B - A (center→mouse)"
+          : "Parallelogram: use B and -A as adjacent sides, diagonal is R = B + (-A)";
+      break;
+    }
+
+    case "x": {
+      const R = { x: B.x * multiVector, y: B.y * multiVector };
+      info["Scalar s"] = multiVector.toFixed(2);
+      info["Scaled vector s·v"] = format(R);
+      info["|s·v|"] = `${magnitude(R).toFixed(2)} px`;
+      info["Angle of s·v"] =
+        `${((Math.atan2(R.y, R.x) * 180) / Math.PI).toFixed(1)} deg`;
+      info["Formula"] = "s·v = (s·vx, s·vy); if s < 0, orientation flips";
+      break;
+    }
+
+    case "normalize": {
+      const length = magnitude(B);
+      const unit = length
+        ? { x: B.x / length, y: B.y / length }
+        : { x: 0, y: 0 };
+      info["|v|"] = length.toFixed(2);
+      info["unit v̂"] = `(${unit.x.toFixed(3)}, ${unit.y.toFixed(3)})`;
+      info["Formula"] = "v̂ = v / |v|";
+      break;
+    }
+
+    case "dot": {
+      const dot = A.x * B.x + A.y * B.y;
+      const denominator = magnitude(A) * magnitude(B);
+      const cosTheta = denominator ? dot / denominator : 0;
+      const theta =
+        (Math.acos(Math.max(-1, Math.min(1, cosTheta))) * 180) / Math.PI;
+      info["A·B"] = `${dot.toFixed(2)} px²`;
+      info["θ between A and B (deg)"] = theta.toFixed(1);
+      info["Formula"] = "A·B = |A||B| cosθ = AxBx + AyBy";
+      break;
+    }
+
+    case "cross": {
+      const z = A.x * B.y - A.y * B.x;
+      const sign =
+        z > 0 ? "+ (counterclockwise)" : z < 0 ? "- (clockwise)" : "0";
+      info["A×B (z-component)"] = `${z.toFixed(2)} ${sign} px²`;
+      info["Formula"] = "A×B (2D) = AxBy − AyBx (z-axis out of plane)";
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return info;
 }

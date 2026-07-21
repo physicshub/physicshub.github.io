@@ -30,8 +30,6 @@ export const INPUT_FIELDS = [
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
 ];
 
-export const FORCES = [];
-
 // Mapper specifico per benchmarking
 export const SimInfoMapper = (_state, context) => {
   const { p } = context;

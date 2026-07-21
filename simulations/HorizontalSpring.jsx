@@ -1,391 +1,190 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
-import { usePathname } from "next/navigation";
-
-// --- Core Physics & Constants ---
-import { resetTime, computeDelta } from "../app/(core)/constants/Time.js";
+import {
+  createSimulation,
+  Spring,
+  Strut,
+  LockAxis,
+  Dragging,
+  CustomForce,
+  ForceVectors,
+  toScreen,
+  drawCoil,
+  drawAnchor,
+} from "../app/(core)/engine/index.js";
+import { toPixels, toMeters } from "../app/(core)/constants/Utils.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/HorizontalSpring.js";
-import chapters from "../app/(core)/data/chapters.js";
-import {
-  toMeters,
-  toPixels,
-  setCanvasHeight,
-  screenYToPhysicsY,
-} from "../app/(core)/constants/Utils.js";
 
-// --- Centralized Physics Components ---
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import Spring from "../app/(core)/physics/Spring";
-import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
-import DragController from "../app/(core)/physics/DragController.js";
-
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
-
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState";
-import useSimInfo from "../app/(core)/hooks/useSimInfo";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor";
-
-// Ground height in physics meters from bottom of canvas
+/** Height of the floor the block slides on, in metres. */
 const GROUND_Y = 0.5;
+/** Horizontal position of the wall the spring is bolted to, in metres. */
+const WALL_X = 0.2;
 
-export default function HorizontalSpring() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
+/**
+ * A block launched by a compressed spring.
+ *
+ * The spring is bolted to the wall but not to the block, so it can only push:
+ * once the block passes the rest length they separate and it coasts under
+ * friction alone. That is the whole point of the demo — elastic potential energy
+ * converts to kinetic energy, and only then does friction start removing it.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
 
-  // References
-  const bodyRef = useRef(null);
-  const springRef = useRef(null);
-  const forceRendererRef = useRef(null);
-  const dragControllerRef = useRef(null);
+  build({ world, inputs }) {
+    const anchor = world.addAnchor(WALL_X, GROUND_Y);
 
-  const { simData, updateSimInfo } = useSimInfo();
+    const block = world.addBody({
+      label: "block",
+      mass: () => inputs.bobMass,
+      size: () => inputs.bobSize,
+      color: () => inputs.bobColor,
+      at: [WALL_X + inputs.springRestLength, GROUND_Y],
+    });
 
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
-    },
-    [setInputs]
-  );
+    const spring = world.add(
+      Spring(block, anchor, () => inputs.springRestLength, {
+        k: () => inputs.springK,
+        color: () => inputs.springColor,
+        oneWay: "push",
+        // Drawn by springVisual below, which retracts it once the block leaves.
+        render: "none",
+      })
+    );
 
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
-  );
+    world.add(
+      // Sliding friction of fixed magnitude, opposing motion and never
+      // reversing it: a body at rest stays at rest instead of jittering.
+      CustomForce(
+        (body, ctx) => {
+          const damping = ctx.inputs.bobDamping;
+          const vx = body.state.velocity.x;
+          if (damping <= 0 || Math.abs(vx) < 1e-4) return null;
 
-  const sketch = useCallback(
-    (p) => {
-      const setupSimulation = () => {
-        const canvasHeight = p.height;
+          const stoppingForce = (Math.abs(vx) * body.params.mass) / ctx.dt;
+          return { x: -Math.sign(vx) * Math.min(damping, stoppingForce), y: 0 };
+        },
+        { label: "friction" }
+      ),
 
-        setCanvasHeight(canvasHeight);
+      LockAxis(block, { y: GROUND_Y }),
 
-        const {
-          springRestLength,
-          springK,
-          bobMass,
-          bobSize,
-          bobColor,
-          springColor,
-          anchorColor,
-        } = inputsRef.current;
-
-        // Anchor sits on the ground, near the left wall
-        const anchorPhysics = p.createVector(0.2, GROUND_Y);
-
-        // Body starts at rest length away from anchor, on the same ground Y
-        const initialPhysics = p.createVector(
-          anchorPhysics.x + springRestLength,
-          GROUND_Y
-        );
-
-        bodyRef.current = new PhysicsBody(p, {
-          mass: bobMass,
-          size: bobSize,
-          color: bobColor,
-          shape: "circle",
-        });
-        bodyRef.current.state.position.set(initialPhysics);
-        bodyRef.current.state.velocity.set(0, 0);
-
-        springRef.current = new Spring(
-          p,
-          anchorPhysics,
-          springRestLength,
-          springK,
-          {
-            color: springColor,
-            anchorColor: anchorColor,
-          }
-        );
-
-        forceRendererRef.current = new ForceRenderer({
-          showLabels: true,
-          colors: { spring: springColor },
-        });
-
-        dragControllerRef.current = new DragController({ snapBack: false });
-      };
-
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
-        setupSimulation();
-      };
-
-      p.draw = () => {
-        if (!bodyRef.current || !springRef.current) return;
-
-        const dt = computeDelta(p);
-        if (dt === 0) return;
-
-        const { springK, springRestLength, bobMass, minCompressionLength } =
-          inputsRef.current;
-
-        const effectiveMinLength = Math.min(
-          minCompressionLength,
-          springRestLength
-        );
-
-        setCanvasHeight(p.height);
-
-        springRef.current.k = springK;
-        springRef.current.restLength = springRestLength;
-        bodyRef.current.updateParams({
-          mass: bobMass,
-          size: inputsRef.current.bobSize,
-          color: inputsRef.current.bobColor,
-        });
-
-        if (!dragControllerRef.current.isDragging()) {
-          const anchorX = springRef.current.anchor.x;
-          const bodyX = bodyRef.current.state.position.x;
-          const currentLength = bodyX - anchorX;
-
-          // Only restrict LEFT side (compression limit)
-          if (currentLength < effectiveMinLength) {
-            bodyRef.current.state.position.x = anchorX + effectiveMinLength;
-            bodyRef.current.state.velocity.x = Math.max(
-              0,
-              bodyRef.current.state.velocity.x
-            );
-          }
-
-          const displacement = currentLength - springRestLength;
-
-          // Spring only pushes (compression)
-          if (displacement < 0) {
-            const springForceX = -springK * displacement;
-            bodyRef.current.applyForce(p.createVector(springForceX, 0));
-          }
-
-          const vx = bodyRef.current.state.velocity.x;
-          if (Math.abs(vx) > 0.0001) {
-            const friction = -Math.sign(vx) * inputsRef.current.bobDamping;
-            bodyRef.current.applyForce(p.createVector(friction, 0));
-          }
-
-          // Damping ONLY while compressed (simulates spring's internal damping)
-          // Once body is free, no damping — it slides freely
-          // if (displacement < 0) {
-          //   const vx = bodyRef.current.state.velocity.x;
-          //   if (Math.abs(vx) > 0.001) {
-          //     bodyRef.current.applyForce(p.createVector(-bobDamping * vx, 0));
-          //   }
-          // }
-
-          bodyRef.current.step(dt);
-
-          // Hard horizontal constraint — lock Y to ground
-          bodyRef.current.state.position.y = GROUND_Y;
-          bodyRef.current.state.velocity.y = 0;
-
-          // Body can't travel left past minLength from anchor
-          const minX = anchorX + effectiveMinLength;
-          if (bodyRef.current.state.position.x < minX) {
-            bodyRef.current.state.position.x = minX;
-            bodyRef.current.state.velocity.x = Math.max(
-              0,
-              bodyRef.current.state.velocity.x
-            );
-          }
+      // The coil cannot be compressed past its solid length.
+      Strut(
+        block,
+        anchor,
+        () => Math.min(inputs.minCompressionLength, inputs.springRestLength),
+        {
+          render: "none",
         }
+      ),
 
-        // 3. Render
-        renderScene(p);
+      Dragging({
+        project: (body, ctx) => ({
+          x: Math.max(WALL_X + ctx.inputs.minCompressionLength, ctx.target.x),
+          y: GROUND_Y,
+        }),
+      }),
 
-        // 4. Update info panel
-        const canvasHeightMeters = toMeters(p.height);
-        const anchorX = springRef.current.anchor.x;
-        const currentLengthM = bodyRef.current.state.position.x - anchorX;
-        const displacement = currentLengthM - springRestLength;
+      ForceVectors({ bodies: block, only: ["spring"], scale: 5 }),
 
-        // Spring force is only real when compressed
-        const springForceMag = displacement < 0 ? -springK * displacement : 0;
-        const potentialEnergyElastic =
-          displacement < 0 ? 0.5 * springK * displacement * displacement : 0;
+      scenery(),
+      springVisual(block, anchor, inputs)
+    );
 
-        updateSimInfo(
-          p,
-          {
-            pos: bodyRef.current.state.position,
-            vel: bodyRef.current.state.velocity,
-            mass: bobMass,
-            k: springK,
-            restLength: springRestLength,
-            potentialEnergyElastic,
-            springForceMag,
-            currentLengthM,
-            anchorX,
-          },
-          { canvasHeight: p.height, canvasHeightMeters },
-          SimInfoMapper
-        );
-      };
+    return { block, anchor, spring };
+  },
 
-      const renderScene = (p) => {
-        p.background(getBackgroundColor());
+  info({ handles, inputs, p }) {
+    const { block, spring } = handles;
+    const currentLength = block.state.position.x - WALL_X;
+    const displacement = currentLength - inputs.springRestLength;
+    const compressed = displacement < 0;
 
-        drawGround(p);
-        drawWall(p);
+    return {
+      state: {
+        pos: block.state.position,
+        vel: block.state.velocity,
+        mass: block.params.mass,
+        k: inputs.springK,
+        restLength: inputs.springRestLength,
+        // Both are zero once the block has separated from the spring.
+        potentialEnergyElastic: compressed ? spring.potentialEnergy() : 0,
+        springForceMag: compressed ? spring.force() : 0,
+        currentLengthM: currentLength,
+        anchorX: WALL_X,
+      },
+      context: {
+        canvasHeight: p.height,
+        canvasHeightMeters: toMeters(p.height),
+      },
+    };
+  },
+});
 
-        // Spring visual: only draw line up to body when compressed,
-        // retract to rest length visually when body is beyond rest length.
-        const anchorX = springRef.current.anchor.x;
-        const bodyX = bodyRef.current.state.position.x;
-        const currentLength = bodyX - anchorX;
-        const { springRestLength } = inputsRef.current;
+/** Hatched wall and floor. */
+function scenery() {
+  return {
+    zIndex: -3,
+    render(ctx) {
+      const { p } = ctx;
+      const groundY = toScreen({ x: 0, y: GROUND_Y }).y;
+      const wallX = toPixels(WALL_X);
 
-        if (currentLength <= springRestLength) {
-          // Compressed or at rest — draw spring connected to body
-          springRef.current.showLine(bodyRef.current, true);
-        } else {
-          // Body has moved past rest length — spring retracts to rest length
-          const springTipX = anchorX + springRestLength;
-          const springTipY = GROUND_Y;
-          const fakeBody = {
-            state: {
-              position: p.createVector(springTipX, springTipY),
-            },
-          };
-          springRef.current.showLine(fakeBody, true);
-        }
-        springRef.current.show();
+      p.push();
 
-        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
-        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
+      p.stroke(180, 180, 190, 230);
+      p.strokeWeight(2);
+      p.line(0, groundY, p.width, groundY);
 
-        const displacement = currentLength - springRestLength;
-        if (displacement < 0) {
-          const renderer = forceRendererRef.current;
-          const springForceMagnitude =
-            -inputsRef.current.springK * displacement;
-          renderer.drawVector(
-            p,
-            screenPos.x,
-            screenPos.y,
-            springForceMagnitude,
-            0,
-            inputsRef.current.springColor,
-            "Spring"
-          );
-        }
-      };
-
-      const drawGround = (p) => {
-        const groundScreenY = p.height - toPixels(GROUND_Y);
-
-        // Ground surface line
-        p.stroke(180, 180, 190, 230);
-        p.strokeWeight(2);
-        p.line(0, groundScreenY, p.width, groundScreenY);
-
-        // Hatching below ground
-        p.stroke(140, 140, 150, 90);
-        p.strokeWeight(1);
-        const spacing = 18;
-        for (let x = 0; x < p.width + spacing; x += spacing) {
-          p.line(x, groundScreenY, x - 14, groundScreenY + 14);
-        }
-        p.noStroke();
-      };
-
-      const drawWall = (p) => {
-        const anchorScreenX = toPixels(springRef.current.anchor.x);
-        const wallHeight = p.height;
-
-        p.noStroke();
-        p.fill(100, 100, 110, 180);
-        p.rect(0, 0, anchorScreenX, wallHeight);
-
-        p.stroke(140, 140, 150, 120);
-        p.strokeWeight(1);
-        const spacing = 18;
-        for (let y = -wallHeight; y < wallHeight * 2; y += spacing) {
-          p.line(0, y, anchorScreenX, y + anchorScreenX);
-        }
-
-        p.stroke(200, 200, 210, 220);
-        p.strokeWeight(2);
-        p.line(anchorScreenX, 0, anchorScreenX, wallHeight);
-        p.noStroke();
-      };
-
-      // ── Mouse interaction
-
-      p.mousePressed = () => {
-        const mousePhysics = p.createVector(
-          toMeters(p.mouseX),
-          screenYToPhysicsY(p.mouseY)
-        );
-        dragControllerRef.current.handlePress(p, bodyRef.current, mousePhysics);
-      };
-
-      p.mouseDragged = () => {
-        if (dragControllerRef.current.isDragging()) {
-          // Horizontal drag only — clamp X to valid range
-          const { minCompressionLength } = inputsRef.current;
-          const anchorX = springRef.current.anchor.x;
-          const rawX = toMeters(p.mouseX);
-          const clampedX = Math.max(anchorX + minCompressionLength, rawX);
-          bodyRef.current.state.position.set(clampedX, GROUND_Y);
-          bodyRef.current.state.velocity.set(0, 0); // clear velocity while dragging
-        }
-      };
-
-      p.mouseReleased = () => dragControllerRef.current.handleRelease();
-
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-        setupSimulation();
-      };
-    },
-    [inputsRef, updateSimInfo]
-  );
-
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        resetTime();
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loaded) => {
-        setInputs(loaded);
-        setResetVersion((v) => v + 1);
-      }}
-      theory={theory}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
+      p.stroke(140, 140, 150, 90);
+      p.strokeWeight(1);
+      for (let x = 0; x < p.width + 18; x += 18) {
+        p.line(x, groundY, x - 14, groundY + 14);
       }
-    >
-      <div className="flex-1 relative">
-        <P5Wrapper sketch={sketch} key={resetVersion} />
-        <div className="absolute top-4 right-4 w-[300px]">
-          <SimInfoPanel data={simData} />
-        </div>
-      </div>
-    </SimulationLayout>
-  );
+
+      p.noStroke();
+      p.fill(100, 100, 110, 180);
+      p.rect(0, 0, wallX, p.height);
+
+      p.stroke(140, 140, 150, 120);
+      p.strokeWeight(1);
+      for (let y = -p.height; y < p.height * 2; y += 18) {
+        p.line(0, y, wallX, y + wallX);
+      }
+
+      p.stroke(200, 200, 210, 220);
+      p.strokeWeight(2);
+      p.line(wallX, 0, wallX, p.height);
+
+      p.pop();
+    },
+  };
+}
+
+/**
+ * The coil follows the block while in contact and snaps back to its rest length
+ * once the block has separated — otherwise it would appear to stretch along with
+ * a launch it is no longer part of.
+ */
+function springVisual(block, anchor, inputs) {
+  return {
+    zIndex: -1,
+    render(ctx) {
+      const rest = inputs.springRestLength;
+      const inContact = block.state.position.x - WALL_X <= rest;
+      const tip = inContact
+        ? block.state.position
+        : { x: WALL_X + rest, y: GROUND_Y };
+
+      drawCoil(ctx.p, anchor.state.position, tip, {
+        color: inputs.springColor,
+      });
+      drawAnchor(ctx.p, anchor.state.position, { color: inputs.anchorColor });
+    },
+  };
 }

@@ -44,36 +44,6 @@ export const INPUT_FIELDS = [
   { name: "ballColor", label: "Ball Color:", type: "color" },
 ];
 
-export const FORCES = [
-  {
-    key: "gravity",
-    color: "blue",
-    computeFn: ({ mass }, inputs) => {
-      return { x: 0, y: mass * inputs.gravity };
-    },
-  },
-  {
-    key: "normal",
-    color: "green",
-    computeFn: ({ mass, pos, radius }, inputs, { canvasHeightMeters }) => {
-      const bottomY = canvasHeightMeters;
-      const contact = pos.y + radius >= bottomY - 1e-9;
-      if (contact) {
-        return { x: 0, y: -mass * inputs.gravity };
-      }
-      return null;
-    },
-  },
-  {
-    key: "velocity",
-    color: "red",
-    computeFn: ({ vel }) => {
-      if (!vel) return null;
-      return { x: vel.x, y: vel.y };
-    },
-  },
-];
-
 /**
  * SimInfoMapper for the bouncing ball simulation.
  *

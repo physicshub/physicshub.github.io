@@ -1,17 +1,20 @@
-// app/(pages)/simulations/ParabolicMotion/page.jsx
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation";
-
-// --- Core Physics & Constants ---
-import { toMeters, toPixels } from "../app/(core)/constants/Utils.js";
 import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-} from "../app/(core)/constants/Time.js";
+  createSimulation,
+  Gravity,
+  Wind,
+  Drag,
+  Ground,
+  Dragging,
+  ForceVectors,
+  drawPath,
+  drawSegment,
+  toScreen,
+  SCENE_COLORS,
+  formulas,
+} from "../app/(core)/engine/index.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
@@ -19,497 +22,150 @@ import {
   computeProjectileAnalytics,
 } from "../app/(core)/data/configs/ParabolicMotion.js";
 
-// --- Centralized Physics Components ---
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
-import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
-import DragController from "../app/(core)/physics/DragController.js";
+/**
+ * Projectile motion.
+ *
+ * The ball is launched analytically (the predicted parabola comes from the
+ * closed-form solution) but flies numerically, so switching on quadratic drag
+ * or wind makes the real path visibly depart from the ideal guide.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
+  simInfoRefs: () => ({
+    launchMetadataRef: { current: { startPos: null, startMs: 0, stats: null } },
+  }),
 
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
+  build({ world, p, inputs, bounds, refs, infoRefs }) {
+    const ball = world.addBody({
+      label: "ball",
+      mass: () => Math.max(inputs.mass, 0.1),
+      size: () => inputs.size,
+      color: () => inputs.ballColor,
+      restitution: 0,
+      at: [Math.max(toMeters(80), bounds.width * 0.12), inputs.h0],
+      trail: () => inputs.trailEnabled,
+      trailLength: 200,
+    });
 
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-
-const TRAJECTORY_STEPS = 96;
-
-export default function ParabolicMotion() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
-
-  // References
-  const bodyRef = useRef(null);
-  const forceRendererRef = useRef(null);
-  const dragControllerRef = useRef(null);
-  const trailLayerRef = useRef(null);
-  const needsRelaunchRef = useRef(true);
-  const predictedPathRef = useRef([]);
-  const launchMetadataRef = useRef({
-    startPos: null,
-    startMs: 0,
-    stats: null,
-    radius: INITIAL_INPUTS.size / 2,
-  });
-
-  const { simData, updateSimInfo } = useSimInfo({
-    customRefs: { launchMetadataRef, predictedPathRef },
-  });
-
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
-      needsRelaunchRef.current = true;
-    },
-    [setInputs]
-  );
-
-  const sketch = useCallback(
-    (p) => {
-      const resetTrailLayer = () => {
-        if (!trailLayerRef.current) return;
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-        trailLayerRef.current.background(r, g, b);
-      };
-
-      const buildTrajectoryPoints = (analytics, startPos, gravity) => {
-        if (!analytics || !startPos) return [];
-        if (!isFinite(analytics.flightTime) || analytics.flightTime <= 0) {
-          return [];
-        }
-
-        const points = [];
-        const dt = analytics.flightTime / TRAJECTORY_STEPS;
-
-        for (let i = 0; i <= TRAJECTORY_STEPS; i++) {
-          const t = dt * i;
-          const x = startPos.x + analytics.vx0 * t;
-          const y = startPos.y + analytics.vy0 * t + 0.5 * -gravity * t * t;
-
-          points.push({
-            x: toPixels(x),
-            y: p.height - toPixels(y),
-          });
-        }
-        return points;
-      };
-
-      const recomputeLaunch = (hardResetTrail = false) => {
-        if (!bodyRef.current) return;
-
-        const { mass, size, gravity, v0, angle, h0 } = inputsRef.current;
-
-        // Sync body parameters
-        bodyRef.current.updateParams({
-          mass: Math.max(mass, 0.1),
-          size,
-          color: inputsRef.current.ballColor,
-          restitution: 0,
-        });
-
-        const canvasHeightMeters = toMeters(p.height);
-        const canvasWidthMeters = toMeters(p.width);
-        const radius = size / 2;
-
-        // Ground for center-based system
-        const groundY = canvasHeightMeters - radius;
-
-        // Clamp launch height to be between 0 and ground height
-        const safeHeight = Math.max(radius, h0);
-
-        // Convert height-above-ground → world Y (downward-positive)
-        const startY = safeHeight;
-
-        // Compute projectile analytics
-        const analytics = computeProjectileAnalytics({
-          v0,
-          angleDeg: angle,
-          h0: safeHeight,
-          gravity,
-        });
-
-        // Starting position
-        const startX = Math.max(toMeters(80), canvasWidthMeters * 0.12);
-
-        // Set initial velocity
-        const vx0 = analytics.vx0;
-        const vy0World = analytics.vy0; // Convert to downward-positive axis
-
-        bodyRef.current.state.position.set(startX, startY);
-        bodyRef.current.state.velocity.set(vx0, vy0World);
-        bodyRef.current.state.acceleration.set(0, 0);
-
-        // Update metadata
-        launchMetadataRef.current = {
-          startPos: { x: startX, y: startY },
-          startMs: p.millis(),
-          stats: analytics,
-          radius,
+    const dragging = Dragging({
+      // Dropping the ball somewhere else restarts the measurement from there.
+      onRelease: (body) => {
+        infoRefs.launchMetadataRef.current.startPos = {
+          x: body.state.position.x,
+          y: body.state.position.y,
         };
+        infoRefs.launchMetadataRef.current.startMs = p.millis();
+        refs.predictedPath = [];
+      },
+    });
 
-        // Build predicted path
-        predictedPathRef.current = buildTrajectoryPoints(
-          analytics,
-          { x: startX, y: startY },
-          gravity,
-          radius
-        );
+    world.add(
+      Gravity({ g: () => inputs.gravity }),
+      Drag({ c: () => inputs.dragCoeff }),
+      Wind({ strength: () => inputs.wind }),
 
-        needsRelaunchRef.current = false;
-        if (hardResetTrail) resetTrailLayer();
-      };
+      // Only a floor: the projectile is meant to be able to fly off screen.
+      Ground({ y: 0, friction: 0.05 }),
 
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
+      dragging,
+      ForceVectors({
+        bodies: ball,
+        scale: 10,
+        enabled: () => inputs.showVectors,
+      }),
 
-        trailLayerRef.current = p.createGraphics(w, h);
-        trailLayerRef.current.pixelDensity(1);
-        trailLayerRef.current.clear();
+      trajectoryGuide(refs, inputs),
 
-        // Initialize body
-        bodyRef.current = new PhysicsBody(p, {
-          mass: inputsRef.current.mass,
-          size: inputsRef.current.size,
-          color: inputsRef.current.ballColor,
-          shape: "circle",
-          restitution: 0,
-          position: p.createVector(
-            toMeters(w * 0.12),
-            toMeters(h) - inputsRef.current.size / 2
-          ),
-        });
+      // Double-clicking anywhere fires the projectile again.
+      { onDoubleClick: () => (refs.needsRelaunch = true) }
+    );
 
-        bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-        bodyRef.current.trail.maxLength = 200;
+    refs.launch = () => launch({ ball, p, inputs, bounds, refs, infoRefs });
+    refs.launch();
 
-        // Initialize force renderer
-        if (!forceRendererRef.current) {
-          forceRendererRef.current = new ForceRenderer({
-            scale: 10,
-            showLabels: true,
-            showMagnitude: true,
-          });
-        }
+    return { ball };
+  },
 
-        // Initialize drag controller
-        if (!dragControllerRef.current) {
-          dragControllerRef.current = new DragController({
-            snapBack: false,
-          });
-        }
+  update({ refs }) {
+    if (refs.needsRelaunch || refs.inputsChanged) {
+      refs.inputsChanged = false;
+      refs.needsRelaunch = false;
+      refs.launch();
+    }
+  },
 
-        recomputeLaunch(true);
-      };
+  info({ handles, p, infoRefs }) {
+    const startMs = infoRefs.launchMetadataRef.current?.startMs ?? 0;
+    return {
+      state: {
+        pos: handles.ball.state.position,
+        vel: handles.ball.state.velocity,
+      },
+      context: {
+        canvasHeightMeters: toMeters(p.height),
+        radius: handles.ball.radius,
+        elapsedTime: Math.max(0, (p.millis() - startMs) / 1000),
+      },
+    };
+  },
+});
 
-      p.draw = () => {
-        if (!bodyRef.current) return;
+/** Reset the ball to the launch state implied by the current inputs. */
+function launch({ ball, p, inputs, bounds, refs, infoRefs }) {
+  const radius = inputs.size / 2;
+  const startX = Math.max(toMeters(80), bounds.width * 0.12);
+  const startY = Math.max(radius, inputs.h0);
 
-        const fixedDt = 1 / 120;
-        let frameTime = computeDelta(p);
-        if (frameTime <= 0) return;
+  const analytics = computeProjectileAnalytics({
+    v0: inputs.v0,
+    angleDeg: inputs.angle,
+    h0: startY,
+    gravity: inputs.gravity,
+  });
 
-        // Relaunch if needed
-        if (needsRelaunchRef.current) {
-          recomputeLaunch();
-        }
+  ball.setPosition(startX, startY);
+  ball.setVelocity(analytics.vx0, analytics.vy0);
+  ball.clearTrail();
 
-        const {
-          gravity,
-          dragCoeff,
-          wind,
-          trailEnabled,
-          showGuides,
-          showVectors,
-        } = inputsRef.current;
+  infoRefs.launchMetadataRef.current = {
+    startPos: { x: startX, y: startY },
+    startMs: p.millis(),
+    stats: analytics,
+    radius,
+  };
 
-        // Sync body color and trail
-        bodyRef.current.params.color = inputsRef.current.ballColor;
-        bodyRef.current.trail.enabled = trailEnabled;
-        bodyRef.current.trail.color = inputsRef.current.ballColor;
+  refs.predictedPath = formulas.projectilePath(
+    { x: startX, y: startY },
+    analytics,
+    inputs.gravity
+  );
+}
 
-        while (frameTime > 0) {
-          const frameStep = Math.min(frameTime, fixedDt);
+/** The ideal, drag-free parabola plus a landing marker. */
+function trajectoryGuide(refs, inputs) {
+  return {
+    zIndex: -1,
+    render(ctx) {
+      const path = refs.predictedPath;
+      if (!inputs.showGuides || !path || path.length < 2) return;
 
-          // Apply forces (if not dragging)
-          if (!dragControllerRef.current.isDragging()) {
-            // Gravity
-            const gravityForce = ForceCalculator.gravity(
-              bodyRef.current.params.mass,
-              gravity
-            );
-            bodyRef.current.applyForce(
-              p.createVector(gravityForce.x, gravityForce.y)
-            );
+      drawPath(ctx.p, path, { color: SCENE_COLORS.guide });
 
-            // Air resistance
-            if (dragCoeff > 0) {
-              const vel = bodyRef.current.state.velocity;
-              const drag = ForceCalculator.airResistance(
-                vel.mag(),
-                dragCoeff,
-                false // quadratic drag
-              );
-              if (Math.abs(drag) > 0.001 && vel.mag() > 0) {
-                const dragForce = vel.copy().normalize().mult(drag);
-                bodyRef.current.applyForce(dragForce);
-              }
-            }
+      const landing = path[path.length - 1];
+      const screen = toScreen(landing);
 
-            // Wind force
-            if (wind !== 0) {
-              bodyRef.current.applyForce(p.createVector(wind, 0));
-            }
+      drawSegment(
+        ctx.p,
+        landing,
+        { x: landing.x, y: 0 },
+        { color: SCENE_COLORS.marker, weight: 1, dashed: true }
+      );
 
-            // Physics step
-            bodyRef.current.step(frameStep);
-
-            // Check ground collision
-
-            const radius = bodyRef.current.params.size / 2;
-            const groundY = radius;
-
-            if (bodyRef.current.state.position.y <= groundY) {
-              bodyRef.current.state.position.y = groundY;
-
-              if (bodyRef.current.state.velocity.y < 0) {
-                bodyRef.current.state.velocity.y = 0;
-              }
-
-              bodyRef.current.state.velocity.x *= 0.95; // Ground friction
-            }
-          }
-
-          frameTime -= frameStep;
-        }
-
-        // Render scene
-        renderScene(p, { showGuides, showVectors });
-
-        // Update sim info
-        const elapsed =
-          (p.millis() - (launchMetadataRef.current?.startMs ?? 0)) / 1000;
-        updateSimInfo(
-          p,
-          {
-            pos: bodyRef.current.state.position,
-            vel: bodyRef.current.state.velocity,
-          },
-          {
-            canvasHeightMeters: toMeters(p.height),
-            radius: bodyRef.current.params.size / 2,
-            elapsedTime: Math.max(0, elapsed),
-          },
-          SimInfoMapper
-        );
-      };
-
-      const renderScene = (p, opts) => {
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-
-        // Trail layer
-        if (!inputsRef.current.trailEnabled) {
-          trailLayerRef.current.background(r, g, b);
-        } else {
-          trailLayerRef.current.fill(r, g, b, 50);
-          trailLayerRef.current.noStroke();
-          trailLayerRef.current.rect(
-            0,
-            0,
-            trailLayerRef.current.width,
-            trailLayerRef.current.height
-          );
-        }
-
-        // Main canvas
-        p.clear();
-        p.image(trailLayerRef.current, 0, 0);
-
-        // Draw predicted trajectory
-        if (opts.showGuides && predictedPathRef.current.length > 1) {
-          drawTrajectory(p);
-        }
-
-        // Draw body
-        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
-        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
-
-        // Draw forces
-        if (opts.showVectors) {
-          const renderer = forceRendererRef.current;
-
-          // Gravity
-          renderer.drawWeight(
-            p,
-            screenPos.x,
-            screenPos.y,
-            bodyRef.current.params.mass,
-            inputsRef.current.gravity
-          );
-
-          // Drag (if active)
-          if (inputsRef.current.dragCoeff > 0) {
-            const vel = bodyRef.current.state.velocity;
-            const drag = ForceCalculator.airResistance(
-              vel.mag(),
-              inputsRef.current.dragCoeff,
-              false
-            );
-            if (Math.abs(drag) > 0.01 && vel.mag() > 0.01) {
-              const dragVec = vel.copy().normalize().mult(drag);
-              renderer.drawVector(
-                p,
-                screenPos.x,
-                screenPos.y,
-                dragVec.x,
-                dragVec.y,
-                renderer.colors.drag,
-                "Drag"
-              );
-            }
-          }
-
-          // Wind (if active)
-          if (inputsRef.current.wind !== 0) {
-            renderer.drawVector(
-              p,
-              screenPos.x,
-              screenPos.y,
-              inputsRef.current.wind,
-              0,
-              "#6366f1",
-              "Wind"
-            );
-          }
-        }
-
-        // Draw ground line
-        p.push();
-        p.stroke(100, 100, 120);
-        p.strokeWeight(2);
-        p.line(0, p.height, p.width, p.height);
-        p.pop();
-      };
-
-      const drawTrajectory = (p) => {
-        p.push();
-        p.noFill();
-        p.stroke("#7dd3fc");
-        p.strokeWeight(2);
-        p.beginShape();
-        predictedPathRef.current.forEach((point) => {
-          p.vertex(point.x, point.y);
-        });
-        p.endShape();
-
-        // Landing marker
-        const landingPoint =
-          predictedPathRef.current[predictedPathRef.current.length - 1];
-        if (landingPoint) {
-          p.push();
-          p.drawingContext.setLineDash([6, 6]);
-          p.stroke("#f472b6");
-          p.strokeWeight(1);
-          p.line(landingPoint.x, landingPoint.y, landingPoint.x, p.height);
-          p.drawingContext.setLineDash([]);
-          p.pop();
-
-          // Crosshair
-          p.stroke("#f472b6");
-          p.strokeWeight(2);
-          p.line(
-            landingPoint.x - 8,
-            landingPoint.y,
-            landingPoint.x + 8,
-            landingPoint.y
-          );
-        }
-        p.pop();
-      };
-
-      // Mouse events
-      p.mousePressed = () => {
-        if (!bodyRef.current) return;
-        dragControllerRef.current.handlePress(p, bodyRef.current);
-      };
-
-      p.mouseDragged = () => {
-        if (dragControllerRef.current.isDragging()) {
-          dragControllerRef.current.handleDrag(p);
-          needsRelaunchRef.current = false;
-          predictedPathRef.current = [];
-        }
-      };
-
-      p.mouseReleased = () => {
-        dragControllerRef.current.handleRelease((body) => {
-          launchMetadataRef.current.startPos = {
-            x: body.state.position.x,
-            y: body.state.position.y,
-          };
-          launchMetadataRef.current.startMs = p.millis();
-        });
-      };
-
-      p.doubleClicked = () => {
-        needsRelaunchRef.current = true;
-      };
-
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-
-        trailLayerRef.current = p.createGraphics(w, h);
-        trailLayerRef.current.pixelDensity(1);
-        trailLayerRef.current.clear();
-
-        needsRelaunchRef.current = true;
-      };
+      ctx.p.push();
+      ctx.p.stroke(SCENE_COLORS.marker);
+      ctx.p.strokeWeight(2);
+      ctx.p.line(screen.x - 8, screen.y, screen.x + 8, screen.y);
+      ctx.p.pop();
     },
-    [inputsRef, updateSimInfo]
-  );
-
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
-        needsRelaunchRef.current = true;
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        needsRelaunchRef.current = true;
-        setResetVersion((v) => v + 1);
-      }}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
+  };
 }

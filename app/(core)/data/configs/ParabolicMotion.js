@@ -90,45 +90,6 @@ export const INPUT_FIELDS = [
   { name: "ballColor", label: "Ball color:", type: "color" },
 ];
 
-export const FORCES = [
-  {
-    key: "gravity",
-    color: "#60a5fa",
-    computeFn: (_state, inputs) => ({
-      x: 0,
-      y: inputs.mass * inputs.gravity,
-    }),
-  },
-  {
-    key: "drag",
-    color: "#fb923c",
-    computeFn: ({ vel }, inputs) => {
-      const coeff = Math.max(0, inputs.dragCoeff || 0);
-      if (!coeff || !vel) return null;
-      const dragVec = vel.copy
-        ? vel.copy().mult(-inputs.mass * coeff)
-        : { x: 0, y: 0 };
-      return dragVec;
-    },
-  },
-  {
-    key: "wind",
-    color: "#34d399",
-    computeFn: (_state, inputs) => {
-      if (!inputs.wind) return null;
-      return { x: inputs.mass * inputs.wind, y: 0 };
-    },
-  },
-  {
-    key: "velocity",
-    color: "#facc15",
-    computeFn: ({ vel }) => {
-      if (!vel) return null;
-      return vel.copy ? vel.copy() : { ...vel };
-    },
-  },
-];
-
 export const computeProjectileAnalytics = ({ v0, angleDeg, h0, gravity }) => {
   const speed = Math.max(0, v0);
   const g = Math.abs(gravity ?? EARTH_G_SI);

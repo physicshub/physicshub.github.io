@@ -44,41 +44,6 @@ export const INPUT_FIELDS = [
   },
 ];
 
-export const FORCES = [
-  {
-    key: "centripetal",
-    color: "blue",
-    computeFn: ({ pos, center, speed, radius }) => {
-      if (!pos || !center) return null;
-
-      const dx = center.x - pos.x;
-      const dy = center.y - pos.y;
-
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist === 0) return null;
-
-      const dirX = dx / dist;
-      const dirY = dy / dist;
-
-      // a = v^2 / r
-      const acc = (speed * speed) / radius;
-
-      return {
-        x: dirX * acc,
-        y: dirY * acc,
-      };
-    },
-  },
-  {
-    key: "velocity",
-    color: "red",
-    computeFn: ({ vel }) => {
-      if (!vel) return null;
-      return { x: vel.x, y: vel.y };
-    },
-  },
-];
-
 export const SimInfoMapper = (state) => {
   const { position, velocity, radius, speed } = state;
 

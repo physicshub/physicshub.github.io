@@ -67,55 +67,6 @@ export const INPUT_FIELDS = [
   { name: "color", label: "Ball Color:", type: "color" },
 ];
 
-// Forze attive (ritornano { vec, color } per compatibilità con drawForceVector)
-export const FORCES = [
-  {
-    key: "gravity",
-    color: "blue",
-    computeFn: ({ mass }, inputs) => {
-      return { x: 0, y: mass * inputs.gravity };
-    },
-  },
-  {
-    key: "wind",
-    color: "orange",
-    computeFn: ({ mass, isBlowing }, inputs) => {
-      if (inputs.wind > 0 && isBlowing) {
-        return { x: mass * inputs.wind, y: 0 };
-      }
-      return null;
-    },
-  },
-  {
-    key: "normal",
-    color: "green",
-    computeFn: ({ mass, pos, radius }, inputs, { canvasHeightMeters }) => {
-      const bottomY = canvasHeightMeters;
-      const contact = pos.y + radius >= bottomY - 1e-9;
-      if (contact) {
-        return { x: 0, y: -mass * inputs.gravity };
-      }
-      return null;
-    },
-  },
-  {
-    key: "friction",
-    color: "red",
-    computeFn: ({ vel, pos, radius }, inputs, { canvasHeightMeters }) => {
-      const bottomY = canvasHeightMeters;
-      const contact = pos.y + radius >= bottomY - 1e-9;
-
-      if (contact && vel.mag() > 0 && inputs.frictionMu > 0) {
-        // Forza di attrito proporzionale solo alla velocità
-        const frictionForceMag = inputs.frictionMu * vel.mag();
-        const fric = vel.copy().mult(-1).setMag(frictionForceMag);
-        return { x: fric.x, y: fric.y };
-      }
-      return null;
-    },
-  },
-];
-
 // Mapper per SimInfoPanel
 export const SimInfoMapper = (state, context, refs) => {
   const { pos, vel, mass } = state;

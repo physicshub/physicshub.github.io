@@ -1,237 +1,139 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation.js";
-
-import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-} from "../app/(core)/constants/Time.js";
+import { createSimulation, MutualGravity } from "../app/(core)/engine/index.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/ThreeBody.js";
 
-import { toMeters } from "../app/(core)/constants/Utils.js";
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+/** Chenciner–Montgomery figure-eight orbit, in its canonical normalised units. */
+const FIGURE_EIGHT = {
+  positions: [
+    [-0.97000436, 0.24308753],
+    [0, 0],
+    [0.97000436, -0.24308753],
+  ],
+  velocities: [
+    [0.46620368, 0.43236573],
+    [-0.93240737, -0.86473146],
+    [0.46620368, 0.43236573],
+  ],
+  halfWidth: 0.97,
+};
 
-const SUBSTEPS = 40;
+const COLORS = ["#ef4444", "#3b82f6", "#22c55e"];
 
-const F8_POS = [
-  [-0.97000436, 0.24308753],
-  [0.0, 0.0],
-  [0.97000436, -0.24308753],
-];
-const F8_VEL = [
-  [0.46620368, 0.43236573],
-  [-0.93240737, -0.86473146],
-  [0.46620368, 0.43236573],
-];
-const F8_HALF_WIDTH = 0.97;
+/**
+ * The three-body problem.
+ *
+ * Chaotic and stiff: close approaches produce enormous accelerations, so the
+ * world runs 40 sub-steps per fixed step. Fewer and the figure-eight visibly
+ * unravels within seconds — the trajectory is real, the divergence is numerical.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
+  world: { substeps: 40 },
 
-export default function ThreeBody() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
+  build({ world, p, inputs, bounds }) {
+    const centre = { x: bounds.width / 2, y: bounds.height / 2 };
+    const extent = toMeters(Math.min(p.width, p.height));
 
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
-  const bodiesRef = useRef([]);
-  const { simData, updateSimInfo } = useSimInfo();
+    const { positions, velocities } = initialConditions(inputs, centre, extent);
 
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
+    // Cancel the net drift so the system stays on screen: with no external
+    // force the centre of mass moves at a constant velocity forever.
+    const count = positions.length;
+    const driftX = velocities.reduce((s, v) => s + v[0], 0) / count;
+    const driftY = velocities.reduce((s, v) => s + v[1], 0) / count;
 
-      if (name === "configuration") {
-        setResetVersion((v) => v + 1);
-      }
-    },
-    [setInputs]
-  );
+    const bodies = positions.map((position, i) =>
+      world.addBody({
+        label: `body-${i + 1}`,
+        mass: inputs.mass,
+        size: () => inputs.size,
+        color: COLORS[i],
+        draggable: false,
+        at: position,
+        velocity: [velocities[i][0] - driftX, velocities[i][1] - driftY],
+        trail: () => inputs.trailEnabled,
+        trailLength: 800,
+      })
+    );
 
-  const sketch = useCallback(
-    (p) => {
-      const applyGravity = (a, b, G) => {
-        const dx = b.state.position.x - a.state.position.x;
-        const dy = b.state.position.y - a.state.position.y;
-        const distSq = dx * dx + dy * dy;
-        if (distSq < 1e-4) return;
-        const dist = Math.sqrt(distSq);
-        const forceMag = (G * a.params.mass * b.params.mass) / distSq;
-        const fx = (forceMag * dx) / dist;
-        const fy = (forceMag * dy) / dist;
-        a.applyForce(p.createVector(fx, fy));
-        b.applyForce(p.createVector(-fx, -fy));
-      };
+    // Softening only has to defuse the r → 0 singularity; keep it far below the
+    // closest approach of the figure-eight or the orbit stops closing.
+    world.add(MutualGravity({ G: () => inputs.G, softening: 0.001 }));
 
-      const makeBody = (x, y, vx, vy, color, mass, size, trailEnabled) => {
-        const body = new PhysicsBody(p, {
-          size,
-          color,
-          shape: "circle",
-          position: p.createVector(x, y),
-        });
-        body.params.mass = mass;
-        body.state.velocity = p.createVector(vx, vy);
-        body.trail.enabled = trailEnabled;
-        body.trail.maxLength = 800;
-        return body;
-      };
+    return { bodies };
+  },
 
-      const setupSimulation = () => {
-        const { size, trailEnabled, chaos, mass, G, configuration } =
-          inputsRef.current;
+  info: () => ({ state: {}, context: {} }),
+});
 
-        const cx = toMeters(p.width / 2);
-        const cy = toMeters(p.height / 2);
-        const colors = ["#ef4444", "#3b82f6", "#22c55e"];
+/**
+ * Positions and velocities for the chosen preset, scaled to the canvas.
+ * Each preset is a genuine solution of the three-body problem; `chaos` adds a
+ * perturbation to show how quickly they stop being one.
+ */
+function initialConditions(inputs, centre, extent) {
+  const { configuration, G, mass, chaos } = inputs;
+  let positions;
+  let velocities;
 
-        let positions, velocities;
+  if (configuration === "figure8") {
+    const scale = (extent * 0.35) / FIGURE_EIGHT.halfWidth;
+    // The orbit is defined for G = m = 1; rescaling space by s rescales
+    // velocity by √(Gm/s) to keep it a solution.
+    const vScale = Math.sqrt((G * mass) / scale);
 
-        if (configuration === "figure8") {
-          const targetR = toMeters(Math.min(p.width, p.height) * 0.35);
-          const spatialScale = targetR / F8_HALF_WIDTH;
-          const vScale = Math.sqrt((G * mass) / spatialScale);
+    positions = FIGURE_EIGHT.positions.map(([x, y]) => [
+      centre.x + x * scale,
+      centre.y + y * scale,
+    ]);
+    velocities = FIGURE_EIGHT.velocities.map(([vx, vy]) => [
+      vx * vScale,
+      vy * vScale,
+    ]);
+  } else {
+    const R = extent * 0.3;
+    positions = [0, 1, 2].map((i) => {
+      const theta = (2 * Math.PI * i) / 3 + Math.PI / 2;
+      return [centre.x + R * Math.cos(theta), centre.y + R * Math.sin(theta)];
+    });
 
-          positions = F8_POS.map(([x, y]) => [
-            cx + x * spatialScale,
-            cy + y * spatialScale,
-          ]);
-          velocities = F8_VEL.map(([vx, vy]) => [vx * vScale, vy * vScale]);
-        } else if (configuration === "lagrange") {
-          const R = toMeters(Math.min(p.width, p.height) * 0.3);
-          const omega = Math.sqrt((G * mass) / (Math.sqrt(3) * R * R * R));
+    if (configuration === "lagrange") {
+      // Equilateral (Lagrange) rotation for three equal masses at circumradius
+      // R: the two pulls combine to Gm²/(√3R²) toward the centre, and setting
+      // that equal to mω²R gives ω² = Gm / (√3·R³).
+      const omega = Math.sqrt((G * mass) / (Math.sqrt(3) * R * R * R));
+      velocities = positions.map(([x, y]) => [
+        -omega * (y - centre.y),
+        omega * (x - centre.x),
+      ]);
+    } else {
+      // Free fall from rest, with a small kick to break the exact symmetry.
+      const kick = Math.sqrt((G * mass) / R) * 0.08;
+      velocities = positions.map(() => [
+        (Math.random() - 0.5) * kick,
+        (Math.random() - 0.5) * kick,
+      ]);
+    }
+  }
 
-          positions = [0, 1, 2].map((i) => {
-            const θ = (2 * Math.PI * i) / 3 + Math.PI / 2; // start with one body at top
-            return [cx + R * Math.cos(θ), cy + R * Math.sin(θ)];
-          });
+  if (chaos > 0) {
+    const positionJitter = chaos * extent * 0.04;
+    const velocityJitter = chaos * Math.sqrt(G * mass) * 0.2;
+    positions = positions.map(([x, y]) => [
+      x + (Math.random() - 0.5) * positionJitter,
+      y + (Math.random() - 0.5) * positionJitter,
+    ]);
+    velocities = velocities.map(([vx, vy]) => [
+      vx + (Math.random() - 0.5) * velocityJitter,
+      vy + (Math.random() - 0.5) * velocityJitter,
+    ]);
+  }
 
-          velocities = positions.map(([x, y]) => [
-            -omega * (y - cy),
-            omega * (x - cx),
-          ]);
-        } else {
-          const R = toMeters(Math.min(p.width, p.height) * 0.3);
-          const vKick = Math.sqrt((G * mass) / R) * 0.08; // tiny symmetry-breaking kick
-
-          positions = [0, 1, 2].map((i) => {
-            const θ = (2 * Math.PI * i) / 3 + Math.PI / 2;
-            return [cx + R * Math.cos(θ), cy + R * Math.sin(θ)];
-          });
-
-          velocities = positions.map(() => [
-            (Math.random() - 0.5) * vKick,
-            (Math.random() - 0.5) * vKick,
-          ]);
-        }
-
-        const pJitter = chaos * toMeters(Math.min(p.width, p.height) * 0.04);
-        const vJitter = chaos * Math.sqrt(G * mass) * 0.2;
-
-        let rawBodies = positions.map(([x, y], i) => {
-          let [vx, vy] = velocities[i];
-          return {
-            x: x + (Math.random() - 0.5) * pJitter,
-            y: y + (Math.random() - 0.5) * pJitter,
-            vx: vx + (Math.random() - 0.5) * vJitter,
-            vy: vy + (Math.random() - 0.5) * vJitter,
-            color: colors[i],
-          };
-        });
-
-        const comVx =
-          rawBodies.reduce((s, b) => s + b.vx, 0) / rawBodies.length;
-        const comVy =
-          rawBodies.reduce((s, b) => s + b.vy, 0) / rawBodies.length;
-        rawBodies = rawBodies.map((b) => ({
-          ...b,
-          vx: b.vx - comVx,
-          vy: b.vy - comVy,
-        }));
-
-        bodiesRef.current = rawBodies.map(({ x, y, vx, vy, color }) =>
-          makeBody(x, y, vx, vy, color, mass, size, trailEnabled)
-        );
-      };
-
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
-        setupSimulation();
-      };
-
-      p.draw = () => {
-        const dt = Math.min(computeDelta(p), 1 / 30);
-        if (dt === 0) return;
-
-        const { G } = inputsRef.current;
-        const bodies = bodiesRef.current;
-        const subDt = dt / SUBSTEPS;
-
-        for (let s = 0; s < SUBSTEPS; s++) {
-          for (let i = 0; i < bodies.length; i++)
-            for (let j = i + 1; j < bodies.length; j++)
-              applyGravity(bodies[i], bodies[j], G);
-          for (const b of bodies) b.step(subDt);
-        }
-
-        p.background(getBackgroundColor());
-        for (const b of bodies) b.draw(p);
-
-        updateSimInfo(p, {}, {}, SimInfoMapper);
-      };
-
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-        setupSimulation();
-      };
-    },
-    [inputsRef, updateSimInfo]
-  );
-
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        setResetVersion((v) => v + 1);
-      }}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
+  return { positions, velocities };
 }

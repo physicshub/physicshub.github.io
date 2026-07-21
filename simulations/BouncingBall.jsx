@@ -1,365 +1,78 @@
-// app/pages/simulations/BouncingBall.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { usePathname } from "next/navigation";
-
-// --- Core Physics & Constants ---
 import {
-  toMeters,
-  collideBoundary,
-  setCanvasHeight,
-} from "../app/(core)/constants/Utils.js";
-import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-} from "../app/(core)/constants/Time.js";
+  createSimulation,
+  Gravity,
+  Bounds,
+  Dragging,
+  ForceVectors,
+} from "../app/(core)/engine/index.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/BouncingBall.js";
-import chapters from "../app/(core)/data/chapters.js";
 
-// --- Centralized Physics Components ---
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import ForceCalculator from "../app/(core)/physics/ForceCalculator.js";
-import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
-import DragController from "../app/(core)/physics/DragController.js";
+/**
+ * A ball bouncing in a box.
+ *
+ * `Bounds` compensates for the work gravity does while the ball is overlapping
+ * the floor within a step, so restitution = 1 really is lossless and the ball
+ * returns to its release height indefinitely.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
+  simInfoRefs: () => ({
+    maxHeightRef: { current: 0 },
+    fallStartTimeRef: { current: 0 },
+  }),
 
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
+  build({ world, p, inputs, bounds, infoRefs }) {
+    const ball = world.addBody({
+      label: "ball",
+      mass: () => inputs.mass,
+      size: () => inputs.size,
+      color: () => inputs.ballColor,
+      restitution: () => inputs.restitution,
+      // Released just under the ceiling.
+      at: [bounds.width / 2, bounds.height - (inputs.size / 2 + 0.3)],
+      trail: () => inputs.trailEnabled,
+      trailLength: 200,
+    });
 
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+    world.add(
+      Gravity({ g: () => inputs.gravity }),
+      Bounds(),
 
-export default function BouncingBall() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
+      Dragging({
+        // Grabbing the ball starts a new drop, so the peak-height readout
+        // measures this fall and not a previous one.
+        onGrab: () => {
+          infoRefs.maxHeightRef.current = 0;
+        },
+        onRelease: () => {
+          infoRefs.fallStartTimeRef.current = p.millis();
+        },
+      }),
 
-  // References
-  const bodyRef = useRef(null);
-  const forceRendererRef = useRef(null);
-  const dragControllerRef = useRef(null);
-  const maxHeightRef = useRef(0);
-  const fallStartTimeRef = useRef(0);
-  const accumulatorRef = useRef(0);
+      ForceVectors({ bodies: ball, scale: 10 })
+    );
 
-  // Sim info
-  const { simData, updateSimInfo } = useSimInfo({
-    customRefs: { maxHeightRef, fallStartTimeRef },
-  });
+    infoRefs.fallStartTimeRef.current = p.millis();
 
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
-    },
-    [setInputs]
-  );
+    return { ball };
+  },
 
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
-  );
-
-  const sketch = useCallback(
-    (p) => {
-      let trailLayer = null;
-
-      const setupSimulation = () => {
-        const w = p.width;
-        const h = p.height;
-
-        const ballRadius = inputsRef.current.size / 2;
-        const topMarginMeters = ballRadius + 0.3;
-        const initialX = toMeters(w / 2);
-        const initialY = toMeters(h) - topMarginMeters;
-
-        if (!bodyRef.current) {
-          bodyRef.current = new PhysicsBody(p, {
-            mass: inputsRef.current.mass,
-            size: inputsRef.current.size,
-            color: inputsRef.current.ballColor,
-            shape: "circle",
-            restitution: inputsRef.current.restitution,
-            position: p.createVector(initialX, initialY),
-          });
-
-          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-          bodyRef.current.trail.maxLength = 200;
-          bodyRef.current.trail.color = inputsRef.current.ballColor;
-        } else {
-          bodyRef.current.reset({
-            position: p.createVector(initialX, initialY),
-          });
-          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-          bodyRef.current.trail.color = inputsRef.current.ballColor;
-        }
-
-        maxHeightRef.current = 0;
-        fallStartTimeRef.current = p.millis();
-
-        if (!forceRendererRef.current) {
-          forceRendererRef.current = new ForceRenderer({
-            scale: 10,
-            showLabels: true,
-            showMagnitude: true,
-          });
-        }
-
-        if (!dragControllerRef.current) {
-          dragControllerRef.current = new DragController({
-            snapBack: false,
-            smoothing: 0.3,
-          });
-        }
-      };
-
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
-
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-        trailLayer.clear();
-
-        setupSimulation();
-
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-        trailLayer.background(r, g, b);
-        p.background(r, g, b);
-      };
-
-      p.draw = () => {
-        if (!bodyRef.current || !trailLayer) return;
-
-        const rawDt = computeDelta(p);
-        if (rawDt === 0) return;
-
-        // Fixed timestep accumulator — prevents energy drift from variable frame rate
-        const FIXED_DT = 1 / 120; // 120Hz physics steps
-        accumulatorRef.current += rawDt;
-        // Cap accumulator to prevent spiral of death
-        if (accumulatorRef.current > 0.1) accumulatorRef.current = 0.1;
-        const dt = FIXED_DT;
-        if (accumulatorRef.current < FIXED_DT) return;
-        accumulatorRef.current -= FIXED_DT;
-
-        const { size, gravity, trailEnabled, ballColor, mass, restitution } =
-          inputsRef.current;
-
-        // Sync body parameters
-        bodyRef.current.updateParams({
-          mass,
-          size,
-          color: ballColor,
-          restitution,
-        });
-        bodyRef.current.trail.enabled = trailEnabled;
-        bodyRef.current.trail.color = ballColor;
-
-        // Apply gravity
-        const gravityForce = ForceCalculator.gravity(mass, gravity);
-        bodyRef.current.applyForce(
-          p.createVector(gravityForce.x, gravityForce.y)
-        );
-
-        // Physics step + collision (if not dragging)
-        if (!dragControllerRef.current.isDragging()) {
-          bodyRef.current.step(dt);
-
-          // collideBoundary is energy-conserving: it accounts for how much
-          // energy gravity added during the penetration sub-step and removes
-          // it before reflecting, so restitution=1 gives a perfectly elastic
-          // bounce with no height loss.
-          const bounds = {
-            w: toMeters(p.width),
-            h: toMeters(p.height),
-          };
-          const { pos, vel } = collideBoundary(
-            bodyRef.current.state.position,
-            bodyRef.current.state.velocity,
-            bounds,
-            size / 2,
-            restitution,
-            bodyRef.current.state.acceleration // already reset to 0 after step(), but kept for API correctness
-          );
-          bodyRef.current.state.position = pos;
-          bodyRef.current.state.velocity = vel;
-        }
-
-        // Height above floor = ball center y - radius
-        const currentHeight = bodyRef.current.state.position.y - size / 2;
-        if (currentHeight > maxHeightRef.current) {
-          maxHeightRef.current = currentHeight;
-        }
-
-        // Render scene
-        renderScene(p, { gravityForce });
-
-        const floorY = size / 2;
-        updateSimInfo(
-          p,
-          {
-            pos: bodyRef.current.state.position,
-            vel: bodyRef.current.state.velocity,
-            mass,
-            kineticEnergy: bodyRef.current.getKineticEnergy(),
-            potentialEnergy: bodyRef.current.getPotentialEnergy(
-              gravity,
-              floorY
-            ),
-          },
-          {
-            gravity,
-            canvasHeight: p.height,
-            maxHeight: maxHeightRef.current,
-          },
-          SimInfoMapper
-        );
-      };
-
-      const renderScene = (p) => {
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-
-        if (inputsRef.current.trailEnabled) {
-          trailLayer.fill(r, g, b, 60);
-          trailLayer.noStroke();
-          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
-          p.clear();
-          p.image(trailLayer, 0, 0);
-        } else {
-          trailLayer.background(r, g, b);
-          p.background(r, g, b);
-        }
-
-        bodyRef.current.checkHover(p, bodyRef.current.toScreenPosition());
-        const screenPos = bodyRef.current.draw(p, { hoverEffect: true });
-
-        const renderer = forceRendererRef.current;
-        renderer.drawWeight(
-          p,
-          screenPos.x,
-          screenPos.y,
-          bodyRef.current.params.mass,
-          inputsRef.current.gravity
-        );
-      };
-
-      p.mousePressed = () => {
-        if (!bodyRef.current) return;
-        const pressed = dragControllerRef.current.handlePress(
-          p,
-          bodyRef.current
-        );
-        if (pressed) maxHeightRef.current = 0;
-      };
-
-      p.mouseDragged = () => {
-        dragControllerRef.current.handleDrag(p);
-      };
-
-      p.mouseReleased = () => {
-        dragControllerRef.current.handleRelease(() => {
-          fallStartTimeRef.current = p.millis();
-        });
-      };
-
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-        setCanvasHeight(h);
-
-        if (trailLayer) trailLayer.remove();
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-        trailLayer.background(r, g, b);
-
-        // Fix #194: If the body was never created (zero-height canvas at
-        // setup time), initialise it now that we have real dimensions.
-        if (!bodyRef.current) {
-          setupSimulation();
-          return;
-        }
-
-        const { size } = bodyRef.current.params;
-        const radius = size / 2;
-        const maxX = toMeters(w) - radius;
-        const maxY = toMeters(h) - radius;
-
-        if (bodyRef.current.state.position.x > maxX)
-          bodyRef.current.state.position.x = maxX;
-        if (bodyRef.current.state.position.y > maxY)
-          bodyRef.current.state.position.y = maxY;
-        if (bodyRef.current.state.position.x < radius)
-          bodyRef.current.state.position.x = radius;
-        if (bodyRef.current.state.position.y < radius)
-          bodyRef.current.state.position.y = radius;
-      };
-    },
-    [inputsRef, maxHeightRef, fallStartTimeRef, updateSimInfo]
-  );
-
-  useEffect(() => {
-    return () => {
-      if (bodyRef.current) bodyRef.current = null;
+  info({ handles, inputs, p }) {
+    const { ball } = handles;
+    return {
+      state: {
+        pos: ball.state.position,
+        vel: ball.state.velocity,
+        mass: ball.params.mass,
+        size: ball.params.size,
+      },
+      context: { gravity: inputs.gravity, canvasHeight: p.height },
     };
-  }, []);
-
-  const handleReset = useCallback(() => {
-    const wasPaused = isPaused();
-    resetTime();
-    maxHeightRef.current = 0;
-    fallStartTimeRef.current = 0;
-    setTimeout(() => {
-      if (wasPaused) setPause(true);
-      setResetVersion((v) => v + 1);
-    }, 0);
-  }, []);
-
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={handleReset}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        maxHeightRef.current = 0;
-        fallStartTimeRef.current = 0;
-        setResetVersion((v) => v + 1);
-      }}
-      theory={theory}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
-}
+  },
+});
