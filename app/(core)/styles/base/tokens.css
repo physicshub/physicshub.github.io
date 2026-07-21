@@ -1,0 +1,119 @@
+/* ============================================================================
+   DESIGN TOKENS
+   Single source of truth for every custom property used by the app.
+   Dark is the default theme; the [data-theme="light"] block only redeclares
+   the values that actually differ.
+   ============================================================================ */
+
+:root {
+  /* --- Brand ------------------------------------------------------------ */
+  --accent-color: #00e6e6;
+  --glow-color: #fff;
+  --stars-color: #ffffff; /* read from JS in FullLandingPage.tsx */
+
+  /* --- Surfaces --------------------------------------------------------- */
+  --bg-color: #0b0f19;
+  --card-bg: #111;
+  --bg-gradient: linear-gradient(135deg, #0a0a0a, #141416);
+  --bg-gradient-rotated: linear-gradient(0, #0a0a0a, #141416);
+  --bg: rgba(255, 255, 255, 0.04); /* soft panel fill */
+  --bg-light: rgba(255, 255, 255, 0.02); /* toggles, table headers */
+  --bg-darker: #0d0d0d;
+
+  /* --- Text ------------------------------------------------------------- */
+  --text-color: #e8eefb;
+  --title-color: #e8eefb;
+  --subtitle-color: #cfd6e3;
+  --text-primary: #fff;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-placeholder: #999;
+  --text-code: #d4d4d4;
+  --text-shadow-color: #ffffff82;
+  --footer-link-color: #ffffff;
+
+  /* --- Landing / hero --------------------------------------------------- */
+  --ph-fg: #e8eefb;
+  --ph-fg-muted: rgba(232, 238, 251, 0.55);
+  --ph-grid: rgba(115, 130, 175, 0.16);
+
+  /* --- Borders, inputs, interaction ------------------------------------- */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(0, 70, 70, 0.6);
+  --input-border: rgb(0, 230, 230);
+  --focus-ring: rgba(59, 130, 246, 0.5);
+  --primary-light: rgba(59, 130, 246, 0.1);
+  --tooltip-bg: rgba(0, 0, 0, 0.9);
+  --color-background-hover: rgba(255, 255, 255, 0.03);
+  --color-background-active: rgba(255, 255, 255, 0.05);
+  --color-background-code: #1e1e1e;
+
+  /* --- Status ----------------------------------------------------------- */
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --info-color: #3b82f6;
+  --tip-color: #8b5cf6;
+  --error-color: #ef4444;
+  --bg-success: rgba(16, 185, 129, 0.12);
+  --bg-warning: rgba(245, 158, 11, 0.08);
+  --bg-info: rgba(59, 130, 246, 0.08);
+  --bg-note: rgba(255, 255, 0, 0.07);
+
+  /* --- Geometry --------------------------------------------------------- */
+  --border-radius: 10px;
+  --ph-radius: 14px;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-xs: 4px;
+  --max-content-width: 1200px;
+
+  /* --- Typography ------------------------------------------------------- */
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+}
+
+[data-theme="light"] {
+  /* --- Brand ------------------------------------------------------------ */
+  --accent-color: #00b8b8;
+  --glow-color: #000;
+  --stars-color: var(--accent-color);
+
+  /* --- Surfaces --------------------------------------------------------- */
+  --bg-color: #ffffff;
+  --card-bg: #f8f9fa;
+  --bg-gradient: linear-gradient(135deg, #ffffff, #f8f9fa);
+  --bg-gradient-rotated: linear-gradient(0, #ffffff, #f8f9fa);
+  --bg: rgba(0, 0, 0, 0.08);
+  --bg-light: rgba(0, 0, 0, 0.04);
+  --bg-darker: #f0f0f0;
+
+  /* --- Text ------------------------------------------------------------- */
+  --text-color: #1a1a1a;
+  --title-color: #003344;
+  --subtitle-color: #005566;
+  --text-primary: #333;
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-muted: rgba(0, 0, 0, 0.7);
+  --text-code: #333;
+  --text-shadow-color: #00000082;
+  --footer-link-color: #000000;
+
+  /* --- Landing / hero --------------------------------------------------- */
+  --ph-fg: #1a1a1a;
+  --ph-fg-muted: rgba(26, 26, 26, 0.65);
+  --ph-grid: rgba(0, 0, 0, 0.08);
+
+  /* --- Borders, inputs, interaction ------------------------------------- */
+  --border-color: rgba(0, 0, 0, 0.15);
+  --input-bg: #ffffff;
+  --input-border: #00b8b8;
+  --color-background-hover: rgba(0, 0, 0, 0.04);
+  --color-background-active: rgba(0, 0, 0, 0.08);
+  --color-background-code: #f7f7f7;
+
+  /* --- Status ----------------------------------------------------------- */
+  --bg-success: rgba(16, 185, 129, 0.1);
+  --bg-warning: rgba(245, 158, 11, 0.1);
+  --bg-info: rgba(59, 130, 246, 0.1);
+  --bg-note: rgba(255, 255, 0, 0.15);
+}

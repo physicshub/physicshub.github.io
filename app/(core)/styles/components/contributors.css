@@ -1,0 +1,175 @@
+/* ============================================================================
+   CONTRIBUTORS GRID  (components/ContributorsSection.jsx + its skeleton)
+   ============================================================================ */
+
+.contributors-section {
+  margin: 60px 0 80px 0;
+  padding-bottom: 40px;
+  text-align: center;
+}
+
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.contributor-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0px 0px 5px var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.contributor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 0px 13px var(--accent-color);
+}
+
+.contributor-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  transition: border-color 0.3s ease;
+}
+
+.contributor-card:hover .contributor-avatar {
+  border-color: var(--accent-color);
+}
+
+.contributor-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contributor-name {
+  margin: 0 0 8px 0;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.contributor-data {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9em;
+}
+
+/* --- Loading skeleton ------------------------------------------------------ */
+
+.contributor-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 15rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  background: #00e6e614;
+  border: #00e6e64b solid 1px;
+  animation: pulse 1.5s infinite;
+}
+
+/* --- Light theme ----------------------------------------------------------- */
+
+[data-theme="light"] .contributor-data {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+[data-theme="light"] .contributors-section .contributor-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .contributors-section .contributor-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: var(--accent-color);
+}
+
+[data-theme="light"] .contributors-section .contributor-name {
+  color: #1a1a1a;
+}
+
+[data-theme="light"] .contributors-section .contributor-data {
+  color: #4a4a4a;
+}
+
+/* --- Responsive ------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .contributors-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .contributor-card {
+    padding: 15px;
+  }
+
+  .contributor-avatar {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contributors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .contributor-card {
+    padding: 12px;
+  }
+
+  .contributor-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .contributor-name {
+    font-size: 1em;
+  }
+
+  .contributor-data {
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  .contributors-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Horizontal layout: avatar on the left, text on the right */
+  .contributor-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 15px;
+  }
+
+  .contributor-avatar {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+
+  .contributor-info {
+    align-items: flex-start;
+  }
+}

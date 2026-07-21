@@ -1,0 +1,31 @@
+/* ============================================================================
+   404 PAGE  (app/not-found.jsx)
+   ============================================================================ */
+
+.page-404 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 3rem 5rem;
+  margin-top: 5rem;
+}
+
+.page-404 h1 {
+  font-size: 8rem;
+  text-shadow: 0 0 12px var(--glow-color);
+  margin-bottom: 1rem;
+}
+
+.page-404 p {
+  font-size: 1.25rem;
+  max-width: 600px;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+
+.page-404 > * {
+  animation: fadeInUp 0.8s ease-out both;
+}

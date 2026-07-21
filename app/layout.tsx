@@ -1,6 +1,4 @@
 import "./(core)/styles/index.css";
-import "./(core)/styles/theory.css";
-import "./(core)/styles/landing.css";
 import "katex/dist/katex.min.css";
 import Script from "next/script";
 import Layout from "./(core)/components/Layout.jsx";

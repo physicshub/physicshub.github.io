@@ -1,0 +1,62 @@
+/* ============================================================================
+   SIMULATIONS INDEX  (/simulations)
+   ============================================================================ */
+
+.simulations-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 6.5rem;
+}
+
+/* Full height intro, only shown on the first visit */
+.simulations-hero {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+.simulations-hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--title-color);
+  margin-bottom: 1rem;
+}
+
+.simulations-hero p {
+  max-width: 680px;
+  font-size: 1.1rem;
+  color: var(--subtitle-color);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.simulations-content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.simulations-content > * {
+  width: 100%;
+}
+
+/* Card grid */
+main.simulations-page {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+  width: 100%;
+  padding: 2rem;
+  margin-bottom: 7.5rem;
+  margin-inline: auto;
+}

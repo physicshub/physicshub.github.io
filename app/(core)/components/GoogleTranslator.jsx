@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import "../styles/translator.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGlobeAfrica,

@@ -1,3 +1,7 @@
+/* ============================================================================
+   POPUP / FEEDBACK MODAL  (components/Popup.tsx, context/FeedbackProvider.tsx)
+   ============================================================================ */
+
 .popup-overlay {
   position: fixed;
   inset: 0;
@@ -10,33 +14,42 @@
   transition: opacity 0.3s ease;
 }
 
+.popup-overlay.show {
+  opacity: 1;
+}
+
 .popup-overlay.hide {
   opacity: 0;
   pointer-events: none;
 }
 
-.popup-overlay.show {
-  opacity: 1;
-}
-
 .popup-container {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* meglio top-align per contenuti variabili */
+  justify-content: flex-start;
   background: var(--bg-gradient);
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
   box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
   border-radius: var(--border-radius);
   padding: 1.5rem;
-
   width: 30rem;
   max-width: 70%;
-  max-height: 80vh; /* non oltre l’altezza viewport */
-  overflow-y: auto; /* scroll se i contenuti superano l’altezza */
-
+  max-height: 80vh;
+  overflow-y: auto;
+  /* Entry state — .popup-enter / .popup-exit drive the animation */
   transform: scale(0.8);
   opacity: 0;
   transition: all 0.3s ease;
+}
+
+.popup-enter {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.popup-exit {
+  transform: scale(0.8);
+  opacity: 0;
 }
 
 .popup-container > h2 {
@@ -51,22 +64,6 @@
   font-size: 1rem;
 }
 
-.popup-enter {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.popup-exit {
-  transform: scale(0.8);
-  opacity: 0;
-}
-
-.popup-buttons {
-  display: flex;
-  gap: 1rem;
-  cursor: pointer;
-}
-
 .popup-header {
   position: relative;
   margin-bottom: 1rem;
@@ -78,6 +75,14 @@
   right: 0;
   margin-top: 1.5rem;
 }
+
+.popup-buttons {
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+/* --- Feedback form --------------------------------------------------------- */
 
 .feedback-form {
   margin: 20px 0;

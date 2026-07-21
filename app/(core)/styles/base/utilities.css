@@ -1,0 +1,51 @@
+/* ============================================================================
+   UTILITIES
+   Small, single purpose helpers usable from any component.
+   ============================================================================ */
+
+/* Visible to screen readers only */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Skeleton loading sweep — requires a positioned parent */
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: shimmer 1s infinite;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-pulse-strong {
+  animation: pulse-strong 1.2s ease-in-out infinite;
+}

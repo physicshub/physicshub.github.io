@@ -1,0 +1,224 @@
+/* ============================================================================
+   BUTTONS
+   .ph-btn      → primary site button (landing, simulations, blog)
+   .btn-glow    → legacy neon button (404 page, simulation controls)
+   .back-to-home / .btn-close → one off controls
+   ============================================================================ */
+
+.ph-btn {
+  --pad-x: 1.1rem;
+  --pad-y: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: var(--pad-y) var(--pad-x);
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease,
+    text-shadow 0.4s ease;
+  will-change: transform;
+  cursor: pointer;
+}
+
+.ph-btn--primary {
+  color: #001919;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--accent-color), white 20%),
+    var(--accent-color)
+  );
+  box-shadow:
+    0 18px 38px color-mix(in oklab, var(--accent-color), transparent 68%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.ph-btn--primary:hover {
+  transform: scale3d(1.03, 1.03, 1);
+  box-shadow: 0 10px 28px
+    color-mix(in oklab, var(--accent-color), transparent 68%);
+}
+
+.ph-btn--ghost {
+  color: var(--ph-fg);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
+}
+
+.ph-btn--ghost:hover {
+  background: color-mix(in oklab, var(--accent-color), transparent 86%);
+  transform: translateY(-1px);
+}
+
+/* Larger call to action variant */
+.main-btn {
+  --pad-x: 1.35rem;
+  --pad-y: 0.9rem;
+  font-size: 1.05rem;
+}
+
+/* --- Neon outline button --------------------------------------------------- */
+
+.btn-glow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  color: var(--accent-color);
+  text-shadow: 0 0 4px var(--glow-color);
+  background: rgba(0, 230, 230, 0);
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 230, 230, 0.4) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+  transform: scale(0);
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+.btn-glow:hover {
+  background: rgba(0, 230, 230, 0.1);
+  box-shadow: 0 0 12px var(--accent-color);
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
+
+.btn-glow:active {
+  transform: scale(0.95);
+  transition: transform 0.1s;
+}
+
+[data-theme="light"] .btn-glow:hover {
+  background: rgba(0, 184, 184, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 184, 184, 0.2);
+}
+
+/* --- Back to home ---------------------------------------------------------- */
+
+.back-to-home {
+  margin: 1.5rem 0.7rem;
+  text-align: left;
+}
+
+.back-to-home__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75em 1.5em;
+  border: 0.1em solid var(--accent-color);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0);
+  color: var(--accent-color);
+  font-family: inherit;
+  text-shadow: 0 0 4px var(--accent-color);
+  overflow: hidden;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s,
+    transform 0.1s;
+}
+
+.back-to-home__link::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 230, 230, 0.1) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.back-to-home__link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.back-to-home__link:hover,
+.back-to-home__link:focus {
+  background: rgba(0, 230, 230, 0.1);
+  box-shadow: 0 0 12px var(--accent-color);
+  transform: translateY(-4px);
+}
+
+.back-to-home__icon {
+  font-size: 1.25em;
+  line-height: 1;
+}
+
+.back-to-home__text {
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .back-to-home__link {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- Round close button ---------------------------------------------------- */
+
+.btn-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #5eead4;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  background: rgba(45, 212, 191, 0.15);
+  transform: scale(1.1);
+}
+
+@media (max-width: 640px) {
+  .ph-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import useTranslation from "../hooks/useTranslation.ts";
 import ReactDOM from "react-dom";
-import "../styles/popup.css";
 
 interface PopupButton {
   label: string;

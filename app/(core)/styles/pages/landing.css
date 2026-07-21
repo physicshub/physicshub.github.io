@@ -1,40 +1,18 @@
-/* hero.css */
-:root {
-  --ph-surface: #0f1524;
-  --ph-fg: #e8eefb;
-  --ph-fg-muted: rgba(232, 238, 251, 0.55);
-  --ph-grid: rgba(115, 130, 175, 0.16);
-  --ph-ring: color-mix(in oklab, var(--accent-color), white 12%);
-  --ph-radius: 14px;
-  --ph-gap: 1rem;
-}
-
-[data-theme="light"] {
-  --ph-surface: #ffffff;
-  --ph-fg: #1a1a1a;
-  --ph-fg-muted: rgba(26, 26, 26, 0.65);
-  --ph-grid: rgba(0, 0, 0, 0.08);
-  --ph-ring: color-mix(in oklab, var(--accent-color), black 15%);
-}
-
-.ph-landing-page {
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
-  background: var(--bg-color);
-  min-height: 100vh;
-}
+/* ============================================================================
+   LANDING PAGE  (components/FullLandingPage.tsx, Hero.jsx)
+   Hero on the left, animated "simulation preview" panel on the right.
+   ============================================================================ */
 
 .ph-hero {
-  justify-content: center;
   position: relative;
   isolation: isolate;
-  border-radius: var(--ph-radius);
-  overflow: clip;
-  min-height: 100vh;
   display: grid;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
   padding: clamp(5rem, 9vw, 7rem) 0 clamp(4rem, 7vw, 6rem);
+  border-radius: var(--ph-radius);
+  overflow: clip;
   background:
     radial-gradient(
       circle at 72% 27%,
@@ -49,10 +27,13 @@
     );
 }
 
+/* Parallax layer moved from JS */
 .ph-hero > div {
   will-change: transform;
   transition: transform 0.05s linear;
 }
+
+/* --- Fixed background layers ----------------------------------------------- */
 
 .ph-bg {
   position: fixed;
@@ -100,6 +81,8 @@
   z-index: -1;
 }
 
+/* --- Copy column ----------------------------------------------------------- */
+
 .ph-hero__container {
   position: relative;
   width: min(1180px, calc(100% - 2rem));
@@ -120,6 +103,7 @@
   padding-block: clamp(2rem, 4vw, 3.75rem);
 }
 
+/* Frosted card behind the two columns */
 .ph-hero__container--landing::before {
   content: "";
   position: absolute;
@@ -136,14 +120,6 @@
 
 .ph-hero__copy {
   max-width: 680px;
-}
-
-@media (max-width: 768px) {
-  .ph-hero__container {
-    margin: 0;
-    padding-top: 2rem;
-    padding-bottom: 8rem;
-  }
 }
 
 .ph-hero__eyebrow {
@@ -176,76 +152,17 @@
   max-width: 58ch;
 }
 
+.ph-hero__info {
+  color: color-mix(in oklab, var(--ph-fg), transparent 34%);
+}
+
+/* The container disables pointer events, interactive bits re-enable them */
 .ph-hero__ctas {
   display: flex;
   gap: 0.85rem;
   flex-wrap: wrap;
   margin: 2rem 0 1.25rem;
   pointer-events: auto;
-}
-
-.ph-btn {
-  --pad-x: 1.1rem;
-  --pad-y: 0.78rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: var(--pad-y) var(--pad-x);
-  border-radius: 14px;
-  text-decoration: none;
-  font-weight: 600;
-  border: 1px solid transparent;
-  transition:
-    transform 0.4s ease,
-    box-shadow 0.4s ease,
-    background 0.4s ease,
-    text-shadow 0.4s ease;
-  will-change: transform;
-  cursor: pointer;
-}
-
-.ph-btn--primary {
-  color: #001919;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--accent-color), white 20%),
-    var(--accent-color)
-  );
-  box-shadow:
-    0 18px 38px color-mix(in oklab, var(--accent-color), transparent 68%),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
-}
-
-.ph-btn--primary:hover {
-  transform: scale3d(1.03, 1.03, 1);
-  transition:
-    transform 0.4s ease,
-    box-shadow 0.4s ease,
-    background 0.4s ease;
-  box-shadow: 0 10px 28px
-    color-mix(in oklab, var(--accent-color), transparent 68%);
-}
-
-.ph-btn--ghost {
-  color: var(--ph-fg);
-  background: color-mix(in oklab, var(--accent-color), transparent 92%);
-  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
-}
-
-.ph-btn--ghost:hover {
-  transition:
-    transform 0.4s ease,
-    box-shadow 0.4s ease,
-    background 0.4s ease,
-    text-shadow 0.4s ease;
-  background: color-mix(in oklab, var(--accent-color), transparent 86%);
-  transform: translateY(-1px);
-}
-
-.main-btn {
-  font-size: 1.05rem;
-  --pad-x: 1.35rem;
-  --pad-y: 0.9rem;
 }
 
 .ph-hero__stats {
@@ -279,24 +196,7 @@
   min-width: 2ch;
 }
 
-@media (max-width: 640px) {
-  .ph-hero {
-    min-height: 56vh;
-  }
-  .ph-hero__ctas {
-    gap: 0.6rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ph-hero__canvas {
-    display: none;
-  }
-}
-
-.ph-hero__info {
-  color: color-mix(in oklab, var(--ph-fg), transparent 34%);
-}
+/* --- Preview panel --------------------------------------------------------- */
 
 .ph-hero-preview {
   position: relative;
@@ -317,6 +217,7 @@
   overflow: hidden;
 }
 
+/* Blueprint grid */
 .ph-hero-preview::before {
   content: "";
   position: absolute;
@@ -329,6 +230,7 @@
   opacity: 0.8;
 }
 
+/* Glass reflection sweep */
 .ph-hero-preview::after {
   content: "";
   position: absolute;
@@ -378,6 +280,8 @@
   text-transform: uppercase;
 }
 
+/* --- Animated stage -------------------------------------------------------- */
+
 .ph-hero-preview__stage {
   position: relative;
   min-height: 300px;
@@ -386,13 +290,13 @@
 .ph-hero-preview__scan {
   position: absolute;
   inset: 0;
+  height: 34%;
   background: linear-gradient(
     180deg,
     transparent,
     color-mix(in oklab, var(--accent-color), transparent 72%),
     transparent
   );
-  height: 34%;
   opacity: 0.48;
   animation: ph-scan 4.8s ease-in-out infinite;
 }
@@ -490,6 +394,7 @@
   animation: ph-vector 2.8s ease-in-out infinite;
 }
 
+/* Arrow head */
 .ph-hero-preview__vector::after {
   content: "";
   position: absolute;
@@ -511,6 +416,8 @@
   filter: drop-shadow(0 0 20px var(--accent-color));
   animation: ph-atom-hover 4s ease-in-out infinite;
 }
+
+/* --- Preview footer links -------------------------------------------------- */
 
 .ph-hero-preview__topics {
   display: flex;
@@ -592,6 +499,8 @@
   box-shadow: 0 12px 28px
     color-mix(in oklab, var(--accent-color), transparent 68%);
 }
+
+/* --- Keyframes ------------------------------------------------------------- */
 
 @keyframes ph-preview-shine {
   0%,
@@ -675,6 +584,8 @@
   }
 }
 
+/* --- Responsive ------------------------------------------------------------ */
+
 @media (max-width: 960px) {
   .ph-hero__container--landing {
     grid-template-columns: 1fr;
@@ -686,6 +597,14 @@
 
   .ph-hero-preview {
     min-height: 360px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ph-hero__container {
+    margin: 0;
+    padding-top: 2rem;
+    padding-bottom: 8rem;
   }
 }
 
@@ -708,9 +627,8 @@
     font-size: clamp(2.25rem, 12vw, 3.2rem);
   }
 
-  .ph-btn {
-    width: 100%;
-    justify-content: center;
+  .ph-hero__ctas {
+    gap: 0.6rem;
   }
 
   .ph-hero__ctas > * {
@@ -727,6 +645,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ph-hero__canvas {
+    display: none;
+  }
+
   .ph-hero-preview::after,
   .ph-hero-preview__scan,
   .ph-hero-preview__pulse,

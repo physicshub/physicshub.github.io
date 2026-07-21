@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLanguage, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import useTranslation from "../hooks/useTranslation.ts";
-import "../styles/translator.css";
 import meta from "../locales/meta.json";
 
 const LANGUAGES = Object.fromEntries(
