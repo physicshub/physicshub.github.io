@@ -34,6 +34,13 @@ Versioning is fully automatic via semantic-release; **never edit `version` in pa
 
 ### How a simulation is wired (the central pattern)
 
+> **Writing or porting a simulation? Load the `new-simulation` skill first**
+> (`.claude/skills/new-simulation/SKILL.md`). It is the step-by-step guide: the
+> four files, the full `createSimulation` contract, the catalogue of every force,
+> constraint and renderer, and the physics checks to run before calling it done.
+> This section is the summary; the skill is the reference, and it must be updated
+> whenever the engine changes.
+
 Adding a simulation touches four places that must agree on the same name:
 
 1. `simulations/<Name>.jsx` — the `"use client"` component. Loaded dynamically with `ssr: false` by `app/(pages)/simulations/[id]/_components/SimulationWrapper.tsx` via `import("@/simulations/${id}")`.
@@ -102,5 +109,6 @@ Custom, not a library: `hooks/useTranslation.ts` reads the Google Translate `goo
 
 - Mixed JS/TS by design; new shared code trends toward `.tsx`/`.ts`, simulations stay `.jsx`. The engine is `.js` with JSDoc types, so it stays readable to contributors writing plain-JS simulations.
 - When you change the project's structure or add a subsystem, update this file in the same change — it is the only architecture documentation contributors (and their Claude) get.
+- When you change anything in `app/(core)/engine/` or the way simulations are written, update `.claude/skills/new-simulation/SKILL.md` in the same change too. It is checked in, so every contributor's Claude loads it, and a stale catalogue there produces broken simulations elsewhere.
 - Some comments are in Italian — fine to keep, write new ones in English.
 - Significant UI changes: add screenshots under `public/screenshots/<NEW_VERSION>/`, homepage shot named `main.png`.

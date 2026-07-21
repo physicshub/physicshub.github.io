@@ -79,6 +79,13 @@ This guide will walk you through **setting up the project locally** and creating
 - Keep your code **clean, readable, and consistent** with the existing style.
   If you want to do some other things than these, ask to @mattqdev via discord or github issue.
 
+> **Adding a simulation?** All physics runs on our own engine in
+> `app/(core)/engine/`. The complete guide lives in
+> [`.claude/skills/new-simulation/SKILL.md`](.claude/skills/new-simulation/SKILL.md):
+> the four files to touch, every available force and constraint, and the physics
+> checks to run before opening the PR. If you use Claude Code it loads that guide
+> automatically; if not, read it yourself — it is plain Markdown.
+
 ---
 
 ### 3️⃣ Versioning
