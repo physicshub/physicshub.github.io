@@ -679,6 +679,44 @@
   min-width: 80px;
 }
 
+/* --- GitHub sign-in banner (AuthStatus) ------------------------------------ */
+
+.auth-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}
+
+.auth-status-signed-in {
+  justify-content: flex-start;
+}
+
+.auth-status-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.auth-status-signout {
+  margin-left: auto;
+}
+
+.auth-status-error {
+  margin: 0;
+  color: var(--error-color);
+  font-size: 0.85rem;
+}
+
+.auth-status-signin {
+  text-decoration: none;
+}
+
 /* --- Responsive ------------------------------------------------------------ */
 
 @media (max-width: 768px) {

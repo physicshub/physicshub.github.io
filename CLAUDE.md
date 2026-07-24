@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-PhysicsHub — a free, open-source educational site of interactive physics simulations plus written theory. Next.js 15 App Router, React 19, p5.js for rendering, Tailwind v4, statically exported (`output: "export"`) and deployed to GitHub Pages. Physics is our own engine (below), not a library; `planck` is still in package.json but no longer imported anywhere.
+PhysicsHub — a free, open-source educational site of interactive physics simulations plus written theory. Next.js 15 App Router, React 19, p5.js for rendering, Tailwind v4, deployed as a static export to GitHub Pages (see "Two build modes"). Physics is our own engine (below), not a library; `planck` is still in package.json but no longer imported anywhere.
 
 ## Commands
 
 ```bash
 npm run dev            # next dev + nodemon regenerating the sitemap on routes.js changes
-npm run build          # generate:sitemap, then next build (static export to out/)
-npm run preview        # build + serve out/
+npm run build          # generate:sitemap, then next build — server mode, API routes live
+npm run build:static   # the GitHub Pages export: strips app/api, then exports to out/
+npm run preview        # build:static + serve out/
 npm run lint           # eslint  (lint:fix to autofix)
 npm run format         # prettier --write .  (format:check for CI parity)
 npm run generate:sitemap
@@ -25,11 +26,23 @@ Versioning is fully automatic via semantic-release; **never edit `version` in pa
 
 ## Architecture
 
+### Two build modes
+
+`output: "export"` in `next.config.js` is conditional on **`app/api` being absent**, and that is the only switch:
+
+- `npm run build` — `app/api` present, so no static export: a normal Next.js app whose route handlers actually run. This is what Vercel builds and what you should run locally.
+- `npm run build:static` — `scripts/strip-api-for-static-export.js` moves `app/api` aside (a rename), `next build` produces the export in `out/`, then `scripts/restore-api-after-static-export.js` moves it back. `.github/workflows/release.yml` uses this for the Pages deploy.
+
+The strip exists because a static export cannot contain route handlers that read request-time data, and every `app/api/auth/*` handler reads cookies. Keying off the directory rather than an env var keeps CI, Vercel and every contributor's machine in agreement. If a build crashes mid-way `app/api` shows as deleted in `git status` — the next `build:static` restores it, or `git checkout app/api` does.
+
+The consequence for features: **anything under `app/api` does not exist on `physicshub.github.io`**. The blog editor calls `/api/publish` with a relative URL, so publishing only works on the Vercel deploy or in `next dev`.
+
 ### Route groups
 
-- `app/(core)/` — everything shared: `engine/`, `components/`, `constants/`, `data/`, `hooks/`, `utils/`, `locales/`, `styles/`. Not a route segment.
+- `app/(core)/` — everything shared: `engine/`, `components/`, `constants/`, `data/`, `hooks/`, `lib/`, `utils/`, `locales/`, `styles/`. Not a route segment.
 - `app/(pages)/` — the actual pages (`about`, `blog`, `contribute`, `simulations`).
-- `app/api/publish/route.ts` — a POST handler that opens a GitHub PR with a proposed blog JSON via Octokit. Note this cannot run on the statically exported GitHub Pages deploy; it only works in `next dev` / a Node host.
+- `app/api/auth/` — GitHub OAuth: `github/` starts the flow (random `state` in a short-lived cookie), `github/callback/` verifies `state` and exchanges the code for a token, `github/logout/` clears it, `me/` reports the signed-in user. The token lives in an `httpOnly` `gh_session` cookie (8h) via `app/(core)/lib/githubSession.ts`; needs `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`.
+- `app/api/publish/route.ts` — a POST handler that publishes a blog proposal **as the signed-in contributor**: it reads their token from the session, ensures their fork of the repo exists, branches from upstream `main`, commits the JSON and opens a PR against `physicshub`. Returns `401 { requiresAuth: true }` when there is no session, which the editor turns into a sign-in redirect.
 - Import alias: `@/*` → repo root (e.g. `@/app/(core)/data/chapters`). Simulations under `simulations/` use relative paths instead.
 
 ### How a simulation is wired (the central pattern)
