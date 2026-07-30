@@ -74,14 +74,35 @@ async function generateSitemap() {
 
   const rawXml = (await streamToPromise(sitemap)).toString();
 
-  // Add XML declaration and format
+  // Format only — SitemapStream already emits an XML declaration.
+  // A previous version prepended a second <?xml ...?>, which browsers
+  // tolerate but Google Search Console rejects as invalid XML (#107).
   const formatted = xmlFormat(rawXml, {
     indentation: "  ",
     collapseContent: true,
     lineSeparator: "\n",
   });
 
-  const xmlOutput = formatted;
+  // Guarantee exactly one XML declaration, even if a dependency starts
+  // emitting none or more than one. (GSC rejects duplicated prologs.)
+  const body = formatted.replace(/<\?xml[^?]*\?>\s*/gi, "").trimStart();
+  if (!body.startsWith("<urlset")) {
+    throw new Error(
+      "Sitemap body must start with <urlset> after stripping XML declarations"
+    );
+  }
+
+  let xmlOutput = `<?xml version="1.0" encoding="UTF-8"?>\n${body}`;
+  if (!xmlOutput.endsWith("\n")) {
+    xmlOutput += "\n";
+  }
+
+  const declarationCount = (xmlOutput.match(/<\?xml\b/gi) || []).length;
+  if (declarationCount !== 1) {
+    throw new Error(
+      `Sitemap must contain exactly one XML declaration, found ${declarationCount}`
+    );
+  }
 
   // Ensure public directory exists
   const publicDir = join(__dirname, "../public");
@@ -91,13 +112,13 @@ async function generateSitemap() {
 
   // Write to public directory
   const publicPath = join(publicDir, `${sitemapName}.xml`);
-  writeFileSync(publicPath, xmlOutput);
+  writeFileSync(publicPath, xmlOutput, "utf8");
   console.log(`✅ Sitemap generated with ${allRoutes.length} links in public/`);
 
   // Also write to out/ if it exists (for deployment consistency)
   const outDir = join(__dirname, "../out");
   if (existsSync(outDir)) {
-    writeFileSync(join(outDir, `${sitemapName}.xml`), xmlOutput);
+    writeFileSync(join(outDir, `${sitemapName}.xml`), xmlOutput, "utf8");
     console.log(`✅ Sitemap copied to ./out/`);
   }
 
