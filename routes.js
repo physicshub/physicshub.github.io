@@ -191,4 +191,10 @@ export const routes = [
     priority: 0.7,
     lastmod: "2026-08-12",
   },
+  {
+    path: "/simulations/TrigonometricCircle",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-08-12",
+  },
 ];

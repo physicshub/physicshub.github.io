@@ -1,0 +1,149 @@
+// app/(core)/data/configs/TrigonometricCircle.js
+
+export const INITIAL_INPUTS = {
+  model: "sin",
+  autoRotate: true,
+  rotationSpeed: 30,
+  initialAngle: 30,
+  radius: 1,
+  amplitude: 1,
+  frequency: 1,
+  phase: 0,
+  snapSpecial: true,
+  showSix: true,
+  showTriangle: true,
+  showProjections: true,
+  showAsymptotes: true,
+  showTangent: true,
+  showGrid: true,
+  pointColor: "#f472b6",
+};
+
+export const INPUT_FIELDS = [
+  {
+    name: "model",
+    label: "Function:",
+    type: "select",
+    options: [
+      { value: "sin", label: "sin θ" },
+      { value: "cos", label: "cos θ" },
+      { value: "tan", label: "tan θ" },
+      { value: "cot", label: "cot θ" },
+      { value: "sec", label: "sec θ" },
+      { value: "csc", label: "csc θ" },
+      { value: "arcsin", label: "arcsin" },
+      { value: "arccos", label: "arccos" },
+      { value: "arctan", label: "arctan" },
+      { value: "arccot", label: "arccot" },
+    ],
+  },
+  {
+    name: "autoRotate",
+    label: "Auto-rotate",
+    type: "checkbox",
+  },
+  {
+    name: "rotationSpeed",
+    label: "Rotation speed (deg/s)",
+    type: "number",
+    min: 1,
+    max: 180,
+    step: 5,
+  },
+  {
+    name: "initialAngle",
+    label: "Initial angle (°)",
+    type: "number",
+    min: -180,
+    max: 180,
+    step: 1,
+  },
+  {
+    name: "radius",
+    label: "Circle radius",
+    type: "number",
+    min: 0.6,
+    max: 1.5,
+    step: 0.1,
+  },
+  {
+    name: "amplitude",
+    label: "A - Amplitude",
+    type: "number",
+    min: 0.1,
+    max: 3,
+    step: 0.1,
+  },
+  {
+    name: "frequency",
+    label: "ω - Frequency",
+    type: "number",
+    min: 0.25,
+    max: 4,
+    step: 0.25,
+  },
+  {
+    name: "phase",
+    label: "φ - Phase (rad)",
+    type: "number",
+    min: -3.14,
+    max: 3.14,
+    step: 0.05,
+  },
+  {
+    name: "snapSpecial",
+    label: "Snap to 15°",
+    type: "checkbox",
+  },
+  {
+    name: "showSix",
+    label: "Show all 6 functions",
+    type: "checkbox",
+  },
+  {
+    name: "showTriangle",
+    label: "Show reference triangle",
+    type: "checkbox",
+  },
+  {
+    name: "showProjections",
+    label: "Show projections",
+    type: "checkbox",
+  },
+  {
+    name: "showAsymptotes",
+    label: "Show asymptotes",
+    type: "checkbox",
+  },
+  {
+    name: "showTangent",
+    label: "Show tangent line",
+    type: "checkbox",
+  },
+  {
+    name: "showGrid",
+    label: "Show grid",
+    type: "checkbox",
+  },
+  {
+    name: "pointColor",
+    label: "Point color",
+    type: "color",
+  },
+];
+
+export const SimInfoMapper = (state) => ({
+  "θ (degrees)": `${state.thetaDeg.toFixed(1)}°`,
+  "θ (radians)": `${state.thetaRad.toFixed(3)}`,
+  "sin θ": state.sin === null ? "undefined" : state.sin.toFixed(4),
+  "cos θ": state.cos === null ? "undefined" : state.cos.toFixed(4),
+  "tan θ": state.tan === null ? "undefined" : state.tan.toFixed(4),
+  "cot θ": state.cot === null ? "undefined" : state.cot.toFixed(4),
+  "sec θ": state.sec === null ? "undefined" : state.sec.toFixed(4),
+  "csc θ": state.csc === null ? "undefined" : state.csc.toFixed(4),
+  "sin²θ + cos²θ": `${state.sin2cos2.toFixed(6)}`,
+  [`f(θ) — ${state.model}`]:
+    state.fvalue === null ? "undefined" : state.fvalue.toFixed(4),
+  [`f′(θ) — slope`]:
+    state.fderiv === null ? "undefined" : state.fderiv.toFixed(4),
+});

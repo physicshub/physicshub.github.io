@@ -130,6 +130,14 @@ const chapters = [
     thumbnail: "/thumbnails/pi.webp",
     relatedBlogSlug: "pi-from-block-collisions-explained",
   },
+  {
+    id: 16,
+    name: "Trigonometric Circle",
+    desc: "Interactive unit circle with a draggable angle θ. Visualize sin, cos, tan, cot, sec and csc as circle segments, watch the generalized wave A·sin(ωθ+φ) plot in real time, and trace the inverse functions arcsin, arccos, arctan and arccot.",
+    link: "/simulations/TrigonometricCircle",
+    tags: [TAGS.EASY, TAGS.MATH, TAGS.TRIGONOMETRY],
+    thumbnail: "/thumbnails/trigonometric-circle.webp",
+  },
 ];
 
 export default chapters;
