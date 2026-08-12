@@ -8,6 +8,31 @@ description: How to build a new PhysicsHub simulation on the engine in app/(core
 Read this before writing any file. Then read one existing simulation end to end —
 `simulations/SimplePendulum.jsx` is the shortest complete example.
 
+## The brief: topic in, questions out
+
+The human gives you only a broad topic ("moto armonico", "circuiti", "forse sul
+piano inclinato", "gravity wells") and, sometimes, a school level. Everything
+else — what the simulation actually does, its features, its details — is **your
+job to propose**, never to assume.
+
+- **Be creative, stay on theme.** Invent features and aspects that make the
+  simulation worth opening: unconventional setups, toggleable modes, surprise
+  interactions, readouts that reveal something non-obvious. But every idea must
+  serve the physics of the given topic — no unrelated gimmicks.
+- **Propose ideas as questions, never as statements of intent.** Before writing
+  any file, you must offer your ideas to the human explicitly as questions and
+  wait for the answers. One batch of 2–4 well-chosen questions is better than a
+  ten-item checklist: pick the decisions that actually change the build, and
+  phrase each one as a concrete "what if …?" you can execute once answered.
+- **Anchor every proposal to a school level.** The catalogue classifies every
+  simulation by difficulty: `EASY` ≈ scuola media, `MEDIUM` ≈ biennio di scuola
+  superiore (prima/seconda), `ADVANCED` ≈ triennio e università. If the human
+  gave you a level, stay inside it and say so in your questions; if they
+  didn't, ask for one up front. Your proposed features, the formulas in the
+  readout, and any theory article must all be reachable at that level — do not
+  secretly inflate the difficulty by adding harder numbers or formalism the
+  level doesn't cover.
+
 ## The mental model
 
 A **World** owns **Bodies** and **Elements**.
