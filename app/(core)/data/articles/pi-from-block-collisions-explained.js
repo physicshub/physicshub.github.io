@@ -1,16 +1,17 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const piCollisionBlog = {
   slug: "pi-from-block-collisions-explained",
   name: "How Two Sliding Blocks Compute π — The Most Surprising Result in Physics",
   desc: "Two frictionless blocks, a wall, and perfectly elastic collisions. Count the clacks. You get π. This is not a coincidence — it is a deep theorem hiding inside conservation laws, and this article takes you all the way from the first collision to the geometric proof.",
   tags: [
+    LEVELS.undergraduate,
+    DIFFICULTIES.extended,
     TAGS.PHYSICS,
     TAGS.MATH,
     TAGS.KINEMATICS,
     TAGS.ENERGY,
     TAGS.COLLISION,
-    TAGS.ADVANCED,
   ],
   date: "02/06/2026",
   theory: {

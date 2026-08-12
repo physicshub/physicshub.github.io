@@ -1,6 +1,5 @@
 "use client";
 // app/components/Search.jsx
-"use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -10,24 +9,28 @@ import {
 import { useState, useCallback } from "react";
 import Tag from "./Tag";
 import useTranslation from "../hooks/useTranslation.ts";
-import TAGS from "../data/tags.js";
+import TAGS, { LEVELS, LEVEL_ORDER, DIFFICULTIES } from "../data/tags.js";
 
 const TAGS_MAP = Object.values(TAGS).reduce((acc, tag) => {
   acc[tag.name] = tag;
   return acc;
 }, {});
 
-const dispatchSearch = (onSearch, tags, text) => {
-  const combinedQuery = [...tags, text].filter(Boolean).join(" ").trim();
-  onSearch?.(combinedQuery);
-};
-
-export function Search({ onSearch, extraButton }) {
+export function Search({ onFilter, extraButton }) {
   const [searchText, setSearchText] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedLevels, setSelectedLevels] = useState([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+
+  const emitFilter = useCallback(
+    (text, tags, levels, difficulties) => {
+      onFilter?.({ text, tags, levels, difficulties });
+    },
+    [onFilter]
+  );
 
   const handleMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
@@ -43,15 +46,47 @@ export function Search({ onSearch, extraButton }) {
       }
 
       setSelectedTags(newTags);
-      dispatchSearch(onSearch, newTags, searchText);
+      emitFilter(searchText, newTags, selectedLevels, selectedDifficulties);
     },
-    [selectedTags, searchText, onSearch]
+    [selectedTags, searchText, selectedLevels, selectedDifficulties, emitFilter]
+  );
+
+  const handleLevelToggle = useCallback(
+    (levelId) => {
+      let newLevels;
+      if (selectedLevels.includes(levelId)) {
+        newLevels = selectedLevels.filter((l) => l !== levelId);
+      } else {
+        newLevels = [...selectedLevels, levelId];
+      }
+
+      setSelectedLevels(newLevels);
+      emitFilter(searchText, selectedTags, newLevels, selectedDifficulties);
+    },
+    [selectedLevels, searchText, selectedTags, selectedDifficulties, emitFilter]
+  );
+
+  const handleDifficultyToggle = useCallback(
+    (difficultyId) => {
+      let newDifficulties;
+      if (selectedDifficulties.includes(difficultyId)) {
+        newDifficulties = selectedDifficulties.filter(
+          (d) => d !== difficultyId
+        );
+      } else {
+        newDifficulties = [...selectedDifficulties, difficultyId];
+      }
+
+      setSelectedDifficulties(newDifficulties);
+      emitFilter(searchText, selectedTags, selectedLevels, newDifficulties);
+    },
+    [selectedDifficulties, searchText, selectedTags, selectedLevels, emitFilter]
   );
 
   const handleTextChange = (e) => {
     const newText = e.target.value;
     setSearchText(newText);
-    dispatchSearch(onSearch, selectedTags, newText);
+    emitFilter(newText, selectedTags, selectedLevels, selectedDifficulties);
   };
 
   const handleRemoveSelectedTag = useCallback(
@@ -60,6 +95,38 @@ export function Search({ onSearch, extraButton }) {
     },
     [handleTagToggle]
   );
+
+  const handleRemoveSelectedLevel = useCallback(
+    (levelId) => {
+      handleLevelToggle(levelId);
+    },
+    [handleLevelToggle]
+  );
+
+  const handleRemoveSelectedDifficulty = useCallback(
+    (difficultyId) => {
+      handleDifficultyToggle(difficultyId);
+    },
+    [handleDifficultyToggle]
+  );
+
+  const renderSelectedChip = (key, tagData, onRemove) => {
+    if (!tagData) return null;
+
+    return (
+      <div key={key} className="selected-tag-wrapper">
+        <Tag tag={tagData} />
+        <button
+          type="button"
+          className="remove-tag-btn"
+          onClick={() => onRemove(key)}
+          aria-label={`${t("Remove filter")} ${t(tagData.name)}`}
+        >
+          <FontAwesomeIcon icon={faTimesCircle} />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className={`search-wrapper ${isCompleted ? "notranslate" : ""}`}>
@@ -75,19 +142,30 @@ export function Search({ onSearch, extraButton }) {
             {selectedTags.map((tagName) => {
               const tagData = TAGS_MAP[tagName];
               if (!tagData) return null;
+              return renderSelectedChip(
+                tagName,
+                tagData,
+                handleRemoveSelectedTag
+              );
+            })}
 
-              return (
-                <div key={tagName} className="selected-tag-wrapper">
-                  <Tag tag={tagData} />
-                  <button
-                    type="button"
-                    className="remove-tag-btn"
-                    onClick={() => handleRemoveSelectedTag(tagName)}
-                    aria-label={`${t("Remove filter")} ${t(tagName)}`}
-                  >
-                    <FontAwesomeIcon icon={faTimesCircle} />
-                  </button>
-                </div>
+            {selectedLevels.map((levelId) => {
+              const levelData = LEVELS[levelId];
+              if (!levelData) return null;
+              return renderSelectedChip(
+                levelId,
+                levelData,
+                handleRemoveSelectedLevel
+              );
+            })}
+
+            {selectedDifficulties.map((difficultyId) => {
+              const difficultyData = DIFFICULTIES[difficultyId];
+              if (!difficultyData) return null;
+              return renderSelectedChip(
+                difficultyId,
+                difficultyData,
+                handleRemoveSelectedDifficulty
               );
             })}
 
@@ -116,6 +194,45 @@ export function Search({ onSearch, extraButton }) {
       {/* Filters container */}
       <div className={`horizontal-menu-container ${isMenuOpen ? "open" : ""}`}>
         <div className="horizontal-menu">
+          <span className="filter-group-label">{t("School level")}</span>
+          {LEVEL_ORDER.map((level) => {
+            const levelId = level.id;
+            const isSelected = selectedLevels.includes(levelId);
+
+            return (
+              <button
+                key={levelId}
+                className="filter-button"
+                onClick={() => handleLevelToggle(levelId)}
+                aria-pressed={isSelected}
+                title={`${t(level.name)} — ${t(level.age)}`}
+              >
+                <Tag tag={level} className={isSelected ? "tag-selected" : ""} />
+              </button>
+            );
+          })}
+
+          <span className="filter-group-label">{t("Difficulty")}</span>
+          {Object.values(DIFFICULTIES).map((difficulty) => {
+            const isSelected = selectedDifficulties.includes(difficulty.id);
+
+            return (
+              <button
+                key={difficulty.id}
+                className="filter-button"
+                onClick={() => handleDifficultyToggle(difficulty.id)}
+                aria-pressed={isSelected}
+                title={t(difficulty.name)}
+              >
+                <Tag
+                  tag={difficulty}
+                  className={isSelected ? "tag-selected" : ""}
+                />
+              </button>
+            );
+          })}
+
+          <span className="filter-group-label">{t("Topic")}</span>
           {Object.values(TAGS).map((filter) => {
             const tagName = filter.name;
             const isSelected = selectedTags.includes(tagName);

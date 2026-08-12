@@ -140,6 +140,21 @@
   display: flex;
 }
 
+.filter-group-label {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ph-fg-muted);
+}
+
+.filter-group-label:not(:first-child) {
+  margin-left: 0.5rem;
+}
+
 .filter-button > span {
   margin: 0;
 }

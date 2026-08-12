@@ -58,8 +58,9 @@ Adding a simulation touches four places that must agree on the same name:
 
 1. `simulations/<Name>.jsx` — the `"use client"` component. Loaded dynamically with `ssr: false` by `app/(pages)/simulations/[id]/_components/SimulationWrapper.tsx` via `import("@/simulations/${id}")`.
 2. `app/(core)/data/configs/<Name>.js` — exports `INITIAL_INPUTS`, `INPUT_FIELDS` (declarative form schema rendered by `components/inputs/DynamicInputs`) and `SimInfoMapper(state, context, refs)`. Configs describe the UI and the readout only: forces belong in the world, never here.
-3. `app/(core)/data/chapters.js` — the catalog entry: `link: "/simulations/<Name>"`, tags from `data/tags.js`, thumbnail, `relatedBlogSlug`. `[id]/page.tsx` derives `generateStaticParams` and metadata from this file, with `dynamicParams = false` — a simulation missing from `chapters.js` will 404 in the export.
-4. Optionally `app/(core)/data/articles/<slug>.js`, registered in `articles/index.js`.
+3. `app/(core)/data/chapters.js` — the catalog entry: `link: "/simulations/<Name>"`, topical tags from `data/tags.js`, and the school-level contract `level` / `alsoFor` / `difficulty` (see below). `[id]/page.tsx` derives `generateStaticParams` and metadata from this file, with `dynamicParams = false` — a simulation missing from `chapters.js` will 404 in the export.
+
+**School levels.** Every simulation is classified for an international school level so teachers can match it to their curriculum. `data/tags.js` exports `LEVELS` (elementary, lowerSecondary, upperSecondary, undergraduate, tool) with age range and curriculum equivalences (US grades, IGCSE, A-Level, IB), `LEVEL_ORDER`, and `DIFFICULTIES` (`core`/`extended`/`advanced`, the challenge _within_ a level). The old `EASY`/`MEDIUM`/`ADVANCED` tags are gone. `chapters.js` entries carry `level` (primary band), optional `alsoFor` (bands the sim still works for), and `difficulty`. The catalogue page groups by level and `Search` filters by level and difficulty. Articles in `data/articles/` carry `LEVELS`/`DIFFICULTIES` objects in their `tags` array so the same classification shows on blog cards. 4. Optionally `app/(core)/data/articles/<slug>.js`, registered in `articles/index.js`.
 
 ### The engine (`app/(core)/engine/`) — the only physics core
 

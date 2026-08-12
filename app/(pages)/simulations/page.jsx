@@ -3,14 +3,69 @@ import { useState, useRef, useEffect } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
+import { LEVELS, DIFFICULTIES } from "../../(core)/data/tags.js";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
+const emptyFilter = { text: "", tags: [], levels: [], difficulties: [] };
+
+const textMatches = (chap, text) => {
+  const terms = text
+    .toLowerCase()
+    .trim()
+    .split(/\s+/)
+    .filter((term) => term.length > 0);
+
+  if (terms.length === 0) return true;
+
+  const levelIds = [chap.level, ...(chap.alsoFor || [])];
+  const levelNames = levelIds
+    .map((id) => LEVELS[id]?.name?.toLowerCase())
+    .filter(Boolean);
+  const difficultyName = (
+    DIFFICULTIES[chap.difficulty]?.name || ""
+  ).toLowerCase();
+
+  return terms.every((term) => {
+    const normalizedTerm = term.replace(/\s+/g, "");
+
+    return (
+      chap.name.toLowerCase().includes(term) ||
+      getChapterTagNames(chap.tags).includes(term) ||
+      levelNames.includes(term) ||
+      difficultyName.includes(term) ||
+      (chap.id && chap.id.toString().includes(term)) ||
+      (chap.id &&
+        (`chapter${chap.id}`.includes(normalizedTerm) ||
+          `ch${chap.id}`.includes(normalizedTerm)))
+    );
+  });
+};
+
+const tagMatches = (chap, tags) =>
+  tags.every((tagName) => getChapterTagNames(chap.tags).includes(tagName));
+
+const levelMatches = (chap, levels) =>
+  levels.length === 0 ||
+  levels.some(
+    (levelId) =>
+      chap.level === levelId || (chap.alsoFor || []).includes(levelId)
+  );
+
+const difficultyMatches = (chap, difficulties) =>
+  difficulties.length === 0 || difficulties.includes(chap.difficulty);
+
+const chapterMatches = (chap, filter) =>
+  textMatches(chap, filter.text) &&
+  tagMatches(chap, filter.tags) &&
+  levelMatches(chap, filter.levels) &&
+  difficultyMatches(chap, filter.difficulties);
+
 export default function Simulations() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState(emptyFilter);
   const [showHero] = useState(() => {
     if (typeof window !== "undefined") {
       return !localStorage.getItem("hasVisitedSimulations");
@@ -53,36 +108,15 @@ export default function Simulations() {
     requestAnimationFrame(animateScroll);
   };
 
-  const filteredChapters = Chapters.filter((chap) => {
-    const searchTerms = searchTerm
-      .toLowerCase()
-      .trim()
-      .split(/\s+/)
-      .filter((term) => term.length > 0);
+  const filteredChapters = Chapters.filter((chap) =>
+    chapterMatches(chap, filter)
+  );
 
-    if (searchTerms.length === 0) return true;
-
-    const chapterTagNames = getChapterTagNames(chap.tags);
-
-    return searchTerms.every((term) => {
-      const normalizedTerm = term.replace(/\s+/g, "");
-
-      const matchesName = chap.name.toLowerCase().includes(term);
-
-      const matchesTag = chapterTagNames.includes(term);
-
-      const matchesChapterNumber = chap.id && chap.id.toString().includes(term);
-
-      const matchesChapterLabel =
-        chap.id &&
-        (`chapter${chap.id}`.includes(normalizedTerm) ||
-          `ch${chap.id}`.includes(normalizedTerm));
-
-      return (
-        matchesName || matchesTag || matchesChapterNumber || matchesChapterLabel
-      );
-    });
-  });
+  const hasAnyFilter =
+    filter.text.trim() !== "" ||
+    filter.tags.length > 0 ||
+    filter.levels.length > 0 ||
+    filter.difficulties.length > 0;
 
   return (
     <div
@@ -106,12 +140,16 @@ export default function Simulations() {
       )}
 
       <section ref={contentRef} className="simulations-content">
-        <Search onSearch={setSearchTerm} />
+        <Search onFilter={setFilter} />
         <main className="simulations-page">
           {filteredChapters.map((chap) => (
             <Chapter key={chap.id} {...chap} />
           ))}
         </main>
+
+        {filteredChapters.length === 0 && hasAnyFilter && (
+          <p className="simulations-no-results">{t("No simulations found")}</p>
+        )}
       </section>
     </div>
   );

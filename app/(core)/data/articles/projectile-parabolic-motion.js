@@ -1,11 +1,17 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const projectileParabolicBlog = {
   id: "bb-007",
   slug: "projectile-parabolic-motion",
   name: "How parabolic projectile motion works?",
   desc: "Understand parabolic projectile motion in easy way.",
-  tags: [TAGS.MEDIUM, TAGS.PHYSICS, TAGS.GRAVITY, TAGS.ACCELERATION],
+  tags: [
+    LEVELS.upperSecondary,
+    DIFFICULTIES.core,
+    TAGS.PHYSICS,
+    TAGS.GRAVITY,
+    TAGS.ACCELERATION,
+  ],
   theory: {
     sections: [
       {

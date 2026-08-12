@@ -56,7 +56,16 @@ main.simulations-page {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.75rem;
   width: 100%;
+  max-width: 1400px;
   padding: 2rem;
   margin-bottom: 7.5rem;
   margin-inline: auto;
+}
+
+.simulations-no-results {
+  width: 100%;
+  text-align: center;
+  color: var(--subtitle-color);
+  font-size: 1.05rem;
+  padding: 3rem 1rem;
 }

@@ -1,10 +1,16 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const pendulumBlog = {
   slug: "physics-of-pendulum-explained",
   name: "The Physics of the Pendulum: This is How It Works",
   desc: "An exhaustive exploration of pendulum dynamics from elementary observations to advanced nonlinear analysis, encompassing simple harmonic motion, energy conservation, chaotic behavior, and quantum mechanical interpretations.",
-  tags: [TAGS.PHYSICS, TAGS.EASY, TAGS.OSCILLATIONS, TAGS.ANIMATIONS],
+  tags: [
+    LEVELS.lowerSecondary,
+    DIFFICULTIES.core,
+    TAGS.PHYSICS,
+    TAGS.OSCILLATIONS,
+    TAGS.ANIMATIONS,
+  ],
   date: "26/01/2026",
   theory: {
     title: "Pendular Motion: From Ancient Timekeepers to Quantum Oscillators",

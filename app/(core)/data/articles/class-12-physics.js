@@ -1,16 +1,17 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const class12PhysicsBlog = {
   slug: "class-12-physics-complete-guide",
   name: "Class 12 Physics Complete Guide – All Chapters with Formulas & Examples",
   desc: "Master Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, and solved examples — Electrostatics, Magnetism, Optics, Modern Physics and more.",
   tags: [
+    LEVELS.upperSecondary,
+    DIFFICULTIES.extended,
     TAGS.PHYSICS,
     TAGS.ELECTROMAGNETISM,
     TAGS.OPTICS,
     TAGS.QUANTUM,
     TAGS.WAVES,
-    TAGS.MEDIUM,
   ],
   date: "09/03/2026",
   theory: {

@@ -1,4 +1,4 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 /**
  * Operations with Vectors: A Comprehensive Educational Journey
@@ -10,7 +10,13 @@ export const operationVectorsBlog = {
   slug: "comprehensive-guide-to-vector-operations",
   name: "The Mathematical Universe of Vectors: A Progressive Guide",
   desc: "From basic geometry to advanced dot and cross products, learn how vectors power physics and computer science.",
-  tags: [TAGS.MATH, TAGS.PHYSICS, TAGS.VECTORS],
+  tags: [
+    LEVELS.upperSecondary,
+    DIFFICULTIES.core,
+    TAGS.MATH,
+    TAGS.PHYSICS,
+    TAGS.VECTORS,
+  ],
   theory: {
     title: "Vector Algebra: The Language of Space and Force",
     sections: [

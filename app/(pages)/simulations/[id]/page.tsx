@@ -1,8 +1,10 @@
 // app/(pages)/simulations/[id]/page.tsx
 import chapters from "@/app/(core)/data/chapters";
 import SimulationWrapper from "./_components/SimulationWrapper";
+import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import type { CSSProperties } from "react";
 
 export const dynamicParams = false;
 
@@ -29,7 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!chapter) return { title: "Simulation Not Found | PhysicsHub" };
 
-  const title = `${chapter.name}: Interactive Physics Simulation | PhysicsHub`;
+  const level = LEVELS[chapter.level as keyof typeof LEVELS];
+  const levelLabel = level ? `${level.name} (${level.age})` : "";
+  const title = `${chapter.name}: ${
+    levelLabel ? `${levelLabel} · ` : ""
+  }Interactive Physics Simulation | PhysicsHub`;
   const description = chapter.desc;
 
   return {
@@ -57,8 +63,36 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
+  const level = LEVELS[chapter.level as keyof typeof LEVELS];
+  const difficulty =
+    DIFFICULTIES[chapter.difficulty as keyof typeof DIFFICULTIES];
+
   return (
     <div className="simulation-page">
+      {level && (
+        <div
+          className="simulation-level-banner"
+          style={
+            {
+              "--level-accent":
+                COLORS[level.color as keyof typeof COLORS]?.primary ||
+                "#00e6e6",
+            } as CSSProperties
+          }
+        >
+          <span className="simulation-level-banner-name">
+            {level.name} · {level.age}
+          </span>
+          <span className="simulation-level-banner-equiv">
+            {level.equivalents.join(" · ")}
+          </span>
+          {difficulty && (
+            <span className="simulation-level-banner-difficulty">
+              {difficulty.name}
+            </span>
+          )}
+        </div>
+      )}
       <SimulationWrapper id={id} />
     </div>
   );

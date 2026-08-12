@@ -1,12 +1,13 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const whatIsPhysicsBlog = {
   slug: "what-is-physics",
   name: "What Is Physics? A Visual, Interactive Introduction for Beginners",
   desc: "Physics explained visually — not just with formulas. Discover the major branches of physics, real-world applications, and explore free interactive simulations to see the science in action.",
   tags: [
+    LEVELS.elementary,
+    DIFFICULTIES.core,
     TAGS.PHYSICS,
-    TAGS.EASY,
     TAGS.KINEMATICS,
     TAGS.ENERGY,
     TAGS.QUANTUM,

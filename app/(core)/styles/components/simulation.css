@@ -398,3 +398,60 @@
     stroke-dashoffset: -16;
   }
 }
+
+/* --- School-level banner (rendered above the canvas) ------------------------ */
+
+.simulation-level-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: 5.5rem 1rem 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid
+    color-mix(in oklab, var(--level-accent, #00e6e6), transparent 55%);
+  border-radius: var(--border-radius);
+  background: color-mix(
+    in oklab,
+    var(--level-accent, #00e6e6),
+    transparent 92%
+  );
+}
+
+.simulation-level-banner-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--level-accent, #00e6e6);
+}
+
+.simulation-level-banner-equiv {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--subtitle-color);
+}
+
+.simulation-level-banner-difficulty {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--subtitle-color);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+}
+
+/* The banner already clears the fixed header, so the top bar needs no
+   extra 6rem lead-in when the banner is present. */
+.simulation-page .top-nav-sim {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 840px) {
+  .simulation-level-banner {
+    margin-top: 5rem;
+  }
+}

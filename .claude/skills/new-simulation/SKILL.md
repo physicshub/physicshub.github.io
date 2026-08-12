@@ -169,14 +169,25 @@ export default createSimulation({
   desc: "One or two sentences. This is the SEO description — say what the user
          can do and which concepts it teaches.",
   link: "/simulations/Example",          // must match the filename exactly
-  tags: [TAGS.EASY, TAGS.DYNAMICS, TAGS.GRAVITY],
+  level: "lowerSecondary",               // school level: one of LEVELS ids (see below)
+  alsoFor: ["upperSecondary"],           // optional: other levels the sim still works for
+  difficulty: "core",                    // core | extended | advanced (challenge within `level`)
+  tags: [TAGS.DYNAMICS, TAGS.GRAVITY],   // topical tags only
   thumbnail: "/thumbnails/example.webp",
   relatedBlogSlug: "some-article-slug",  // optional
 }
 ```
 
-Tags come from `data/tags.js`. Always include exactly one difficulty
-(`EASY` / `MEDIUM` / `ADVANCED`) plus the topical ones.
+Every catalogue entry must pick a `level` (the primary school level it is aimed
+at) and a `difficulty` (how demanding it is _within_ that level). School levels
+come from `data/tags.js` → `LEVELS` / `LEVEL_ORDER`: `elementary`,
+`lowerSecondary`, `upperSecondary`, `undergraduate`, `tool` (non-curricular
+demos). `alsoFor` lists extra levels the simulation is still useful for — many
+topics (Hooke's law vs. SHM, momentum, trigonometry) are taught across several
+bands. Topic tags are purely topical; never place the old `EASY` / `MEDIUM` /
+`ADVANCED` here (they no longer exist). Pick the difficulty of the _physics_
+content, not the target band: e.g. SHM is `upperSecondary` + `extended`, phase
+space or chaos is `undergraduate` + `advanced`.
 
 ## The createSimulation spec
 

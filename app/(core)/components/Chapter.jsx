@@ -4,7 +4,7 @@ import { faArrowRight, faAtom } from "@fortawesome/free-solid-svg-icons";
 import Tag from "./Tag.jsx";
 import Link from "next/link.js";
 import useTranslation from "../hooks/useTranslation.ts";
-import { COLORS } from "../data/tags.js";
+import { COLORS, LEVELS, DIFFICULTIES } from "../data/tags.js";
 
 function Chapter(props) {
   const { t, meta } = useTranslation();
@@ -13,6 +13,8 @@ function Chapter(props) {
   const secondaryTag = props.tags?.[1];
   const primaryColor = COLORS[primaryTag?.color]?.primary || "#00e6e6";
   const secondaryColor = COLORS[secondaryTag?.color]?.secondary || "#7dd3fc";
+  const level = LEVELS[props.level];
+  const difficulty = DIFFICULTIES[props.difficulty] || DIFFICULTIES.core;
 
   return (
     <section
@@ -59,6 +61,8 @@ function Chapter(props) {
       <div className="chapter-card-overlay">
         {/* Tags */}
         <div className="chapter-card-tags-container">
+          {level && <Tag tag={level} className="tag-level" />}
+          {difficulty && <Tag tag={difficulty} className="tag-difficulty" />}
           {props.tags.map((tag, idx) => (
             <Tag tag={tag} key={tag.id || idx} />
           ))}
@@ -73,6 +77,23 @@ function Chapter(props) {
 
         {/* Description */}
         <p>{t(props.desc)}</p>
+
+        {level && (
+          <div className="chapter-card-level-info">
+            <span>
+              {t(level.age)}
+              {level.equivalents?.length
+                ? ` · ${level.equivalents.join(", ")}`
+                : ""}
+            </span>
+            {props.alsoFor?.length ? (
+              <span>
+                {t("Also suitable for")}:{" "}
+                {props.alsoFor.map((id) => t(LEVELS[id].name)).join(", ")}
+              </span>
+            ) : null}
+          </div>
+        )}
 
         {/* Link */}
         <Link href={props.isABlog ? `/blog/${props.slug}` : props.link}>

@@ -225,6 +225,16 @@
   flex: 1;
 }
 
+.chapter-card-level-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--subtitle-color);
+  line-height: 1.5;
+}
+
 .chapter-card-overlay a {
   display: flex;
   align-items: center;
