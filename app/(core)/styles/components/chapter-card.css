@@ -6,6 +6,7 @@
    ============================================================================ */
 
 .chapter-card {
+  position: relative;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 14px;
@@ -244,4 +245,13 @@
 
 .chapter-card:hover .chapter-card-overlay a svg {
   transform: translateX(4px);
+}
+
+/* Stretched link: the whole card surface (hero included) is a single
+   click target for the bottom link. */
+.chapter-card-overlay a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
