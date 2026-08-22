@@ -22,5 +22,9 @@
   "ar": {
     "name": "Arabic",
     "completed": false
+  },
+  "id": {
+    "name": "Bahasa Indonesia",
+    "completed": false
   }
 }

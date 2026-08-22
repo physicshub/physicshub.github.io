@@ -18,6 +18,7 @@ const LANGUAGES = {
   de: "Deutsch",
   es: "Español",
   ar: "العربية",
+  id: "Bahasa Indonesia",
 };
 
 const ICON_FRAMES = [
@@ -35,6 +36,7 @@ const LANGUAGE_ICONS = {
   de: faGlobeEurope,
   es: faGlobeAmericas,
   ar: faGlobeAsia,
+  id: faGlobeAsia,
   default: faGlobeEurope,
 };
 
@@ -75,7 +77,7 @@ export default function GoogleTranslator() {
         new window.google.translate.TranslateElement(
           {
             pageLanguage: "en",
-            includedLanguages: "en,it,fr,de,es,ar",
+            includedLanguages: "en,it,fr,de,es,ar,id",
             autoDisplay: false,
           },
           "google_translate_element"
