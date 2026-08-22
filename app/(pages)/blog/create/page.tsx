@@ -1,6 +1,6 @@
 // app/(pages)/blog/create/page.tsx
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCode,
@@ -18,10 +18,13 @@ import {
   faImage,
   faChevronCircleDown,
   faEye,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
+import TAGS from "@/app/(core)/data/tags.js";
+import Tag from "@/app/(core)/components/Tag.jsx";
 import dynamic from "next/dynamic";
 import { initialContentData } from "../../../(core)/data/initialContent";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
@@ -79,6 +82,43 @@ const jsStringToObject = (str: string, t: (k: string) => string): unknown => {
     throw new Error(t("Invalid JS syntax"));
   }
 };
+
+const createThumbnailDataUrl = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const maxWidth = 1200;
+        const maxHeight = 675;
+        const scale = Math.min(
+          maxWidth / image.width,
+          maxHeight / image.height,
+          1
+        );
+        const width = Math.round(image.width * scale);
+        const height = Math.round(image.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+        if (!context) {
+          reject(new Error("Unable to prepare thumbnail"));
+          return;
+        }
+
+        context.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => reject(new Error("Invalid image file"));
+      image.src = String(reader.result);
+    };
+
+    reader.onerror = () => reject(new Error("Unable to read image file"));
+    reader.readAsDataURL(file);
+  });
 
 // Block Templates
 const NEW_BLOCK_TEMPLATES = {
@@ -345,7 +385,6 @@ export default function CreateBlogPage() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const router = useRouter();
-  const [title, setTitle] = useState(t("New Blog Title"));
   const [dataContent, setDataContent] = useState<BlogContent>(
     initialContentData as BlogContent
   );
@@ -353,22 +392,10 @@ export default function CreateBlogPage() {
     "Editor"
   );
 
-  const jsTitle = useMemo(() => {
-    try {
-      return dataContent.title || t("New Blog Title");
-    } catch {
-      return t("New Blog Title");
-    }
-  }, [dataContent, t]);
-
   const dataContentString = useMemo(
     () => objectToJSString(dataContent),
     [dataContent]
   );
-
-  useEffect(() => {
-    setTitle(jsTitle);
-  }, [jsTitle]);
 
   const handleAddBlock = useCallback(
     (blockType: keyof typeof NEW_BLOCK_TEMPLATES) => {
@@ -429,13 +456,27 @@ export default function CreateBlogPage() {
   }, [dataContent, setDataContent, t]);
 
   const handleSave = useCallback(async () => {
+    if (!dataContent.title?.trim()) {
+      alert("Please enter a blog title");
+      return;
+    }
+
+    if (!dataContent.desc?.trim()) {
+      alert("Please enter a blog description");
+      return;
+    }
+
+    if (!dataContent.tags || dataContent.tags.length < 2) {
+      alert("Please select at least 2 tags");
+      return;
+    }
+
     try {
       const response = await fetch("/api/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title,
-          dataContent: dataContent,
+          jsonContent: dataContent,
         }),
       });
 
@@ -454,16 +495,56 @@ export default function CreateBlogPage() {
       alert(t("Error during publication. Please try again later."));
     } finally {
     }
-  }, [dataContent, title, router, t]);
+  }, [dataContent, router, t]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
-    setTitle(newTitle);
 
     setDataContent({
       ...dataContent,
       title: newTitle,
     });
+  };
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDescription = e.target.value;
+
+    setDataContent({
+      ...dataContent,
+      desc: newDescription,
+    });
+  };
+
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert(t("Please upload an image file."));
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      const thumbnail = await createThumbnailDataUrl(file);
+      setDataContent((prev) => ({
+        ...prev,
+        thumbnail,
+      }));
+    } catch (error) {
+      console.error("Error preparing thumbnail:", error);
+      alert(t("Could not prepare this thumbnail. Please try another image."));
+    } finally {
+      e.target.value = "";
+    }
+  };
+
+  const handleThumbnailRemove = () => {
+    setDataContent((prev) => ({
+      ...prev,
+      thumbnail: "",
+    }));
   };
 
   return (
@@ -501,10 +582,142 @@ export default function CreateBlogPage() {
               id="title"
               type="text"
               placeholder={t("Title for your blog...")}
-              value={title}
+              value={dataContent.title}
               onChange={handleTitleChange}
               required
             />
+          </div>
+          <div className="form-group title-group">
+            <label htmlFor="desc">{t("Desc:")}</label>
+            <input
+              id="desc"
+              type="text"
+              placeholder={t("Write a brief summary of your blog...")}
+              value={dataContent.desc}
+              onChange={handleDescriptionChange}
+              required
+            />
+          </div>
+          <div className="form-group title-group thumbnail-upload-group">
+            <label htmlFor="thumbnail-upload">{t("Blog thumbnail:")}</label>
+            <div className="thumbnail-upload-card">
+              {dataContent.thumbnail ? (
+                // Thumbnail may be a local data URL or external URL.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={dataContent.thumbnail}
+                  alt={t("Blog thumbnail preview")}
+                  className="thumbnail-upload-preview"
+                />
+              ) : (
+                <div className="thumbnail-upload-placeholder">
+                  <FontAwesomeIcon icon={faImage} />
+                  <span>{t("No thumbnail selected")}</span>
+                </div>
+              )}
+
+              <div className="thumbnail-upload-actions">
+                <label
+                  htmlFor="thumbnail-upload"
+                  className="ph-btn ph-btn--ghost thumbnail-upload-button"
+                >
+                  <FontAwesomeIcon icon={faUpload} />
+                  {t("Upload thumbnail")}
+                </label>
+                <input
+                  id="thumbnail-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailUpload}
+                  className="thumbnail-upload-input"
+                />
+                {dataContent.thumbnail && (
+                  <button
+                    type="button"
+                    className="ph-btn ph-btn--ghost thumbnail-remove-button"
+                    onClick={handleThumbnailRemove}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    {t("Remove")}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          {dataContent.tags.length > 0 && (
+            <div className="mb-4">
+              <label className="block mb-2">
+                Selected Tags ({dataContent.tags.length})
+              </label>
+
+              <div className="flex gap-2 flex-wrap mb-3!">
+                {dataContent.tags.map((tagKey) => {
+                  const tag = TAGS[tagKey as keyof typeof TAGS];
+
+                  return (
+                    <div key={tagKey} className="flex items-center gap-1">
+                      <Tag tag={tag} />
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDataContent((prev) => ({
+                            ...prev,
+                            tags: prev.tags.filter((t) => t !== tagKey),
+                          }))
+                        }
+                        className="remove-tag-btn mb-2! "
+                      >
+                        <svg
+                          data-prefix="fas"
+                          data-icon="circle-xmark"
+                          className="svg-inline--fa fa-circle-xmark"
+                          role="img"
+                          viewBox="0 0 512 512"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM167 167c9.4-9.4 24.6-9.4 33.9 0l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="mb-16!">
+            <label>Add Tags</label>
+
+            <div className="flex gap-4 overflow-x-auto whitespace-nowrap px-3! py-3! hide-scrollbar">
+              {Object.entries(TAGS).map(([key, tag]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    setDataContent((prev) => ({
+                      ...prev,
+                      tags: prev.tags.includes(key)
+                        ? prev.tags.filter((t) => t !== key)
+                        : [...prev.tags, key],
+                    }));
+                  }}
+                  className={`cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-105 ${
+                    dataContent.tags.includes(key)
+                      ? "opacity-100"
+                      : "opacity-70"
+                  }`}
+                >
+                  <Tag tag={tag} />
+
+                  {dataContent.tags.includes(key) && (
+                    <span className="ml-1">✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="tab-switcher">

@@ -39,26 +39,6 @@ export const INPUT_FIELDS = [
   },
 ];
 
-export const FORCES = [
-  {
-    key: "acceleration",
-    color: "blue",
-    computeFn: ({ dir }) => {
-      if (!dir) return null;
-      // scala per renderlo visibile
-      return { x: dir.x, y: dir.y };
-    },
-  },
-  {
-    key: "velocity",
-    color: "red",
-    computeFn: ({ vel }) => {
-      if (!vel) return null;
-      return { x: vel.x, y: vel.y };
-    },
-  },
-];
-
 export const SimInfoMapper = (state) => {
   const { position, velocity, acceleration, maxspeed } = state;
 

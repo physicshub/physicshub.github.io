@@ -48,7 +48,7 @@ const loadP5Library = (() => {
           cached = P5;
           return resolve(cached);
         }
-      } catch (_) {}
+      } catch {}
 
       if (typeof window.p5 === "function") {
         cached = window.p5;
@@ -103,7 +103,7 @@ export default function P5Wrapper({ sketch, simInfos }) {
     try {
       cleanupInstance(instance);
       instance.remove();
-    } catch (_) {}
+    } catch {}
   };
 
   // Centralised resize logic
@@ -154,7 +154,6 @@ export default function P5Wrapper({ sketch, simInfos }) {
               // body spawn positions use the correct canvas dimensions even
               // when p._userNode.clientHeight is still 0 at this point.
               const h = containerRef.current?.clientHeight ?? 0;
-              const w = containerRef.current?.clientWidth ?? 0;
               if (h > 0) setCanvasHeight(h);
 
               // Run the sketch's own setup (calls p.createCanvas internally).

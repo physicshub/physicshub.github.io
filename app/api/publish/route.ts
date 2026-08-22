@@ -1,24 +1,33 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
-
+import prettier from "prettier";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, jsonContent } = body;
-
-    if (!title || !jsonContent) {
+    const { jsonContent } = body;
+    if (
+      !jsonContent ||
+      !jsonContent.title?.trim() ||
+      !jsonContent.desc?.trim() ||
+      !jsonContent.tags ||
+      jsonContent.tags.length < 2
+    ) {
       return NextResponse.json(
-        { success: false, error: "Missing title or content" },
+        {
+          success: false,
+          error: "Title, description, and at least 2 tags are required",
+        },
         { status: 400 }
       );
     }
+    const { title } = jsonContent;
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-    const owner = "physicshub";
+    const owner = "AgnibhaDebnath"; // TODO: Replace with authenticated GitHub username once OAuth is implemented
     const repo = "physicshub.github.io";
 
-    // Genera uno slug pulito
+    // Generate a clean slug
     const slug = title
       .toLowerCase()
       .trim()
@@ -28,15 +37,25 @@ export async function POST(req: Request) {
 
     const fileName = `content/blogs/${slug}-${Date.now()}.json`;
     const branchName = `blog-proposal-${slug}-${Math.floor(Math.random() * 1000)}`;
+    // Add generated metadata to the blog content
+    const blogData = {
+      id: Date.now(),
+      slug,
+      ...jsonContent,
+    };
+    // Format the JSON according to project Prettier rules
+    const formattedContent = await prettier.format(JSON.stringify(blogData), {
+      parser: "json",
+    });
 
-    // 1. Prendi il riferimento al branch principale (main)
+    // 1. Get the reference to the main branch
     const { data: mainBranch } = await octokit.git.getRef({
       owner,
       repo,
       ref: "heads/main",
     });
 
-    // 2. Crea un nuovo branch per la proposta
+    // 2. Create a new branch for the proposal
     await octokit.git.createRef({
       owner,
       repo,
@@ -44,24 +63,24 @@ export async function POST(req: Request) {
       sha: mainBranch.object.sha,
     });
 
-    // 3. Crea il file nel nuovo branch
+    // 3. Create the file in the new branch
     await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
       path: fileName,
       message: `New blog proposal: ${title}`,
-      content: Buffer.from(jsonContent).toString("base64"),
+      content: Buffer.from(formattedContent).toString("base64"),
       branch: branchName,
     });
 
-    // 4. Apri la Pull Request
+    // 4. Open the Pull Request
     const { data: pr } = await octokit.pulls.create({
-      owner,
+      owner: "physicshub",
       repo,
       title: `📝 Blog Proposal: ${title}`,
-      head: branchName,
+      head: `${owner}:${branchName}`,
       base: "main",
-      body: `Nuova proposta di blog inviata tramite l'editor del sito.\n\nTitolo: ${title}`,
+      body: `New blog proposal submitted through the website editor.\n\nTitle: ${title}`,
     });
 
     return NextResponse.json({ success: true, url: pr.html_url });
@@ -76,7 +95,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Gestione pre-flight CORS per chiamate da github.io
+// Handle CORS preflight requests from github.io
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,

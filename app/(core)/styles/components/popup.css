@@ -1,0 +1,120 @@
+/* ============================================================================
+   POPUP / FEEDBACK MODAL  (components/Popup.tsx, context/FeedbackProvider.tsx)
+   ============================================================================ */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+.popup-overlay.show {
+  opacity: 1;
+}
+
+.popup-overlay.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: var(--bg-gradient);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
+  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  width: 30rem;
+  max-width: 70%;
+  max-height: 80vh;
+  overflow-y: auto;
+  /* Entry state — .popup-enter / .popup-exit drive the animation */
+  transform: scale(0.8);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.popup-enter {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.popup-exit {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.popup-container > h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.popup-container > p {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.popup-header {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 1.5rem;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+/* --- Feedback form --------------------------------------------------------- */
+
+.feedback-form {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.feedback-textarea {
+  width: 100%;
+  min-height: 10rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  resize: vertical;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  transition: transform 0.2s;
+}
+
+.star-rating span:hover {
+  transform: scale(1.2);
+}

@@ -30,7 +30,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!chapter) return { title: "Simulation Not Found | PhysicsHub" };
 
   const title = `${chapter.name}: Interactive Physics Simulation | PhysicsHub`;
-
   const description = chapter.desc;
 
   return {
@@ -39,13 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: title,
       description: description,
-      images: [chapter.icon],
+      images: [chapter.thumbnail], // 👈 Changed from chapter.icon to chapter.thumbnail
     },
     twitter: {
       card: "summary_large_image",
       title: title,
       description: description,
-      images: [chapter.icon],
+      images: [chapter.thumbnail], // 👈 Changed from chapter.icon to chapter.thumbnail
     },
   };
 }

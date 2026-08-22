@@ -1,7 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faAtom,
+  faBolt,
+  faPlay,
+  faWaveSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import chaptersData from "../data/chapters.js";
 import { motion, useReducedMotion } from "framer-motion";
@@ -105,58 +111,124 @@ export function Hero() {
 
   return (
     <motion.div
-      className={`ph-hero__container ${isCompleted ? "notranslate" : ""}`}
+      className={`ph-hero__container ph-hero__container--landing ${
+        isCompleted ? "notranslate" : ""
+      }`}
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       animate="show"
       style={{ position: "relative", overflow: "hidden" }}
     >
-      {/* Animated H1 with per-word glow on PhysicsHub */}
-      <motion.h1
-        className="ph-hero__title"
-        variants={textContainer(reduceMotion)}
-      >
-        {titleWords.map((word, idx) => {
-          const isHighlight = word.includes("PhysicsHub");
-          return (
-            <motion.span
-              key={idx}
-              variants={isHighlight ? glowVariant : wordVariant}
-              style={{ display: "inline-block", marginRight: "0.25ch" }}
+      <div className="ph-hero__copy">
+        <motion.p className="ph-hero__eyebrow" variants={fadeUp(reduceMotion)}>
+          <FontAwesomeIcon icon={faAtom} />
+          {t("Interactive physics learning")}
+        </motion.p>
+
+        {/* Animated H1 with per-word glow on PhysicsHub */}
+        <motion.h1
+          className="ph-hero__title"
+          variants={textContainer(reduceMotion)}
+        >
+          {titleWords.map((word, idx) => {
+            const isHighlight = word.includes("PhysicsHub");
+            return (
+              <motion.span
+                key={idx}
+                variants={isHighlight ? glowVariant : wordVariant}
+                style={{ display: "inline-block", marginRight: "0.25ch" }}
+              >
+                {word}
+              </motion.span>
+            );
+          })}
+        </motion.h1>
+
+        {/* Subtitle */}
+        <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
+          {t(
+            "Experience physics in real time, uncover the concepts behind the formulas, and instantly see how they apply to the real world."
+          )}
+        </motion.p>
+
+        {/* CTA buttons */}
+        <motion.div className="ph-hero__ctas" variants={fadeUp(reduceMotion)}>
+          <motion.div
+            variants={buttonVariant}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            <Link
+              className="ph-btn ph-btn--primary main-btn"
+              href="/simulations"
             >
-              {word}
-            </motion.span>
-          );
-        })}
-      </motion.h1>
-
-      {/* Subtitle */}
-      <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
-        {t(
-          "Experience physics in real time, uncover the concepts behind the formulas, and instantly see how they apply to the real world."
-        )}
-      </motion.p>
-
-      {/* CTA buttons */}
-      <motion.div className="ph-hero__ctas" variants={fadeUp(reduceMotion)}>
-        <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
-          <Link className="ph-btn ph-btn--primary main-btn" href="/simulations">
-            {t("Go to Simulations")}
-            <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
-          </Link>
+              {t("Go to Simulations")}
+              <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
+            </Link>
+          </motion.div>
+          <motion.div
+            variants={buttonVariant}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            <Link className="ph-btn ph-btn--ghost main-btn" href="/contribute">
+              {t("Contribute")}
+              <FontAwesomeIcon icon={faGithub} style={{ marginLeft: 8 }} />
+            </Link>
+          </motion.div>
         </motion.div>
-        <motion.div variants={buttonVariant} whileHover="hover" whileTap="tap">
-          <Link className="ph-btn ph-btn--ghost main-btn" href="/contribute">
-            {t("Contribute")}
-            <FontAwesomeIcon icon={faGithub} style={{ marginLeft: 8 }} />
-          </Link>
-        </motion.div>
-      </motion.div>
 
-      {/* Info text */}
-      <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
-        {t("Currently")} {chaptersCount} {t("chapters available.")}
-      </motion.p>
+        {/* Info text */}
+        <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
+          {t("Currently")} {chaptersCount} {t("chapters available.")}
+        </motion.p>
+      </div>
+
+      <motion.aside
+        className="ph-hero-preview"
+        aria-label={t("Physics simulation preview")}
+        variants={fadeUp(reduceMotion)}
+      >
+        <div className="ph-hero-preview__toolbar">
+          <span />
+          <span />
+          <span />
+          <strong>{t("Live Simulation")}</strong>
+        </div>
+        <div className="ph-hero-preview__stage" aria-hidden="true">
+          <div className="ph-hero-preview__scan" />
+          <div className="ph-hero-preview__pulse ph-hero-preview__pulse--one" />
+          <div className="ph-hero-preview__pulse ph-hero-preview__pulse--two" />
+          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--outer" />
+          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--inner" />
+          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--tilt" />
+          <div className="ph-hero-preview__mass ph-hero-preview__mass--primary" />
+          <div className="ph-hero-preview__mass ph-hero-preview__mass--secondary" />
+          <div className="ph-hero-preview__mass ph-hero-preview__mass--tertiary" />
+          <div className="ph-hero-preview__vector" />
+          <FontAwesomeIcon className="ph-hero-preview__atom" icon={faAtom} />
+        </div>
+        <div
+          className="ph-hero-preview__topics"
+          aria-label={t("Related topics")}
+        >
+          <Link href="/simulations/BallGravity">{t("Gravity")}</Link>
+          <Link href="/simulations/VectorsOperations">{t("Vectors")}</Link>
+          <Link href="/simulations/SimplePendulum">{t("Oscillations")}</Link>
+        </div>
+        <div className="ph-hero-preview__metrics">
+          <Link href="/simulations/CircularMotion">
+            <FontAwesomeIcon icon={faWaveSquare} />v = 8.2 m/s
+          </Link>
+          <Link href="/simulations/SpringConnection">
+            <FontAwesomeIcon icon={faBolt} />E = 42 J
+          </Link>
+          <Link className="ph-hero-preview__try" href="/simulations">
+            <FontAwesomeIcon icon={faPlay} />
+            {t("Try it live")}
+          </Link>
+        </div>
+      </motion.aside>
     </motion.div>
   );
 }

@@ -3,7 +3,6 @@ import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopyright, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types";
-import Image from "next/image";
 
 type ImageSize = "xsmall" | "small" | "medium" | "large" | "full";
 
@@ -44,6 +43,18 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
     }
   };
 
+  const fallbackSrc = "https://via.placeholder.com/800x400?text=Image";
+  const imageSrc = currentSrc || fallbackSrc;
+
+  const sourceHostname = (() => {
+    if (!href) return "";
+    try {
+      return new URL(href).hostname;
+    } catch {
+      return href;
+    }
+  })();
+
   return (
     <figure
       className={`theory-image-container size-${size} ${isCompleted ? "notranslate" : ""}`}
@@ -82,21 +93,22 @@ export const TheoryImage: React.FC<TheoryImageProps> = ({
         className={`image-wrapper ${!isEditing && href ? "is-link" : ""}`}
         onClick={handleImageClick}
       >
-        <Image
-          src={
-            currentSrc || "https://via.placeholder.com/800x400?text=No+Image"
-          }
+        {/* Blog articles use arbitrary external/redirecting sources, so render
+            them directly instead of routing through next/image validation. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={imageSrc}
           alt={t(alt ?? "")}
           className={isEditing ? "editing-border" : ""}
-          width={800}
-          height={450}
-          style={{ width: "100%", height: "auto" }}
+          loading="lazy"
+          decoding="async"
+          onError={() => setCurrentSrc(fallbackSrc)}
         />
 
         {href && (
           <div className="copyright-badge">
             <FontAwesomeIcon icon={faCopyright} className="badge-icon" />
-            <span className="badge-text">{new URL(href).hostname}</span>
+            <span className="badge-text">{sourceHostname}</span>
           </div>
         )}
       </div>

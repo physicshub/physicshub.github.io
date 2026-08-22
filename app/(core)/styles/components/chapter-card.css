@@ -1,0 +1,247 @@
+/* ============================================================================
+   CHAPTER CARD  (components/Chapter.jsx)
+   Structure: .chapter-card > .chapter-card-hero + .chapter-card-overlay
+   The hero shows a thumbnail when available, otherwise a generated fallback
+   built from --chapter-accent / --chapter-accent-2 (set inline by the component).
+   ============================================================================ */
+
+.chapter-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+  cursor: pointer;
+}
+
+.chapter-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 24px 4px color-mix(in oklab, var(--accent-color), transparent 67%),
+    0 8px 32px color-mix(in oklab, var(--bg-color), transparent 40%);
+}
+
+/* --- Hero ------------------------------------------------------------------ */
+
+.chapter-card-hero {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chapter-card-hero-img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease;
+  opacity: 0.9;
+}
+
+.chapter-card:hover .chapter-card-hero-img {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+/* Gradient overlay fading the image into the card body */
+.chapter-card-hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    color-mix(in oklab, var(--card-bg), transparent 10%) 100%
+  );
+}
+
+/* --- Generated fallback hero (no thumbnail) -------------------------------- */
+
+.chapter-card-hero-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(
+        in oklab,
+        var(--chapter-accent, var(--accent-color)),
+        transparent 42%
+      ),
+      transparent 44%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(
+        in oklab,
+        var(--chapter-accent, var(--accent-color)),
+        black 70%
+      ),
+      #080d19 58%,
+      color-mix(in oklab, var(--chapter-accent-2, #7dd3fc), black 78%)
+    );
+  overflow: hidden;
+}
+
+/* Blueprint grid */
+.chapter-card-hero-fallback::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+}
+
+/* Diagonal light streak */
+.chapter-card-hero-fallback::after {
+  content: "";
+  position: absolute;
+  width: 160%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 20%),
+    transparent
+  );
+  transform: rotate(-24deg);
+  opacity: 0.5;
+}
+
+.chapter-card-generated-orbit {
+  position: absolute;
+  border: 1px solid
+    color-mix(
+      in oklab,
+      var(--chapter-accent, var(--accent-color)),
+      transparent 34%
+    );
+  border-radius: 999px;
+  box-shadow: 0 0 22px
+    color-mix(
+      in oklab,
+      var(--chapter-accent, var(--accent-color)),
+      transparent 78%
+    );
+}
+
+.chapter-card-generated-orbit--outer {
+  width: 56%;
+  height: 36%;
+  transform: rotate(-18deg);
+}
+
+.chapter-card-generated-orbit--inner {
+  width: 42%;
+  height: 42%;
+  transform: rotate(58deg);
+  opacity: 0.7;
+}
+
+.chapter-card-generated-icon {
+  position: relative;
+  z-index: 1;
+  color: color-mix(
+    in oklab,
+    var(--chapter-accent, var(--accent-color)),
+    white 30%
+  );
+  font-size: clamp(2.3rem, 6vw, 4rem);
+  filter: drop-shadow(
+    0 0 18px
+      color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 12%)
+  );
+}
+
+.chapter-card-generated-topic {
+  position: absolute;
+  left: 0.85rem;
+  bottom: 0.85rem;
+  z-index: 2;
+  max-width: calc(100% - 1.7rem);
+  padding: 0.32rem 0.65rem;
+  border-radius: 999px;
+  color: #061018;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 34%),
+    var(--chapter-accent, var(--accent-color))
+  );
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --- Body ------------------------------------------------------------------ */
+
+.chapter-card-overlay {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.chapter-card-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.chapter-card-overlay h2.text-2xl {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.chapter-card-overlay p {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--subtitle-color);
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+.chapter-card-overlay a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.chapter-card-overlay a svg {
+  transition: transform 0.2s ease;
+}
+
+.chapter-card:hover .chapter-card-overlay a svg {
+  transform: translateX(4px);
+}

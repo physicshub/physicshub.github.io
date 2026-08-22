@@ -1,404 +1,235 @@
-// app/pages/simulations/InclinedPlane.jsx
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
-import { usePathname } from "next/navigation.js";
-
-// --- Core Physics & Constants ---
 import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-} from "../app/(core)/constants/Time.js";
+  createSimulation,
+  Gravity,
+  Constant,
+  Incline,
+  Dragging,
+  ForceVectors,
+  ForceRenderer,
+  toScreen,
+  formulas,
+} from "../app/(core)/engine/index.js";
+import { toMeters } from "../app/(core)/constants/Utils.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/InclinedPlane.js";
-import chapters from "../app/(core)/data/chapters.js";
-import { toPixels, toMeters } from "../app/(core)/constants/Utils.js";
 
-// --- Physics Classes ---
-import { InclinedPlaneBody } from "../app/(core)/physics/InclinedPlaneBody.js";
-import { InclinedPlaneForces } from "../app/(core)/physics/ForceCalculator.js";
-import { ForceRenderer } from "../app/(core)/physics/ForceRenderer.js";
-import { InclinedPlaneDragController } from "../app/(core)/physics/DragController.js";
+const toRadians = (degrees) => (degrees * Math.PI) / 180;
 
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
+/**
+ * A block on a frictional ramp.
+ *
+ * Nothing here hardcodes N = mg·cos θ. The Incline element sums whatever forces
+ * are already on the block — weight, plus any applied push — resolves them in
+ * the surface frame, and supplies the normal force needed to cancel the inward
+ * component. Friction then follows from that N. Increase the applied force at a
+ * downward angle and the normal force, and therefore friction, rises with it,
+ * exactly as it should.
+ */
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
 
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
+  build({ world, p, inputs }) {
+    const origin = {
+      x: toMeters(p.width * 0.25),
+      y: toMeters(p.height * 0.25),
+    };
+    const length = toMeters(Math.min(p.width, p.height) * 0.6);
+    const angle = () => toRadians(inputs.angle);
 
-export default function InclinedPlane() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
+    const block = world.addBody({
+      label: "block",
+      mass: () => inputs.mass,
+      size: () => inputs.size,
+      color: () => inputs.blockColor,
+      shape: "square",
+      restitution: 0.3,
+      at: [origin.x, origin.y],
+      trail: () => inputs.trailEnabled,
+      trailLength: 150,
+    });
 
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
+    // Order matters: the ramp reacts to the forces added before it.
+    world.add(
+      Gravity({ g: () => inputs.gravity }),
 
-  // References
-  const bodyRef = useRef(null);
-  const planeRef = useRef({ startX: 0, startY: 0, length: 0 });
-  const forceCalculatorRef = useRef(null);
-  const forceRendererRef = useRef(null);
-  const dragControllerRef = useRef(null);
+      // The push is given relative to the slope, so 0° means "along the ramp".
+      Constant({
+        x: () =>
+          inputs.appliedForce *
+          Math.cos(toRadians(inputs.angle - inputs.appliedAngle)),
+        y: () =>
+          inputs.appliedForce *
+          Math.sin(toRadians(inputs.angle - inputs.appliedAngle)),
+      })
+    );
 
-  // Sim info
-  const { simData, updateSimInfo } = useSimInfo();
+    const ramp = world.add(
+      Incline(block, {
+        origin,
+        angle,
+        length,
+        muStatic: () => inputs.frictionStatic,
+        muKinetic: () => inputs.frictionKinetic,
+        color: () => inputs.planeColor,
+      })
+    );
 
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
-    },
-    [setInputs]
-  );
-
-  const theory = useMemo(
-    () => chapters.find((ch) => ch.link === location)?.theory,
-    [location]
-  );
-
-  const sketch = useCallback(
-    (p) => {
-      let trailLayer = null;
-
-      const setupSimulation = () => {
-        const w = p.width;
-        const h = p.height;
-        const planeLength = Math.min(w, h) * 0.6;
-
-        // Setup plane
-        planeRef.current = {
-          startX: w * 0.25,
-          startY: h * 0.75,
-          length: toMeters(planeLength),
-        };
-
-        // Initialize body
-        const initialPos = inputsRef.current.size / 2 + 1;
-        if (!bodyRef.current) {
-          bodyRef.current = new InclinedPlaneBody(
-            p,
-            {
-              mass: inputsRef.current.mass,
-              size: inputsRef.current.size,
-              color: inputsRef.current.blockColor,
-              shape: "square",
-              restitution: 0.3,
-            },
-            initialPos
-          );
-
-          // Enable trail
-          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-          bodyRef.current.trail.maxLength = 150;
-          bodyRef.current.trail.color = inputsRef.current.blockColor;
-        } else {
-          bodyRef.current.reset(initialPos);
-        }
-
-        // Initialize force calculator
-        if (!forceCalculatorRef.current) {
-          forceCalculatorRef.current = new InclinedPlaneForces({
-            gravity: inputsRef.current.gravity,
-            angle: inputsRef.current.angle,
-            frictionStatic: inputsRef.current.frictionStatic,
-            frictionKinetic: inputsRef.current.frictionKinetic,
-            appliedForce: inputsRef.current.appliedForce,
-            appliedAngle: inputsRef.current.appliedAngle,
-          });
-        }
-
-        // Initialize force renderer
-        if (!forceRendererRef.current) {
-          forceRendererRef.current = new ForceRenderer({
-            scale: 5,
-            showLabels: true,
-            showMagnitude: true,
-            arrowSize: 12,
-            strokeWeight: 3,
-          });
-        }
-
-        // Initialize drag controller
-        if (!dragControllerRef.current) {
-          dragControllerRef.current = new InclinedPlaneDragController(
-            planeRef,
-            () => (inputsRef.current.angle * Math.PI) / 180,
-            { snapBack: false }
-          );
-        }
-      };
-
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
-
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-        trailLayer.clear();
-
-        setupSimulation();
-        p.background(getBackgroundColor());
-      };
-
-      p.draw = () => {
-        if (!bodyRef.current) return;
-
-        const dt = computeDelta(p);
-        const angleRad = (inputsRef.current.angle * Math.PI) / 180;
-
-        // Sync body parameters
-        bodyRef.current.updateParams({
-          mass: inputsRef.current.mass,
-          size: inputsRef.current.size,
-          color: inputsRef.current.blockColor,
-        });
-        bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-        bodyRef.current.trail.color = inputsRef.current.blockColor;
-
-        // Update force calculator params
-        forceCalculatorRef.current.updateParams({
-          gravity: inputsRef.current.gravity,
-          angle: inputsRef.current.angle,
-          frictionStatic: inputsRef.current.frictionStatic,
-          frictionKinetic: inputsRef.current.frictionKinetic,
-          appliedForce: inputsRef.current.appliedForce,
-          appliedAngle: inputsRef.current.appliedAngle,
-        });
-
-        // Calculate forces
-        const forces = forceCalculatorRef.current.calculate(
-          bodyRef.current,
-          bodyRef.current.isMoving
-        );
-
-        // Physics step (if not dragging)
-        if (!dragControllerRef.current.isDragging() && dt !== 0) {
-          bodyRef.current.stepAlongPlane(dt, forces.netParallel, angleRad);
-
-          // Update trail
-          if (bodyRef.current.trail.enabled) {
-            bodyRef.current.updateTrailOnPlane();
-          }
-
-          const currentDist = bodyRef.current.planeState.posAlongPlane;
-          const currentScreenY =
-            planeRef.current.startY -
-            toPixels(currentDist) * Math.sin(angleRad);
-
-          //  the logic that defines 'bottom'
-          if (currentScreenY >= planeRef.current.startY) {
-            bodyRef.current.planeState.posAlongPlane = 0;
-            bodyRef.current.planeState.velAlongPlane = 0;
-            bodyRef.current.planeState.accAlongPlane = 0;
-          }
-        }
-
-        // Render scene
-        renderScene(p, angleRad, forces);
-
-        // Update sim info
-        updateSimInfo(
-          p,
-          {
-            posAlongPlane: bodyRef.current.planeState.posAlongPlane,
-            vel: bodyRef.current.planeState.velAlongPlane,
-            acc: bodyRef.current.planeState.accAlongPlane,
-            mass: bodyRef.current.params.mass,
-            kineticEnergy: bodyRef.current.getKineticEnergy(),
-            potentialEnergy: bodyRef.current.getPotentialEnergy(
-              inputsRef.current.gravity,
-              angleRad
+    world.add(
+      Dragging({
+        // Constrain the grab to the ramp itself.
+        project: (body, ctx) => {
+          const a = toRadians(ctx.inputs.angle);
+          const along = Math.min(
+            Math.max(
+              (ctx.target.x - origin.x) * Math.cos(a) +
+                (ctx.target.y - origin.y) * Math.sin(a),
+              0
             ),
-          },
-          {
-            gravity: inputsRef.current.gravity,
-            angle: inputsRef.current.angle,
-            forces,
-          },
-          SimInfoMapper
-        );
-      };
-
-      const renderScene = (p, angleRad, forces) => {
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-
-        // Trail layer
-        if (!inputsRef.current.trailEnabled) {
-          trailLayer.background(r, g, b);
-        } else {
-          trailLayer.fill(r, g, b, 40);
-          trailLayer.noStroke();
-          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
-        }
-
-        // Draw plane on trail layer
-        drawPlane(trailLayer, angleRad);
-
-        // Main canvas
-        p.clear();
-        p.image(trailLayer, 0, 0);
-
-        // Draw block
-        const screenPos = bodyRef.current.drawOnPlane(
-          p,
-          { x: planeRef.current.startX, y: planeRef.current.startY },
-          angleRad,
-          { alignToPlane: true, hoverEffect: true }
-        );
-
-        // Draw forces
-        if (inputsRef.current.showForces) {
-          forceRendererRef.current.drawInclinedPlaneForces(
-            p,
-            screenPos.x,
-            screenPos.y,
-            forces,
-            angleRad,
-            {
-              showComponents: inputsRef.current.showComponents,
-            }
+            length
           );
-        }
-      };
+          return {
+            x: origin.x + Math.cos(a) * along,
+            y: origin.y + Math.sin(a) * along,
+          };
+        },
+      }),
 
-      const drawPlane = (layer, angleRad) => {
-        const plane = planeRef.current;
-        const planeEndX =
-          plane.startX + toPixels(plane.length) * Math.cos(angleRad);
-        const planeEndY =
-          plane.startY - toPixels(plane.length) * Math.sin(angleRad);
+      ForceVectors({
+        bodies: block,
+        scale: 5,
+        arrowSize: 12,
+        enabled: () => inputs.showForces,
+      }),
 
-        layer.push();
+      weightComponents(block, inputs),
+      angleGauge(origin, inputs)
+    );
 
-        // Plane line
-        layer.stroke(inputsRef.current.planeColor);
-        layer.strokeWeight(5);
-        layer.line(plane.startX, plane.startY, planeEndX, planeEndY);
+    // The block starts a little way up the slope.
+    const start = inputs.size / 2 + 1;
+    block.setPosition(
+      origin.x + Math.cos(toRadians(inputs.angle)) * start,
+      origin.y + Math.sin(toRadians(inputs.angle)) * start
+    );
 
-        // Ground line
-        layer.stroke(100, 100, 120);
-        layer.strokeWeight(2);
-        layer.line(0, plane.startY, layer.width, plane.startY);
+    return { block, ramp, origin, length };
+  },
 
-        // Angle arc
-        const arcRadius = 50;
-        layer.noFill();
-        layer.stroke(255, 200);
-        layer.strokeWeight(2);
-        layer.arc(
-          plane.startX,
-          plane.startY,
-          arcRadius * 2,
-          arcRadius * 2,
-          -angleRad,
-          0
-        );
+  info({ handles, inputs, world }) {
+    const { block, ramp } = handles;
+    const ctx = world.context(0);
+    const angleRad = toRadians(inputs.angle);
 
-        // Angle label with background
-        layer.push();
-        layer.noStroke();
-        layer.fill(0, 0, 0, 150);
-        const labelText = `${inputsRef.current.angle.toFixed(1)}°`;
-        layer.textSize(14);
-        const tw = layer.textWidth(labelText);
-        layer.rect(
-          plane.startX + arcRadius + 15,
-          plane.startY - 25,
-          tw + 10,
-          20,
-          3
-        );
+    const normal = block.appliedForces.get("normal");
+    const friction = block.appliedForces.get("friction");
+    const weight = formulas.weight(block.params.mass, inputs.gravity);
+    const components = formulas.inclineComponents(weight, angleRad);
 
-        layer.fill(255, 220, 100);
-        layer.textAlign(layer.CENTER, layer.CENTER);
-        layer.text(
-          labelText,
-          plane.startX + arcRadius + 20 + tw / 2,
-          plane.startY - 15
-        );
-        layer.pop();
+    const along = ramp.distanceAlong(block, ctx);
+    const speed = ramp.speedAlong(block, ctx);
 
-        layer.pop();
-      };
+    // Net force resolved along the slope — weight component, applied push,
+    // friction — which is what actually accelerates the block.
+    const { tangent } = ramp.basis(ctx);
+    let netParallel = 0;
+    for (const force of block.appliedForces.values()) {
+      netParallel += force.x * tangent.x + force.y * tangent.y;
+    }
 
-      // Mouse event handlers
-      p.mousePressed = () => {
-        if (!bodyRef.current) return;
-        dragControllerRef.current.handlePress(p, bodyRef.current);
-      };
+    return {
+      state: {
+        posAlongPlane: along,
+        vel: speed,
+        acc: netParallel / block.params.mass,
+        mass: block.params.mass,
+        kineticEnergy: block.getKineticEnergy(),
+        potentialEnergy: block.getPotentialEnergy(inputs.gravity),
+      },
+      context: {
+        gravity: inputs.gravity,
+        angle: inputs.angle,
+        forces: {
+          weight: {
+            magnitude: weight,
+            parallel: components.parallel,
+            perpendicular: components.perpendicular,
+          },
+          normal: normal ? Math.hypot(normal.x, normal.y) : 0,
+          friction: friction ? Math.hypot(friction.x, friction.y) : 0,
+          applied: { magnitude: inputs.appliedForce },
+          netParallel,
+          angle: angleRad,
+          gravity: inputs.gravity,
+        },
+      },
+    };
+  },
+});
 
-      p.mouseDragged = () => {
-        dragControllerRef.current.handleDrag(p);
-      };
+/** The mg∥ / mg⊥ decomposition along the slope. */
+function weightComponents(block, inputs) {
+  const renderer = new ForceRenderer({ scale: 5, showMagnitude: false });
 
-      p.mouseReleased = () => {
-        dragControllerRef.current.handleRelease();
-      };
+  return {
+    zIndex: 11,
+    render(ctx) {
+      if (!inputs.showComponents || !inputs.showForces) return;
+      const weight = block.appliedForces.get("weight");
+      if (!weight) return;
 
-      // Window resize
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-        trailLayer.clear();
-
-        setupSimulation();
-      };
+      const screen = toScreen(block.state.position);
+      renderer.decompose(
+        ctx.p,
+        screen.x,
+        screen.y,
+        weight,
+        toRadians(inputs.angle),
+        { parallelLabel: "mg∥", perpendicularLabel: "mg⊥" }
+      );
     },
-    [inputsRef, updateSimInfo]
-  );
+  };
+}
 
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
+/** Arc and readout for the ramp angle. */
+function angleGauge(origin, inputs) {
+  return {
+    zIndex: -1,
+    render(ctx) {
+      const { p } = ctx;
+      const screen = toScreen(origin);
+      const radius = 50;
+      const angleRad = toRadians(inputs.angle);
 
-        // Reset body
-        if (bodyRef.current) {
-          const initialPos = inputsRef.current.size / 2 + 1;
-          bodyRef.current.reset(initialPos);
-        }
+      p.push();
+      p.noFill();
+      p.stroke(255, 200);
+      p.strokeWeight(2);
+      p.arc(screen.x, screen.y, radius * 2, radius * 2, -angleRad, 0);
 
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        setResetVersion((v) => v + 1);
-      }}
-      theory={theory}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
+      const label = `${Number(inputs.angle).toFixed(1)}°`;
+      p.textSize(14);
+      p.noStroke();
+      p.fill(0, 0, 0, 150);
+      p.rect(
+        screen.x + radius + 15,
+        screen.y - 25,
+        p.textWidth(label) + 10,
+        20,
+        3
+      );
+      p.fill(255, 220, 100);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.text(
+        label,
+        screen.x + radius + 20 + p.textWidth(label) / 2,
+        screen.y - 15
+      );
+      p.pop();
+    },
+  };
 }

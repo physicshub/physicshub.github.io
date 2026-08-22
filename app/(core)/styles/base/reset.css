@@ -1,0 +1,105 @@
+/* ============================================================================
+   RESET & ELEMENT DEFAULTS
+   ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--text-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-gradient);
+  background-color: var(--bg-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+hr {
+  border: 0;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  transition: text-shadow 0.3s;
+  text-shadow: 0 0 8px var(--accent-color);
+}
+
+a > strong {
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------------------------
+   Light theme: flatten the neon glow used by the dark theme
+   ---------------------------------------------------------------------------- */
+
+[data-theme="light"] body {
+  background: #ffffff;
+  background-color: #ffffff;
+}
+
+[data-theme="light"] main {
+  background-color: transparent;
+}
+
+[data-theme="light"] *[class*="glow"],
+[data-theme="light"] .btn-glow,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] .page-404 h1,
+[data-theme="light"] .logo img,
+[data-theme="light"] .back-to-home__link,
+[data-theme="light"] .select-label,
+[data-theme="light"] .checkbox-label {
+  text-shadow: none !important;
+  box-shadow: none;
+}
+
+[data-theme="light"] a:hover {
+  text-shadow: none;
+}
+
+/* ----------------------------------------------------------------------------
+   Accessibility
+   ---------------------------------------------------------------------------- */
+
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

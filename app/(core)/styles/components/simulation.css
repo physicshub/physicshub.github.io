@@ -1,0 +1,400 @@
+/* ============================================================================
+   SIMULATION SHELL
+   Canvas frame, playback controls, top bar, info panel and the small
+   decorations rendered on top of a running sketch.
+   ============================================================================ */
+
+/* --- Canvas frame ---------------------------------------------------------- */
+
+.screen {
+  flex: 2;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  position: relative;
+  margin: 1rem;
+  text-shadow: 0 0 4px var(--glow-color);
+}
+
+[data-theme="light"] .screen {
+  text-shadow: none;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Top bar (back link + simulation title) -------------------------------- */
+
+.top-nav-sim {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 6rem;
+}
+
+.top-nav-sim-inner {
+  display: flex;
+  flex-grow: 2;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  max-width: 80%;
+  margin: 0 auto;
+  padding-left: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.top-nav-sim-inner > h3 {
+  white-space: nowrap;
+  margin: 0 !important;
+}
+
+.top-nav-sim-back-to-home-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 20%;
+}
+
+/* Balances the back link so the title stays centred */
+.top-nav-sim-filler {
+  width: 30%;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.top-nav-sim-filler.hide {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+/* --- Playback controls (play / pause / reset / speed) ---------------------- */
+
+.simulation-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gradient-rotated);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: 0.4rem;
+  margin: 0 1.5rem;
+  gap: 0.25rem;
+}
+
+.controls-group {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  margin: 0 1rem;
+}
+
+.simulation-controls button {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 3rem;
+  min-height: 1rem;
+  height: 100%;
+  aspect-ratio: 1.2;
+}
+
+/* Desktop: everything on a single row */
+@media (min-width: 768px) {
+  .simulation-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .main-controls-wrapper,
+  .extra-controls-wrapper {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .mobile-toggle {
+    display: none;
+  }
+}
+
+/* Mobile: secondary controls collapse into a drawer */
+@media (max-width: 767px) {
+  .simulation-controls {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .main-controls-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2rem 0;
+    gap: 0.25rem;
+  }
+
+  .extra-controls-wrapper {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .simulation-controls.is-open .extra-controls-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    justify-items: center;
+  }
+}
+
+/* --- Info panel (live physics readouts) ------------------------------------ */
+
+.sim-info-panel {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.7rem;
+  padding: 0.7rem;
+  border-radius: var(--border-radius);
+  pointer-events: auto;
+  transition:
+    padding 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
+  overflow: auto;
+}
+
+[data-theme="light"] .sim-info-panel {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.sim-info-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sim-info-body {
+  margin-top: 0.5rem;
+}
+
+.sim-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.2rem 0;
+}
+
+.sim-info-label {
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.sim-info-value {
+  flex: 1;
+  text-align: right;
+}
+
+.sim-info-btn {
+  display: flex;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.7;
+  pointer-events: auto;
+  transition: opacity 0.2s;
+}
+
+.sim-info-toggle {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 0.65rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  opacity: 0.7;
+}
+
+.sim-info-btn:hover,
+.sim-info-toggle:hover {
+  opacity: 1;
+}
+
+/* Collapsed: shrinks to a square badge */
+.sim-info-panel.collapsed {
+  width: 2rem;
+  min-width: auto;
+  aspect-ratio: 1 / 1;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sim-info-panel.collapsed .sim-info-header {
+  margin: 0.3rem 0;
+  justify-content: center;
+}
+
+.sim-info-panel.collapsed .sim-info-body {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  /* Docked to the bottom so it never covers the sketch */
+  .sim-info-panel {
+    top: auto;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    max-width: none;
+    max-height: 40vh;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    overflow-y: auto;
+  }
+
+  .sim-info-header {
+    justify-content: space-between;
+  }
+
+  .sim-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0.3rem 0;
+  }
+
+  .sim-info-label {
+    margin-right: 0;
+    margin-bottom: 0.2rem;
+  }
+
+  .sim-info-value {
+    text-align: left;
+    width: 100%;
+  }
+
+  /* Bigger touch targets */
+  .sim-info-btn,
+  .sim-info-toggle {
+    font-size: 1rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+/* --- Fun fact card --------------------------------------------------------- */
+
+.fun-fact {
+  position: relative;
+  max-width: 460px;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: var(--card-bg);
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(45, 212, 191, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.fun-fact-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.fun-fact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(45, 212, 191, 0.12);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+}
+
+.fun-fact-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fun-fact-text {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.fun-fact-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* --- Wind overlay (BallGravity) -------------------------------------------- */
+
+.wind-overlay {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+
+.wind-overlay.blowing {
+  opacity: 1;
+}
+
+.wind-icon {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  animation: wind-drift var(--wind-speed, 0.9s) ease-in-out infinite alternate;
+}
+
+.wind-icon path {
+  stroke-dasharray: 6 10;
+  animation: wind-wave 600ms linear infinite;
+}
+
+@keyframes wind-drift {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes wind-wave {
+  to {
+    stroke-dashoffset: -16;
+  }
+}

@@ -12,7 +12,7 @@ export default function Layout({
   starColor = "AEE3FF",
   starOpacity = 0.4,
 }) {
-  const { t, meta } = useTranslation();
+  const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   return (
     <>

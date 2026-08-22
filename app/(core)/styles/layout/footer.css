@@ -1,0 +1,170 @@
+/* ============================================================================
+   FOOTER — columns, socials, bottom bar, back to top button
+   ============================================================================ */
+
+footer {
+  position: relative;
+  border-top: 1px solid transparent;
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
+  overflow: hidden;
+  padding-top: 4rem;
+}
+
+.footer-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.footer-content h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent-color);
+  text-shadow: 0 0 4px var(--accent-color);
+}
+
+.footer-about p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* --- Links ----------------------------------------------------------------- */
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.footer-links a {
+  color: var(--footer-link-color);
+  font-weight: 400;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--accent-color);
+  font-weight: 400;
+  text-shadow: none;
+}
+
+.footer-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.footer-links .footer-center {
+  justify-content: flex-start;
+  text-align: left;
+  width: fit-content;
+  margin: 0 auto 0.75rem;
+}
+
+/* --- Socials --------------------------------------------------------------- */
+
+.footer-socials-inner {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.footer-socials a {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+.footer-socials a > * {
+  transform: scale(1) rotateY(0deg);
+  transition:
+    transform 0.3s,
+    text-shadow 0.3s;
+}
+
+.footer-socials a:hover > * {
+  transform: rotateY(180deg);
+  text-shadow: 0 0 8px var(--glow-color);
+}
+
+/* --- Bottom bar ------------------------------------------------------------ */
+
+.footer-bottom {
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  padding: 1rem 2rem 2rem;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-shadow-color);
+}
+
+.footer-version {
+  font-size: 0.75rem;
+  color: #ffffff;
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+  padding: 0.4rem 0.8rem !important;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
+  font-weight: 500;
+  margin-left: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Back to top ----------------------------------------------------------- */
+
+.back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: -20px; /* slides up once .visible is added */
+  width: 56px;
+  height: 56px;
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px var(--accent-color);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.3s,
+    opacity 0.4s ease,
+    bottom 0.4s ease;
+  z-index: 1000;
+}
+
+.back-to-top > * {
+  color: var(--text-color);
+}
+
+.back-to-top:hover {
+  transform: translateY(-0.4rem);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  bottom: 1.5rem;
+  pointer-events: auto;
+}

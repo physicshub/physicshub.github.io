@@ -3,39 +3,61 @@ let timeScale = 1;
 let paused = false;
 let manualStepDelta = 0;
 let simulationInstances = new Map(); // Mappa per tenere traccia di ogni istanza
+let accumulators = new Map(); // Fixed timestep accumulators per instance
+const FIXED_DT = 1 / 120; // 120Hz fixed physics timestep
 
 /**
- * Returns dt in seconds, limited to a max step for stability.
- * Uses p.millis() to compute real delta.
+ * Fixed-timestep scheduling for one frame.
+ *
+ * Returns how many fixed steps the frame is owed, which is what a simulation
+ * loop actually needs — advancing a single FIXED_DT per frame would run 120 Hz
+ * physics at half speed on a 60 fps display:
+ *
+ *   const { dt, steps } = computeSteps(p);
+ *   for (let i = 0; i < steps; i++) world.step(dt);
+ *
+ * @param {object} p - The p5 instance.
+ * @param {number} [maxSteps=8] - Upper bound per frame; prevents a spiral of
+ *   death when the tab has been backgrounded.
+ * @returns {{dt: number, steps: number}}
  */
-export function computeDelta(p) {
+export function computeSteps(p, maxSteps = 8) {
+  const instanceId = p._instanceId || p._userNode?.id;
+
   if (manualStepDelta !== 0) {
-    const dt = manualStepDelta;
+    const steps = Math.max(1, Math.round(manualStepDelta / FIXED_DT));
     manualStepDelta = 0;
-    return dt;
+    return { dt: FIXED_DT, steps: Math.min(steps, maxSteps) };
   }
-  if (paused) return 0;
+  if (paused) return { dt: FIXED_DT, steps: 0 };
 
   const now = p.millis();
-  const instanceId = p._instanceId || p._userNode?.id; // Identificatore unico per ogni sketch
-
-  // Se non abbiamo un lastMillis per questa istanza, inizializzalo
   if (!simulationInstances.has(instanceId)) {
     simulationInstances.set(instanceId, now);
-    return 0;
+    return { dt: FIXED_DT, steps: 0 };
   }
 
-  let lastInstanceMillis = simulationInstances.get(instanceId);
-  let dt = (now - lastInstanceMillis) / 1000; // seconds
-
-  // Aggiorna lastMillis per questa istanza
+  let rawDt = (now - simulationInstances.get(instanceId)) / 1000;
   simulationInstances.set(instanceId, now);
 
-  // limit burst (e.g. when tab regains focus)
-  const maxStep = 1 / 30; // ~33ms
-  if (dt > maxStep) dt = maxStep;
+  // Limit bursts (tab regaining focus) before scaling.
+  rawDt = Math.min(rawDt, 1 / 30) * timeScale;
 
-  return dt * timeScale;
+  const accumulated = (accumulators.get(instanceId) || 0) + rawDt;
+  const steps = Math.floor(accumulated / FIXED_DT);
+
+  if (steps > maxSteps) {
+    // Drop the backlog rather than trying to catch up.
+    accumulators.set(instanceId, 0);
+    return { dt: FIXED_DT, steps: maxSteps };
+  }
+
+  accumulators.set(instanceId, accumulated - steps * FIXED_DT);
+  return { dt: FIXED_DT, steps };
+}
+
+export function getFixedDt() {
+  return FIXED_DT;
 }
 
 export function setTimeScale(scale) {
@@ -47,6 +69,7 @@ export function togglePause() {
   // Quando mettiamo in pausa, resettiamo i lastMillis per evitare salti al resume
   if (paused) {
     simulationInstances.clear();
+    accumulators.clear();
   }
 }
 
@@ -54,6 +77,7 @@ export function setPause(value) {
   paused = value;
   if (paused) {
     simulationInstances.clear();
+    accumulators.clear();
   }
 }
 
@@ -66,6 +90,7 @@ export function stepSimulation(delta) {
 export function resetTime() {
   paused = false;
   simulationInstances.clear(); // Pulisci tutte le istanze
+  accumulators.clear();
 }
 
 export function isPaused() {

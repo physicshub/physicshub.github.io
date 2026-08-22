@@ -38,6 +38,4 @@ export const INPUT_FIELDS = [
   { name: "trailEnabled", label: "Enable Trails", type: "checkbox" },
 ];
 
-export const FORCES = [];
-
 export const SimInfoMapper = () => ({ Bodies: 3 });

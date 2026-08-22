@@ -1,498 +1,136 @@
-// app/pages/simulations/SimplePendulum.jsx
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation.js";
-
-// --- Core Physics & Constants ---
 import {
-  computeDelta,
-  resetTime,
-  isPaused,
-  setPause,
-} from "../app/(core)/constants/Time.js";
-import {
-  toPixels,
-  toMeters,
-  physicsYToScreenY,
-} from "../app/(core)/constants/Utils.js";
+  createSimulation,
+  Gravity,
+  Damping,
+  Distance,
+  Dragging,
+  ForceVectors,
+  ForceRenderer,
+  toScreen,
+} from "../app/(core)/engine/index.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
   SimInfoMapper,
 } from "../app/(core)/data/configs/SimplePendulum.js";
 
-// --- Physics Classes ---
-import PhysicsBody from "../app/(core)/physics/PhysicsBody.js";
-import ForceRenderer from "../app/(core)/physics/ForceRenderer.js";
-import DragController from "../app/(core)/physics/DragController.js";
-
-// --- Reusable UI Components ---
-import SimulationLayout from "../app/(core)/components/SimulationLayout.jsx";
-import P5Wrapper from "../app/(core)/components/P5Wrapper.jsx";
-import DynamicInputs from "../app/(core)/components/inputs/DynamicInputs";
-import SimInfoPanel from "../app/(core)/components/SimInfoPanel.jsx";
-
-// --- Hooks & Utils ---
-import useSimulationState from "../app/(core)/hooks/useSimulationState.ts";
-import useSimInfo from "../app/(core)/hooks/useSimInfo.ts";
-import getBackgroundColor from "../app/(core)/utils/getBackgroundColor.ts";
-
 /**
- * Pendulum Body - extends PhysicsBody with constraint to fixed anchor
+ * Simple pendulum.
+ *
+ * There is no pendulum-specific physics here: the bob is an ordinary body under
+ * gravity, and the rod is a Distance constraint to a fixed pivot. Swap that
+ * pivot for a free body and the same file becomes a pendulum on a moving cart.
  */
-class PendulumBody extends PhysicsBody {
-  constructor(p, params, anchorX, anchorY, length) {
-    super(p, params);
-    this.anchor = p.createVector(anchorX, anchorY);
-    this.length = length;
-    this.angularVel = 0;
-  }
+export default createSimulation({
+  config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
 
-  /**
-   * Update using pendulum physics with constraint
-   */
-  stepPendulum(dt, gravity, damping) {
-    if (dt === 0) return;
+  build({ world, inputs, bounds }) {
+    const pivot = world.addAnchor(bounds.width / 2, bounds.height * 0.9);
 
-    // Get current angle from vertical
-    const dx = this.state.position.x - this.anchor.x;
-    const dy = this.state.position.y - this.anchor.y;
-    const angle = Math.atan2(dx, -dy);
+    const angle = (inputs.initialAngle * Math.PI) / 180;
+    const length = inputs.length;
 
-    // Angular acceleration: α = -(g/L) * sin(θ) - damping * ω
-    const angularAcc =
-      -(gravity / this.length) * Math.sin(angle) - damping * this.angularVel;
+    const bob = world.addBody({
+      label: "bob",
+      mass: () => inputs.mass,
+      size: 0.3,
+      color: () => inputs.bobColor,
+      at: [
+        pivot.state.position.x + length * Math.sin(angle),
+        pivot.state.position.y - length * Math.cos(angle),
+      ],
+      trail: () => inputs.trailEnabled,
+      trailLength: 200,
+    });
 
-    // Update angular velocity
-    this.angularVel += angularAcc * dt;
+    const rod = world.add(
+      Distance(bob, pivot, () => inputs.length, {
+        color: () => inputs.ropeColor,
+      })
+    );
 
-    // Update angle
-    const newAngle = angle + this.angularVel * dt;
+    world.add(
+      Gravity({ g: () => inputs.gravity }),
+      // perMass makes this α = −c·ω on the rod, the textbook damped pendulum.
+      Damping({ c: () => inputs.damping, perMass: true }),
 
-    // Constrain position to circular path
-    this.state.position.x = this.anchor.x + this.length * Math.sin(newAngle);
-    this.state.position.y = this.anchor.y - this.length * Math.cos(newAngle);
+      // Dragging is projected back onto the arc, so the bob cannot leave the rod.
+      Dragging({
+        project: (body, ctx) => {
+          const pivotPos = pivot.state.position;
+          const dx = ctx.target.x - pivotPos.x;
+          const dy = ctx.target.y - pivotPos.y;
+          const distance = Math.hypot(dx, dy) || 1;
+          const radius = ctx.inputs.length;
+          return {
+            x: pivotPos.x + (dx / distance) * radius,
+            y: pivotPos.y + (dy / distance) * radius,
+          };
+        },
+      }),
 
-    // Update linear velocity (tangent to circular path)
-    const speed = this.angularVel * this.length;
-    this.state.velocity.x = speed * Math.cos(newAngle);
-    this.state.velocity.y = speed * Math.sin(newAngle);
+      ForceVectors({
+        bodies: bob,
+        scale: 10,
+        enabled: () => inputs.showForces,
+        // Damping acts on the bob too, but the classic figure shows only
+        // weight and tension.
+        only: ["weight", "tension"],
+      }),
 
-    // Update moving state
-    this.isMoving = Math.abs(this.angularVel) > 0.001;
+      weightComponents(bob, pivot, inputs)
+    );
 
-    // Update trail
-    if (this.trail.enabled) {
-      this.updateTrail();
-    }
-  }
+    return { bob, pivot, rod };
+  },
 
-  /**
-   * Set angle directly (for dragging)
-   */
-  /* 
-
-  * Unnecesary function with the new dragging system, but keeping it here just in case 
-
-    setAngle(angleRad) {
-    this.state.position.x = this.anchor.x + this.length * Math.sin(angleRad);
-    this.state.position.y = this.anchor.y - this.length * Math.cos(angleRad);
-    this.angularVel = 0;
-    this.state.velocity.set(0, 0);
-  }
-*/
-  /**
-   * Get current angle from vertical
-   */
-  getAngle() {
-    const dx = this.state.position.x - this.anchor.x;
-    const dy = this.state.position.y - this.anchor.y;
-    return Math.atan2(dx, -dy);
-  }
-
-  /**
-   * Calculate forces on pendulum
-   */
-  calculateForces(gravity) {
-    const angle = this.getAngle();
-
-    // Weight (downward)
-    const weight = this.params.mass * gravity;
-
-    // Weight components
-    const weightTangent = -weight * Math.sin(angle); // Tangent to arc
-    const weightRadial = weight * Math.cos(angle); // Toward anchor
-
-    // Tension (must balance radial component + centripetal)
-    const speed = this.angularVel * this.length;
-    const centripetal = (this.params.mass * speed * speed) / this.length;
-    const tension = weightRadial + centripetal;
+  info({ handles, inputs }) {
+    const { bob, rod, pivot } = handles;
+    const lowestY = pivot.state.position.y - rod.currentLength;
 
     return {
-      weight: { magnitude: weight },
-      tension: { magnitude: tension },
-      weightTangent,
-      weightRadial,
-      angle,
+      state: {
+        angleRad: rod.angle,
+        angularVel: rod.angularVelocity,
+        height: bob.state.position.y - lowestY,
+        velocity: bob.state.velocity,
+        kineticEnergy: bob.getKineticEnergy(),
+        potentialEnergy: bob.getPotentialEnergy(inputs.gravity, lowestY),
+      },
+      context: { gravity: inputs.gravity, tension: rod.tension },
     };
-  }
+  },
+});
 
-  /**
-   * Get potential energy (relative to lowest point)
-   */
-  getPotentialEnergy(gravity) {
-    const lowestY = this.anchor.y - this.length;
-    return this.params.mass * gravity * (this.state.position.y - lowestY);
-  }
-}
+/**
+ * Decompose the bob's weight into the components along and across the rod —
+ * the classic mg∥ / mg⊥ pair. A plain render element, which is all a bespoke
+ * overlay needs to be.
+ */
+function weightComponents(bob, pivot, inputs) {
+  const renderer = new ForceRenderer({ scale: 10, showMagnitude: false });
 
-export default function Pendulum() {
-  const location = usePathname();
-  const storageKey = location.replaceAll(/[/#]/g, "");
+  return {
+    zIndex: 11,
+    render(ctx) {
+      if (!inputs.showComponents || !inputs.showForces) return;
 
-  const { inputs, setInputs, inputsRef } = useSimulationState(
-    INITIAL_INPUTS,
-    storageKey
-  );
-  const [resetVersion, setResetVersion] = useState(0);
+      const weight = bob.appliedForces.get("weight");
+      if (!weight) return;
 
-  // References
-  const bodyRef = useRef(null);
-  const anchorRef = useRef({ x: 0, y: 0 });
-  const forceRendererRef = useRef(null);
-  const dragControllerRef = useRef(null);
+      const screen = toScreen(bob.state.position);
+      // Axis pointing from the bob toward the pivot.
+      const axis = Math.atan2(
+        pivot.state.position.y - bob.state.position.y,
+        pivot.state.position.x - bob.state.position.x
+      );
 
-  // Sim info
-  const { simData, updateSimInfo } = useSimInfo();
-
-  const handleInputChange = useCallback(
-    (name, value) => {
-      setInputs((prev) => ({ ...prev, [name]: value }));
+      renderer.decompose(ctx.p, screen.x, screen.y, weight, axis, {
+        parallelLabel: "mg∥",
+        perpendicularLabel: "mg⊥",
+      });
     },
-    [setInputs]
-  );
-
-  const sketch = useCallback(
-    (p) => {
-      let trailLayer = null;
-
-      const setupSimulation = () => {
-        const w = p.width;
-        const h = p.height;
-
-        // Setup anchor point
-        anchorRef.current = {
-          x: toMeters(w / 2),
-          y: toMeters(h * 0.9),
-        };
-
-        // Calculate initial position
-        const angleRad = (inputsRef.current.initialAngle * Math.PI) / 180;
-        const length = inputsRef.current.length;
-        const initialX = anchorRef.current.x + length * Math.sin(angleRad);
-        const initialY = anchorRef.current.y - length * Math.cos(angleRad);
-
-        // Initialize body
-        if (!bodyRef.current) {
-          bodyRef.current = new PendulumBody(
-            p,
-            {
-              mass: inputsRef.current.mass,
-              size: 0.3,
-              color: inputsRef.current.bobColor,
-              shape: "circle",
-            },
-            anchorRef.current.x,
-            anchorRef.current.y,
-            length
-          );
-
-          bodyRef.current.state.position.set(initialX, initialY);
-          bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-          bodyRef.current.trail.maxLength = 200;
-        } else {
-          bodyRef.current.anchor.set(anchorRef.current.x, anchorRef.current.y);
-          bodyRef.current.length = length;
-          bodyRef.current.state.position.set(initialX, initialY);
-          bodyRef.current.angularVel = 0;
-          bodyRef.current.clearTrail();
-        }
-
-        // Initialize force renderer
-        if (!forceRendererRef.current) {
-          forceRendererRef.current = new ForceRenderer({
-            scale: 10,
-            showLabels: true,
-            showMagnitude: true,
-            colors: {
-              weight: "#ef4444",
-              tension: "#06b6d4",
-              component: "#fca5a5",
-            },
-          });
-        }
-
-        // Initialize drag controller
-        if (!dragControllerRef.current) {
-          dragControllerRef.current = new DragController({
-            snapBack: false,
-          });
-        }
-      };
-
-      p.setup = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.createCanvas(w, h);
-
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-        trailLayer.clear();
-
-        setupSimulation();
-        p.background(getBackgroundColor());
-      };
-
-      p.draw = () => {
-        if (!bodyRef.current) return;
-
-        const dt = computeDelta(p);
-
-        // Sync body parameters
-        bodyRef.current.updateParams({
-          mass: inputsRef.current.mass,
-          color: inputsRef.current.bobColor,
-        });
-        bodyRef.current.length = inputsRef.current.length;
-        bodyRef.current.trail.enabled = inputsRef.current.trailEnabled;
-        bodyRef.current.trail.color = inputsRef.current.bobColor;
-
-        // Physics step (if not dragging)
-        if (!dragControllerRef.current.isDragging() && dt !== 0) {
-          bodyRef.current.stepPendulum(
-            dt,
-            inputsRef.current.gravity,
-            inputsRef.current.damping
-          );
-        }
-
-        // Calculate forces
-        const forces = bodyRef.current.calculateForces(
-          inputsRef.current.gravity
-        );
-
-        // Render scene
-        renderScene(p, forces);
-
-        // Update sim info
-        updateSimInfo(
-          p,
-          {
-            position: bodyRef.current.state.position,
-            velocity: bodyRef.current.state.velocity,
-            angularVel: bodyRef.current.angularVel,
-            angleRad: bodyRef.current.getAngle(),
-            height:
-              bodyRef.current.state.position.y -
-              (bodyRef.current.anchor.y - bodyRef.current.length),
-            kineticEnergy: bodyRef.current.getKineticEnergy(),
-            potentialEnergy: bodyRef.current.getPotentialEnergy(
-              inputsRef.current.gravity
-            ),
-          },
-          {
-            gravity: inputsRef.current.gravity,
-            forces,
-          },
-          SimInfoMapper
-        );
-      };
-
-      const renderScene = (p, forces) => {
-        const bg = getBackgroundColor();
-        const [r, g, b] = Array.isArray(bg) ? bg : [20, 20, 30];
-
-        // Trail layer
-        if (!inputsRef.current.trailEnabled) {
-          trailLayer.background(r, g, b);
-        } else {
-          trailLayer.fill(r, g, b, 40);
-          trailLayer.noStroke();
-          trailLayer.rect(0, 0, trailLayer.width, trailLayer.height);
-        }
-
-        // Main canvas
-        p.clear();
-        p.image(trailLayer, 0, 0);
-
-        // Draw anchor
-        const anchorScreen = {
-          x: toPixels(bodyRef.current.anchor.x),
-          y: physicsYToScreenY(bodyRef.current.anchor.y),
-        };
-        p.fill(150);
-        p.noStroke();
-        p.circle(anchorScreen.x, anchorScreen.y, 12);
-
-        // Draw rope
-        const bobScreen = {
-          x: toPixels(bodyRef.current.state.position.x),
-          y: physicsYToScreenY(bodyRef.current.state.position.y),
-        };
-        p.stroke(inputsRef.current.ropeColor);
-        p.strokeWeight(2);
-        p.line(anchorScreen.x, anchorScreen.y, bobScreen.x, bobScreen.y);
-
-        // Draw bob
-        const screenPos = bodyRef.current.draw(p);
-
-        // Draw forces
-        if (inputsRef.current.showForces) {
-          drawForces(p, screenPos, forces);
-        }
-      };
-
-      const drawForces = (p, screenPos, forces) => {
-        const renderer = forceRendererRef.current;
-
-        // Weight (downward)
-        renderer.drawWeight(
-          p,
-          screenPos.x,
-          screenPos.y,
-          bodyRef.current.params.mass,
-          inputsRef.current.gravity
-        );
-
-        // Tension (toward anchor)
-        const angle = forces.angle;
-        const tensionAngle = angle + Math.PI; // Opposite direction
-        renderer.drawVector(
-          p,
-          screenPos.x,
-          screenPos.y,
-          forces.tension.magnitude * Math.sin(tensionAngle),
-          forces.tension.magnitude * Math.cos(tensionAngle),
-          renderer.colors.tension,
-          "Tension"
-        );
-
-        // Show components if enabled
-        if (inputsRef.current.showComponents) {
-          p.push();
-          p.drawingContext.setLineDash([5, 5]);
-
-          // Weight tangent component
-          const tangentAngle = angle - Math.PI / 2;
-          renderer.drawVector(
-            p,
-            screenPos.x,
-            screenPos.y,
-            Math.abs(forces.weightTangent) * Math.cos(tangentAngle),
-            Math.abs(forces.weightTangent) * Math.sin(tangentAngle),
-            renderer.colors.component,
-            "mg⊥",
-            { dashed: true, showMagnitude: false }
-          );
-
-          // Weight radial component
-          renderer.drawVector(
-            p,
-            screenPos.x,
-            screenPos.y,
-            forces.weightRadial * Math.sin(angle),
-            forces.weightRadial * Math.cos(angle),
-            renderer.colors.component,
-            "mg∥",
-            { dashed: true, showMagnitude: false }
-          );
-
-          p.drawingContext.setLineDash([]);
-          p.pop();
-        }
-      };
-
-      // Mouse event handlers
-      p.mousePressed = () => {
-        if (!bodyRef.current) return;
-        dragControllerRef.current.handlePress(p, bodyRef.current);
-      };
-
-      //Mouse dragg modified for pendulum
-      p.mouseDragged = () => {
-        if (!bodyRef.current) return;
-
-        const anchorScreen = {
-          x: toPixels(bodyRef.current.anchor.x),
-          y: physicsYToScreenY(bodyRef.current.anchor.y),
-        };
-
-        const dx = p.mouseX - anchorScreen.x;
-        const dy = p.mouseY - anchorScreen.y;
-
-        const angle = Math.atan2(dx, dy);
-        const L = toPixels(bodyRef.current.length);
-
-        const constrainedX = anchorScreen.x + Math.sin(angle) * L;
-        const constrainedY = anchorScreen.y + Math.cos(angle) * L;
-
-        // use the original dragg system to avoid issues,
-
-        // copying the mouse position but with the constrained coordinates
-        dragControllerRef.current.handleDrag({
-          ...p,
-          mouseX: constrainedX,
-          mouseY: constrainedY,
-        });
-      };
-
-      p.mouseReleased = () => {
-        dragControllerRef.current.handleRelease();
-      };
-
-      // Window resize
-      p.windowResized = () => {
-        const { clientWidth: w, clientHeight: h } = p._userNode;
-        p.resizeCanvas(w, h);
-
-        trailLayer = p.createGraphics(w, h);
-        trailLayer.pixelDensity(1);
-        trailLayer.clear();
-
-        setupSimulation();
-      };
-    },
-    [inputsRef, updateSimInfo]
-  );
-
-  return (
-    <SimulationLayout
-      resetVersion={resetVersion}
-      onReset={() => {
-        const wasPaused = isPaused();
-        resetTime();
-        if (wasPaused) setPause(true);
-        setResetVersion((v) => v + 1);
-      }}
-      inputs={inputs}
-      simulation={location}
-      onLoad={(loadedInputs) => {
-        setInputs(loadedInputs);
-        setResetVersion((v) => v + 1);
-      }}
-      dynamicInputs={
-        <DynamicInputs
-          config={INPUT_FIELDS}
-          values={inputs}
-          onChange={handleInputChange}
-        />
-      }
-    >
-      <P5Wrapper
-        sketch={sketch}
-        key={resetVersion}
-        simInfos={<SimInfoPanel data={simData} />}
-      />
-    </SimulationLayout>
-  );
+  };
 }

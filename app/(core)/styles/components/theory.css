@@ -1,0 +1,397 @@
+/* ============================================================================
+   THEORY RENDERER
+   Read-only presentation of a theory/blog document (components/theory/*).
+   Everything needed to *edit* those same blocks lives in blog-editor.css.
+   ============================================================================ */
+
+.theory-renderer {
+  padding: 0.5rem 1.5rem 2rem;
+}
+
+.theory-section + .theory-section {
+  margin-top: 1.5rem;
+}
+
+.theory-subheading {
+  font-size: 1.1rem;
+  margin: 1rem 0 0.25rem;
+  color: var(--text-muted);
+}
+
+.theory-paragraph {
+  margin-top: 2rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.theory-blocks > :not(:last-child) {
+  margin-bottom: 0.75rem;
+}
+
+/* Inline emphasis keeps the accent colour across every block type */
+.theory-paragraph strong,
+.theory-note strong,
+.callout-content strong,
+.example-body strong,
+.toggle-panel strong {
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+/* --- Formulas -------------------------------------------------------------- */
+
+.theory-formula {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: auto;
+}
+
+.theory-formula code {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.copy-btn {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.copy-btn:hover {
+  opacity: 1;
+}
+
+.theory-formula .copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Notes and lists ------------------------------------------------------- */
+
+.theory-note {
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.85rem;
+  background: var(--bg-note);
+  border-left: 3px solid rgba(255, 255, 0, 0.8);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.theory-list {
+  margin: 0.5rem 0;
+}
+
+.theory-list li {
+  margin: 0.35rem 0;
+}
+
+/* --- Code blocks ----------------------------------------------------------- */
+
+.theory-codeblock {
+  border-radius: 10px;
+}
+
+.code-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 0.25rem;
+  margin-bottom: 8px;
+}
+
+.code-lang {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* --- Callouts -------------------------------------------------------------- */
+
+.theory-callout {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem !important;
+  border-radius: var(--radius);
+  background: var(--bg);
+  align-items: flex-start;
+}
+
+.callout-icon {
+  flex: 0 0 36px;
+  height: 36px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.callout-body {
+  flex: 1;
+}
+
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.callout-content {
+  color: var(--text-muted);
+}
+
+.callout-info {
+  border-left: 4px solid var(--info-color);
+  background: var(--bg-info);
+}
+
+.callout-warning {
+  border-left: 4px solid var(--warning-color);
+  background: var(--bg-warning);
+}
+
+.callout-tip {
+  border-left: 4px solid var(--tip-color);
+  background: var(--bg-info);
+}
+
+.callout-success {
+  border-left: 4px solid var(--success-color);
+  background: var(--bg-success);
+}
+
+/* --- Examples -------------------------------------------------------------- */
+
+.theory-example {
+  border: 1px dashed var(--border-color);
+  padding: 0.65rem;
+  border-radius: var(--radius);
+  background: transparent;
+}
+
+.example-title {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.example-body {
+  color: var(--text-muted);
+}
+
+/* --- Tables ---------------------------------------------------------------- */
+
+.theory-table-wrap {
+  overflow: auto;
+  border-radius: var(--radius);
+  margin: 2rem 0;
+}
+
+.theory-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-muted);
+}
+
+.theory-table th {
+  text-align: left;
+  padding: 0.5rem;
+  background: var(--bg-light);
+  font-size: 0.85rem;
+}
+
+.theory-table td {
+  padding: 0.6rem;
+  border-top: 1px solid var(--bg);
+}
+
+/* --- Images ---------------------------------------------------------------- */
+
+.theory-image-container {
+  margin: 2rem 0;
+  display: block;
+  position: relative;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Width presets — the component appends `size-${size}` */
+.size-xsmall {
+  width: 20%;
+  min-width: 180px;
+}
+
+.size-small {
+  width: 30%;
+  min-width: 250px;
+}
+
+.size-medium {
+  width: 50%;
+  min-width: 300px;
+}
+
+.size-large {
+  width: 85%;
+}
+
+.size-full {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .theory-image-container {
+    width: 100% !important;
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.image-wrapper.is-link {
+  cursor: pointer;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-caption {
+  margin-top: 10px;
+  font-style: italic;
+  color: #666;
+  outline: none;
+  text-align: left;
+}
+
+/* Attribution pill: a circle that expands into a link on hover */
+.copyright-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 5rem;
+  background-color: rgba(0, 0, 0, 0.503);
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  box-sizing: border-box;
+  transition:
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s;
+}
+
+.copyright-badge:hover {
+  width: 180px;
+  background-color: rgba(0, 0, 0, 0.701);
+}
+
+.badge-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.9rem;
+}
+
+.badge-text {
+  display: none;
+  opacity: 0;
+  margin-left: 0.2rem;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  transition: opacity 0.3s ease;
+}
+
+.copyright-badge:hover .badge-text {
+  display: block;
+  opacity: 1;
+  /* Wait for the badge to be almost open before revealing the label */
+  transition-delay: 0.15s;
+}
+
+/* Image editing affordances (TheoryImage in edit mode) */
+.image-editor-toolbar {
+  background: var(--bg-light);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.url-input {
+  flex: 1;
+  padding: 4px 8px;
+}
+
+.size-select {
+  padding: 4px;
+  border-radius: var(--border-radius);
+}
+
+.upload-btn::after {
+  display: none !important;
+}
+
+.editing-border {
+  border: 2px dashed #ccc;
+}
+
+/* --- Toggle / accordion ---------------------------------------------------- */
+
+.theory-toggle {
+  border-radius: var(--radius);
+  background: var(--bg-light);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.toggle-panel {
+  transition:
+    max-height 0.25s ease,
+    padding 0.25s;
+  overflow: hidden;
+  padding: 0 0.6rem 0;
+}
+
+.theory-toggle.open .toggle-panel {
+  padding: 0.6rem;
+}
