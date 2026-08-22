@@ -21,10 +21,14 @@
   },
   "ar": {
     "name": "Arabic",
-    "completed": true
+    "completed": false
   },
   "rw": {
     "name": "Kinyarwanda",
     "completed": true
-  }
+  },
+  "id": {
+    "name": "Bahasa Indonesia",
+    "completed": true
+  },
 }
