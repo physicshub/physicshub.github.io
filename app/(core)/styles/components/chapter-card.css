@@ -23,7 +23,8 @@
   cursor: pointer;
 }
 
-.chapter-card:hover {
+.chapter-card:hover,
+.chapter-card:focus-within {
   transform: translateY(-4px);
   border-color: color-mix(in oklab, var(--accent-color), transparent 58%);
   box-shadow:
@@ -58,7 +59,8 @@
     opacity 0.25s ease;
 }
 
-.chapter-card:hover .chapter-card-stage-img {
+.chapter-card:hover .chapter-card-stage-img,
+.chapter-card:focus-within .chapter-card-stage-img {
   transform: scale(1.05);
   opacity: 1;
 }
@@ -99,7 +101,8 @@
   transition: opacity 0.3s ease;
 }
 
-.chapter-card:hover .chapter-card-stage-scan {
+.chapter-card:hover .chapter-card-stage-scan,
+.chapter-card:focus-within .chapter-card-stage-scan {
   animation: chapter-scan 1.4s ease-in-out forwards;
 }
 
@@ -363,7 +366,8 @@
     border-color 0.2s ease;
 }
 
-.chapter-card:hover .chapter-card-metric {
+.chapter-card:hover .chapter-card-metric,
+.chapter-card:focus-within .chapter-card-metric {
   border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
 }
 
@@ -371,6 +375,34 @@
   grid-row: 1 / span 2;
   color: var(--chapter-accent, var(--accent-color));
   font-size: 0.9rem;
+}
+
+/* School-level metric carries the level's own hue (not the topic accent),
+   so the grid stays scannable by level without opening the tooltip. */
+.chapter-card-metric--level {
+  border-color: color-mix(
+    in oklab,
+    var(--chapter-level-accent, var(--accent-color)),
+    transparent 65%
+  );
+  background: color-mix(
+    in oklab,
+    var(--chapter-level-accent, var(--accent-color)),
+    transparent 90%
+  );
+}
+
+.chapter-card:hover .chapter-card-metric--level,
+.chapter-card:focus-within .chapter-card-metric--level {
+  border-color: color-mix(
+    in oklab,
+    var(--chapter-level-accent, var(--accent-color)),
+    transparent 45%
+  );
+}
+
+.chapter-card-metric--level > svg {
+  color: var(--chapter-level-accent, var(--accent-color));
 }
 
 .chapter-card-metric-label,
@@ -433,7 +465,8 @@
   transition: transform 0.2s ease;
 }
 
-.chapter-card:hover .chapter-card-body > a svg {
+.chapter-card:hover .chapter-card-body > a svg,
+.chapter-card:focus-within .chapter-card-body > a svg {
   transform: translateX(4px);
 }
 

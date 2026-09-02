@@ -21,6 +21,7 @@ function Chapter(props) {
   const primaryColor = COLORS[primaryTag?.color]?.primary || "#00e6e6";
   const secondaryColor = COLORS[secondaryTag?.color]?.secondary || "#7dd3fc";
   const level = LEVELS[props.level];
+  const levelColor = COLORS[level?.color]?.primary;
   const difficulty = DIFFICULTIES[props.difficulty] || DIFFICULTIES.core;
 
   const serial = !isBlog
@@ -107,7 +108,15 @@ function Chapter(props) {
         ) : (
           <div className="chapter-card-meta">
             {level && (
-              <div className="chapter-card-metric" title={levelInfo}>
+              <div
+                className="chapter-card-metric chapter-card-metric--level"
+                style={
+                  levelColor
+                    ? { "--chapter-level-accent": levelColor }
+                    : undefined
+                }
+                title={levelInfo}
+              >
                 <FontAwesomeIcon icon={faGraduationCap} />
                 <span className="chapter-card-metric-label">
                   {t("School level")}

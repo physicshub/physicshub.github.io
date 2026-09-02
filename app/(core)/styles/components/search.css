@@ -85,6 +85,29 @@
   color: var(--bg-color);
 }
 
+.clear-filters-btn {
+  background: none;
+  border: none;
+  padding: 0.5rem 0.6rem;
+  padding-bottom: 0.65rem;
+  align-self: flex-end;
+  color: var(--ph-fg-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--border-radius);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.clear-filters-btn:hover,
+.clear-filters-btn:focus-visible {
+  color: var(--text-color);
+  background: color-mix(in oklab, var(--accent-color), transparent 88%);
+}
+
 /* --- Collapsible tag row --------------------------------------------------- */
 
 .horizontal-menu-container {
@@ -161,6 +184,15 @@
 
 .filter-button:active {
   transform: scale(0.95);
+}
+
+.filter-button--empty {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.filter-button--empty:active {
+  transform: none;
 }
 
 /* --- Selected tags inside the input ---------------------------------------- */

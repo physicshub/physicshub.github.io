@@ -68,6 +68,10 @@ export default function Simulations() {
   const [filter, setFilter] = useState(emptyFilter);
   const [showHero] = useState(() => {
     if (typeof window !== "undefined") {
+      // A shared filtered link (see Search's URL sync) should land on the
+      // results, not the splash — a link that dumps a visitor at the hero
+      // defeats the point of sharing it.
+      if (window.location.search.length > 1) return false;
       return !localStorage.getItem("hasVisitedSimulations");
     }
     return true;
@@ -118,6 +122,18 @@ export default function Simulations() {
     filter.levels.length > 0 ||
     filter.difficulties.length > 0;
 
+  // A single selected level with very few matches reads as a broken filter
+  // rather than a young library — say so instead of leaving it unexplained.
+  const isThinLevelResult =
+    filter.levels.length === 1 &&
+    filter.tags.length === 0 &&
+    filter.difficulties.length === 0 &&
+    filteredChapters.length > 0 &&
+    filteredChapters.length <= 2;
+  const thinLevelName = isThinLevelResult
+    ? LEVELS[filter.levels[0]]?.name
+    : null;
+
   return (
     <div
       className={`simulations-container ${isCompleted ? "notranslate" : ""}`}
@@ -141,6 +157,14 @@ export default function Simulations() {
 
       <section ref={contentRef} className="simulations-content">
         <Search onFilter={setFilter} />
+
+        {thinLevelName && (
+          <p className="simulations-thin-level-note">
+            {t("Our library for")} {t(thinLevelName)}{" "}
+            {t("is still growing — here's what's available now.")}
+          </p>
+        )}
+
         <main className="simulations-page">
           {filteredChapters.map((chap) => (
             <Chapter key={chap.id} {...chap} />

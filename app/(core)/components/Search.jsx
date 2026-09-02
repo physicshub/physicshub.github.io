@@ -6,15 +6,67 @@ import {
   faFilter,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Tag from "./Tag";
 import useTranslation from "../hooks/useTranslation.ts";
 import TAGS, { LEVELS, LEVEL_ORDER, DIFFICULTIES } from "../data/tags.js";
+import Chapters from "../data/chapters.js";
 
 const TAGS_MAP = Object.values(TAGS).reduce((acc, tag) => {
   acc[tag.name] = tag;
   return acc;
 }, {});
+
+// How many simulations each topic actually covers today, so the filter can't
+// walk a visitor into a guaranteed-empty result silently.
+const TOPIC_COUNTS = Object.values(TAGS).reduce((acc, tag) => {
+  acc[tag.name] = Chapters.filter((chap) =>
+    chap.tags?.some((chapTag) => chapTag.name === tag.name)
+  ).length;
+  return acc;
+}, {});
+
+// Filter state round-trips through the URL (?q=&tags=&levels=&difficulty=) so a
+// filtered view is bookmarkable and shareable, e.g. by a teacher linking a
+// colleague straight to "upperSecondary + core".
+const URL_PARAM = {
+  text: "q",
+  tags: "tags",
+  levels: "levels",
+  difficulties: "difficulty",
+};
+
+const readFilterFromUrl = () => {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  const split = (key) => params.get(key)?.split(",").filter(Boolean) || [];
+
+  const text = params.get(URL_PARAM.text) || "";
+  const tags = split(URL_PARAM.tags);
+  const levels = split(URL_PARAM.levels);
+  const difficulties = split(URL_PARAM.difficulties);
+
+  if (!text && !tags.length && !levels.length && !difficulties.length) {
+    return null;
+  }
+  return { text, tags, levels, difficulties };
+};
+
+const writeFilterToUrl = (text, tags, levels, difficulties) => {
+  if (typeof window === "undefined") return;
+  const params = new URLSearchParams();
+  if (text.trim()) params.set(URL_PARAM.text, text);
+  if (tags.length) params.set(URL_PARAM.tags, tags.join(","));
+  if (levels.length) params.set(URL_PARAM.levels, levels.join(","));
+  if (difficulties.length)
+    params.set(URL_PARAM.difficulties, difficulties.join(","));
+
+  const query = params.toString();
+  const url = query
+    ? `${window.location.pathname}?${query}`
+    : window.location.pathname;
+  window.history.replaceState(null, "", url);
+};
 
 export function Search({ onFilter, extraButton }) {
   const [searchText, setSearchText] = useState("");
@@ -28,9 +80,37 @@ export function Search({ onFilter, extraButton }) {
   const emitFilter = useCallback(
     (text, tags, levels, difficulties) => {
       onFilter?.({ text, tags, levels, difficulties });
+      writeFilterToUrl(text, tags, levels, difficulties);
     },
     [onFilter]
   );
+
+  // Hydrate from the URL after mount (client-only, so this never fights the
+  // server-rendered empty state during hydration).
+  useEffect(() => {
+    const fromUrl = readFilterFromUrl();
+    if (!fromUrl) return;
+
+    setSearchText(fromUrl.text);
+    setSelectedTags(fromUrl.tags);
+    setSelectedLevels(fromUrl.levels);
+    setSelectedDifficulties(fromUrl.difficulties);
+    onFilter?.(fromUrl);
+  }, []);
+
+  const hasAnyFilter =
+    searchText.trim() !== "" ||
+    selectedTags.length > 0 ||
+    selectedLevels.length > 0 ||
+    selectedDifficulties.length > 0;
+
+  const handleClearAll = useCallback(() => {
+    setSearchText("");
+    setSelectedTags([]);
+    setSelectedLevels([]);
+    setSelectedDifficulties([]);
+    emitFilter("", [], [], []);
+  }, [emitFilter]);
 
   const handleMenuToggle = () => {
     setIsMenuOpen((prev) => !prev);
@@ -188,6 +268,15 @@ export function Search({ onFilter, extraButton }) {
         >
           <FontAwesomeIcon icon={faFilter} />
         </button>
+        {hasAnyFilter && (
+          <button
+            type="button"
+            className="clear-filters-btn"
+            onClick={handleClearAll}
+          >
+            {t("Clear all")}
+          </button>
+        )}
         {extraButton}
       </div>
 
@@ -236,14 +325,22 @@ export function Search({ onFilter, extraButton }) {
           {Object.values(TAGS).map((filter) => {
             const tagName = filter.name;
             const isSelected = selectedTags.includes(tagName);
+            const count = TOPIC_COUNTS[tagName] || 0;
+            const isEmpty = count === 0;
 
             return (
               <button
                 key={tagName}
-                className="filter-button"
-                onClick={() => handleTagToggle(tagName)}
+                className={`filter-button ${isEmpty ? "filter-button--empty" : ""}`}
+                onClick={() => !isEmpty && handleTagToggle(tagName)}
+                disabled={isEmpty}
                 aria-pressed={isSelected}
-                title={t(tagName)}
+                aria-disabled={isEmpty}
+                title={
+                  isEmpty
+                    ? `${t(tagName)} — ${t("No simulations for this topic yet")}`
+                    : t(tagName)
+                }
               >
                 <Tag
                   tag={filter}

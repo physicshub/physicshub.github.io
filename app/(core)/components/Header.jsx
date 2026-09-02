@@ -9,7 +9,7 @@ import GitHubHeaderBadge from "./GitHubHeaderBadge.jsx";
 import { useSticky } from "../hooks/useSticky";
 import { useTheme } from "../hooks/useTheme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHamburger } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import LanguageSwitcher from "./LanguageSwitcher.jsx";
 import { usePathname } from "next/navigation.js";
 
@@ -123,7 +123,7 @@ export default function Header() {
           aria-expanded={isMenuOpen}
           aria-label={t("Open/close menu")}
         >
-          <FontAwesomeIcon icon={faHamburger} />
+          <FontAwesomeIcon icon={faBars} />
         </button>
 
         <NavMenu onNavigate={handleMenuClose} />

@@ -4,35 +4,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faAtom,
-  faBolt,
   faPlay,
   faWaveSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import chaptersData from "../data/chapters.js";
 import { motion, useReducedMotion } from "framer-motion";
 import useTranslation from "../hooks/useTranslation.ts";
 
-// Container variant for staggered child animations
+// Container variant for staggered child animations. Kept short: this is a
+// Persuade surface, so the primary CTA must settle almost immediately.
 const containerVariants = (rm) => ({
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      delayChildren: rm ? 0.1 : 0.6,
-      staggerChildren: rm ? 0.08 : 0.25,
+      delayChildren: rm ? 0.05 : 0.12,
+      staggerChildren: rm ? 0.05 : 0.08,
     },
   },
 });
 
 // Fade-up variant for subtitles and CTAs
 const fadeUp = (rm) => ({
-  hidden: { opacity: 0, y: rm ? 10 : 30 },
+  hidden: { opacity: 0, y: rm ? 8 : 18 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: rm ? 0.5 : 1.2,
+      duration: rm ? 0.4 : 0.5,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -40,12 +39,12 @@ const fadeUp = (rm) => ({
 
 // Button interactions
 const buttonVariant = {
-  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  hidden: { opacity: 0, y: 16, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 90, damping: 16 },
+    transition: { type: "spring", stiffness: 140, damping: 18 },
   },
   hover: {
     scale: 1.04,
@@ -61,34 +60,16 @@ const textContainer = (rm) => ({
   show: {
     opacity: 1,
     transition: {
-      delayChildren: rm ? 0.1 : 0.3,
-      staggerChildren: rm ? 0.04 : 0.12,
+      delayChildren: rm ? 0.05 : 0.08,
+      staggerChildren: rm ? 0.03 : 0.045,
     },
   },
 });
 
 // Basic per-word fade-and-rise
 const wordVariant = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
-
-// Glowing text-shadow animation for highlighted word in #00e6e6
-const glowVariant = {
-  hidden: { textShadow: "0px 0px 0px rgba(0,230,230,0)" },
-  show: {
-    textShadow: [
-      "0px 0px 0px rgba(0,230,230,0)",
-      "0px 0px 12px rgba(0,230,230,1)",
-      "0px 0px 0px rgba(0,230,230,0)",
-    ],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      repeatDelay: 3,
-      ease: "easeInOut",
-    },
-  },
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
 export function Hero() {
@@ -97,17 +78,17 @@ export function Hero() {
 
   const isCompleted = meta?.completed || false;
 
-  // Compute chapters count
+  // Compute simulations count
   const chaptersCount = Array.isArray(chaptersData)
     ? chaptersData.length
     : chaptersData && typeof chaptersData === "object"
       ? Object.keys(chaptersData).length
       : 0;
 
-  // Split heading into words
-  const titleWords = t(
-    "PhysicsHub – Best website to learn physics easily."
-  ).split(" ");
+  // Split heading into words; the second sentence carries the accent.
+  const heading = t("Stop memorizing formulas. Start visualizing them.");
+  const titleWords = heading.split(" ");
+  const accentFrom = titleWords.findIndex((w) => /start/i.test(w));
 
   return (
     <motion.div
@@ -120,22 +101,18 @@ export function Hero() {
       style={{ position: "relative", overflow: "hidden" }}
     >
       <div className="ph-hero__copy">
-        <motion.p className="ph-hero__eyebrow" variants={fadeUp(reduceMotion)}>
-          <FontAwesomeIcon icon={faAtom} />
-          {t("Interactive physics learning")}
-        </motion.p>
-
-        {/* Animated H1 with per-word glow on PhysicsHub */}
+        {/* Animated H1, second sentence tinted with the accent */}
         <motion.h1
           className="ph-hero__title"
           variants={textContainer(reduceMotion)}
         >
           {titleWords.map((word, idx) => {
-            const isHighlight = word.includes("PhysicsHub");
+            const isAccent = accentFrom !== -1 && idx >= accentFrom;
             return (
               <motion.span
                 key={idx}
-                variants={isHighlight ? glowVariant : wordVariant}
+                className={isAccent ? "ph-hero__title-accent" : undefined}
+                variants={wordVariant}
                 style={{ display: "inline-block", marginRight: "0.25ch" }}
               >
                 {word}
@@ -171,29 +148,32 @@ export function Hero() {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link className="ph-btn ph-btn--ghost main-btn" href="/contribute">
-              {t("Contribute")}
-              <FontAwesomeIcon icon={faGithub} style={{ marginLeft: 8 }} />
+            <Link
+              className="ph-btn ph-btn--ghost main-btn"
+              href="#how-it-works"
+            >
+              {t("See how it works")}
             </Link>
           </motion.div>
         </motion.div>
 
         {/* Info text */}
         <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
-          {t("Currently")} {chaptersCount} {t("chapters available.")}
+          {chaptersCount}{" "}
+          {t("interactive simulations. Free forever, no account, no ads.")}
         </motion.p>
       </div>
 
       <motion.aside
         className="ph-hero-preview"
-        aria-label={t("Physics simulation preview")}
+        aria-label={t("Jump into a topic")}
         variants={fadeUp(reduceMotion)}
       >
         <div className="ph-hero-preview__toolbar">
           <span />
           <span />
           <span />
-          <strong>{t("Live Simulation")}</strong>
+          <strong>{t("Start with a concept")}</strong>
         </div>
         <div className="ph-hero-preview__stage" aria-hidden="true">
           <div className="ph-hero-preview__scan" />
@@ -217,11 +197,13 @@ export function Hero() {
           <Link href="/simulations/SimplePendulum">{t("Oscillations")}</Link>
         </div>
         <div className="ph-hero-preview__metrics">
-          <Link href="/simulations/CircularMotion">
-            <FontAwesomeIcon icon={faWaveSquare} />v = 8.2 m/s
+          <Link href="/simulations/SimplePendulum">
+            <FontAwesomeIcon icon={faWaveSquare} />
+            {t("Pendulum")}
           </Link>
-          <Link href="/simulations/SpringConnection">
-            <FontAwesomeIcon icon={faBolt} />E = 42 J
+          <Link href="/simulations/ThreeBody">
+            <FontAwesomeIcon icon={faAtom} />
+            {t("Orbits")}
           </Link>
           <Link className="ph-hero-preview__try" href="/simulations">
             <FontAwesomeIcon icon={faPlay} />

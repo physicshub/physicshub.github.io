@@ -69,3 +69,13 @@ main.simulations-page {
   font-size: 1.05rem;
   padding: 3rem 1rem;
 }
+
+.simulations-thin-level-note {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 1.5rem;
+  color: var(--subtitle-color);
+  font-size: 0.92rem;
+  text-align: center;
+}
