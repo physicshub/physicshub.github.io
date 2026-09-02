@@ -1,7 +1,11 @@
 /* ============================================================================
    CHAPTER CARD  (components/Chapter.jsx)
-   Structure: .chapter-card > .chapter-card-hero + .chapter-card-overlay
-   The hero shows a thumbnail when available, otherwise a generated fallback
+   "Laboratory instrument" treatment — reuses the landing page's visual
+   vocabulary: .ph-hero-preview (blueprint grid, scan sweep, glow), the
+   eyebrow pill (.ph-hero__eyebrow) and the metrics footer (.ph-hero-preview__metrics).
+
+   Structure: .chapter-card > .chapter-card-stage + .chapter-card-body
+   The stage shows a thumbnail when available, otherwise a generated fallback
    built from --chapter-accent / --chapter-accent-2 (set inline by the component).
    ============================================================================ */
 
@@ -9,7 +13,7 @@
   position: relative;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -21,59 +25,134 @@
 
 .chapter-card:hover {
   transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 58%);
   box-shadow:
-    0 0 24px 4px color-mix(in oklab, var(--accent-color), transparent 67%),
+    0 0 24px 4px color-mix(in oklab, var(--accent-color), transparent 72%),
     0 8px 32px color-mix(in oklab, var(--bg-color), transparent 40%);
 }
 
-/* --- Hero ------------------------------------------------------------------ */
+/* --- Stage ------------------------------------------------------------------ */
 
-.chapter-card-hero {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  background: var(--bg-color);
+.chapter-card-stage {
   position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: var(--bg-color);
   overflow: hidden;
   border-bottom: 1px solid var(--border-color);
+  isolation: isolate;
 }
 
-.chapter-card-hero-img {
+/* Thumbnail: uniform "instrument panel" framing regardless of source image */
+.chapter-card-stage-img {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: -3;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  opacity: 0.94;
   transition:
-    transform 0.35s ease,
+    transform 0.4s ease,
     opacity 0.25s ease;
-  opacity: 0.9;
 }
 
-.chapter-card:hover .chapter-card-hero-img {
-  transform: scale(1.04);
+.chapter-card:hover .chapter-card-stage-img {
+  transform: scale(1.05);
   opacity: 1;
 }
 
-/* Gradient overlay fading the image into the card body */
-.chapter-card-hero-glow {
+/* Blueprint grid overlay (landing .ph-hero-preview::before) */
+.chapter-card-stage-grid {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    color-mix(in oklab, var(--card-bg), transparent 10%) 100%
-  );
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  opacity: 0.9;
 }
 
-/* --- Generated fallback hero (no thumbnail) -------------------------------- */
+/* Scan sweep on hover */
+.chapter-card-stage-scan {
+  position: absolute;
+  inset: -10% -20%;
+  z-index: 2;
+  height: 34%;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(
+      in oklab,
+      var(--chapter-accent, var(--accent-color)),
+      transparent 62%
+    ),
+    transparent
+  );
+  opacity: 0;
+  transform: translateY(-120%);
+  transition: opacity 0.3s ease;
+}
 
-.chapter-card-hero-fallback {
+.chapter-card:hover .chapter-card-stage-scan {
+  animation: chapter-scan 1.4s ease-in-out forwards;
+}
+
+@keyframes chapter-scan {
+  0% {
+    opacity: 0;
+    transform: translateY(-120%);
+  }
+  35% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(320%);
+  }
+}
+
+/* Gradient fading the stage into the card body (landing preview glow) */
+.chapter-card-stage-glow {
   position: absolute;
   inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 62%,
+      color-mix(in oklab, var(--card-bg), transparent 8%) 100%
+    ),
+    radial-gradient(
+      circle at 50% 36%,
+      color-mix(
+        in oklab,
+        var(--chapter-accent, var(--accent-color)),
+        transparent 72%
+      ),
+      transparent 70%
+    );
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+[data-theme="light"] .chapter-card-stage-glow {
+  mix-blend-mode: normal;
+  opacity: 0.35;
+}
+
+/* --- Generated fallback stage (no thumbnail) ------------------------------- */
+
+.chapter-card-stage-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
   display: grid;
   place-items: center;
   background:
@@ -97,34 +176,6 @@
       color-mix(in oklab, var(--chapter-accent-2, #7dd3fc), black 78%)
     );
   overflow: hidden;
-}
-
-/* Blueprint grid */
-.chapter-card-hero-fallback::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(circle at center, black, transparent 78%);
-}
-
-/* Diagonal light streak */
-.chapter-card-hero-fallback::after {
-  content: "";
-  position: absolute;
-  width: 160%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 20%),
-    transparent
-  );
-  transform: rotate(-24deg);
-  opacity: 0.5;
 }
 
 .chapter-card-generated-orbit {
@@ -172,70 +223,199 @@
   );
 }
 
-.chapter-card-generated-topic {
+/* Diagonal light streak (kept from the legacy fallback) */
+.chapter-card-stage-fallback::after {
+  content: "";
   position: absolute;
-  left: 0.85rem;
-  bottom: 0.85rem;
-  z-index: 2;
-  max-width: calc(100% - 1.7rem);
-  padding: 0.32rem 0.65rem;
-  border-radius: 999px;
-  color: #061018;
+  width: 160%;
+  height: 1px;
   background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 34%),
-    var(--chapter-accent, var(--accent-color))
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--chapter-accent, var(--accent-color)), white 20%),
+    transparent
   );
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  transform: rotate(-24deg);
+  opacity: 0.5;
 }
 
-/* --- Body ------------------------------------------------------------------ */
+/* --- Body ------------------------------------------------------------------- */
 
-.chapter-card-overlay {
-  padding: 14px 16px 16px;
+.chapter-card-body {
+  position: relative;
+  padding: 18px 18px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  min-width: 0;
 }
 
-.chapter-card-tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+/* Ghost serial number: identity anchor, mirrors the eyebrow pill */
+.chapter-card-serial {
+  position: absolute;
+  top: -0.5rem;
+  right: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 3.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: color-mix(
+    in oklab,
+    var(--chapter-accent, var(--accent-color)),
+    transparent 82%
+  );
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.chapter-card-overlay h2.text-2xl {
-  font-size: 16px;
+/* Eyebrow topic pill (landing .ph-hero__eyebrow) */
+.chapter-card-eyebrow {
+  align-self: flex-start;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: color-mix(
+    in oklab,
+    var(--chapter-accent, var(--accent-color)),
+    white 26%
+  );
+  background: color-mix(
+    in oklab,
+    var(--chapter-accent, var(--accent-color)),
+    transparent 88%
+  );
+  border: 1px solid
+    color-mix(
+      in oklab,
+      var(--chapter-accent, var(--accent-color)),
+      transparent 60%
+    );
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
+  box-shadow: 0 0 18px
+    color-mix(
+      in oklab,
+      var(--chapter-accent, var(--accent-color)),
+      transparent 90%
+    );
+}
+
+.chapter-card-body h2 {
+  position: relative;
+  z-index: 1;
+  font-size: 1.06rem;
   font-weight: 700;
   color: var(--text-color);
   line-height: 1.35;
   margin: 0;
+  /* Clamp to two lines for a uniform card height */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.chapter-card-overlay p {
-  font-size: 12.5px;
+.chapter-card-body > p {
+  font-size: 0.815rem;
   font-weight: 500;
   color: var(--subtitle-color);
-  line-height: 1.65;
+  line-height: 1.6;
   margin: 0;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.chapter-card-level-info {
+/* --- Metrics footer (landing .ph-hero-preview__metrics) -------------------- */
+
+.chapter-card-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.chapter-card--blog .chapter-card-meta {
+  display: none;
+}
+
+.chapter-card-metric {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.5rem;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 78%);
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.chapter-card:hover .chapter-card-metric {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 60%);
+}
+
+.chapter-card-metric > svg {
+  grid-row: 1 / span 2;
+  color: var(--chapter-accent, var(--accent-color));
+  font-size: 0.9rem;
+}
+
+.chapter-card-metric-label,
+.chapter-card-metric-value {
+  display: block;
+  min-width: 0;
+  grid-column: 2;
+}
+
+.chapter-card-metric-label {
+  font-size: 0.56rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chapter-card-metric-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Body tags (blog variant) ---------------------------------------------- */
+
+.chapter-card-tags {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--subtitle-color);
-  line-height: 1.5;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 2px;
 }
 
-.chapter-card-overlay a {
+.chapter-card-tags .tag {
+  margin: 0;
+}
+
+/* --- CTA ------------------------------------------------------------------- */
+
+.chapter-card-body > a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -249,19 +429,34 @@
   transition: color 0.2s ease;
 }
 
-.chapter-card-overlay a svg {
+.chapter-card-body > a svg {
   transition: transform 0.2s ease;
 }
 
-.chapter-card:hover .chapter-card-overlay a svg {
+.chapter-card:hover .chapter-card-body > a svg {
   transform: translateX(4px);
 }
 
-/* Stretched link: the whole card surface (hero included) is a single
+/* Stretched link: the whole card surface (stage included) is a single
    click target for the bottom link. */
-.chapter-card-overlay a::after {
+.chapter-card-body > a::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 5;
+}
+
+/* --- Blog variant ---------------------------------------------------------- */
+
+.chapter-card--blog .chapter-card-serial,
+.chapter-card--blog .chapter-card-meta {
+  display: none;
+}
+
+/* --- Reduced motion -------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-card-stage-scan {
+    display: none;
+  }
 }
