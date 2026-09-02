@@ -49,17 +49,35 @@
   width: 100%;
 }
 
-/* Card grid */
+/* Card grid — the shared card-collection layout (see also .blogs-list--card).
+   auto-fill keeps every card the same width when a filter leaves only one or
+   two results, instead of stretching a lone card across the row. */
 main.simulations-page {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
   width: 100%;
   max-width: 1400px;
   padding: 2rem;
   margin-bottom: 7.5rem;
   margin-inline: auto;
+}
+
+@media (max-width: 900px) {
+  main.simulations-page {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  main.simulations-page {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1rem;
+    margin-bottom: 4.5rem;
+  }
 }
 
 .simulations-no-results {

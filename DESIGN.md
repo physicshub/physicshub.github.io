@@ -190,7 +190,7 @@ A near-monochrome dark field with one high-chroma cyan doing all the accent work
 
 - **Display** (600, `clamp(2.4rem, 5.7vw, 5.35rem)`, line-height 0.98, tracking −0.05em, max ~11ch): the landing hero title only. Deliberately over-tightened so it reads as a machined nameplate.
 - **Headline** (700, `clamp(2.4rem, 5vw, 3.2rem)`, line-height 1.2): page-level H1 (simulations index hero, section intros). The 404 uses an outsized 8rem variant with a glow.
-- **Title** (700, ~1.06–2.25rem depending on context, line-height 1.2–1.4): card headings, panel headings, blog article title (2.25rem / 800). Card titles clamp to two lines for a uniform grid.
+- **Title** (700, ~1.06–2.25rem depending on context, line-height 1.2–1.4): card headings, panel headings, blog article title (2.25rem / 800). Card titles clamp to three lines — enough that no simulation or article name is cut, while the grid stays even.
 - **Body** (400, 1rem, line-height 1.6–1.7): running text. Reading measures are held to ~58–75ch (`--ph-hero__subtitle` max 58ch; theory paragraphs run wider inside the article column).
 - **Label** (700–800, 0.68–0.85rem, tracking 0.06–0.2em, UPPERCASE): eyebrows, metric labels, TOC title, nav labels, chip text, the school-level banner. This is the workhorse accent-of-type.
 
@@ -206,7 +206,7 @@ A near-monochrome dark field with one high-chroma cyan doing all the accent work
 
 Centred single-column content with a fixed, blurred top bar. The primary container is `min(1200px, …)` (`--max-content-width`); card-grid pages widen to 1400px. Horizontal page padding is `2rem` on desktop, tightening to `1–1.5rem` on small screens; hero and section vertical padding uses `clamp()` (roughly `2rem`–`7rem`).
 
-**Grid.** Card collections are `display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))` with a `1.5–1.75rem` gap — simulations index, related articles, contributors, footer columns all follow this. The landing hero is the one bespoke layout: a two-column `minmax(0,1.02fr) minmax(330px,0.78fr)` grid that collapses to one column at 960px.
+**Grid.** Card collections are `display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))` with a `1.5rem` gap — the simulations index and the blog card view use exactly this (dropping to one column at 600px); related articles, contributors and footer columns follow the same shape. `auto-fill` (not `auto-fit`) is deliberate: a filtered result of one or two cards keeps its width instead of stretching across the row. The landing hero is the one bespoke layout: a two-column `minmax(0,1.02fr) minmax(330px,0.78fr)` grid that collapses to one column at 960px.
 
 **Chrome.** `header` is `position: fixed`, full-width, `backdrop-filter: blur(10px)`, `z-index: 2000`, with a hairline bottom border; it nudges partly off-screen on scroll-down (`.sticky`). Because the header is fixed, page content carries a top offset of roughly `6–8rem` (or a school-level banner that absorbs it). Below 840px the nav becomes a right-hand drawer with a blurred backdrop and staggered link entrance.
 
@@ -280,7 +280,7 @@ Buttons, cards and inputs should feel **calibrated and responsive**: tight radii
 - **Border:** `1px` hairline, shifting to a `color-mix` cyan at ~58% transparency on hover.
 - **Shadow strategy:** Ambient Card at rest; on hover, `translateY(-4px)` and Glow Bloom (see Elevation).
 - **Internal padding:** `18px`–`2rem` depending on card size.
-- **Signature — the chapter card** (`components/Chapter.jsx`): a "laboratory instrument" treatment. A `3:2` stage carries the blueprint grid, a hover scan sweep, and a screen-blend glow fading it into the body; when no thumbnail exists a generated fallback draws orbit rings and an icon from per-card `--chapter-accent` / `--chapter-accent-2`. The body has a giant ghost mono serial number (3.4rem, 800, cyan at 82% transparency) behind an eyebrow pill, a two-line-clamped title, a three-line-clamped description, a metrics footer of icon + label + value tiles, and a stretched-link CTA whose arrow slides `4px` on hover.
+- **Signature — the chapter card** (`components/Chapter.jsx`): a "laboratory instrument" treatment. A `3:2` stage carries the blueprint grid, a hover scan sweep, and a screen-blend glow fading it into the body; when no thumbnail exists a generated fallback draws orbit rings and an icon from per-card `--chapter-accent` / `--chapter-accent-2`. The body has a giant ghost mono serial number (3.4rem, 800, cyan at 82% transparency) behind an eyebrow pill, a three-line-clamped title, a three-line-clamped description, a metrics footer of icon + label + value tiles (tiles `minmax(140px, 1fr)`, so they stack rather than truncate the value on a narrow card), and a stretched-link CTA whose arrow slides `4px` on hover. The simulations index and blog card grid share one layout: `repeat(auto-fill, minmax(280px, 1fr))`, `1.5rem` gap, capped at 1400px, collapsing to a single column at 600px.
 
 ### Inputs / Fields
 
