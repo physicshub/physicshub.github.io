@@ -455,3 +455,130 @@
     margin-top: 5rem;
   }
 }
+
+/* --- Breadcrumb ---------------------------------------------------------- */
+
+.simulation-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 5.25rem 1rem 0;
+  font-size: 0.8rem;
+  color: var(--subtitle-color);
+}
+
+.simulation-breadcrumb a {
+  color: var(--subtitle-color);
+  text-decoration: none;
+}
+
+.simulation-breadcrumb a:hover {
+  color: var(--title-color);
+  text-decoration: underline;
+}
+
+.simulation-breadcrumb [aria-current="page"] {
+  color: var(--title-color);
+  font-weight: 600;
+}
+
+/* The breadcrumb already clears the fixed header. */
+.simulation-breadcrumb + .simulation-level-banner {
+  margin-top: 0.6rem;
+}
+
+@media (max-width: 840px) {
+  .simulation-breadcrumb {
+    margin-top: 4.75rem;
+  }
+}
+
+/* --- Server-rendered learning content (below the canvas) --------------- */
+
+.simulation-overview {
+  max-width: 900px;
+  margin: 2.5rem auto 1rem;
+  padding: 0 1.25rem;
+}
+
+.simulation-overview__title {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--title-color);
+  margin-bottom: 0.75rem;
+}
+
+.simulation-overview__intro {
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--text-color);
+  margin-bottom: 1.75rem;
+}
+
+.simulation-overview__block {
+  margin-bottom: 1.75rem;
+}
+
+.simulation-overview__block h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--title-color);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.simulation-overview__inputs,
+.simulation-overview__concepts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.simulation-overview__inputs li,
+.simulation-overview__concepts li {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+}
+
+.simulation-overview__formulas {
+  margin: 0;
+}
+
+.simulation-overview__formulas > div {
+  margin-bottom: 1rem;
+}
+
+.simulation-overview__formulas dt {
+  font-size: 0.85rem;
+  color: var(--subtitle-color);
+  margin-bottom: 0.25rem;
+}
+
+.simulation-overview__formulas dd {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.simulation-overview__theory-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.simulation-overview__theory-link a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.simulation-overview__theory-link a:hover {
+  text-decoration: underline;
+}

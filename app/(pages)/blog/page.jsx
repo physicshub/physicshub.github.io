@@ -228,6 +228,16 @@ export default function Blog() {
       <div
         className={`simulations-container blogs-container ${isCompleted ? "notranslate" : ""}`}
       >
+        {/* ── page heading ── */}
+        <header className="blogs-page-header">
+          <h1 className="title text-3xl">{t("Physics Blog")}</h1>
+          <p>
+            {t(
+              "Visual, interactive guides to the physics behind every simulation."
+            )}
+          </p>
+        </header>
+
         {/* ── header ── */}
         <div className="header-controls">
           <Search

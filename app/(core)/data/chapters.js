@@ -26,7 +26,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.MATH, TAGS.VECTORS, TAGS.TRIGONOMETRY],
     thumbnail: "/thumbnails/vector-operations.webp",
-    relatedBlogSlug: "operations-with-vectors",
+    relatedBlogSlug: "comprehensive-guide-to-vector-operations",
   },
   {
     id: 3,
@@ -74,7 +74,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
     thumbnail: "/thumbnails/simple-pendulum.webp",
-    relatedBlogSlug: "pendulum-motion",
+    relatedBlogSlug: "physics-of-pendulum-explained",
   },
   {
     id: 7,
@@ -130,6 +130,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.DYNAMICS, TAGS.SPRINGS, TAGS.OSCILLATIONS],
     thumbnail: "/thumbnails/horizontal-spring.webp",
+    relatedBlogSlug: "spring-connection",
   },
   {
     id: 12,

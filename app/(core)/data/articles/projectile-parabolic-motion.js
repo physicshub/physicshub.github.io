@@ -12,6 +12,7 @@ export const projectileParabolicBlog = {
     TAGS.GRAVITY,
     TAGS.ACCELERATION,
   ],
+  date: "21/01/2026",
   theory: {
     sections: [
       {

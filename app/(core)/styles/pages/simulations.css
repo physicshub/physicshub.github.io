@@ -21,11 +21,23 @@
   padding: 0 1.5rem;
 }
 
-.simulations-hero h1 {
+.simulations-hero h1,
+.simulations-hero__title {
   font-size: clamp(2.4rem, 5vw, 3.2rem);
   font-weight: 700;
   color: var(--title-color);
   margin-bottom: 1rem;
+}
+
+/* Always-present page title for the catalogue view (returning visitors and
+   shared filtered links never see the splash, so the <h1> lives here). */
+.simulations-content__title {
+  font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+  font-weight: 700;
+  color: var(--title-color);
+  letter-spacing: -0.02em;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .simulations-hero p {

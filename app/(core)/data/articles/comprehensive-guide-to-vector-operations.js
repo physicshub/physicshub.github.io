@@ -17,6 +17,7 @@ export const operationVectorsBlog = {
     TAGS.PHYSICS,
     TAGS.VECTORS,
   ],
+  date: "22/01/2026",
   theory: {
     title: "Vector Algebra: The Language of Space and Force",
     sections: [

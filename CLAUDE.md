@@ -113,9 +113,13 @@ Bodies those elements position themselves are marked `kinematic: true`, which te
 
 ### Content & SEO
 
-`scripts/sitemap-generator.js` reads `routes.js` + `data/articles/index.js` + `data/chapters.js`, writes `public/sitemap.xml` **and rewrites `routes.js` in place** — so `routes.js` diffs (lastmod churn) are expected build output, not hand edits.
+`scripts/sitemap-generator.js` reads `routes.js` + `data/articles/index.js` + `data/chapters.js`, writes `public/sitemap.xml` **and rewrites `routes.js` in place** — so `routes.js` diffs (lastmod churn) are expected build output, not hand edits. It strips the duplicate XML prolog the `sitemap` + `xml-formatter` combo would otherwise emit, and `assertValidSitemap()` fails the build if the output is not well-formed. `NOINDEX_PATHS` (currently `/blog/create`, `/simulations/test`) are excluded from both the sitemap and `routes.js`; blog `lastmod` comes from each article's `date` (DD/MM/YYYY), everything else from the build date.
 
-`content/blogs/*.json` holds community-submitted blog proposals created by the publish API; curated articles live as JS modules in `app/(core)/data/articles/`.
+**Metadata & structured data.** Page metadata is Next's App Router `metadata` / `generateMetadata`. Client-only pages (`/simulations`, `/blog`, `/about`, `/contribute`, `/blog/create`) carry their metadata in a sibling server `layout.tsx` — each sets a self-referencing `alternates.canonical`; `/blog/create` also sets `robots.index:false`. `/simulations/[id]` and `/blog/[slug]` set their own canonical/robots in `generateMetadata` (they'd otherwise inherit the listing's). Use the public name **PhysicsHub** in every meta field (not "Physics Portal"). The OG image is `/Thumbnail.jpg` (1200×800). JSON-LD: `app/layout.tsx` emits an `Organization` + `WebSite` `@graph` (the `Organization` `@id` is `…/#organization`, referenced as `publisher` elsewhere); `/blog/[slug]` adds `BlogPosting` + `BreadcrumbList`; `/simulations/[id]` adds `LearningResource` + `BreadcrumbList`.
+
+**Simulation page content.** `/simulations/[id]` renders `SimulationOverview` (server component) above the `ssr:false` canvas — an `<h1>`, intro, "what you can change", key concepts, KaTeX-rendered formulas, and a link to the related article. Its copy lives in `app/(core)/data/simulationOverviews.js`, keyed by the URL segment; `relatedBlogSlug` in `chapters.js` must match a real article slug in `data/articles/index.js`.
+
+`content/blogs/*.json` holds community-submitted blog proposals created by the publish API; curated articles live as JS modules in `app/(core)/data/articles/`. Each should carry a `date` (DD/MM/YYYY) — it feeds the visible byline, `datePublished`, and the sitemap `lastmod`.
 
 ### i18n
 

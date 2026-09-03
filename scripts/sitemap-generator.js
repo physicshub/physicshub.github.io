@@ -15,8 +15,52 @@ const __dirname = dirname(__filename);
 const hostname = "https://physicshub.github.io";
 const sitemapName = "sitemap";
 
+// Routes that are reachable but must never be indexed (kept out of the sitemap
+// and served with a noindex robots tag by their own metadata). The blog editor
+// is a pure app screen; `/simulations/test` is a browser stress test.
+const NOINDEX_PATHS = new Set(["/blog/create", "/simulations/test"]);
+
 // Current date in W3C format (YYYY-MM-DD) for lastmod
 const getCurrentDate = () => new Date().toISOString().split("T")[0];
+
+// Article `date` fields are authored as DD/MM/YYYY. Convert to YYYY-MM-DD for
+// <lastmod>, falling back to the build date when a date is missing or invalid.
+const toW3CDate = (value, fallback) => {
+  if (typeof value === "string") {
+    const match = value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (match) {
+      const [, dd, mm, yyyy] = match;
+      const iso = `${yyyy}-${mm}-${dd}`;
+      if (!Number.isNaN(Date.parse(iso))) return iso;
+    }
+  }
+  return fallback;
+};
+
+// A malformed sitemap (the classic failure here is a duplicated `<?xml ?>`
+// prolog) is silently rejected by Search Console. Fail the build instead.
+function assertValidSitemap(xml) {
+  const declarations = xml.match(/<\?xml[\s\S]*?\?>/g) || [];
+  if (declarations.length !== 1) {
+    throw new Error(
+      `sitemap.xml must contain exactly one XML declaration, found ${declarations.length}`
+    );
+  }
+  if (!xml.startsWith("<?xml")) {
+    throw new Error(
+      "sitemap.xml: XML declaration is not at the start of the document"
+    );
+  }
+  const open = (xml.match(/<loc>/g) || []).length;
+  const close = (xml.match(/<\/loc>/g) || []).length;
+  if (open === 0 || open !== close) {
+    throw new Error(
+      `sitemap.xml: unbalanced <loc> tags (${open} open, ${close} close)`
+    );
+  }
+  // xml-formatter throws on markup it cannot parse — use it as a validator.
+  xmlFormat(xml);
+}
 
 function updateRoutesFile(allRoutes) {
   const content = `export const routes = ${JSON.stringify(allRoutes, null, 2)};`;
@@ -31,7 +75,7 @@ async function generateSitemap() {
     path: `/blog/${blog.slug}`,
     changefreq: "monthly",
     priority: 0.8,
-    lastmod: currentDate,
+    lastmod: toW3CDate(blog.date, currentDate),
   }));
 
   const simulationRoutes = chapters.map((chapter) => ({
@@ -45,6 +89,7 @@ async function generateSitemap() {
 
   const uniqueRoutesMap = new Map();
   combinedRoutes.forEach((route) => {
+    if (NOINDEX_PATHS.has(route.path)) return;
     uniqueRoutesMap.set(route.path, route);
   });
   const allRoutes = Array.from(uniqueRoutesMap.values());
@@ -74,14 +119,18 @@ async function generateSitemap() {
 
   const rawXml = (await streamToPromise(sitemap)).toString();
 
-  // Add XML declaration and format
-  const formatted = xmlFormat(rawXml, {
+  // `SitemapStream` already emits an XML prolog, and `xml-formatter` can emit
+  // another — two prologs make the document invalid. Strip every declaration,
+  // format the body, then prepend exactly one.
+  const body = xmlFormat(rawXml.replace(/<\?xml[\s\S]*?\?>\s*/gi, ""), {
     indentation: "  ",
     collapseContent: true,
     lineSeparator: "\n",
-  });
+  }).replace(/^\s*<\?xml[\s\S]*?\?>\s*/i, "");
 
-  const xmlOutput = formatted;
+  const xmlOutput = `<?xml version="1.0" encoding="UTF-8"?>\n${body}`;
+
+  assertValidSitemap(xmlOutput);
 
   // Ensure public directory exists
   const publicDir = join(__dirname, "../public");

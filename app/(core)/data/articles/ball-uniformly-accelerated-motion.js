@@ -11,6 +11,7 @@ export const ballAcceleratingBlog = {
     TAGS.PHYSICS,
     TAGS.ACCELERATION,
   ],
+  date: "21/01/2026",
   theory: {
     sections: [
       {

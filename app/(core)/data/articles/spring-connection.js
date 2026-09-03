@@ -12,6 +12,7 @@ export const springConnectionBlog = {
     TAGS.OSCILLATIONS,
     TAGS.SPRINGS,
   ],
+  date: "21/01/2026",
   theory: {
     sections: [
       {

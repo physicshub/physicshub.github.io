@@ -12,6 +12,7 @@ export const ballFreeFallBlog = {
     TAGS.PHYSICS,
     TAGS.GRAVITY,
   ],
+  date: "24/01/2026",
   theory: {
     title: "Free Fall Dynamics: From Vacuum to Atmosphere",
     sections: [

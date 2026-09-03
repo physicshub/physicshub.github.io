@@ -5,11 +5,20 @@ import Layout from "./(core)/components/Layout.jsx";
 import { Metadata } from "next";
 import { FeedbackProvider } from "./(core)/context/FeedbackProvider.tsx";
 
+const SITE_DESCRIPTION =
+  "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.";
+
+const OG_IMAGE = {
+  url: "/Thumbnail.jpg",
+  width: 1200,
+  height: 800,
+  alt: "PhysicsHub – interactive physics simulations",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://physicshub.github.io"),
   title: "PhysicsHub – Interactive Physics Simulations Online",
-  description:
-    "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
+  description: SITE_DESCRIPTION,
   keywords: [
     "physics",
     "science",
@@ -21,23 +30,22 @@ export const metadata: Metadata = {
     "free",
   ],
   authors: [{ name: "mattqdev" }],
-  robots: "index, follow",
+  robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "https://physicshub.github.io/",
-    title: "Physics Portal – Interactive Physics Simulations Online",
+    title: "PhysicsHub – Interactive Physics Simulations Online",
     siteName: "PhysicsHub",
-    description:
-      "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
-    images: ["/Thumbnail.png"],
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     site: "https://physicshub.github.io/",
-    title: "Physics Portal – Interactive Physics Simulations Online",
-    description:
-      "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.",
-    images: ["/Thumbnail.png"],
+    title: "PhysicsHub – Interactive Physics Simulations Online",
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   icons: {
     icon: [
@@ -61,9 +69,29 @@ export default function RootLayout({
 }>) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "PhysicsHub",
-    url: "https://physicshub.github.io/",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://physicshub.github.io/#organization",
+        name: "PhysicsHub",
+        url: "https://physicshub.github.io/",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://physicshub.github.io/Logo.png",
+        },
+        description:
+          "A free, open-source library of interactive physics simulations and written theory for students, teachers and developers.",
+        sameAs: ["https://github.com/physicshub/physicshub.github.io"],
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://physicshub.github.io/#website",
+        name: "PhysicsHub",
+        url: "https://physicshub.github.io/",
+        publisher: { "@id": "https://physicshub.github.io/#organization" },
+        inLanguage: "en",
+      },
+    ],
   };
 
   return (

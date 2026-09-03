@@ -142,7 +142,9 @@ export default function Simulations() {
     >
       {showHero && (
         <section className="simulations-hero">
-          <h1>{t("Interactive Physics Simulations")}</h1>
+          <p className="simulations-hero__title">
+            {t("Interactive Physics Simulations")}
+          </p>
           <p>
             {t(
               "Explore core physics concepts through real-time, interactive experiments"
@@ -158,6 +160,9 @@ export default function Simulations() {
       )}
 
       <section ref={contentRef} className="simulations-content">
+        <h1 className="simulations-content__title">
+          {t("Interactive Physics Simulations")}
+        </h1>
         <Search
           dataset={Chapters}
           getFacets={getSimulationFacets}

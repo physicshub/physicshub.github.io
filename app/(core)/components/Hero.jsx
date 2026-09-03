@@ -14,7 +14,9 @@ import useTranslation from "../hooks/useTranslation.ts";
 // Container variant for staggered child animations. Kept short: this is a
 // Persuade surface, so the primary CTA must settle almost immediately.
 const containerVariants = (rm) => ({
-  hidden: { opacity: 0 },
+  // Kept at opacity 1 so the server-rendered hero (heading, CTAs) is visible
+  // before hydration; individual children still stagger in via their own y.
+  hidden: { opacity: 1 },
   show: {
     opacity: 1,
     transition: {
@@ -54,9 +56,11 @@ const buttonVariant = {
   tap: { scale: 0.98 },
 };
 
-// Text container for per-word staggering
+// Text container for per-word staggering. The <h1> text must stay readable
+// even if hydration never runs, so the heading is never faded out — only its
+// words rise into place.
 const textContainer = (rm) => ({
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   show: {
     opacity: 1,
     transition: {
@@ -66,9 +70,10 @@ const textContainer = (rm) => ({
   },
 });
 
-// Basic per-word fade-and-rise
+// Per-word rise. Opacity stays at 1 so the server-rendered heading is visible
+// with JavaScript disabled or before the bundle loads.
 const wordVariant = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 1, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 

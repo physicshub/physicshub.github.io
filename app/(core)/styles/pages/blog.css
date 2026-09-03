@@ -16,11 +16,23 @@
 /* Header, pinned section and the list all line up on the same 1400px column
    as the card grid, so the page has one consistent measure. */
 .blogs-container .header-controls,
+.blogs-container .blogs-page-header,
 .blogs-page,
 .pinned-blogs-section {
   width: 100%;
   max-width: 1400px;
   margin-inline: auto;
+}
+
+.blogs-page-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.blogs-page-header p {
+  color: var(--subtitle-color);
+  margin-top: 0.5rem;
+  text-wrap: balance;
 }
 
 .blogs-list {
