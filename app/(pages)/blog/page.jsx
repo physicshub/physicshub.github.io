@@ -1,10 +1,18 @@
 // app/(pages)/blog/page.jsx
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Tag from "../../(core)/components/Tag.jsx";
 import { blogsArray } from "../../(core)/data/articles/index.js";
 import { Search } from "../../(core)/components/Search.jsx";
+import {
+  getBlogFacets,
+  facetMatches,
+  hasActiveFacets,
+  sortCatalog,
+  parseCatalogDate,
+  DEFAULT_SORT,
+} from "../../(core)/utils/catalogFilters.js";
 import { useRouter } from "next/navigation";
 import useMobile from "../../(core)/hooks/useMobile.ts";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
@@ -19,10 +27,33 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
-// View mode toggle moved inside component for translation
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
+
+const emptyFilter = {
+  text: "",
+  tags: [],
+  levels: [],
+  difficulties: [],
+  sort: DEFAULT_SORT,
+};
+
+const textMatches = (blog, text) => {
+  const terms = text
+    .toLowerCase()
+    .trim()
+    .split(/\s+/)
+    .filter((term) => term.length > 0);
+  if (terms.length === 0) return true;
+
+  const tagNames = getChapterTagNames(blog.tags);
+  return terms.every(
+    (term) =>
+      blog.name.toLowerCase().includes(term) ||
+      (blog.desc || "").toLowerCase().includes(term) ||
+      tagNames.includes(term)
+  );
+};
 
 const BLOG_THUMBNAILS = {
   "what-is-physics":
@@ -141,7 +172,7 @@ export default function Blog() {
     { id: "compact", icon: faGrip, label: t("Compact view") },
   ];
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState(emptyFilter);
   const [viewMode, setViewMode] = useState("card"); // "card" | "list" | "compact"
   const router = useRouter();
   const isMobile = useMobile();
@@ -149,25 +180,23 @@ export default function Blog() {
   const pinnedBlogs = blogsArray.filter((chap) => chap.isPinned);
   const unpinnedBlogs = blogsArray.filter((chap) => !chap.isPinned);
 
-  const filteredUnpinnedChapters = unpinnedBlogs.filter((chap) => {
-    const searchTerms = searchTerm
-      .toLowerCase()
-      .trim()
-      .split(/\s+/)
-      .filter((t) => t.length > 0);
+  const isFiltering = hasActiveFacets(filter);
 
-    if (searchTerms.length === 0) return true;
-
-    const chapterTagNames = getChapterTagNames(chap.tags);
-    return searchTerms.every(
-      (term) =>
-        chap.name.toLowerCase().includes(term) || chapterTagNames.includes(term)
+  const filteredUnpinned = useMemo(() => {
+    const matched = unpinnedBlogs.filter(
+      (blog) =>
+        textMatches(blog, filter.text) &&
+        facetMatches(getBlogFacets(blog), filter)
     );
-  });
+    return sortCatalog(matched, filter.sort, {
+      getFacets: getBlogFacets,
+      getName: (blog) => blog.name,
+      getRecency: (blog) => parseCatalogDate(blog.date),
+    });
+  }, [filter]);
 
   const handleCreateNewBlog = () => router.push("/blog/create");
 
-  // Grid class driven by view mode
   const gridClass =
     viewMode === "card"
       ? "blogs-list blogs-list--card"
@@ -201,11 +230,21 @@ export default function Blog() {
       >
         {/* ── header ── */}
         <div className="header-controls">
-          <div className="blog-header-row">
-            <Search
-              onSearch={setSearchTerm}
-              extraButton={
-                !isMobile ? (
+          <Search
+            dataset={blogsArray}
+            getFacets={getBlogFacets}
+            onChange={setFilter}
+            itemNoun="blogs"
+            resultCount={filteredUnpinned.length}
+            extraButton={
+              <>
+                <ViewToggle
+                  current={viewMode}
+                  onChange={setViewMode}
+                  t={t}
+                  viewModes={VIEW_MODES}
+                />
+                {!isMobile && (
                   <button
                     onClick={handleCreateNewBlog}
                     className="ph-btn ph-btn--primary cursor-pointer"
@@ -214,20 +253,14 @@ export default function Blog() {
                     <FontAwesomeIcon icon={faPlus} />
                     {t("New Blog")}
                   </button>
-                ) : undefined
-              }
-            />
-            <ViewToggle
-              current={viewMode}
-              onChange={setViewMode}
-              t={t}
-              viewModes={VIEW_MODES}
-            />
-          </div>
+                )}
+              </>
+            }
+          />
         </div>
 
         {/* ── pinned section ── */}
-        {pinnedBlogs.length > 0 && searchTerm === "" && (
+        {pinnedBlogs.length > 0 && !isFiltering && (
           <section className="pinned-blogs-section">
             <h2 className="blogs-header">
               <FontAwesomeIcon icon={faThumbtack} className="pinned-icon" />
@@ -242,22 +275,20 @@ export default function Blog() {
         {/* ── main list ── */}
         <main className="blogs-page">
           <h2 className="blogs-header">
-            {searchTerm === "" ? (
+            {isFiltering ? (
+              t("Search Results")
+            ) : (
               <>
                 <FontAwesomeIcon icon={faList} /> {t("All the blogs")}
               </>
-            ) : (
-              t("Search Results")
             )}
           </h2>
 
           <div className={gridClass}>
-            {filteredUnpinnedChapters.map((chap, i) => renderBlog(chap, i))}
+            {filteredUnpinned.map((chap, i) => renderBlog(chap, i))}
 
-            {filteredUnpinnedChapters.length === 0 && searchTerm.length > 0 && (
-              <p className="no-results">
-                {t("Nothing found for")} &quot;{searchTerm}&quot;.
-              </p>
+            {filteredUnpinned.length === 0 && isFiltering && (
+              <p className="no-results">{t("No blogs match these filters")}</p>
             )}
           </div>
         </main>

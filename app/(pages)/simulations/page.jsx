@@ -1,14 +1,26 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
 import { LEVELS, DIFFICULTIES } from "../../(core)/data/tags.js";
+import {
+  getSimulationFacets,
+  facetMatches,
+  sortCatalog,
+  DEFAULT_SORT,
+} from "../../(core)/utils/catalogFilters.js";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
-const emptyFilter = { text: "", tags: [], levels: [], difficulties: [] };
+const emptyFilter = {
+  text: "",
+  tags: [],
+  levels: [],
+  difficulties: [],
+  sort: DEFAULT_SORT,
+};
 
 const textMatches = (chap, text) => {
   const terms = text
@@ -43,24 +55,9 @@ const textMatches = (chap, text) => {
   });
 };
 
-const tagMatches = (chap, tags) =>
-  tags.every((tagName) => getChapterTagNames(chap.tags).includes(tagName));
-
-const levelMatches = (chap, levels) =>
-  levels.length === 0 ||
-  levels.some(
-    (levelId) =>
-      chap.level === levelId || (chap.alsoFor || []).includes(levelId)
-  );
-
-const difficultyMatches = (chap, difficulties) =>
-  difficulties.length === 0 || difficulties.includes(chap.difficulty);
-
 const chapterMatches = (chap, filter) =>
   textMatches(chap, filter.text) &&
-  tagMatches(chap, filter.tags) &&
-  levelMatches(chap, filter.levels) &&
-  difficultyMatches(chap, filter.difficulties);
+  facetMatches(getSimulationFacets(chap), filter);
 
 export default function Simulations() {
   const { t, meta } = useTranslation();
@@ -112,9 +109,14 @@ export default function Simulations() {
     requestAnimationFrame(animateScroll);
   };
 
-  const filteredChapters = Chapters.filter((chap) =>
-    chapterMatches(chap, filter)
-  );
+  const filteredChapters = useMemo(() => {
+    const matched = Chapters.filter((chap) => chapterMatches(chap, filter));
+    return sortCatalog(matched, filter.sort, {
+      getFacets: getSimulationFacets,
+      getName: (chap) => chap.name,
+      getRecency: (chap) => chap.id,
+    });
+  }, [filter]);
 
   const hasAnyFilter =
     filter.text.trim() !== "" ||
@@ -156,7 +158,13 @@ export default function Simulations() {
       )}
 
       <section ref={contentRef} className="simulations-content">
-        <Search onFilter={setFilter} />
+        <Search
+          dataset={Chapters}
+          getFacets={getSimulationFacets}
+          onChange={setFilter}
+          itemNoun="simulations"
+          resultCount={filteredChapters.length}
+        />
 
         {thinLevelName && (
           <p className="simulations-thin-level-note">

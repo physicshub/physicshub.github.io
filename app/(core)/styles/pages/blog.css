@@ -60,22 +60,15 @@
   width: 100%;
 }
 
-/* Inside the blog page the search bar spans the card grid width */
+/* Inside the blog page the filter bar spans the full card-grid width */
 .blogs-container .header-controls {
   padding: 0;
 }
 
-.blogs-container .search-wrapper {
+.blogs-container .filterbar {
   max-width: 100%;
   width: 100%;
   padding: 0;
-}
-
-/* Aligns the "New blog" button with the search input */
-.header-controls .ph-btn {
-  --pad-y: 0.5rem;
-  align-self: flex-end;
-  flex-shrink: 0;
 }
 
 /* Floating "new blog" action (mobile) */
@@ -111,24 +104,13 @@
   color: var(--text-color);
 }
 
-/* --- Header row (search + view toggle) ----------------------------------- */
-
-.blog-header-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.blog-header-row > .search-wrapper {
-  flex: 1;
-}
+/* --- View toggle (lives in the filter bar's control row) --------------- */
 
 .blog-view-toggle {
   display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  border-radius: 999px;
   overflow: hidden;
   flex-shrink: 0;
   background: color-mix(in oklab, var(--accent-color), transparent 92%);
@@ -157,6 +139,7 @@
 .blog-view-btn--active,
 .blog-view-btn--active:hover {
   background: var(--accent-color);
+  color: var(--bg-color);
   opacity: 1;
 }
 
