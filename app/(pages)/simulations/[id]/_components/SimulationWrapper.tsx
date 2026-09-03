@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import useTranslation from "@/app/(core)/hooks/useTranslation";
 
 type Props = {
@@ -18,7 +18,7 @@ export default function SimulationWrapper({ id, overview }: Props) {
   const DynamicSimulation = dynamic(() => import(`@/simulations/${id}`), {
     ssr: false,
     loading: () => <p>{t("Loading simulation...")}</p>,
-  });
+  }) as ComponentType<{ overview?: ReactNode }>;
 
   return (
     <div className={isCompleted ? "notranslate" : ""}>

@@ -1100,7 +1100,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "paragraph",
-            text: "In a solid, atomic energy levels broaden into **bands**. The **valence band** is the highest filled band; the **conduction band** is above it. The **band gap** $E_g$ separates them. For conductors: $E_g = 0$ (bands overlap). For semiconductors: $E_g \\approx 0.1 – 3$ eV (e.g., Si: 1.1 eV, Ge: 0.7 eV). For insulators: $E_g > 3$ eV.",
+            text: "In a solid, atomic energy levels broaden into **bands**. The **valence band** is the highest filled band; the **conduction band** is above it. The **band gap** $E_g$ separates them. For conductors: $E_g = 0$ (bands overlap). For semiconductors: $E_g \\approx 0.1$–$3$ eV (e.g., Si: 1.1 eV, Ge: 0.7 eV). For insulators: $E_g > 3$ eV.",
           },
           {
             type: "paragraph",

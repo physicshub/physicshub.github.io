@@ -88,7 +88,7 @@ export const INPUT_FIELDS = [
  * object: density in kg/m³, the behaviour word, and the measured vs predicted
  * submerged percentage.
  */
-export const SimInfoMapper = (state, context) => {
+export const SimInfoMapper = (state) => {
   const out = {
     "ρf - fluid density": `${Math.round(state.fluid)} kg/m³`,
   };
