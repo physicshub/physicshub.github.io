@@ -15,7 +15,8 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "numBodies",
-    label: "N - Number of bodies:",
+    label: "Number of bodies",
+    symbol: "N",
     type: "number",
     min: 1,
     max: 1000,
@@ -23,7 +24,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },

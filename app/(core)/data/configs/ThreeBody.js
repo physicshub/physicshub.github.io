@@ -18,15 +18,33 @@ export const INPUT_FIELDS = [
       { value: "chaotic", label: "Unstable / Chaotic" },
     ],
   },
-  { name: "mass", label: "Mass", type: "number", min: 0.1, step: 0.1 },
+  {
+    name: "mass",
+    label: "Mass",
+    symbol: "m",
+    type: "number",
+    min: 0.1,
+    max: 50,
+    step: 0.1,
+  },
   {
     name: "G",
-    label: "Gravitational Constant",
+    label: "Gravitational constant",
+    symbol: "G",
     type: "number",
     min: 0.01,
+    max: 5,
     step: 0.01,
   },
-  { name: "size", label: "Body Size", type: "number", min: 0.01, step: 0.01 },
+  {
+    name: "size",
+    label: "Body size",
+    symbol: "d",
+    type: "number",
+    min: 0.01,
+    max: 2,
+    step: 0.01,
+  },
   {
     name: "chaos",
     label: "Randomness",
@@ -35,7 +53,7 @@ export const INPUT_FIELDS = [
     max: 1,
     step: 0.01,
   },
-  { name: "trailEnabled", label: "Enable Trails", type: "checkbox" },
+  { name: "trailEnabled", label: "Enable trails", type: "checkbox" },
 ];
 
 export const SimInfoMapper = () => ({ Bodies: 3 });

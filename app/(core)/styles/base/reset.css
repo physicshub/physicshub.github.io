@@ -113,8 +113,7 @@ a > strong {
 [data-theme="light"] .page-404 h1,
 [data-theme="light"] .logo img,
 [data-theme="light"] .back-to-home__link,
-[data-theme="light"] .select-label,
-[data-theme="light"] .checkbox-label {
+[data-theme="light"] .sim-field__label {
   text-shadow: none !important;
   box-shadow: none;
 }

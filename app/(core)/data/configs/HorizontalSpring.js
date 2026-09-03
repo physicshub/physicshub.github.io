@@ -15,7 +15,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "bobMass",
-    label: "m - Bob mass (kg):",
+    label: "Bob mass",
+    symbol: "m",
+    unit: "kg",
     type: "number",
     min: 0.1,
     max: 20,
@@ -23,7 +25,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "bobSize",
-    label: "r - Bob radius (m):",
+    label: "Bob radius",
+    symbol: "r",
+    unit: "m",
     type: "number",
     min: 0.05,
     max: 1,
@@ -31,7 +35,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "bobDamping",
-    label: "c - Damping coefficient (N·s/m):",
+    label: "Damping coefficient",
+    symbol: "c",
+    unit: "N·s/m",
     type: "number",
     min: 0,
     max: 10,
@@ -39,7 +45,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "springK",
-    label: "k - Spring constant (N/m):",
+    label: "Spring constant",
+    symbol: "k",
+    unit: "N/m",
     type: "number",
     min: 1,
     max: 500,
@@ -47,7 +55,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "springRestLength",
-    label: "L₀ - Rest length (m):",
+    label: "Rest length",
+    symbol: "L₀",
+    unit: "m",
     type: "number",
     min: 0,
     max: 5,
@@ -55,16 +65,18 @@ export const INPUT_FIELDS = [
   },
   {
     name: "minCompressionLength",
-    label: "Minimum spring length (m):",
+    label: "Minimum spring length",
+    symbol: "Lₘᵢₙ",
+    unit: "m",
     type: "number",
     min: 0.05,
     max: 5, // UI allows full range; physics clamps it to <= rest length
     step: 0.01,
   },
 
-  { name: "bobColor", label: "Bob color:", type: "color" },
-  { name: "anchorColor", label: "Anchor color:", type: "color" },
-  { name: "springColor", label: "Spring color:", type: "color" },
+  { name: "bobColor", label: "Bob color", type: "color" },
+  { name: "anchorColor", label: "Anchor color", type: "color" },
+  { name: "springColor", label: "Spring color", type: "color" },
 ];
 
 export const SimInfoMapper = (state) => {

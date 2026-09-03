@@ -16,14 +16,16 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "strokeWeight",
-    label: "Vectors lines weight:",
+    label: "Vector line weight",
+    unit: "px",
     min: 1,
+    max: 12,
     step: 1,
   },
   {
     type: "select",
     name: "physicsEnabled",
-    label: "Physics (Planck):",
+    label: "Physics (Planck)",
     options: [
       { value: "false", label: "Off" },
       { value: "true", label: "On" },
@@ -32,7 +34,7 @@ export const INPUT_FIELDS = [
   {
     type: "select",
     name: "operation",
-    label: "Vectors Operation:",
+    label: "Vector operation",
     options: [
       { value: "+", label: "Addition (+)" },
       { value: "-", label: "Subtraction (-)" },
@@ -45,7 +47,7 @@ export const INPUT_FIELDS = [
   {
     type: "select",
     name: "visualizeMode",
-    label: "Visualization:",
+    label: "Visualization",
     options: [
       { value: "triangle", label: "Triangle" },
       { value: "parallelogram", label: "Parallelogram" },
@@ -56,7 +58,9 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "vectorAMag",
-    label: "Vector A magnitude (px):",
+    label: "Vector A magnitude",
+    symbol: "|A|",
+    unit: "px",
     min: 10,
     max: 500,
     step: 10,
@@ -69,7 +73,9 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "vectorAAngle",
-    label: "Vector A angle (deg):",
+    label: "Vector A angle",
+    symbol: "∠A",
+    unit: "°",
     min: -180,
     max: 180,
     step: 5,
@@ -82,23 +88,28 @@ export const INPUT_FIELDS = [
   {
     type: "number",
     name: "massKg",
-    label: "m - Mass (kg)",
+    label: "Mass",
+    symbol: "m",
+    unit: "kg",
     min: 0.1,
+    max: 20,
     step: 0.1,
     disabledCondition: (inputs) => !inputs.physicsEnabled,
   },
   {
     type: "number",
     name: "pxPerNewton",
-    label: "Pixels per Newton",
+    label: "Pixels per newton",
+    unit: "px/N",
     min: 1,
+    max: 400,
     step: 1,
     disabledCondition: (inputs) => !inputs.physicsEnabled,
   },
   {
     type: "number",
     name: "multiVector",
-    label: "Multiplicate vector (multiplication only):",
+    label: "Vector multiplier (multiplication only)",
     min: -10,
     max: 10,
     step: 0.1,
@@ -107,6 +118,6 @@ export const INPUT_FIELDS = [
   {
     type: "color",
     name: "strokeColor",
-    label: "Vectors color:",
+    label: "Vectors color",
   },
 ];

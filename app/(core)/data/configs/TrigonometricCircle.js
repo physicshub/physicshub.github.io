@@ -22,7 +22,7 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "model",
-    label: "Function:",
+    label: "Function",
     type: "select",
     options: [
       { value: "sin", label: "sin θ" },
@@ -44,7 +44,8 @@ export const INPUT_FIELDS = [
   },
   {
     name: "rotationSpeed",
-    label: "Rotation speed (deg/s)",
+    label: "Rotation speed",
+    unit: "°/s",
     type: "number",
     min: 1,
     max: 180,
@@ -52,7 +53,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "initialAngle",
-    label: "Initial angle (°)",
+    label: "Initial angle",
+    symbol: "θ₀",
+    unit: "°",
     type: "number",
     min: -180,
     max: 180,
@@ -61,6 +64,7 @@ export const INPUT_FIELDS = [
   {
     name: "radius",
     label: "Circle radius",
+    symbol: "r",
     type: "number",
     min: 0.6,
     max: 1.5,
@@ -68,7 +72,8 @@ export const INPUT_FIELDS = [
   },
   {
     name: "amplitude",
-    label: "A - Amplitude",
+    label: "Amplitude",
+    symbol: "A",
     type: "number",
     min: 0.1,
     max: 3,
@@ -76,7 +81,8 @@ export const INPUT_FIELDS = [
   },
   {
     name: "frequency",
-    label: "ω - Frequency",
+    label: "Frequency",
+    symbol: "ω",
     type: "number",
     min: 0.25,
     max: 4,
@@ -84,7 +90,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "phase",
-    label: "φ - Phase (rad)",
+    label: "Phase",
+    symbol: "φ",
+    unit: "rad",
     type: "number",
     min: -3.14,
     max: 3.14,

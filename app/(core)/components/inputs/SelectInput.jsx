@@ -3,38 +3,57 @@ import React from "react";
 import useTranslation from "../../hooks/useTranslation.ts";
 import PropTypes from "prop-types";
 
-function SelectInput({ label, name, options, value, onChange, placeholder }) {
+function SelectInput({
+  label,
+  name,
+  options,
+  value,
+  onChange,
+  placeholder,
+  unit,
+  symbol,
+}) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   return (
-    <div className={`select-container ${isCompleted ? "notranslate" : ""}`}>
-      {label && (
-        <label htmlFor={name} className="select-label">
-          {t(label)}
-        </label>
-      )}
-      <div className="select-wrapper">
-        <select
-          id={name}
-          name={name}
-          className="select-input"
-          value={value}
-          onChange={onChange}
-        >
-          {placeholder && (
-            <option value="" disabled>
-              {t(placeholder)}
-            </option>
+    <div
+      className={`sim-field sim-field--select ${isCompleted ? "notranslate" : ""}`}
+    >
+      {(label || symbol || unit) && (
+        <div className="sim-field__head">
+          {symbol && <span className="sim-field__symbol">{symbol}</span>}
+          {label && (
+            <label htmlFor={name} className="sim-field__label">
+              {t(label)}
+            </label>
           )}
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {t(opt.label)}
-            </option>
-          ))}
-        </select>
-        <span className="select-arrow" aria-hidden="true">
-          ▾
-        </span>
+          {unit && <span className="sim-field__unit">{unit}</span>}
+        </div>
+      )}
+      <div className="sim-field__body">
+        <div className="sim-field__selectwrap">
+          <select
+            id={name}
+            name={name}
+            className="sim-field__select"
+            value={value}
+            onChange={onChange}
+          >
+            {placeholder && (
+              <option value="" disabled>
+                {t(placeholder)}
+              </option>
+            )}
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {t(opt.label)}
+              </option>
+            ))}
+          </select>
+          <span className="sim-field__caret" aria-hidden="true">
+            ▾
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -49,6 +68,8 @@ SelectInput.propTypes = {
   value: PropTypes.any,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  unit: PropTypes.string,
+  symbol: PropTypes.string,
 };
 
 SelectInput.defaultProps = {

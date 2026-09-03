@@ -7,19 +7,26 @@ function ColorInput({ label, name, value, onChange }) {
   const isCompleted = meta?.completed || false;
   return (
     <div
-      className={`color-input-container ${isCompleted ? "notranslate" : ""}`}
+      className={`sim-field sim-field--color ${isCompleted ? "notranslate" : ""}`}
     >
-      <label htmlFor={name} className="color-input-label">
-        {t(label)}
-      </label>
-      <input
-        id={name}
-        type="color"
-        name={name}
-        className="color-input"
-        value={value}
-        onChange={onChange}
-      />
+      <div className="sim-field__head">
+        <label htmlFor={name} className="sim-field__label">
+          {t(label)}
+        </label>
+      </div>
+      <div className="sim-field__body">
+        <input
+          id={name}
+          type="color"
+          name={name}
+          className="sim-field__swatch"
+          value={value}
+          onChange={onChange}
+        />
+        <span className="sim-field__hex">
+          {String(value || "").toUpperCase()}
+        </span>
+      </div>
     </div>
   );
 }

@@ -19,7 +19,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "mass",
-    label: "m - Mass (kg):",
+    label: "Mass",
+    symbol: "m",
+    unit: "kg",
     type: "number",
     min: 0.1,
     max: 20,
@@ -27,7 +29,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "size",
-    label: "d - Ball diameter (m):",
+    label: "Ball diameter",
+    symbol: "d",
+    unit: "m",
     type: "number",
     min: 0.1,
     max: 2,
@@ -35,13 +39,17 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },
   {
     name: "wind",
-    label: "F - Wind (m/s²):",
+    label: "Wind",
+    symbol: "F",
+    unit: "m/s²",
     type: "number",
     min: 0,
     max: 10,
@@ -49,7 +57,8 @@ export const INPUT_FIELDS = [
   },
   {
     name: "frictionMu",
-    label: "μ - Friction coefficient:",
+    label: "Friction coefficient",
+    symbol: "μ",
     type: "number",
     min: 0,
     max: 1,
@@ -57,14 +66,15 @@ export const INPUT_FIELDS = [
   },
   {
     name: "restitution",
-    label: "e - Coefficient of restitution (0–1):",
+    label: "Restitution",
+    symbol: "e",
     type: "number",
     min: 0,
     max: 1,
     step: 0.05,
   },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
-  { name: "color", label: "Ball Color:", type: "color" },
+  { name: "color", label: "Ball color", type: "color" },
 ];
 
 // Mapper per SimInfoPanel

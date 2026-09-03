@@ -80,7 +80,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "mass",
-    label: "m - Mass (kg):",
+    label: "Mass", // plain name only — no unit, no symbol, no trailing ":"
+    symbol: "m", // physics symbol → accent pill in the control head
+    unit: "kg", // unit of measure → standardized chip in the control head
     type: "number",
     min: 0.1,
     max: 20,
@@ -88,12 +90,14 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
-  { name: "ballColor", label: "Ball color:", type: "color" },
+  { name: "ballColor", label: "Ball color", type: "color" },
 ];
 
 // Receives whatever the simulation's `info` hook returns, plus long-lived refs.
@@ -104,8 +108,25 @@ export const SimInfoMapper = (state, context, refs) => ({
 ```
 
 Field `type` is one of `number` (`min`/`max`/`step`/`placeholder`), `checkbox`,
-`color`, `select` (`options: [{value, label}]`), `slider`, `text`. Label the
-symbol as well as the name — these are teaching materials.
+`color`, `select` (`options: [{value, label}]`), `slider`, `text`.
+
+`DynamicInputs` renders every field through the shared `.sim-field` shell
+(`styles/components/forms.css`). Three cross-cutting props, all optional:
+
+- **`label`** — the human name **only**. No unit, no symbol prefix, no trailing
+  `:` or `.` (`"Launch speed"`, not `"v₀ - Launch speed (m/s):"`).
+- **`symbol`** — the physics symbol (`"v₀"`, `"μₛ"`, `"θ"`), shown as a filled
+  accent pill. Always add it for a named physical quantity — these are teaching
+  materials.
+- **`unit`** — the unit of measure (`"m/s"`, `"kg"`, `"N·s/m"`, `"°"`), shown as
+  a standardized monospace chip. Omit it for dimensionless quantities
+  (coefficients of friction/restitution, damping factors) and for
+  simulation-unit quantities that have no SI unit.
+
+A `number` field with **both `min` and `max`** renders as a slider + editable
+value box + min/max scale, and the typed value is clamped to that range — so
+pick bounds a learner would actually want. Without a full range it renders as a
+value box with −/+ steppers.
 
 ### 2. The simulation
 

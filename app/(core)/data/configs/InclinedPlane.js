@@ -20,7 +20,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "mass",
-    label: "m - Mass (kg):",
+    label: "Mass",
+    symbol: "m",
+    unit: "kg",
     type: "number",
     min: 0.5,
     max: 10,
@@ -28,7 +30,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "size",
-    label: "d - Block size (m):",
+    label: "Block size",
+    symbol: "d",
+    unit: "m",
     type: "number",
     min: 0.2,
     max: 1.0,
@@ -36,7 +40,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "angle",
-    label: "θ - Plane angle (°):",
+    label: "Plane angle",
+    symbol: "θ",
+    unit: "°",
     type: "number",
     min: 0,
     max: 60,
@@ -44,13 +50,16 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },
   {
     name: "frictionStatic",
-    label: "μₛ - Static friction:",
+    label: "Static friction",
+    symbol: "μₛ",
     type: "number",
     min: 0,
     max: 1.5,
@@ -58,7 +67,8 @@ export const INPUT_FIELDS = [
   },
   {
     name: "frictionKinetic",
-    label: "μₖ - Kinetic friction:",
+    label: "Kinetic friction",
+    symbol: "μₖ",
     type: "number",
     min: 0,
     max: 1.5,
@@ -66,7 +76,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "appliedForce",
-    label: "F - Applied force (N):",
+    label: "Applied force",
+    symbol: "F",
+    unit: "N",
     type: "number",
     min: 0,
     max: 50,
@@ -74,7 +86,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "appliedAngle",
-    label: "α - Applied angle (°):",
+    label: "Applied angle",
+    symbol: "α",
+    unit: "°",
     type: "number",
     min: -90,
     max: 90,
@@ -83,8 +97,8 @@ export const INPUT_FIELDS = [
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
   { name: "showForces", label: "Show forces", type: "checkbox" },
   { name: "showComponents", label: "Show components", type: "checkbox" },
-  { name: "blockColor", label: "Block color:", type: "color" },
-  { name: "planeColor", label: "Plane color:", type: "color" },
+  { name: "blockColor", label: "Block color", type: "color" },
+  { name: "planeColor", label: "Plane color", type: "color" },
 ];
 
 export const SimInfoMapper = (state, context) => {
