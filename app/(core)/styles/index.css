@@ -29,6 +29,7 @@
 @import "./components/tags.css";
 @import "./components/chapter-card.css";
 @import "./components/contributors.css";
+@import "./components/github-header-badge.css";
 @import "./components/language-switcher.css";
 @import "./components/popup.css";
 @import "./components/simulation.css";

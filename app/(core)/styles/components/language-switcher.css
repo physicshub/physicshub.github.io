@@ -1,12 +1,11 @@
 /* ============================================================================
    LANGUAGE SWITCHER  (components/LanguageSwitcher.jsx)
-   Compact trigger in the header plus its dropdown.
+   Compact trigger in the header controls plus its dropdown.
    ============================================================================ */
 
 .lang-switcher {
   position: relative;
   flex-shrink: 0;
-  z-index: 2200;
 }
 
 .lang-switcher__trigger {
@@ -22,7 +21,7 @@
   background: var(--bg-color);
   color: var(--ph-fg-muted, var(--text-color));
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -32,7 +31,8 @@
 .lang-switcher__trigger:hover,
 .lang-switcher__trigger:focus-visible {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(0, 230, 230, 0.25);
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color), transparent 75%);
   outline: none;
 }
 
@@ -65,15 +65,18 @@
   position: absolute;
   top: calc(100% + 0.4rem);
   right: 0;
-  z-index: 2300;
+  z-index: 50;
   min-width: 8.5rem;
+  max-height: min(60vh, 20rem);
   margin: 0;
   padding: 0.35rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   list-style: none;
   border: 1px solid var(--border-color);
   border-radius: 0.75rem;
   background: var(--bg-color);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 
 .lang-switcher__option {
@@ -92,14 +95,14 @@
 
 .lang-switcher__option:hover,
 .lang-switcher__option:focus-visible {
-  background: rgba(0, 230, 230, 0.1);
+  background: color-mix(in oklab, var(--accent-color), transparent 90%);
   outline: none;
 }
 
 .lang-switcher__option.is-active {
   color: var(--accent-color);
   font-weight: 600;
-  background: rgba(0, 230, 230, 0.08);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
 }
 
 @media (max-width: 840px) {

@@ -9,6 +9,11 @@ const REPO_URL = "https://github.com/physicshub/physicshub.github.io";
 const REPO_API = "https://api.github.com/repos/physicshub/physicshub.github.io";
 const CONTRIBUTORS_API = `${REPO_API}/contributors?per_page=100`;
 
+// Height of one carousel label — must match --gh-badge-line in
+// styles/components/github-header-badge.css.
+const LINE_HEIGHT_REM = 1.15;
+const ROTATE_INTERVAL_MS = 2600;
+
 export default function GitHubHeaderBadge({ mode }) {
   const [stats, setStats] = useState({ stars: null, contributors: null });
   const [messageIndex, setMessageIndex] = useState(0);
@@ -66,7 +71,7 @@ export default function GitHubHeaderBadge({ mode }) {
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setMessageIndex((current) => (current + 1) % messages.length);
-    }, 2600);
+    }, ROTATE_INTERVAL_MS);
 
     return () => window.clearInterval(intervalId);
   }, [messages.length]);
@@ -84,7 +89,9 @@ export default function GitHubHeaderBadge({ mode }) {
       <span className="github-header-badge__viewport" aria-hidden="true">
         <span
           className="github-header-badge__track"
-          style={{ transform: `translateY(-${messageIndex * 1.15}rem)` }}
+          style={{
+            transform: `translateY(-${messageIndex * LINE_HEIGHT_REM}rem)`,
+          }}
         >
           {messages.map((message) => (
             <span className="github-header-badge__label" key={message}>
