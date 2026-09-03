@@ -9,8 +9,10 @@
   display: grid;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: clamp(5rem, 9vw, 7rem) 0 clamp(4rem, 7vw, 6rem);
+  /* Tall enough to own the first screen, capped so a short hero on a large
+     display doesn't leave a dead band between it and the next section. */
+  min-height: min(100svh, 840px);
+  padding: clamp(4.5rem, 8vw, 6rem) 0 clamp(2rem, 4vw, 3.25rem);
   border-radius: var(--ph-radius);
   overflow: clip;
   background:
@@ -742,9 +744,15 @@
 
 .lp-section {
   width: min(1180px, calc(100% - 2rem));
-  margin: clamp(3.5rem, 9vw, 7rem) auto;
+  margin: clamp(2.75rem, 6vw, 4.75rem) auto;
   scroll-margin-top: 5rem;
   color: var(--ph-fg);
+}
+
+/* The first section after the hero sits closer — the hero's own bottom
+   padding already supplies the breathing room. */
+.ph-hero + .lp-section {
+  margin-top: clamp(1.5rem, 3.5vw, 2.75rem);
 }
 
 .lp-section__head {
@@ -806,6 +814,27 @@
   .lp-how__steps {
     grid-template-columns: 1fr;
     gap: 1.75rem;
+  }
+
+  /* Stacked: pair the number with its step title on one baseline instead of
+     letting it float alone above the text. */
+  .lp-how__step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.85rem;
+    align-items: center;
+  }
+
+  .lp-how__num {
+    margin-bottom: 0;
+  }
+
+  .lp-how__step-title {
+    margin: 0;
+  }
+
+  .lp-how__step-body {
+    grid-column: 2;
   }
 }
 
@@ -941,11 +970,25 @@
 /* --- Community band ------------------------------------------------------ */
 
 .lp-community {
-  margin-block: clamp(3.5rem, 9vw, 6rem);
+  width: min(1180px, calc(100% - 2rem));
+  margin: clamp(2.75rem, 6vw, 4.75rem) auto clamp(3.5rem, 8vw, 5.5rem);
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-radius: 24px;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 72%);
+  background:
+    radial-gradient(
+      120% 140% at 100% 0%,
+      color-mix(in oklab, var(--accent-color), transparent 88%),
+      transparent 60%
+    ),
+    color-mix(in oklab, var(--ph-fg), transparent 97%);
 }
 
 .lp-community .ph-hero__container {
+  width: 100%;
+  max-width: none;
   margin-block: 0;
+  padding: 0;
 }
 
 .lp-community .ph-hero__title {

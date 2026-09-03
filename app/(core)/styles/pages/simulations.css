@@ -6,19 +6,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-top: 6.5rem;
+  margin-top: 5.5rem;
 }
 
-/* Full height intro, only shown on the first visit */
+/* Intro splash, only shown on the first visit. Owns the first screen without
+   forcing a full 100vh of near-empty space above the catalogue. */
 .simulations-hero {
-  min-height: 85vh;
+  min-height: min(78vh, 640px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 0 1.5rem;
+  padding: 3rem 1.5rem 1rem;
 }
 
 .simulations-hero h1,
@@ -26,6 +26,8 @@
   font-size: clamp(2.4rem, 5vw, 3.2rem);
   font-weight: 700;
   color: var(--title-color);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
   margin-bottom: 1rem;
 }
 
@@ -41,20 +43,19 @@
 }
 
 .simulations-hero p {
-  max-width: 680px;
+  max-width: 60ch;
   font-size: 1.1rem;
   color: var(--subtitle-color);
   line-height: 1.6;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+  text-wrap: balance;
 }
 
 .simulations-content {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 4rem 0;
+  padding: 2.5rem 0 0;
 }
 
 .simulations-content > * {

@@ -446,12 +446,29 @@
 .chapter-card-tags {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 5px;
   margin-top: 2px;
 }
 
 .chapter-card-tags .tag {
   margin: 0;
+}
+
+/* Overflow counter for the tags the card doesn't show — neutral, so it never
+   competes with the data-coloured chips beside it. */
+.chapter-card-tags-more {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.45rem;
+  border-radius: var(--border-radius);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text-muted);
+  background: color-mix(in oklab, var(--text-color), transparent 90%);
+  border: 1px solid var(--border-color);
 }
 
 /* --- CTA ------------------------------------------------------------------- */

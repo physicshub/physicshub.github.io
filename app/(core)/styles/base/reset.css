@@ -10,6 +10,44 @@
 
 html {
   scroll-behavior: smooth;
+  /* Themed scrollbar — the page's own chrome, not the browser's grey default. */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--accent-color), transparent 62%)
+    transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--accent-color), transparent 74%);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--accent-color), transparent 52%);
+  background-clip: padding-box;
+}
+
+/* Text selection carries the accent instead of the OS highlight colour. */
+::selection {
+  background: color-mix(in oklab, var(--accent-color), transparent 68%);
+  color: var(--text-color);
+}
+
+/* Caret in every text field is the signal colour. */
+input,
+textarea,
+[contenteditable] {
+  caret-color: var(--accent-color);
 }
 
 body {
@@ -43,10 +81,10 @@ hr {
 a {
   color: var(--accent-color);
   text-decoration: none;
+  transition: text-shadow 0.3s ease;
 }
 
 a:hover {
-  transition: text-shadow 0.3s;
   text-shadow: 0 0 8px var(--accent-color);
 }
 

@@ -100,11 +100,25 @@ function Chapter(props) {
         <p>{t(props.desc)}</p>
 
         {isBlog ? (
-          <div className="chapter-card-tags">
-            {props.tags.slice(1).map((tag, idx) => (
-              <Tag tag={tag} key={tag.id || idx} />
-            ))}
-          </div>
+          (() => {
+            // Blog entries carry a long tag array (topics + level + difficulty).
+            // Showing all of them turns the card into confetti — cap the card to
+            // the first few and roll the rest into a count.
+            const MAX_TAGS = 4;
+            const bodyTags = props.tags.slice(1);
+            const shown = bodyTags.slice(0, MAX_TAGS);
+            const overflow = bodyTags.length - shown.length;
+            return (
+              <div className="chapter-card-tags">
+                {shown.map((tag, idx) => (
+                  <Tag tag={tag} key={tag.id || idx} />
+                ))}
+                {overflow > 0 && (
+                  <span className="chapter-card-tags-more">+{overflow}</span>
+                )}
+              </div>
+            );
+          })()
         ) : (
           <div className="chapter-card-meta">
             {level && (

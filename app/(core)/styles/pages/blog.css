@@ -44,7 +44,8 @@
 .blogs-header {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-top: 1.5rem;
+  letter-spacing: -0.02em;
+  margin-top: 0.25rem;
   margin-bottom: 1.25rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.75rem;
@@ -75,6 +76,7 @@
 /* Inside the blog page the filter bar spans the full card-grid width */
 .blogs-container .header-controls {
   padding: 0;
+  margin-bottom: 1.25rem;
 }
 
 .blogs-container .filterbar {
@@ -697,9 +699,10 @@
 .related-title {
   font-size: 1.5rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
-  padding-left: 1rem;
-  border-left: 4px solid var(--accent-color);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
 }
 
