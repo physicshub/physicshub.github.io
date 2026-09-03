@@ -17,6 +17,7 @@ export default function SimulationLayout({
   onLoad,
   children,
   dynamicInputs,
+  overview,
 }) {
   const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
@@ -25,11 +26,7 @@ export default function SimulationLayout({
     const chapter = chapters.find((ch) => ch.link === simulation);
     const slug = chapter?.relatedBlogSlug;
 
-    return slug && allBlogs[slug]
-      ? allBlogs[slug].theory
-      : {
-          sections: [],
-        };
+    return slug && allBlogs[slug] ? allBlogs[slug].theory : { sections: [] };
   }, [simulation]);
 
   // Reset time on simulation change
@@ -43,19 +40,26 @@ export default function SimulationLayout({
       <GradientBackground />
       <TopSim />
 
-      {/* 1. Render the Canvas */}
-      {children}
+      {/* On wide screens the canvas is the stage and the controls + parameters
+          dock into a sticky side panel; below 1080px everything stacks in the
+          same reading order. */}
+      <div className="simulation-stage">
+        <div className="simulation-stage__canvas">{children}</div>
 
-      {/* 2. Render the Main Controls */}
-      <Controls
-        onReset={onReset}
-        inputs={inputs}
-        simulation={simulation}
-        onLoad={onLoad}
-      />
+        <aside className="simulation-stage__panel">
+          <Controls
+            onReset={onReset}
+            inputs={inputs}
+            simulation={simulation}
+            onLoad={onLoad}
+          />
+          {dynamicInputs}
+        </aside>
+      </div>
 
-      {/* 3. Render the Dynamic Inputs */}
-      {dynamicInputs}
+      {/* Concise, server-rendered summary — sits directly under the stage, above
+          the long theory article. */}
+      {overview}
 
       <TheoryRenderer theory={theory} />
     </div>

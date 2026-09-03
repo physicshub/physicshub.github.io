@@ -1,54 +1,195 @@
 /* ============================================================================
    THEORY RENDERER
    Read-only presentation of a theory/blog document (components/theory/*).
+   Tuned as a long-form *reading* surface: a held measure, bright body text,
+   one predictable vertical rhythm, and hairlines instead of colour slabs.
    Everything needed to *edit* those same blocks lives in blog-editor.css.
    ============================================================================ */
 
 .theory-renderer {
   padding: 0.5rem 1.5rem 2rem;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The blog article already holds its own measure on .blog-main-column, so the
+   prose runs edge-to-edge inside that column. Simulation pages keep the inset. */
+.blog-content .theory-renderer {
+  padding-inline: 0;
+}
+
+.theory-section {
+  scroll-margin-top: 6.5rem;
 }
 
 .theory-section + .theory-section {
-  margin-top: 1.5rem;
+  margin-top: 0;
 }
 
-.theory-subheading {
-  font-size: 1.1rem;
-  margin: 1rem 0 0.25rem;
-  color: var(--text-muted);
+/* --- One vertical rhythm ------------------------------------------------------
+   Every block is separated by the same gap; headings then claw back extra
+   space *above* themselves and hug the block that follows. */
+
+.theory-blocks > * + * {
+  margin-top: 1.35rem;
 }
+
+/* --- Headings --------------------------------------------------------------- */
+
+.theory-renderer .theory-section-title {
+  margin: 3.25rem 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  font-size: clamp(1.45rem, 1.2rem + 1.1vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* First section title sits flush — no rule, no gap above it. */
+.theory-renderer .theory-section:first-child .theory-section-title:first-child {
+  margin-top: 0.25rem;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.theory-renderer .theory-subheading {
+  margin: 2.25rem 0 0.55rem;
+  font-size: 1.28rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+/* `subtitle` blocks carry Tailwind size utilities (text-lg / text-base /
+   text-sm) from the component; override with the reading scale. */
+.theory-renderer .theory-subtitle {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.theory-renderer .theory-subtitle.text-base {
+  font-size: 1rem;
+}
+
+.theory-renderer .theory-subtitle.text-sm {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* A heading hugs the block it introduces. */
+.theory-blocks
+  > :is(.theory-section-title, .theory-subheading, .theory-subtitle)
+  + * {
+  margin-top: 0.6rem;
+}
+
+.theory-renderer :is(h2, h3, h4)[id] {
+  scroll-margin-top: 6.5rem;
+}
+
+/* --- Paragraphs & inline ------------------------------------------------------ */
 
 .theory-paragraph {
-  margin-top: 2rem;
-  line-height: 1.7;
-  color: var(--text-muted);
+  margin: 0;
+  color: var(--text-color);
+  text-wrap: pretty;
 }
 
-.theory-blocks > :not(:last-child) {
-  margin-bottom: 0.75rem;
-}
-
-/* Inline emphasis keeps the accent colour across every block type */
+/* Bold is weight + a brighter ink, not a second accent colour drowning the
+   page in cyan. */
 .theory-paragraph strong,
 .theory-note strong,
 .callout-content strong,
 .example-body strong,
-.toggle-panel strong {
+.toggle-panel strong,
+.theory-list strong {
   font-weight: 700;
+  color: var(--text-primary);
+}
+
+.theory-inline-code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.1em 0.36em;
+  border-radius: var(--radius-xs);
+  background: color-mix(in oklab, var(--accent-color), transparent 90%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 82%);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.theory-inline-link {
   color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--accent-color),
+    transparent 55%
+  );
+  transition: text-decoration-color 0.15s ease;
+}
+
+.theory-inline-link:hover {
+  text-decoration-color: var(--accent-color);
+}
+
+.theory-renderer ::selection {
+  background: color-mix(in oklab, var(--accent-color), transparent 72%);
+  color: var(--text-primary);
+}
+
+/* --- Lists --------------------------------------------------------------------- */
+
+.theory-list-container {
+  margin: 0;
+}
+
+.theory-list {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.theory-list li {
+  margin: 0.4rem 0;
+  padding-left: 0.25rem;
+  color: var(--text-color);
+}
+
+.theory-list li::marker {
+  color: color-mix(in oklab, var(--accent-color), var(--text-muted) 35%);
 }
 
 /* --- Formulas -------------------------------------------------------------- */
 
 .theory-formula {
   position: relative;
-  display: flex;
-  align-items: center;
-  margin: 0.75rem 0;
-  padding: 0.75rem 1rem;
+  margin: 0;
+  padding: 1rem 3rem 1rem 1.25rem;
   border-radius: var(--radius);
+  border: 1px solid var(--border-color);
   background: var(--bg);
-  overflow: auto;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.theory-formula .katex-display {
+  margin: 0;
+}
+
+.theory-formula .katex {
+  color: var(--text-primary);
 }
 
 .theory-formula code {
@@ -61,13 +202,17 @@
   background: none;
   border: 0;
   cursor: pointer;
-  font-size: 0.95rem;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
 }
 
 .copy-btn:hover {
   opacity: 1;
+  color: var(--accent-color);
 }
 
 .theory-formula .copy-btn {
@@ -78,23 +223,18 @@
   border-radius: var(--radius-sm);
 }
 
-/* --- Notes and lists ------------------------------------------------------- */
+/* --- Notes -------------------------------------------------------------------
+   A quiet aside. 1px accent-tinted frame, no colour slab. */
 
 .theory-note {
-  margin: 0.75rem 0;
-  padding: 0.6rem 0.85rem;
-  background: var(--bg-note);
-  border-left: 3px solid rgba(255, 255, 0, 0.8);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-}
-
-.theory-list {
-  margin: 0.5rem 0;
-}
-
-.theory-list li {
-  margin: 0.35rem 0;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--bg);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 80%);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.975rem;
+  line-height: 1.65;
 }
 
 /* --- Code blocks ----------------------------------------------------------- */
@@ -113,113 +253,156 @@
 }
 
 .code-lang {
-  font-size: 0.75rem;
-  opacity: 0.8;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-/* --- Callouts -------------------------------------------------------------- */
+/* --- Callouts --------------------------------------------------------------
+   Full 1px frame in the status hue + its tint fill; the icon carries the
+   colour. No thick border-left bar. */
 
 .theory-callout {
   display: flex;
-  gap: 0.75rem;
-  padding: 1rem !important;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 1rem 1.15rem !important;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
   background: var(--bg);
   align-items: flex-start;
 }
 
 .callout-icon {
-  flex: 0 0 36px;
-  height: 36px;
-  width: 36px;
+  flex: 0 0 34px;
+  height: 34px;
+  width: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .callout-body {
   flex: 1;
+  min-width: 0;
 }
 
 .callout-title {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  color: var(--text-primary);
 }
 
 .callout-content {
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 .callout-info {
-  border-left: 4px solid var(--info-color);
+  border-color: color-mix(in oklab, var(--info-color), transparent 62%);
   background: var(--bg-info);
+}
+
+.callout-info .callout-icon {
+  color: var(--info-color);
 }
 
 .callout-warning {
-  border-left: 4px solid var(--warning-color);
+  border-color: color-mix(in oklab, var(--warning-color), transparent 58%);
   background: var(--bg-warning);
 }
 
+.callout-warning .callout-icon {
+  color: var(--warning-color);
+}
+
 .callout-tip {
-  border-left: 4px solid var(--tip-color);
-  background: var(--bg-info);
+  border-color: color-mix(in oklab, var(--tip-color), transparent 60%);
+  background: color-mix(in oklab, var(--tip-color), transparent 90%);
+}
+
+.callout-tip .callout-icon {
+  color: var(--tip-color);
 }
 
 .callout-success {
-  border-left: 4px solid var(--success-color);
+  border-color: color-mix(in oklab, var(--success-color), transparent 60%);
   background: var(--bg-success);
 }
 
-/* --- Examples -------------------------------------------------------------- */
+.callout-success .callout-icon {
+  color: var(--success-color);
+}
+
+/* --- Examples -----------------------------------------------------------------
+   Dashed frame is the house signal for an "example / editable" region. */
 
 .theory-example {
-  border: 1px dashed var(--border-color);
-  padding: 0.65rem;
+  margin: 0;
+  border: 1px dashed color-mix(in oklab, var(--accent-color), transparent 55%);
+  padding: 1rem 1.15rem;
   border-radius: var(--radius);
-  background: transparent;
+  background: color-mix(in oklab, var(--accent-color), transparent 96%);
 }
 
 .example-title {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
 }
 
 .example-body {
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 /* --- Tables ---------------------------------------------------------------- */
 
 .theory-table-wrap {
-  overflow: auto;
+  margin: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  margin: 2rem 0;
 }
 
 .theory-table {
   width: 100%;
   border-collapse: collapse;
-  color: var(--text-muted);
+  font-size: 0.95rem;
+  color: var(--text-color);
 }
 
 .theory-table th {
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.7rem 0.85rem;
   background: var(--bg-light);
-  font-size: 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
 }
 
 .theory-table td {
-  padding: 0.6rem;
-  border-top: 1px solid var(--bg);
+  padding: 0.65rem 0.85rem;
+  border-top: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.theory-table tbody tr:nth-child(even) {
+  background: color-mix(in oklab, var(--accent-color), transparent 96%);
 }
 
 /* --- Images ---------------------------------------------------------------- */
 
 .theory-image-container {
-  margin: 2rem 0;
+  margin: 0;
   display: block;
   position: relative;
   transition: width 0.3s ease-in-out;
@@ -259,6 +442,7 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
 }
 
 .image-wrapper.is-link {
@@ -272,11 +456,12 @@
 }
 
 .image-caption {
-  margin-top: 10px;
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
   font-style: italic;
-  color: #666;
+  color: var(--text-muted);
   outline: none;
-  text-align: left;
+  text-align: center;
 }
 
 /* Attribution pill: a circle that expands into a link on hover */
@@ -365,8 +550,10 @@
 /* --- Toggle / accordion ---------------------------------------------------- */
 
 .theory-toggle {
+  margin: 0;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  background: var(--bg-light);
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -375,13 +562,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
   border: 0;
   background: none;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--text-primary);
+  text-align: left;
 }
 
 .toggle-panel {
@@ -389,9 +578,42 @@
     max-height 0.25s ease,
     padding 0.25s;
   overflow: hidden;
-  padding: 0 0.6rem 0;
+  padding: 0 1rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 .theory-toggle.open .toggle-panel {
-  padding: 0.6rem;
+  padding: 0 1rem 1rem;
+}
+
+/* --- Overflow scrollbars (code / tables / wide formulas) ----------------- */
+
+.theory-formula::-webkit-scrollbar,
+.theory-table-wrap::-webkit-scrollbar,
+.theory-codeblock pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.theory-formula::-webkit-scrollbar-thumb,
+.theory-table-wrap::-webkit-scrollbar-thumb,
+.theory-codeblock pre::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--accent-color), transparent 70%);
+  border-radius: 999px;
+}
+
+.theory-formula,
+.theory-table-wrap,
+.theory-codeblock pre {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--accent-color), transparent 70%)
+    transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theory-image-container,
+  .copyright-badge,
+  .toggle-panel {
+    transition: none;
+  }
 }

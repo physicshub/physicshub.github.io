@@ -1,37 +1,84 @@
 // app/(core)/components/theory/utils.tsx
 import React, { useCallback } from "react";
+import { InlineMath } from "react-katex";
 import { EditableProps } from "./types";
 
 /**
- * Parse text to handle bold formatting with **text**
+ * Render a run of prose text into React nodes, resolving the lightweight
+ * inline syntax the articles are authored in:
+ *
+ *   $x = vt$          → KaTeX inline math   (the common one — physics prose is
+ *                       dense with it, and unrendered `$...$` was the single
+ *                       biggest readability problem on the blog)
+ *   **text**          → <strong>
+ *   `code`            → <code class="theory-inline-code">
+ *   [label](https://) → <a class="theory-inline-link">
+ *
+ * Math is matched first so a `$...$` span is never chewed up by the `**` or
+ * backtick rules. `**bold**` is parsed recursively so emphasis can still wrap
+ * math or code.
  */
-export const parseBoldText = (text: string): React.ReactNode[] => {
+export const parseInlineText = (text: string): React.ReactNode[] => {
   if (!text || typeof text !== "string") return [text];
 
-  const parts: React.ReactNode[] = [];
-  const regex = /(\*\*([^\*]+)\*\*)/g;
+  // Constructed per call: the `g` flag carries lastIndex state, and this
+  // function recurses into bold spans.
+  const token =
+    /\$([^$]+?)\$|`([^`]+?)`|\[([^\]]+?)\]\(([^)\s]+?)\)|\*\*([^*]+?)\*\*/g;
+
+  const nodes: React.ReactNode[] = [];
   let lastIndex = 0;
-  let match;
+  let key = 0;
+  let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(text)) !== null) {
-    const fullMatch = match[1];
-    const content = match[2];
-    const matchIndex = match.index;
-
-    if (matchIndex > lastIndex) {
-      parts.push(text.substring(lastIndex, matchIndex));
+  while ((match = token.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(text.slice(lastIndex, match.index));
     }
 
-    parts.push(<strong key={matchIndex}>{content}</strong>);
-    lastIndex = matchIndex + fullMatch.length;
+    const [, mathBody, codeBody, linkLabel, linkHref, boldBody] = match;
+
+    if (mathBody !== undefined) {
+      nodes.push(<InlineMath key={key++} math={mathBody.trim()} />);
+    } else if (codeBody !== undefined) {
+      nodes.push(
+        <code key={key++} className="theory-inline-code">
+          {codeBody}
+        </code>
+      );
+    } else if (linkLabel !== undefined) {
+      const external = /^https?:\/\//.test(linkHref);
+      nodes.push(
+        <a
+          key={key++}
+          className="theory-inline-link"
+          href={linkHref}
+          {...(external
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {})}
+        >
+          {linkLabel}
+        </a>
+      );
+    } else if (boldBody !== undefined) {
+      nodes.push(<strong key={key++}>{parseInlineText(boldBody)}</strong>);
+    }
+
+    lastIndex = match.index + match[0].length;
   }
 
   if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
+    nodes.push(text.slice(lastIndex));
   }
 
-  return parts.length > 0 ? parts : [text];
+  return nodes.length > 0 ? nodes : [text];
 };
+
+/**
+ * Back-compat alias. The renderer historically only handled `**bold**`, so the
+ * name stuck; the implementation now covers the full inline set above.
+ */
+export const parseBoldText = parseInlineText;
 
 /**
  * Hook for common editable block logic

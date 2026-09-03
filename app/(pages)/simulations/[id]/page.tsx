@@ -181,9 +181,13 @@ export default async function Page({ params }: Props) {
         </div>
       )}
 
-      <SimulationWrapper id={id} />
-
-      <SimulationOverview id={id} chapter={chapter} />
+      {/* The concise overview is a server component passed as a slot so it
+          renders between the interactive stage and the full theory article,
+          not after it. */}
+      <SimulationWrapper
+        id={id}
+        overview={<SimulationOverview id={id} chapter={chapter} />}
+      />
     </div>
   );
 }

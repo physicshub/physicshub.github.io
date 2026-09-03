@@ -1,13 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { ReactNode } from "react";
 import useTranslation from "@/app/(core)/hooks/useTranslation";
 
 type Props = {
   id: string;
+  /** Server-rendered learning content, slotted below the canvas by the layout. */
+  overview?: ReactNode;
 };
 
-export default function SimulationWrapper({ id }: Props) {
+export default function SimulationWrapper({ id, overview }: Props) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
@@ -19,7 +22,7 @@ export default function SimulationWrapper({ id }: Props) {
 
   return (
     <div className={isCompleted ? "notranslate" : ""}>
-      <DynamicSimulation />
+      <DynamicSimulation overview={overview} />
     </div>
   );
 }

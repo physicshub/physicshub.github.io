@@ -24,10 +24,6 @@ function Chapter(props) {
   const levelColor = COLORS[level?.color]?.primary;
   const difficulty = DIFFICULTIES[props.difficulty] || DIFFICULTIES.core;
 
-  const serial = !isBlog
-    ? `${t("Chapter")} ${String(props.id).padStart(2, "0")}`
-    : null;
-
   const levelInfo = level
     ? [
         t(level.age),
@@ -85,12 +81,6 @@ function Chapter(props) {
 
       {/* Body */}
       <div className="chapter-card-body">
-        {serial && (
-          <span className="chapter-card-serial" aria-hidden="true">
-            {serial}
-          </span>
-        )}
-
         <span className="chapter-card-eyebrow">
           {t(primaryTag?.name || "Physics")}
         </span>

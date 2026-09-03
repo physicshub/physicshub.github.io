@@ -331,7 +331,7 @@
 /* --- Article layout -------------------------------------------------------- */
 
 .blog-page-wrapper {
-  max-width: 1400px;
+  max-width: 1180px;
   margin: 6rem auto 0;
   padding: 0 1rem;
 }
@@ -345,10 +345,25 @@
 .blog-main-column {
   flex: 1;
   min-width: 0; /* prevents wide tables/code from stretching the layout */
+  /* Hold the reading column to a ~70ch measure — the article was running the
+     full 1400px width before, which is unreadable for long-form prose. */
+  max-width: 46rem;
+}
+
+/* Below the TOC breakpoint there is no sidebar to balance against, so centre
+   the reading column instead of leaving it pinned left. */
+@media (max-width: 1023px) {
+  .blog-main-column {
+    margin-inline: auto;
+  }
 }
 
 .blog-container {
   padding: 0;
+}
+
+.blog-content {
+  margin-top: 1.25rem;
 }
 
 /* --- Breadcrumb ------------------------------------------------------------ */
@@ -392,6 +407,7 @@
   position: sticky;
   top: 7rem;
   display: none;
+  margin-left: auto;
   padding: 1rem;
   border-left: 1px solid
     color-mix(in oklab, var(--accent-color), transparent 85%);
@@ -446,15 +462,21 @@
 }
 
 .blog-title {
-  font-size: 2.25rem;
+  font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.25rem);
   margin: 0.5rem 0;
   font-weight: 800;
   line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
+/* Standfirst — reads as a lede, not muted caption text. */
 .blog-desc {
   margin-top: 1rem;
-  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-wrap: pretty;
 }
 
 .blog-meta-footer {

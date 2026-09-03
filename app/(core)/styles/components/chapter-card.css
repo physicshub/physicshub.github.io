@@ -254,26 +254,6 @@
   min-width: 0;
 }
 
-/* Ghost serial number: identity anchor, mirrors the eyebrow pill */
-.chapter-card-serial {
-  position: absolute;
-  top: -0.5rem;
-  right: 0.9rem;
-  font-family: var(--font-mono);
-  font-size: 3.4rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: color-mix(
-    in oklab,
-    var(--chapter-accent, var(--accent-color)),
-    transparent 82%
-  );
-  user-select: none;
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* Eyebrow topic pill (landing .ph-hero__eyebrow) */
 .chapter-card-eyebrow {
   align-self: flex-start;
@@ -507,15 +487,13 @@
 
 /* --- Blog variant ---------------------------------------------------------- */
 
-.chapter-card--blog .chapter-card-serial,
 .chapter-card--blog .chapter-card-meta {
   display: none;
 }
 
 /* --- Small screens ------------------------------------------------------------
    On a phone the card is close to full-bleed, so the stage is shortened to keep
-   the body above the fold, the ghost serial is scaled back so it can't spill
-   past the rounded corner, and the metric tiles always stack. */
+   the body above the fold, and the metric tiles always stack. */
 
 @media (max-width: 480px) {
   .chapter-card-stage {
@@ -525,12 +503,6 @@
   .chapter-card-body {
     padding: 16px;
     gap: 0.625rem;
-  }
-
-  .chapter-card-serial {
-    font-size: 2.6rem;
-    top: -0.25rem;
-    right: 0.75rem;
   }
 
   .chapter-card-meta {
