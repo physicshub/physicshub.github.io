@@ -39,6 +39,8 @@ lerna-debug.log*
 
 # ──────────────── Env files ────────────────
 .env
+.env.local
+.env.*.local
 
 # ──────────────── Vercel ────────────────
 .vercel
@@ -62,3 +64,9 @@ next-env.d.ts
 
 # ──────────────── Contributor generated files ────────────────
 scripts/contributors/*.html
+
+# ──────────────── Static export build scratch ────────────────
+.api-backup-during-static-build
+
+# Placet local server discovery file (port + secret token) — do not commit
+.placet/

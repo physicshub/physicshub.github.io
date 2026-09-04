@@ -9,21 +9,23 @@
   display: grid;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: clamp(5rem, 9vw, 7rem) 0 clamp(4rem, 7vw, 6rem);
+  /* Tall enough to own the first screen, capped so a short hero on a large
+     display doesn't leave a dead band between it and the next section. */
+  min-height: min(100svh, 840px);
+  padding: clamp(4.5rem, 8vw, 6rem) 0 clamp(2rem, 4vw, 3.25rem);
   border-radius: var(--ph-radius);
   overflow: clip;
   background:
     radial-gradient(
       circle at 72% 27%,
-      color-mix(in oklab, var(--accent-color), transparent 72%),
+      color-mix(in oklab, var(--accent-color), transparent 80%),
       transparent 34rem
     ),
     linear-gradient(
       135deg,
-      rgba(4, 8, 17, 0.92),
-      rgba(10, 17, 31, 0.72) 46%,
-      rgba(0, 230, 230, 0.1)
+      color-mix(in oklab, var(--bg-color), transparent 12%),
+      color-mix(in oklab, var(--bg-color), transparent 52%) 46%,
+      color-mix(in oklab, var(--accent-color), transparent 90%)
     );
 }
 
@@ -111,17 +113,19 @@
   z-index: -1;
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 72%);
   border-radius: 28px;
-  backdrop-filter: blur(0);
-  filter: blur(10px);
+  background: color-mix(in oklab, var(--bg-color), transparent 42%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 30px 80px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .ph-hero__copy {
   max-width: 680px;
 }
 
+/* LandingPart still renders an eyebrow when explicitly passed one. */
 .ph-hero__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -129,20 +133,20 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent-color), white 36%);
-  background: color-mix(in oklab, var(--accent-color), transparent 82%);
-  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 54%);
-  padding: 0.45rem 0.75rem;
-  border-radius: 999px;
-  box-shadow: 0 0 30px color-mix(in oklab, var(--accent-color), transparent 86%);
+  color: color-mix(in oklab, var(--accent-color), var(--ph-fg) 30%);
 }
 
 .ph-hero__title {
-  margin: 1.25rem 0;
-  font-size: clamp(2.4rem, 5.7vw, 5.35rem);
-  line-height: 0.98;
-  letter-spacing: -0.05em;
-  max-width: 11ch;
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+.ph-hero__title-accent {
+  color: var(--accent-color);
 }
 
 .ph-hero__subtitle {
@@ -217,6 +221,23 @@
   overflow: hidden;
 }
 
+[data-theme="light"] .ph-hero-preview {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in oklab, var(--accent-color), transparent 80%),
+      transparent 18rem
+    ),
+    linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--bg-color), transparent 4%),
+      color-mix(in oklab, var(--accent-color), transparent 92%)
+    );
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.12),
+    0 0 60px color-mix(in oklab, var(--accent-color), transparent 88%);
+}
+
 /* Blueprint grid */
 .ph-hero-preview::before {
   content: "";
@@ -261,7 +282,7 @@
   padding: 1rem 1.15rem;
   border-bottom: 1px solid
     color-mix(in oklab, var(--accent-color), transparent 78%);
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in oklab, var(--ph-fg), transparent 95%);
 }
 
 .ph-hero-preview__toolbar span {
@@ -469,7 +490,7 @@
   min-height: 3rem;
   border-radius: 14px;
   color: color-mix(in oklab, var(--ph-fg), transparent 10%);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in oklab, var(--ph-fg), transparent 93%);
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 76%);
   font-size: 0.83rem;
   font-weight: 700;
@@ -604,7 +625,7 @@
   .ph-hero__container {
     margin: 0;
     padding-top: 2rem;
-    padding-bottom: 8rem;
+    padding-bottom: 3.5rem;
   }
 }
 
@@ -658,4 +679,324 @@
   .ph-hero-preview__atom {
     animation: none;
   }
+}
+
+/* ============================================================================
+   SCROLL INDICATOR  (components/ScrollDown.tsx)
+   Fixed to the first viewport; hidden on phones where the hero is short.
+   ============================================================================ */
+
+.ph-scrolldown {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  z-index: 900;
+}
+
+.ph-scrolldown__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.ph-scrolldown__mouse {
+  position: relative;
+  width: 28px;
+  height: 44px;
+  border-radius: 16px;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--accent-color), transparent 45%);
+}
+
+.ph-scrolldown__dot {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color), transparent 20%);
+}
+
+.ph-scrolldown__label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--accent-color);
+}
+
+@media (max-width: 640px) {
+  .ph-scrolldown {
+    display: none;
+  }
+}
+
+/* ============================================================================
+   LANDING SECTIONS  (HowItWorks, FeaturedSimulations, TrustStrip, community)
+   ============================================================================ */
+
+.lp-section {
+  width: min(1180px, calc(100% - 2rem));
+  margin: clamp(2.75rem, 6vw, 4.75rem) auto;
+  scroll-margin-top: 5rem;
+  color: var(--ph-fg);
+}
+
+/* The first section after the hero sits closer — the hero's own bottom
+   padding already supplies the breathing room. */
+.ph-hero + .lp-section {
+  margin-top: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.lp-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.lp-section__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+/* --- How it works -------------------------------------------------------- */
+
+.lp-how__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.lp-how__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 55%);
+  color: var(--accent-color);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.lp-how__step-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+.lp-how__step-body {
+  margin: 0;
+  max-width: 34ch;
+  line-height: 1.55;
+  color: var(--ph-fg-muted);
+}
+
+@media (max-width: 760px) {
+  .lp-how__steps {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  /* Stacked: pair the number with its step title on one baseline instead of
+     letting it float alone above the text. */
+  .lp-how__step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.85rem;
+    align-items: center;
+  }
+
+  .lp-how__num {
+    margin-bottom: 0;
+  }
+
+  .lp-how__step-title {
+    margin: 0;
+  }
+
+  .lp-how__step-body {
+    grid-column: 2;
+  }
+}
+
+/* --- Featured simulations ---------------------------------------------------- */
+
+.lp-featured__all {
+  flex: none;
+  color: var(--accent-color);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lp-featured__all:hover,
+.lp-featured__all:focus-visible {
+  text-decoration: underline;
+}
+
+.lp-featured__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+}
+
+.lp-featured__item {
+  display: flex;
+}
+
+.lp-featured__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background: color-mix(in oklab, var(--ph-fg), transparent 96%);
+  border: 1px solid color-mix(in oklab, var(--ph-fg), transparent 90%);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.lp-featured__card:hover,
+.lp-featured__card:focus-visible {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 45%);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.lp-featured__thumb {
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+}
+
+.lp-featured__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lp-featured__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1.05rem;
+}
+
+.lp-featured__name {
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+.lp-featured__level {
+  flex: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklab, var(--accent-color), var(--ph-fg) 55%);
+  background: color-mix(in oklab, var(--accent-color), transparent 84%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 62%);
+}
+
+@media (max-width: 900px) {
+  .lp-featured__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .lp-featured__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Trust strip ----------------------------------------------------------- */
+
+.lp-trust__list {
+  list-style: none;
+  margin: 0;
+  padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.75rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--ph-fg), transparent 90%);
+  background: color-mix(in oklab, var(--ph-fg), transparent 97%);
+}
+
+.lp-trust__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.lp-trust__item svg {
+  color: var(--accent-color);
+}
+
+/* --- Community band ------------------------------------------------------ */
+
+.lp-community {
+  width: min(1180px, calc(100% - 2rem));
+  margin: clamp(2.75rem, 6vw, 4.75rem) auto clamp(3.5rem, 8vw, 5.5rem);
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border-radius: 24px;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 72%);
+  background:
+    radial-gradient(
+      120% 140% at 100% 0%,
+      color-mix(in oklab, var(--accent-color), transparent 88%),
+      transparent 60%
+    ),
+    color-mix(in oklab, var(--ph-fg), transparent 97%);
+}
+
+.lp-community .ph-hero__container {
+  width: 100%;
+  max-width: none;
+  margin-block: 0;
+  padding: 0;
+}
+
+.lp-community .ph-hero__title {
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  line-height: 1.1;
+  max-width: 24ch;
+}
+
+.lp-community .ph-hero__stats:empty {
+  display: none;
 }

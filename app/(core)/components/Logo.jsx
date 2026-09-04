@@ -10,8 +10,9 @@ export function Logo() {
         draggable={false}
         title="PhysicsHub"
         className="object-cover"
-        width={40}
-        height={40}
+        width={48}
+        height={48}
+        priority
       />
     </Link>
   );

@@ -1,11 +1,18 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const ballFreeFallBlog = {
   id: "bb-004",
   slug: "ball-free-fall-comprehensive-guide",
   name: "Free Fall & Air Resistance: Interactive Physics Simulation Guide",
   desc: "Explore how gravity, air resistance, and wind affect a falling ball. Interactive simulations and clear explanations covering free fall, drag force, and planetary gravity — from beginner to advanced.",
-  tags: [TAGS.MEDIUM, TAGS.COLLISION, TAGS.PHYSICS, TAGS.GRAVITY],
+  tags: [
+    LEVELS.upperSecondary,
+    DIFFICULTIES.core,
+    TAGS.COLLISION,
+    TAGS.PHYSICS,
+    TAGS.GRAVITY,
+  ],
+  date: "24/01/2026",
   theory: {
     title: "Free Fall Dynamics: From Vacuum to Atmosphere",
     sections: [

@@ -1,6 +1,22 @@
 /* ============================================================================
-   FORM CONTROLS
-   Shared by the simulation parameter panels (DynamicInputs) and the blog forms.
+   SIMULATION PARAMETER CONTROLS
+   ----------------------------------------------------------------------------
+   The `.sim-field` system: ONE standardized, iconic control shell shared by
+   every parameter input (range, stepper, select, toggle, color).
+
+   Anatomy of every field:
+
+     ┌───────────────────────────────────────────────┐
+     │  [symbol]  Label ....................  [unit] │  .sim-field__head
+     │  ●━━━━━━━○───────────────────  [ 3.0 ]        │  .sim-field__body
+     │  min                            max           │  .sim-field__scale
+     └───────────────────────────────────────────────┘
+
+   The unit of measure is a fixed monospace chip in the head — it is NEVER
+   baked into the label text. The physics symbol (v₀, μₛ, θ …) is a filled
+   accent pill so a control is recognisable at a glance.
+
+   Rendered by components/inputs/* inside DynamicInputs.
    ============================================================================ */
 
 .control-group {
@@ -10,262 +26,464 @@
 
 /* Grid holding every parameter input of a simulation */
 .inputs-container {
-  flex: 1;
-  padding: 1.5rem;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.85rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: 1.5rem;
-  background: var(--bg-gradient-rotated);
-  border-radius: var(--border-radius);
-  margin: 1rem 1.5rem;
-  border: var(--accent-color) solid 1px;
-  box-shadow: 0px 0px 5px var(--accent-color);
+  grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+  gap: 0.7rem;
+  background: color-mix(in oklab, var(--card-bg), transparent 6%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--ph-radius);
 }
 
-/* --- Labels ---------------------------------------------------------------- */
+.inputs-container > * {
+  min-width: 0;
+}
 
-.input-label,
-.select-label {
-  margin-bottom: 0.25rem;
+/* ----------------------------------------------------------------------------
+   Field shell
+   ---------------------------------------------------------------------------- */
+
+.sim-field {
+  --sim-track: color-mix(in oklab, var(--text-color) 16%, transparent);
+  --sim-field-bg: color-mix(in oklab, var(--card-bg), var(--bg-color) 45%);
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.6rem 0.7rem 0.65rem;
+  background: var(--sim-field-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.sim-field:hover {
+  border-color: color-mix(
+    in oklab,
+    var(--accent-color) 40%,
+    var(--border-color)
+  );
+}
+
+.sim-field:focus-within {
+  border-color: var(--accent-color);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent-color) 55%, transparent),
+    0 0 14px color-mix(in oklab, var(--accent-color) 28%, transparent);
+}
+
+.sim-field.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------------------------
+   Head — symbol · label · unit chip
+   ---------------------------------------------------------------------------- */
+
+.sim-field__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.5rem;
+}
+
+.sim-field__symbol {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--bg-color);
+  background: var(--accent-color);
+  border-radius: 999px;
+  box-shadow: 0 0 10px color-mix(in oklab, var(--accent-color) 40%, transparent);
+}
+
+.sim-field__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  color: var(--text-color);
+  overflow-wrap: break-word;
+}
+
+.sim-field__unit {
+  flex: none;
+  align-self: flex-start;
+  padding: 0.14rem 0.42rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent-color) 35%, transparent);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------------------
+   Body — the control row
+   ---------------------------------------------------------------------------- */
+
+.sim-field__body {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+/* value box (shared by range + stepper) */
+.sim-field__valuebox {
+  flex: none;
+  width: 4.15rem;
+  display: flex;
+}
+
+.sim-field--stepper .sim-field__valuebox {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.sim-field__value {
+  width: 100%;
+  padding: 0.4rem 0.35rem;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
+  text-align: center;
   color: var(--text-color);
-  text-shadow: 0 0 4px var(--glow-color);
-}
-
-[data-theme="light"] .input-label {
-  text-shadow: none;
-  color: var(--text-color);
-}
-
-/* --- Text / number / slider ------------------------------------------------ */
-
-.input-text,
-.input-number,
-.input-slider {
-  padding: 0.5rem;
-  border: 1px solid var(--input-border);
-  border-radius: var(--border-radius);
-  background-color: var(--input-bg);
-  color: var(--text-color);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   outline: none;
   transition:
-    border-color 0.3s,
-    box-shadow 0.3s;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.input-text:focus,
-.input-number:focus {
+.sim-field__value:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color) 35%, transparent);
 }
 
-.input-number:disabled {
-  background: #222;
-  color: #888;
-  border-color: #333;
+.sim-field__value:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
-}
-
-[data-theme="light"] .input-number:disabled {
-  background: var(--border-color);
-  color: var(--text-color);
   opacity: 0.6;
 }
 
-.input-slider {
+/* ----------------------------------------------------------------------------
+   Range slider
+   ---------------------------------------------------------------------------- */
+
+.sim-field__slider {
+  flex: 1 1 auto;
+  min-width: 0;
   appearance: none;
   -webkit-appearance: none;
   height: 6px;
-  background: var(--border-color);
-  border-radius: 3px;
+  margin: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent-color) 0 var(--fill, 0%),
+    var(--sim-track) var(--fill, 0%) 100%
+  );
+  cursor: pointer;
+  outline: none;
 }
 
-.input-slider::-webkit-slider-thumb {
+.sim-field__slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  background: var(--accent-color);
-  border: 2px solid #000;
   border-radius: 50%;
+  background: var(--bg-color);
+  border: 3px solid var(--accent-color);
+  box-shadow: 0 0 0 1px
+    color-mix(in oklab, var(--accent-color) 45%, transparent);
   cursor: pointer;
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  margin-top: -5px;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.input-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 8px var(--glow-color);
+.sim-field__slider:hover::-webkit-slider-thumb,
+.sim-field__slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px var(--accent-color);
 }
 
-/* --- Checkbox (rendered as a toggle) --------------------------------------- */
+.sim-field__slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  border: 3px solid var(--accent-color);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
 
-.checkbox-container {
+.sim-field__slider:hover::-moz-range-thumb,
+.sim-field__slider:active::-moz-range-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px var(--accent-color);
+}
+
+.sim-field__slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.sim-field__slider:focus-visible {
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color) 55%, transparent);
+}
+
+/* min / max scale under the slider */
+.sim-field__scale {
   display: flex;
-  position: relative;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
 }
 
-.checkbox-input {
+/* ----------------------------------------------------------------------------
+   Stepper (numeric fields with no bounded range)
+   ---------------------------------------------------------------------------- */
+
+.sim-field__body--stepper {
+  gap: 0.4rem;
+}
+
+.sim-field__step {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent-color) 35%, transparent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.sim-field__step:hover {
+  background: color-mix(in oklab, var(--accent-color) 22%, transparent);
+}
+
+.sim-field__step:active {
+  transform: scale(0.92);
+}
+
+/* ----------------------------------------------------------------------------
+   Select
+   ---------------------------------------------------------------------------- */
+
+.sim-field__selectwrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sim-field__select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding: 0.5rem 2.2rem 0.5rem 0.7rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.sim-field__select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color) 35%, transparent);
+}
+
+.sim-field__select option[disabled] {
+  color: var(--text-muted);
+}
+
+.sim-field__caret {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 0.7rem;
+  color: var(--accent-color);
+}
+
+/* ----------------------------------------------------------------------------
+   Toggle (checkbox rendered as a switch)
+   ---------------------------------------------------------------------------- */
+
+.sim-field--toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sim-field--toggle .sim-field__label {
+  order: 1;
+  font-size: 0.9rem;
+}
+
+.sim-field__checkbox {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  font-size: 0.95rem;
-  color: var(--text-color);
-  text-shadow: 0 0 4px var(--glow-color);
-}
-
-.checkbox-toggle {
+.sim-field__switch {
+  order: 2;
+  flex: none;
   position: relative;
-  display: flex;
-  align-items: center;
-  width: 4rem;
-  height: 2rem;
-  background: var(--border-color);
-  border-radius: 1rem;
-  margin-right: 0.75rem;
+  width: 2.9rem;
+  height: 1.6rem;
+  background: var(--sim-track);
+  border-radius: 999px;
   transition:
-    background 0.3s,
-    box-shadow 0.3s;
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.checkbox-toggle::after {
+.sim-field__switch::after {
   content: "";
   position: absolute;
-  width: 1.7rem;
-  height: 1.7rem;
-  margin: 0 0.2rem;
-  background: var(--accent-color);
-  border-radius: 1rem;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  background: var(--text-color);
+  border-radius: 50%;
   transition:
-    transform 0.3s,
-    box-shadow 0.3s;
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
-.checkbox-label:hover .checkbox-toggle {
-  box-shadow: 0 0 8px var(--accent-color);
-  transition: box-shadow 0.5s;
+.sim-field--toggle:hover .sim-field__switch {
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color) 40%, transparent);
 }
 
-.checkbox-input:checked + .checkbox-label .checkbox-toggle {
-  transition: box-shadow 0.5s;
+.sim-field--toggle.is-on .sim-field__switch {
   background: var(--accent-color);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--accent-color) 42%, transparent);
 }
 
-.checkbox-input:checked + .checkbox-label .checkbox-toggle::after {
-  transform: translateX(110%);
-  box-shadow: 0 0 6px var(--accent-color);
-  background: var(--card-bg);
+.sim-field--toggle.is-on .sim-field__switch::after {
+  transform: translateX(1.3rem);
+  background: var(--bg-color);
 }
 
-/* --- Select ---------------------------------------------------------------- */
-
-.select-container {
-  display: flex;
-  flex-direction: column;
+.sim-field__checkbox:focus-visible + .sim-field__label + .sim-field__switch,
+.sim-field__checkbox:focus-visible ~ .sim-field__switch {
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color) 55%, transparent);
 }
 
-.select-wrapper {
-  position: relative;
-  width: 100%;
-  display: inline-block;
+/* ----------------------------------------------------------------------------
+   Color
+   ---------------------------------------------------------------------------- */
+
+.sim-field--color .sim-field__body {
+  gap: 0.6rem;
 }
 
-.select-input {
-  appearance: none;
-  width: 100%;
-  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
-  font-size: 1rem;
-  color: var(--text-color);
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: var(--border-radius);
-  outline: none;
-  transition:
-    border-color 0.3s,
-    box-shadow 0.3s;
-}
-
-.select-input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
-}
-
-.select-input option[disabled] {
-  color: #888;
-}
-
-.select-arrow {
-  position: absolute;
-  top: 50%;
-  right: 0.75rem;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 0.8rem;
-  color: var(--accent-color);
-  text-shadow: 0 0 4px var(--accent-color);
-}
-
-/* --- Color picker ---------------------------------------------------------- */
-
-.color-input-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 1rem 0;
-  border-radius: 100%;
-}
-
-.color-input-label {
-  font-size: 0.95rem;
-  color: var(--text-color);
-  text-shadow: 0 0 4px var(--glow-color);
-}
-
-[data-theme="light"] .color-input-label {
-  text-shadow: none;
-}
-
-.color-input {
-  width: 2.5rem;
-  height: 2.5rem;
+.sim-field__swatch {
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
   padding: 0;
-  border: var(--bg-color) 2px solid;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
   background: none;
   cursor: pointer;
-  transition: box-shadow 0.3s;
-  border-radius: 50%;
-  aspect-ratio: 1;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.color-input::-webkit-color-swatch-wrapper {
-  padding: 0;
-  border: none;
-}
-
-.color-input::-webkit-color-swatch {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  aspect-ratio: 1;
-}
-
-.color-input:hover,
-.color-input:focus {
-  box-shadow: 0 0 8px var(--glow-color);
+.sim-field__swatch:hover,
+.sim-field__swatch:focus {
   outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--accent-color) 45%, transparent);
+}
+
+.sim-field__swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.sim-field__swatch::-webkit-color-swatch {
   border: none;
+  border-radius: 50%;
+}
+
+.sim-field__swatch::-moz-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.sim-field__hex {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------------------
+   Light theme
+   ---------------------------------------------------------------------------- */
+
+[data-theme="light"] .sim-field {
+  --sim-field-bg: var(--card-bg);
+  --sim-track: color-mix(in oklab, var(--text-color) 18%, transparent);
+}
+
+[data-theme="light"] .sim-field__symbol {
+  color: #fff;
+}
+
+[data-theme="light"] .sim-field__value,
+[data-theme="light"] .sim-field__select {
+  background: #fff;
+}
+
+[data-theme="light"] .sim-field__switch::after {
+  background: #fff;
 }

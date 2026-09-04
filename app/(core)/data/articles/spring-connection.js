@@ -1,11 +1,18 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const springConnectionBlog = {
   id: "bb-005",
   slug: "spring-connection",
   name: "How does a Spring work?",
   desc: "All you need to know about springs.",
-  tags: [TAGS.ADVANCED, TAGS.PHYSICS, TAGS.OSCILLATIONS, TAGS.SPRINGS],
+  tags: [
+    LEVELS.upperSecondary,
+    DIFFICULTIES.extended,
+    TAGS.PHYSICS,
+    TAGS.OSCILLATIONS,
+    TAGS.SPRINGS,
+  ],
+  date: "21/01/2026",
   theory: {
     sections: [
       {

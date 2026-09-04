@@ -17,7 +17,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "smallBlockMass",
-    label: "Mass of Small Block (kg): ",
+    label: "Small block mass",
+    symbol: "m₁",
+    unit: "kg",
     type: "number",
     min: 1,
     max: 10000000,
@@ -25,7 +27,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "largeBlockMass",
-    label: "Mass of Large Block (kg): ",
+    label: "Large block mass",
+    symbol: "m₂",
+    unit: "kg",
     type: "number",
     min: 100,
     max: 1000000000,
@@ -33,7 +37,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "smallBlockVelocityInitial",
-    label: "Velocity of Small Block (m/s): ",
+    label: "Small block velocity",
+    symbol: "v₁",
+    unit: "m/s",
     type: "number",
     min: -100,
     max: 100,
@@ -41,7 +47,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "largeBlockVelocityInitial",
-    label: "Velocity of Large Block (m/s): ",
+    label: "Large block velocity",
+    symbol: "v₂",
+    unit: "m/s",
     type: "number",
     min: -100,
     max: 100,
@@ -49,7 +57,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "smallBlockSize",
-    label: "Size of Small Block (m): ",
+    label: "Small block size",
+    symbol: "d₁",
+    unit: "m",
     type: "number",
     min: 0.1,
     max: 5,
@@ -57,7 +67,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "largeBlockSize",
-    label: "Size of Large Block (m): ",
+    label: "Large block size",
+    symbol: "d₂",
+    unit: "m",
     type: "number",
     min: 0.1,
     max: 5,
@@ -65,7 +77,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "wallGap",
-    label: "Small Block Wall Gap (m): ",
+    label: "Small block wall gap",
+    symbol: "Δx",
+    unit: "m",
     type: "number",
     min: 0,
     max: 10,

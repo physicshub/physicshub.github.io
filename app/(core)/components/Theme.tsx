@@ -19,6 +19,7 @@ export const Theme = ({ mode, onToggle }: Props) => {
 
   return (
     <button
+      type="button"
       className={`grid size-11 place-items-center cursor-pointer rounded-xl bg-gradient-to-t shadow-lg ${isLight ? "from-[#f8fafc] to-[#f1f5f9] text-stone-950" : "from-[#020617] to-[#0F172A] text-stone-50"}`}
       onClick={onToggle}
       aria-label="Toggle theme"

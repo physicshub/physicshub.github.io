@@ -1,0 +1,86 @@
+/* ============================================================================
+   GITHUB HEADER BADGE  (components/GitHubHeaderBadge.jsx)
+   Pill in the header controls with a vertical carousel of repo stats.
+   Hidden below the drawer breakpoint (840px) — space goes to language/theme.
+   ============================================================================ */
+
+.github-header-badge {
+  --gh-badge-line: 1.15rem; /* keep in sync with LINE_HEIGHT_REM in the JSX */
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.75rem;
+  min-width: 9.25rem;
+  padding: 0 0.85rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+  .github-header-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+  }
+}
+
+.github-header-badge:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.github-header-badge--dark {
+  background: linear-gradient(to top, #020617, #0f172a);
+  color: #f8fafc;
+}
+
+.github-header-badge--light {
+  background: linear-gradient(to top, #f8fafc, #f1f5f9);
+  color: #1c1917;
+}
+
+.github-header-badge__icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* Vertical carousel of labels (stars / contributors / …) */
+.github-header-badge__viewport {
+  position: relative;
+  display: block;
+  height: var(--gh-badge-line);
+  min-width: 7rem;
+  overflow: hidden;
+}
+
+.github-header-badge__track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease;
+}
+
+.github-header-badge__label {
+  display: flex;
+  align-items: center;
+  height: var(--gh-badge-line);
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 840px) {
+  .github-header-badge {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .github-header-badge,
+  .github-header-badge__track {
+    transition-duration: 0.01ms;
+  }
+}

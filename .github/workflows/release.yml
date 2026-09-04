@@ -43,10 +43,12 @@ jobs:
         uses: actions/configure-pages@v5
 
       # 3. Build (Sempre eseguito)
+      #    build:static, non build: Pages ha bisogno dell'export statico, che
+      #    non può convivere con le route handler sotto app/api (OAuth).
       - name: Build with Next.js
         env:
           NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK: ${{ secrets.NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK }}
-        run: npm run build
+        run: npm run build:static
 
       # 4. Carica Artifact (Sempre eseguito)
       - name: Upload artifact

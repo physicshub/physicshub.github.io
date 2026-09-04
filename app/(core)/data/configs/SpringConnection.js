@@ -19,7 +19,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "bobMass",
-    label: "m - Bob mass (kg):",
+    label: "Bob mass",
+    symbol: "m",
+    unit: "kg",
     type: "number",
     min: 0.1,
     max: 20,
@@ -27,7 +29,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "bobSize",
-    label: "r - Bob radius (m):",
+    label: "Bob radius",
+    symbol: "r",
+    unit: "m",
     type: "number",
     min: 0.05,
     max: 1,
@@ -35,7 +39,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "bobDamping",
-    label: "c - Damping coefficient (N·s/m):",
+    label: "Damping coefficient",
+    symbol: "c",
+    unit: "N·s/m",
     type: "number",
     min: 0,
     max: 10,
@@ -43,13 +49,17 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },
   {
     name: "springK",
-    label: "k - Spring constant (N/m):",
+    label: "Spring constant",
+    symbol: "k",
+    unit: "N/m",
     type: "number",
     min: 1,
     max: 500,
@@ -57,7 +67,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "springRestLength",
-    label: "L₀ - Rest length (m):",
+    label: "Rest length",
+    symbol: "L₀",
+    unit: "m",
     type: "number",
     min: 0,
     max: 5,
@@ -65,7 +77,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "minLength",
-    label: "Lₘᵢₙ - Minimum length (m):",
+    label: "Minimum length",
+    symbol: "Lₘᵢₙ",
+    unit: "m",
     type: "number",
     min: 0.05,
     max: 1,
@@ -73,15 +87,17 @@ export const INPUT_FIELDS = [
   },
   {
     name: "maxLength",
-    label: "Lₘₐₓ - Maximum length (m):",
+    label: "Maximum length",
+    symbol: "Lₘₐₓ",
+    unit: "m",
     type: "number",
     min: 1,
     max: 5,
     step: 0.1,
   },
-  { name: "bobColor", label: "Bob color:", type: "color" },
-  { name: "anchorColor", label: "Anchor color:", type: "color" },
-  { name: "springColor", label: "Spring color:", type: "color" },
+  { name: "bobColor", label: "Bob color", type: "color" },
+  { name: "anchorColor", label: "Anchor color", type: "color" },
+  { name: "springColor", label: "Spring color", type: "color" },
 ];
 
 export const SimInfoMapper = (state, context) => {

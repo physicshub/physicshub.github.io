@@ -1,4 +1,4 @@
-// app/components/Header.jsx
+// app/(core)/components/Header.jsx
 "use client";
 import { useState, useCallback, useEffect, useRef } from "react";
 import useTranslation from "../hooks/useTranslation.ts";
@@ -9,9 +9,12 @@ import GitHubHeaderBadge from "./GitHubHeaderBadge.jsx";
 import { useSticky } from "../hooks/useSticky";
 import { useTheme } from "../hooks/useTheme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHamburger } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import LanguageSwitcher from "./LanguageSwitcher.jsx";
 import { usePathname } from "next/navigation.js";
+
+const NAV_ID = "site-nav";
+const DRAWER_QUERY = "(max-width: 840px)";
 
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -20,10 +23,11 @@ export default function Header() {
   const pathname = usePathname();
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const headerRef = useRef(null);
   const bodyStylesRef = useRef({ overflow: "", paddingRight: "" });
   const previousActiveRef = useRef(null);
 
-  // Close menu when route changes
+  // Close the drawer when the route changes.
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
@@ -33,6 +37,23 @@ export default function Header() {
   const handleMenuToggle = useCallback(() => setMenuOpen((open) => !open), []);
   const handleMenuClose = useCallback(() => setMenuOpen(false), []);
 
+  // The drawer only exists below 840px. If the viewport grows past that while
+  // it is open, close it so body scroll isn't left locked.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mq = window.matchMedia(DRAWER_QUERY);
+    const handleChange = (event) => {
+      if (!event.matches) setMenuOpen(false);
+    };
+
+    handleChange(mq);
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
+  }, []);
+
+  // Lock body scroll while the drawer is open, compensating for the
+  // scrollbar so the page doesn't shift.
   useEffect(() => {
     if (typeof document === "undefined") return;
 
@@ -59,10 +80,11 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
+  // Trap focus inside the open drawer, close on Escape, restore focus on close.
   useEffect(() => {
     if (!isMenuOpen || typeof document === "undefined") return;
 
-    const nav = document.querySelector(".nav-menu");
+    const nav = headerRef.current?.querySelector(".nav-menu");
     if (!nav) return;
 
     const focusableSelector =
@@ -73,10 +95,7 @@ export default function Header() {
     previousActiveRef.current = document.activeElement;
 
     requestAnimationFrame(() => {
-      const firstFocusable = focusable[0];
-      if (firstFocusable && typeof firstFocusable.focus === "function") {
-        firstFocusable.focus();
-      }
+      focusable[0]?.focus();
     });
 
     const handleKeyDown = (event) => {
@@ -102,45 +121,49 @@ export default function Header() {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-
-      const previousActive = previousActiveRef.current;
-      if (previousActive && typeof previousActive.focus === "function") {
-        previousActive.focus();
-      }
+      previousActiveRef.current?.focus?.();
     };
   }, [isMenuOpen, handleMenuClose]);
 
   return (
-    <header
-      className={`header ${isSticky ? "sticky" : ""} ${isMenuOpen ? "open" : ""} ${isCompleted ? "notranslate" : ""}`.trim()}
-    >
-      <div className="header-inner">
-        <Logo />
+    <>
+      <header
+        ref={headerRef}
+        className={`header ${isSticky ? "sticky" : ""} ${isMenuOpen ? "open" : ""} ${isCompleted ? "notranslate" : ""}`.trim()}
+      >
+        <div className="header-inner">
+          <Logo />
 
-        <button
-          className="menu-toggle"
-          onClick={handleMenuToggle}
-          aria-expanded={isMenuOpen}
-          aria-label={t("Open/close menu")}
-        >
-          <FontAwesomeIcon icon={faHamburger} />
-        </button>
+          <button
+            className="menu-toggle"
+            type="button"
+            onClick={handleMenuToggle}
+            aria-expanded={isMenuOpen}
+            aria-controls={NAV_ID}
+            aria-label={t("Open/close menu")}
+          >
+            <FontAwesomeIcon icon={faBars} />
+          </button>
 
-        <NavMenu onNavigate={handleMenuClose} />
+          <NavMenu id={NAV_ID} onNavigate={handleMenuClose} />
 
-        <div className="controls">
-          <GitHubHeaderBadge mode={mode} />
-          <LanguageSwitcher />
-          <Theme mode={mode} onToggle={toggleMode} />
+          <div className="controls">
+            <GitHubHeaderBadge mode={mode} />
+            <LanguageSwitcher />
+            <Theme mode={mode} onToggle={toggleMode} />
+          </div>
         </div>
-      </div>
+      </header>
 
+      {/* Sibling of <header> so it isn't clipped by the bar's
+          backdrop-filter containing block. */}
       <button
-        className={`nav-backdrop ${isMenuOpen ? "open" : ""}`}
+        className={`nav-backdrop ${isMenuOpen ? "open" : ""}`.trim()}
         type="button"
         aria-label={t("Close menu")}
+        tabIndex={isMenuOpen ? 0 : -1}
         onClick={handleMenuClose}
       />
-    </header>
+    </>
   );
 }

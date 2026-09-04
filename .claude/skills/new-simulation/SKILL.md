@@ -8,6 +8,31 @@ description: How to build a new PhysicsHub simulation on the engine in app/(core
 Read this before writing any file. Then read one existing simulation end to end —
 `simulations/SimplePendulum.jsx` is the shortest complete example.
 
+## The brief: topic in, questions out
+
+The human gives you only a broad topic ("moto armonico", "circuiti", "forse sul
+piano inclinato", "gravity wells") and, sometimes, a school level. Everything
+else — what the simulation actually does, its features, its details — is **your
+job to propose**, never to assume.
+
+- **Be creative, stay on theme.** Invent features and aspects that make the
+  simulation worth opening: unconventional setups, toggleable modes, surprise
+  interactions, readouts that reveal something non-obvious. But every idea must
+  serve the physics of the given topic — no unrelated gimmicks.
+- **Propose ideas as questions, never as statements of intent.** Before writing
+  any file, you must offer your ideas to the human explicitly as questions and
+  wait for the answers. One batch of 2–4 well-chosen questions is better than a
+  ten-item checklist: pick the decisions that actually change the build, and
+  phrase each one as a concrete "what if …?" you can execute once answered.
+- **Anchor every proposal to a school level.** The catalogue classifies every
+  simulation by difficulty: `EASY` ≈ scuola media, `MEDIUM` ≈ biennio di scuola
+  superiore (prima/seconda), `ADVANCED` ≈ triennio e università. If the human
+  gave you a level, stay inside it and say so in your questions; if they
+  didn't, ask for one up front. Your proposed features, the formulas in the
+  readout, and any theory article must all be reachable at that level — do not
+  secretly inflate the difficulty by adding harder numbers or formalism the
+  level doesn't cover.
+
 ## The mental model
 
 A **World** owns **Bodies** and **Elements**.
@@ -55,7 +80,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "mass",
-    label: "m - Mass (kg):",
+    label: "Mass", // plain name only — no unit, no symbol, no trailing ":"
+    symbol: "m", // physics symbol → accent pill in the control head
+    unit: "kg", // unit of measure → standardized chip in the control head
     type: "number",
     min: 0.1,
     max: 20,
@@ -63,12 +90,14 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "g - Gravity (m/s²):",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "select",
     options: gravityTypes,
   },
   { name: "trailEnabled", label: "Enable trail", type: "checkbox" },
-  { name: "ballColor", label: "Ball color:", type: "color" },
+  { name: "ballColor", label: "Ball color", type: "color" },
 ];
 
 // Receives whatever the simulation's `info` hook returns, plus long-lived refs.
@@ -79,8 +108,25 @@ export const SimInfoMapper = (state, context, refs) => ({
 ```
 
 Field `type` is one of `number` (`min`/`max`/`step`/`placeholder`), `checkbox`,
-`color`, `select` (`options: [{value, label}]`), `slider`, `text`. Label the
-symbol as well as the name — these are teaching materials.
+`color`, `select` (`options: [{value, label}]`), `slider`, `text`.
+
+`DynamicInputs` renders every field through the shared `.sim-field` shell
+(`styles/components/forms.css`). Three cross-cutting props, all optional:
+
+- **`label`** — the human name **only**. No unit, no symbol prefix, no trailing
+  `:` or `.` (`"Launch speed"`, not `"v₀ - Launch speed (m/s):"`).
+- **`symbol`** — the physics symbol (`"v₀"`, `"μₛ"`, `"θ"`), shown as a filled
+  accent pill. Always add it for a named physical quantity — these are teaching
+  materials.
+- **`unit`** — the unit of measure (`"m/s"`, `"kg"`, `"N·s/m"`, `"°"`), shown as
+  a standardized monospace chip. Omit it for dimensionless quantities
+  (coefficients of friction/restitution, damping factors) and for
+  simulation-unit quantities that have no SI unit.
+
+A `number` field with **both `min` and `max`** renders as a slider + editable
+value box + min/max scale, and the typed value is clamped to that range — so
+pick bounds a learner would actually want. Without a full range it renders as a
+value box with −/+ steppers.
 
 ### 2. The simulation
 
@@ -144,14 +190,25 @@ export default createSimulation({
   desc: "One or two sentences. This is the SEO description — say what the user
          can do and which concepts it teaches.",
   link: "/simulations/Example",          // must match the filename exactly
-  tags: [TAGS.EASY, TAGS.DYNAMICS, TAGS.GRAVITY],
+  level: "lowerSecondary",               // school level: one of LEVELS ids (see below)
+  alsoFor: ["upperSecondary"],           // optional: other levels the sim still works for
+  difficulty: "core",                    // core | extended | advanced (challenge within `level`)
+  tags: [TAGS.DYNAMICS, TAGS.GRAVITY],   // topical tags only
   thumbnail: "/thumbnails/example.webp",
   relatedBlogSlug: "some-article-slug",  // optional
 }
 ```
 
-Tags come from `data/tags.js`. Always include exactly one difficulty
-(`EASY` / `MEDIUM` / `ADVANCED`) plus the topical ones.
+Every catalogue entry must pick a `level` (the primary school level it is aimed
+at) and a `difficulty` (how demanding it is _within_ that level). School levels
+come from `data/tags.js` → `LEVELS` / `LEVEL_ORDER`: `elementary`,
+`lowerSecondary`, `upperSecondary`, `undergraduate`, `tool` (non-curricular
+demos). `alsoFor` lists extra levels the simulation is still useful for — many
+topics (Hooke's law vs. SHM, momentum, trigonometry) are taught across several
+bands. Topic tags are purely topical; never place the old `EASY` / `MEDIUM` /
+`ADVANCED` here (they no longer exist). Pick the difficulty of the _physics_
+content, not the target band: e.g. SHM is `upperSecondary` + `extended`, phase
+space or chaos is `undergraduate` + `advanced`.
 
 ## The createSimulation spec
 

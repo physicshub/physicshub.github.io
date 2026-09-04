@@ -18,6 +18,14 @@ export default function Comets({
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true });
 
+    // Respect the OS "reduce motion" setting: skip the animation loop entirely.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     let w = window.innerWidth;
     let h = window.innerHeight;

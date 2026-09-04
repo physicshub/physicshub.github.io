@@ -18,7 +18,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "length1",
-    label: "Length 1 (m)",
+    label: "Length 1",
+    symbol: "L₁",
+    unit: "m",
     type: "number",
     min: 0.5,
     max: 4,
@@ -26,7 +28,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "length2",
-    label: "Length 2 (m)",
+    label: "Length 2",
+    symbol: "L₂",
+    unit: "m",
     type: "number",
     min: 0.5,
     max: 4,
@@ -34,7 +38,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "mass1",
-    label: "Mass 1 (kg)",
+    label: "Mass 1",
+    symbol: "m₁",
+    unit: "kg",
     type: "number",
     min: 0.1,
     max: 5,
@@ -42,7 +48,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "mass2",
-    label: "Mass 2 (kg)",
+    label: "Mass 2",
+    symbol: "m₂",
+    unit: "kg",
     type: "number",
     min: 0.1,
     max: 5,
@@ -50,7 +58,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "Gravity (m/s²)",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "number",
     min: 1,
     max: 20,
@@ -59,6 +69,7 @@ export const INPUT_FIELDS = [
   {
     name: "damping",
     label: "Damping",
+    symbol: "b",
     type: "number",
     min: 0,
     max: 1,
@@ -66,7 +77,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "initialAngle1",
-    label: "Initial Angle 1 (°)",
+    label: "Initial angle 1",
+    symbol: "θ₁",
+    unit: "°",
     type: "number",
     min: -180,
     max: 180,
@@ -74,7 +87,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "initialAngle2",
-    label: "Initial Angle 2 (°)",
+    label: "Initial angle 2",
+    symbol: "θ₂",
+    unit: "°",
     type: "number",
     min: -180,
     max: 180,
@@ -82,22 +97,22 @@ export const INPUT_FIELDS = [
   },
   {
     name: "trailEnabled",
-    label: "Show Trail",
+    label: "Show trail",
     type: "checkbox",
   },
   {
     name: "bob1Color",
-    label: "Bob 1 Color",
+    label: "Bob 1 color",
     type: "color",
   },
   {
     name: "bob2Color",
-    label: "Bob 2 Color",
+    label: "Bob 2 color",
     type: "color",
   },
   {
     name: "ropeColor",
-    label: "Rope Color",
+    label: "Rope color",
     type: "color",
   },
 ];

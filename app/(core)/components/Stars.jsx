@@ -24,6 +24,14 @@ export default function Stars({
 
     const ctx = canvas.getContext("2d", { alpha: true });
 
+    // Respect the OS "reduce motion" setting: skip the animation loop entirely.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
     // Device pixel ratio (clamped between 1 and 2)
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     // Canvas width and height in CSS pixels

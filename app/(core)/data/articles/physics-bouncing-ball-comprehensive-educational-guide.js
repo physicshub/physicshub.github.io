@@ -1,10 +1,16 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const bouncingBallBlog = {
   slug: "physics-bouncing-ball-comprehensive-educational-guide",
   name: "Physics of Bouncing Balls: How a Bouncing Ball Works",
   desc: "Explore the physics of a bouncing ball: from kinematic equations to energy dissipation. Learn about gravity, restitution, and Newton's laws with our interactive JS simulator.",
-  tags: [TAGS.PHYSICS, TAGS.EASY, TAGS.COLLISION, TAGS.ANIMATIONS],
+  tags: [
+    LEVELS.lowerSecondary,
+    DIFFICULTIES.core,
+    TAGS.PHYSICS,
+    TAGS.COLLISION,
+    TAGS.ANIMATIONS,
+  ],
   date: "23/01/2026",
   theory: {
     title: "The Mechanics of Impact: From Simple Motion to Complex Dynamics",

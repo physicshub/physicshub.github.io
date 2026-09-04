@@ -1,14 +1,15 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const threeBodyProblemBlog = {
   slug: "physics-behind-three-body-problem",
   name: "The Three-Body Problem: The Equation That Broke Physics",
   desc: "The three-body problem has stumped Newton, captivated Poincaré, and now broken the internet thanks to Netflix. Here is everything you need to know — the real physics, the chaos theory, the unsolvable mathematics, and exactly how much of the show is actually true.",
   tags: [
+    LEVELS.undergraduate,
+    DIFFICULTIES.advanced,
     TAGS.PHYSICS,
     TAGS.GRAVITY,
     TAGS.DYNAMICS,
-    TAGS.ADVANCED,
     TAGS.RELATIVITY,
     TAGS.ANIMATIONS,
   ],

@@ -18,7 +18,9 @@ export const INITIAL_INPUTS = {
 export const INPUT_FIELDS = [
   {
     name: "length",
-    label: "Length (m)",
+    label: "Length",
+    symbol: "L",
+    unit: "m",
     type: "number",
     min: 1,
     max: 5,
@@ -26,7 +28,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "mass",
-    label: "Mass (kg)",
+    label: "Mass",
+    symbol: "m",
+    unit: "kg",
     type: "number",
     min: 0.5,
     max: 5,
@@ -34,7 +38,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "gravity",
-    label: "Gravity (m/s²)",
+    label: "Gravity",
+    symbol: "g",
+    unit: "m/s²",
     type: "number",
     min: 1,
     max: 20,
@@ -43,6 +49,7 @@ export const INPUT_FIELDS = [
   {
     name: "damping",
     label: "Damping",
+    symbol: "b",
     type: "number",
     min: 0,
     max: 1,
@@ -50,7 +57,9 @@ export const INPUT_FIELDS = [
   },
   {
     name: "initialAngle",
-    label: "Initial Angle (°)",
+    label: "Initial angle",
+    symbol: "θ₀",
+    unit: "°",
     type: "number",
     min: -90,
     max: 90,
@@ -58,27 +67,27 @@ export const INPUT_FIELDS = [
   },
   {
     name: "showForces",
-    label: "Show Forces",
+    label: "Show forces",
     type: "checkbox",
   },
   {
     name: "showComponents",
-    label: "Show Components",
+    label: "Show components",
     type: "checkbox",
   },
   {
     name: "trailEnabled",
-    label: "Show Trail",
+    label: "Show trail",
     type: "checkbox",
   },
   {
     name: "bobColor",
-    label: "Bob Color",
+    label: "Bob color",
     type: "color",
   },
   {
     name: "ropeColor",
-    label: "Rope Color",
+    label: "Rope color",
     type: "color",
   },
 ];

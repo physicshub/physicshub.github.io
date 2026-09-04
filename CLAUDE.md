@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-PhysicsHub — a free, open-source educational site of interactive physics simulations plus written theory. Next.js 15 App Router, React 19, p5.js for rendering, Tailwind v4, statically exported (`output: "export"`) and deployed to GitHub Pages. Physics is our own engine (below), not a library; `planck` is still in package.json but no longer imported anywhere.
+PhysicsHub — a free, open-source educational site of interactive physics simulations plus written theory. Next.js 15 App Router, React 19, p5.js for rendering, Tailwind v4, deployed as a static export to GitHub Pages (see "Two build modes"). Physics is our own engine (below), not a library; `planck` is still in package.json but no longer imported anywhere.
 
 ## Commands
 
 ```bash
 npm run dev            # next dev + nodemon regenerating the sitemap on routes.js changes
-npm run build          # generate:sitemap, then next build (static export to out/)
-npm run preview        # build + serve out/
+npm run build          # generate:sitemap, then next build — server mode, API routes live
+npm run build:static   # the GitHub Pages export: strips app/api, then exports to out/
+npm run preview        # build:static + serve out/
 npm run lint           # eslint  (lint:fix to autofix)
 npm run format         # prettier --write .  (format:check for CI parity)
 npm run generate:sitemap
@@ -25,11 +26,23 @@ Versioning is fully automatic via semantic-release; **never edit `version` in pa
 
 ## Architecture
 
+### Two build modes
+
+`output: "export"` in `next.config.js` is conditional on **`app/api` being absent**, and that is the only switch:
+
+- `npm run build` — `app/api` present, so no static export: a normal Next.js app whose route handlers actually run. This is what Vercel builds and what you should run locally.
+- `npm run build:static` — `scripts/strip-api-for-static-export.js` moves `app/api` aside (a rename), `next build` produces the export in `out/`, then `scripts/restore-api-after-static-export.js` moves it back. `.github/workflows/release.yml` uses this for the Pages deploy.
+
+The strip exists because a static export cannot contain route handlers that read request-time data, and every `app/api/auth/*` handler reads cookies. Keying off the directory rather than an env var keeps CI, Vercel and every contributor's machine in agreement. If a build crashes mid-way `app/api` shows as deleted in `git status` — the next `build:static` restores it, or `git checkout app/api` does.
+
+The consequence for features: **anything under `app/api` does not exist on `physicshub.github.io`**. The blog editor calls `/api/publish` with a relative URL, so publishing only works on the Vercel deploy or in `next dev`.
+
 ### Route groups
 
-- `app/(core)/` — everything shared: `engine/`, `components/`, `constants/`, `data/`, `hooks/`, `utils/`, `locales/`, `styles/`. Not a route segment.
+- `app/(core)/` — everything shared: `engine/`, `components/`, `constants/`, `data/`, `hooks/`, `lib/`, `utils/`, `locales/`, `styles/`. Not a route segment.
 - `app/(pages)/` — the actual pages (`about`, `blog`, `contribute`, `simulations`).
-- `app/api/publish/route.ts` — a POST handler that opens a GitHub PR with a proposed blog JSON via Octokit. Note this cannot run on the statically exported GitHub Pages deploy; it only works in `next dev` / a Node host.
+- `app/api/auth/` — GitHub OAuth: `github/` starts the flow (random `state` in a short-lived cookie), `github/callback/` verifies `state` and exchanges the code for a token, `github/logout/` clears it, `me/` reports the signed-in user. The token lives in an `httpOnly` `gh_session` cookie (8h) via `app/(core)/lib/githubSession.ts`; needs `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`.
+- `app/api/publish/route.ts` — a POST handler that publishes a blog proposal **as the signed-in contributor**: it reads their token from the session, ensures their fork of the repo exists, branches from upstream `main`, commits the JSON and opens a PR against `physicshub`. Returns `401 { requiresAuth: true }` when there is no session, which the editor turns into a sign-in redirect.
 - Import alias: `@/*` → repo root (e.g. `@/app/(core)/data/chapters`). Simulations under `simulations/` use relative paths instead.
 
 ### How a simulation is wired (the central pattern)
@@ -44,9 +57,12 @@ Versioning is fully automatic via semantic-release; **never edit `version` in pa
 Adding a simulation touches four places that must agree on the same name:
 
 1. `simulations/<Name>.jsx` — the `"use client"` component. Loaded dynamically with `ssr: false` by `app/(pages)/simulations/[id]/_components/SimulationWrapper.tsx` via `import("@/simulations/${id}")`.
-2. `app/(core)/data/configs/<Name>.js` — exports `INITIAL_INPUTS`, `INPUT_FIELDS` (declarative form schema rendered by `components/inputs/DynamicInputs`) and `SimInfoMapper(state, context, refs)`. Configs describe the UI and the readout only: forces belong in the world, never here.
-3. `app/(core)/data/chapters.js` — the catalog entry: `link: "/simulations/<Name>"`, tags from `data/tags.js`, thumbnail, `relatedBlogSlug`. `[id]/page.tsx` derives `generateStaticParams` and metadata from this file, with `dynamicParams = false` — a simulation missing from `chapters.js` will 404 in the export.
-4. Optionally `app/(core)/data/articles/<slug>.js`, registered in `articles/index.js`.
+2. `app/(core)/data/configs/<Name>.js` — exports `INITIAL_INPUTS`, `INPUT_FIELDS` (declarative form schema rendered by `components/inputs/DynamicInputs`) and `SimInfoMapper(state, context, refs)`. Configs describe the UI and the readout only: forces belong in the world, never here. Each `INPUT_FIELDS` entry carries a plain-name `label` plus optional `symbol` (physics symbol → accent pill) and `unit` (unit of measure → standardized chip) — units and symbols are **never** written into `label`. A `number` field with both `min` and `max` renders as a slider + editable value box (typed values are clamped to the range); without a full range it renders as a −/+ stepper. See the `.sim-field` system in `styles/components/forms.css` and the `new-simulation` skill.
+3. `app/(core)/data/chapters.js` — the catalog entry: `link: "/simulations/<Name>"`, topical tags from `data/tags.js`, and the school-level contract `level` / `alsoFor` / `difficulty` (see below). `[id]/page.tsx` derives `generateStaticParams` and metadata from this file, with `dynamicParams = false` — a simulation missing from `chapters.js` will 404 in the export.
+
+**School levels.** Every simulation is classified for an international school level so teachers can match it to their curriculum. `data/tags.js` exports `LEVELS` (elementary, lowerSecondary, upperSecondary, undergraduate, tool) with age range and curriculum equivalences (US grades, IGCSE, A-Level, IB), `LEVEL_ORDER`, and `DIFFICULTIES` (`core`/`extended`/`advanced`, the challenge _within_ a level). The old `EASY`/`MEDIUM`/`ADVANCED` tags are gone. `chapters.js` entries carry `level` (primary band), optional `alsoFor` (bands the sim still works for), and `difficulty`. Articles in `data/articles/` carry `LEVELS`/`DIFFICULTIES` objects in their `tags` array so the same classification shows on blog cards. 4. Optionally `app/(core)/data/articles/<slug>.js`, registered in `articles/index.js`.
+
+**Catalogue filtering & sort.** `components/Search.jsx` is the one filter bar for both the `/simulations` and `/blog` indexes: a search field plus popover triggers (School level · Difficulty · Topic · Sort) that become bottom sheets under 768px. It takes `dataset` + `getFacets` (for per-option result counts) and emits `{ text, tags, levels, difficulties, sort }` through `onChange`, round-tripping the whole state through the URL (`?q=&levels=&difficulty=&tags=&sort=`) so a narrowed view is shareable. The matching and sorting rules live in `utils/catalogFilters.js` — `getSimulationFacets`/`getBlogFacets` normalise an item to `{ levels, difficulties, topics }` (blogs fold all three into their `tags` array, so they're classified by identity against `LEVELS`/`DIFFICULTIES`), `facetMatches` applies them (level/difficulty OR within a group, topics AND), and `sortCatalog` handles the `SORT_OPTIONS` (recommended / name / level / newest-oldest, with original order as the stable tie-break). Each page keeps only its own text matcher.
 
 ### The engine (`app/(core)/engine/`) — the only physics core
 
@@ -97,9 +113,17 @@ Bodies those elements position themselves are marked `kinematic: true`, which te
 
 ### Content & SEO
 
-`scripts/sitemap-generator.js` reads `routes.js` + `data/articles/index.js` + `data/chapters.js`, writes `public/sitemap.xml` **and rewrites `routes.js` in place** — so `routes.js` diffs (lastmod churn) are expected build output, not hand edits.
+`scripts/sitemap-generator.js` reads `routes.js` + `data/articles/index.js` + `data/chapters.js`, writes `public/sitemap.xml` **and rewrites `routes.js` in place** — so `routes.js` diffs (lastmod churn) are expected build output, not hand edits. It strips the duplicate XML prolog the `sitemap` + `xml-formatter` combo would otherwise emit, and `assertValidSitemap()` fails the build if the output is not well-formed. `NOINDEX_PATHS` (currently `/blog/create`, `/simulations/test`) are excluded from both the sitemap and `routes.js`; blog `lastmod` comes from each article's `date` (DD/MM/YYYY), everything else from the build date.
 
-`content/blogs/*.json` holds community-submitted blog proposals created by the publish API; curated articles live as JS modules in `app/(core)/data/articles/`.
+**Metadata & structured data.** Page metadata is Next's App Router `metadata` / `generateMetadata`. Client-only pages (`/simulations`, `/blog`, `/about`, `/contribute`, `/blog/create`) carry their metadata in a sibling server `layout.tsx` — each sets a self-referencing `alternates.canonical`; `/blog/create` also sets `robots.index:false`. `/simulations/[id]` and `/blog/[slug]` set their own canonical/robots in `generateMetadata` (they'd otherwise inherit the listing's). Use the public name **PhysicsHub** in every meta field (not "Physics Portal"). The OG image is `/Thumbnail.jpg` (1200×800). JSON-LD: `app/layout.tsx` emits an `Organization` + `WebSite` `@graph` (the `Organization` `@id` is `…/#organization`, referenced as `publisher` elsewhere); `/blog/[slug]` adds `BlogPosting` + `BreadcrumbList`; `/simulations/[id]` adds `LearningResource` + `BreadcrumbList`.
+
+**Simulation page content.** `/simulations/[id]` renders `SimulationOverview` (server component) — an `<h1>`, intro, "what you can change", key concepts, KaTeX-rendered formulas, and a link to the related article. Its copy lives in `app/(core)/data/simulationOverviews.js`, keyed by the URL segment; `relatedBlogSlug` in `chapters.js` must match a real article slug in `data/articles/index.js`. `page.tsx` passes `<SimulationOverview>` as the `overview` prop of `SimulationWrapper` → `createSimulation`'s component → `SimulationLayout`, which renders it (a server component slotted through the client tree) **between** the interactive stage and the full `TheoryRenderer` article, so the concise summary is not buried under the long theory.
+
+**Simulation shell layout.** `SimulationLayout` wraps the canvas and the controls+parameters in `.simulation-stage`: below 1080px everything stacks (canvas → toolbar → parameters → overview → theory); at ≥1080px it is a CSS grid with the canvas as a tall left stage and `.simulation-stage__panel` — the playback toolbar plus `DynamicInputs` — as a sticky right rail. The full-width bands (`.simulation-breadcrumb`, `.simulation-level-banner`, `.top-nav-sim`, `.simulation-stage`) share `--sim-max-width` / `--sim-gutter` / `--sim-panel-width` (declared on `.simulation-page`) so they align. The canvas height is viewport-driven (`min(78vh, 780px)` wide, `min(64vh, 560px)` stacked); `.screen` fills `.simulation-stage__canvas`. The old mobile controls drawer is retired — every control is always visible and wraps. All styles are in `styles/components/simulation.css`; the parameter panel — `.inputs-container` (the grid) and the `.sim-field` control system every input shares (range / stepper / select / toggle / color, each with a `symbol` pill and a `unit` chip in its head) — is in `forms.css`.
+
+`content/blogs/*.json` holds community-submitted blog proposals created by the publish API; curated articles live as JS modules in `app/(core)/data/articles/`. Each should carry a `date` (DD/MM/YYYY) — it feeds the visible byline, `datePublished`, and the sitemap `lastmod`.
+
+**Article prose & the theory renderer.** `components/theory/` renders a `theory` document (an array of `sections`, each a list of typed `blocks` — `paragraph`, `sectionTitle`, `subtitle`, `callout`, `formula`, `list`, `table`, `image`, `toggle`, …). Running-text fields (`paragraph`/`list`/`callout`/`toggle` bodies) are parsed by `parseInlineText` in `components/theory/utils.tsx` for a small inline syntax: `$…$` → KaTeX inline math, `**bold**`, `` `code` ``, and `[label](url)`. Add an inline form there, not per block. The article view (`/blog/[slug]`) is styled as a long-form _reading_ surface — held ~70ch measure (`.blog-main-column`), bright body text, one vertical rhythm — in `styles/components/theory.css`; block markup and classes are shared with the `/blog/create` editor, whose editing affordances live in `styles/components/blog-editor.css`.
 
 ### i18n
 

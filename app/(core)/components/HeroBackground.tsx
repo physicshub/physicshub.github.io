@@ -11,7 +11,8 @@ type Particle = {
 };
 
 const SIM_CONFIG = {
-  particleDensity: 20000,
+  particleDensity: 42000,
+  maxParticles: 90,
   minRadius: 10,
   speedRange: [0.0008, 0.003],
   wobbleRange: [3, 15],
@@ -59,8 +60,11 @@ export default function HeroBackground() {
     ro.observe(canvas);
 
     // init particles
-    const count = Math.floor(
-      (canvas.offsetWidth * canvas.offsetHeight) / SIM_CONFIG.particleDensity
+    const count = Math.min(
+      SIM_CONFIG.maxParticles,
+      Math.floor(
+        (canvas.offsetWidth * canvas.offsetHeight) / SIM_CONFIG.particleDensity
+      )
     );
     originalCount.current = count;
     const maxR = Math.min(canvas.offsetWidth, canvas.offsetHeight) / 2;

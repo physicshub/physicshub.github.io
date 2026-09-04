@@ -1,118 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useTranslation from "../hooks/useTranslation.ts";
 
 export default function ScrollIndicator() {
-  const [scrollY, setScrollY] = useState(0);
-  const [dotY, setDotY] = useState(0);
+  const [opacity, setOpacity] = useState(1);
+  const dotRef = useRef<HTMLSpanElement>(null);
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
   useEffect(() => {
-    let rafId: number;
+    let rafId = 0;
+    let dotY = 0;
 
-    const onScroll = () => {
-      setScrollY(window.scrollY);
+    const tick = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight;
+
+      // Fade the indicator out across the first viewport of scrolling.
+      const next =
+        scrollY < heroHeight * 0.15
+          ? 1
+          : Math.max(0, 1 - (scrollY - heroHeight * 0.15) / (heroHeight * 0.5));
+      setOpacity((prev) => (Math.abs(prev - next) > 0.01 ? next : prev));
+
+      // Ease the dot toward a small clamped offset.
+      const target = Math.min(scrollY / 10, 18);
+      dotY += (target - dotY) * 0.08;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(-50%, ${dotY}px)`;
+      }
+
+      rafId = requestAnimationFrame(tick);
     };
 
-    const animateDot = () => {
-      setDotY((prev) => {
-        // Target dot position (slow & clamped)
-        const target = Math.min(scrollY / 10, 18);
-        // Easing for smooth, slow movement
-        return prev + (target - prev) * 0.08;
-      });
-
-      rafId = requestAnimationFrame(animateDot);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    animateDot();
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafId);
-    };
-  }, [scrollY]);
-
-  const heroHeight =
-    typeof window !== "undefined" ? window.innerHeight / 6 : 500;
-
-  // Fade out after hero
-  const opacity =
-    scrollY < heroHeight ? 1 : Math.max(1 - (scrollY - heroHeight) / 400, 0);
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
 
   return (
     <div
-      className={isCompleted ? "notranslate" : ""}
+      className={`ph-scrolldown ${isCompleted ? "notranslate" : ""}`}
       style={{
-        position: "fixed",
-        left: "50%",
-        bottom: "32px",
-        transform: "translateX(-50%)",
-        zIndex: 1000,
         opacity,
         transition: "opacity 0.4s ease",
-        pointerEvents: opacity === 0 ? "none" : "auto",
+        pointerEvents: opacity < 0.05 ? "none" : "auto",
       }}
     >
       <button
+        type="button"
         aria-label={t("Scroll to explore")}
         onClick={() =>
           window.scrollBy({
-            top: heroHeight,
+            top: Math.round(window.innerHeight * 0.9),
             behavior: "smooth",
           })
         }
-        style={{
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-        }}
+        className="ph-scrolldown__btn"
       >
-        {/* Mouse outline */}
-        <div
-          style={{
-            width: "28px",
-            height: "44px",
-            borderRadius: "16px",
-            border: "2px solid #00e6e6",
-            margin: "0 auto",
-            position: "relative",
-            boxShadow: "0 0 14px rgba(0,230,230,0.6)",
-          }}
-        >
-          {/* Smooth moving dot */}
-          <span
-            style={{
-              position: "absolute",
-              top: "8px",
-              left: "50%",
-              transform: `translate(-50%, ${dotY}px)`,
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              background: "#00e6e6",
-              boxShadow: "0 0 8px rgba(0,230,230,0.9)",
-              transition: "transform 0.3s ease-out",
-            }}
-          />
-        </div>
-
-        {/* Text */}
-        <div
-          style={{
-            marginTop: "10px",
-            fontSize: "11px",
-            letterSpacing: "0.18em",
-            color: "#00e6e6",
-            textAlign: "center",
-            fontWeight: 500,
-          }}
-        >
-          {t("SCROLL TO EXPLORE")}
-        </div>
+        <span className="ph-scrolldown__mouse">
+          <span ref={dotRef} className="ph-scrolldown__dot" />
+        </span>
+        <span className="ph-scrolldown__label">{t("SCROLL TO EXPLORE")}</span>
       </button>
     </div>
   );

@@ -23,3 +23,10 @@
   color: white !important;
   transition: border 0.3s;
 }
+
+/* School-level badge: subtle inner ring so it reads first on a card */
+.tag-level {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 0 8px rgba(0, 0, 0, 0.25);
+}

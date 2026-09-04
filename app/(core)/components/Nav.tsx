@@ -15,32 +15,35 @@ const menuItems = [
 ];
 
 type NavMenuProps = {
+  id?: string;
   onNavigate?: () => void;
 };
 
-export default function NavMenu({ onNavigate }: NavMenuProps) {
+export default function NavMenu({ id, onNavigate }: NavMenuProps) {
   const pathname = usePathname();
-  const navRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
   const updateUnderline = useCallback(() => {
-    if (!navRef.current) return;
+    if (!listRef.current) return;
 
-    const activeLink = navRef.current.querySelector<HTMLAnchorElement>(
+    const activeLink = listRef.current.querySelector<HTMLAnchorElement>(
       `.nav-link[href="${pathname}"]`
     );
 
     if (activeLink) {
       const rect = activeLink.getBoundingClientRect();
-      const parentRect = navRef.current.getBoundingClientRect();
+      const parentRect = listRef.current.getBoundingClientRect();
 
       setUnderlineStyle({
         left: rect.left - parentRect.left,
         width: rect.width,
       });
+    } else {
+      setUnderlineStyle({ left: 0, width: 0 });
     }
   }, [pathname]);
 
@@ -55,7 +58,10 @@ export default function NavMenu({ onNavigate }: NavMenuProps) {
   }, [onNavigate]);
 
   return (
-    <nav className={`nav-menu ${isCompleted ? "notranslate" : ""}`}>
+    <nav
+      id={id}
+      className={`nav-menu ${isCompleted ? "notranslate" : ""}`.trim()}
+    >
       <button
         className="nav-close"
         type="button"
@@ -64,26 +70,28 @@ export default function NavMenu({ onNavigate }: NavMenuProps) {
       >
         <FontAwesomeIcon icon={faXmark} aria-hidden="true" />
       </button>
-      <ul className="nav-list" ref={navRef}>
-        {menuItems.map(({ href, label }) => (
-          <li key={href}>
-            <Link
-              href={href}
-              className={`nav-link ${pathname === href ? "active" : ""}`}
-              onClick={handleNavigate}
-            >
-              {t(label)}
-            </Link>
-          </li>
-        ))}
 
-        {/* Single sliding underline */}
+      <ul className="nav-list" ref={listRef}>
+        {menuItems.map(({ href, label }) => {
+          const isActive = pathname === href;
+          return (
+            <li key={href}>
+              <Link
+                href={href}
+                className={`nav-link ${isActive ? "active" : ""}`.trim()}
+                aria-current={isActive ? "page" : undefined}
+                onClick={handleNavigate}
+              >
+                {t(label)}
+              </Link>
+            </li>
+          );
+        })}
+
+        {/* Sliding indicator under the active link (desktop only). */}
         <span
           className="nav-underline"
-          style={{
-            left: underlineStyle.left,
-            width: underlineStyle.width,
-          }}
+          style={{ left: underlineStyle.left, width: underlineStyle.width }}
         />
       </ul>
     </nav>

@@ -1,11 +1,17 @@
-import TAGS from "../tags.js";
+import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const ballAcceleratingBlog = {
   id: "bb-003",
   slug: "ball-uniformly-accelerated-motion",
   name: "Ball in uniformly accelerated motion",
   desc: "Understand how a ball can move in mouse direction in uniformly accelerated motion.",
-  tags: [TAGS.MEDIUM, TAGS.PHYSICS, TAGS.ACCELERATION],
+  tags: [
+    LEVELS.lowerSecondary,
+    DIFFICULTIES.core,
+    TAGS.PHYSICS,
+    TAGS.ACCELERATION,
+  ],
+  date: "21/01/2026",
   theory: {
     sections: [
       {

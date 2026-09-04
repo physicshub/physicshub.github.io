@@ -29,39 +29,58 @@ export const INPUT_FIELDS = [
   // Mass controls
   {
     name: "mass1",
-    label: "m₁ - Ball 1 Mass (kg):",
+    label: "Ball 1 mass",
+    symbol: "m₁",
+    unit: "kg",
     type: "number",
-    min: 0,
+    min: 0.1,
+    max: 20,
+    step: 0.1,
     placeholder: "Enter mass of ball 1",
   },
 
   {
     name: "mass2",
-    label: "m₂ - Ball 2 Mass (kg):",
+    label: "Ball 2 mass",
+    symbol: "m₂",
+    unit: "kg",
     type: "number",
     placeholder: "Enter mass of ball 2",
-    min: 0,
+    min: 0.1,
+    max: 20,
+    step: 0.1,
   },
 
   // Velocity controls
   {
     name: "velocity1",
-    label: "u₁ - Ball 1 Velocity (m/s):",
+    label: "Ball 1 velocity",
+    symbol: "u₁",
+    unit: "m/s",
     type: "number",
+    min: -10,
+    max: 10,
+    step: 0.1,
     placeholder: "Enter velocity of ball 1",
   },
 
   {
     name: "velocity2",
-    label: "u₂ - Ball 2 Velocity (m/s):",
+    label: "Ball 2 velocity",
+    symbol: "u₂",
+    unit: "m/s",
     type: "number",
+    min: -10,
+    max: 10,
+    step: 0.1,
     placeholder: "Enter velocity of ball 2",
   },
 
   // Elasticity control
   {
     name: "restitution",
-    label: "e - Restitution:",
+    label: "Restitution",
+    symbol: "e",
     type: "number",
     min: 0,
     max: 1,
