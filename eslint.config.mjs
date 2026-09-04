@@ -12,6 +12,7 @@ export default defineConfig([
     "public/**",
     "routes.js",
     "scripts/**",
+    ".impeccable/**",
   ]),
 
   {
