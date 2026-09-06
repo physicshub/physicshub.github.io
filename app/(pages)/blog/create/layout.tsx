@@ -2,7 +2,8 @@ import { Metadata } from "next";
 
 // The blog editor is an authenticated app screen, not a search landing page.
 export const metadata: Metadata = {
-  title: "New Blog Post | PhysicsHub",
+  // Root layout's `title.template` appends " | PhysicsHub".
+  title: "New Blog Post",
   robots: { index: false, follow: true },
   alternates: { canonical: "/blog/create" },
 };

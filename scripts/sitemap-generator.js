@@ -75,7 +75,8 @@ async function generateSitemap() {
     path: `/blog/${blog.slug}`,
     changefreq: "monthly",
     priority: 0.8,
-    lastmod: toW3CDate(blog.date, currentDate),
+    // `updated` (last substantive edit) wins over `date` (first published).
+    lastmod: toW3CDate(blog.updated || blog.date, currentDate),
   }));
 
   const simulationRoutes = chapters.map((chapter) => ({
@@ -150,9 +151,35 @@ async function generateSitemap() {
     console.log(`✅ Sitemap copied to ./out/`);
   }
 
-  // Generate robots.txt with sitemap reference
-  const robotsTxt =
-    `User-agent: *\nAllow: /\n\nSitemap: ${hostname}/${sitemapName}.xml`.trim();
+  // Generate robots.txt with sitemap reference.
+  //
+  // Everything is crawlable except the two NOINDEX_PATHS. AI/answer-engine
+  // crawlers get their own explicit `Allow` groups: the content is meant to be
+  // cited by them, and an explicit group removes any ambiguity a bare
+  // `User-agent: *` might leave.
+  const disallowLines = Array.from(NOINDEX_PATHS)
+    .map((p) => `Disallow: ${p}`)
+    .join("\n");
+  const aiCrawlers = [
+    "GPTBot",
+    "OAI-SearchBot",
+    "ChatGPT-User",
+    "ClaudeBot",
+    "anthropic-ai",
+    "Claude-Web",
+    "PerplexityBot",
+    "Perplexity-User",
+    "Google-Extended",
+    "CCBot",
+  ];
+  const robotsTxt = [
+    `User-agent: *\nAllow: /\n${disallowLines}`,
+    ...aiCrawlers.map((ua) => `User-agent: ${ua}\nAllow: /`),
+    `Sitemap: ${hostname}/${sitemapName}.xml`,
+    `# Atom feed: ${hostname}/feed.xml`,
+  ]
+    .join("\n\n")
+    .trim();
 
   writeFileSync(join(publicDir, "robots.txt"), robotsTxt);
   console.log("✅ robots.txt updated in public/");

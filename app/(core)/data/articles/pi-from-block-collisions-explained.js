@@ -3,7 +3,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const piCollisionBlog = {
   slug: "pi-from-block-collisions-explained",
   name: "How Two Sliding Blocks Compute π — The Most Surprising Result in Physics",
-  desc: "Two frictionless blocks, a wall, and perfectly elastic collisions. Count the clacks. You get π. This is not a coincidence — it is a deep theorem hiding inside conservation laws, and this article takes you all the way from the first collision to the geometric proof.",
+  desc: "Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics behind it, from the first collision to the geometric proof.",
   tags: [
     LEVELS.undergraduate,
     DIFFICULTIES.extended,
@@ -14,6 +14,7 @@ export const piCollisionBlog = {
     TAGS.COLLISION,
   ],
   date: "02/06/2026",
+  updated: "06/09/2026",
   theory: {
     title: "How Two Sliding Blocks Compute π",
     sections: [
@@ -43,7 +44,24 @@ export const piCollisionBlog = {
           },
           {
             type: "paragraph",
-            text: "This result was discovered by mathematician Gregory Galperin in the 1990s and published in 2003 in his paper *Playing Pool with π*. When he first presented it at a seminar, nobody in the audience believed him. The connection between block collisions and π is not approximate, not a coincidence, and not a numerical curiosity — it is an exact, rigorous theorem. This article explains exactly why it is true, building from the physics of elastic collisions through to the geometric argument that makes π inevitable.",
+            text: "This result was discovered by mathematician Gregory Galperin in the 1990s and published in 2003 in his paper **Playing Pool with π**. When he first presented it at a seminar, nobody in the audience believed him. The connection between block collisions and π is not approximate, not a coincidence, and not a numerical curiosity — it is an exact, rigorous theorem. This article explains exactly why it is true, building from the physics of elastic collisions through to the geometric argument that makes π inevitable.",
+          },
+          {
+            type: "callout",
+            calloutType: "key",
+            title: "Key fact",
+            text: "Energy conservation traps the two blocks' velocities on a circle; each collision rotates that state by a fixed angle. Counting the rotations that fit into a half-turn is literally measuring $\\pi$ — with the mass ratio setting how many digits you get.",
+          },
+          {
+            type: "takeaways",
+            title: "Key takeaways",
+            items: [
+              "Two frictionless blocks and a wall, all collisions perfectly elastic: the total number of collisions gives the digits of $\\pi$.",
+              "Mass ratio $100^N : 1$ → the first $N{+}1$ digits of $\\pi$. Ratio 1:1 gives 3, ratio 100:1 gives 31, ratio 10\\,000:1 gives 314.",
+              "It works because energy conservation is a **circle** in rescaled velocity space and momentum conservation makes every collision a **fixed rotation** on it.",
+              "The clack count is exactly $\\left\\lfloor \\pi / \\arctan\\sqrt{m/M} \\right\\rfloor$ — exact, not an estimate.",
+              'The same "two reflections make a rotation" structure powers Grover\'s quantum search algorithm.',
+            ],
           },
           {
             type: "callout",
@@ -263,7 +281,7 @@ export const piCollisionBlog = {
           },
           {
             type: "paragraph",
-            text: "We now have a perfectly working mechanical recipe — apply the collision formulas, count the clacks, get π. But *why*? What is the connection between block velocities and the number that describes the circumference of a circle? The answer appears the moment we change our perspective from watching the blocks to watching a **single point move in an abstract space**.",
+            text: "We now have a perfectly working mechanical recipe — apply the collision formulas, count the clacks, get π. But **why**? What is the connection between block velocities and the number that describes the circumference of a circle? The answer appears the moment we change our perspective from watching the blocks to watching a **single point move in an abstract space**.",
           },
           {
             type: "subtitle",
@@ -417,7 +435,7 @@ export const piCollisionBlog = {
           {
             type: "formula",
             latex:
-              "N = \\left\\lfloor \\frac{\\pi}{\\arctan\\!\\left(\\sqrt{m/M}\\right)} \\right\\rfloor",
+              "N = \\lfloor\\, \\pi \\,/\\, \\arctan(\\sqrt{m/M}) \\,\\rfloor",
             inline: false,
           },
           {
@@ -427,7 +445,7 @@ export const piCollisionBlog = {
           {
             type: "formula",
             latex:
-              "N_{\\text{clacks}} = \\left\\lfloor \\frac{\\pi}{\\arctan(10^{-N})} \\right\\rfloor \\approx \\left\\lfloor \\frac{\\pi}{10^{-N}} \\right\\rfloor = \\left\\lfloor \\pi \\times 10^N \\right\\rfloor",
+              "N_{\\text{clacks}} = \\lfloor\\, \\pi \\,/\\, \\arctan(10^{-N}) \\,\\rfloor \\approx \\lfloor\\, \\pi \\,/\\, 10^{-N} \\,\\rfloor = \\lfloor\\, \\pi \\times 10^N \\,\\rfloor",
             inline: false,
           },
           {
@@ -648,7 +666,7 @@ export const piCollisionBlog = {
           {
             type: "formula",
             latex:
-              "\\text{Clack count} = \\left\\lfloor \\frac{\\pi}{\\arctan\\left(\\sqrt{m/M}\\right)} \\right\\rfloor \\xrightarrow{M = 100^N m} \\left\\lfloor \\pi \\times 10^N \\right\\rfloor",
+              "\\text{Clack count} = \\lfloor\\, \\pi \\,/\\, \\arctan(\\sqrt{m/M}) \\,\\rfloor \\;\\xrightarrow{M \\,=\\, 100^N m}\\; \\lfloor\\, \\pi \\times 10^N \\,\\rfloor",
             inline: false,
           },
           {
@@ -754,9 +772,45 @@ export const piCollisionBlog = {
           },
           {
             type: "toggle",
-            title: "Where to Go Next: Explore Further",
+            title: "Papers and videos",
             content:
-              "🎬 Watch: 3Blue1Brown's two-part YouTube series 'The most unexpected answer to a counting puzzle' and 'Why do colliding blocks compute pi?' are the clearest visual treatments of this result in existence. Grant Sanderson's animations of the phase space circle are definitive. | 📄 Read: Galperin, G. (2003). 'Playing Pool with π (the Number π from a Billiard Point Of View).' Regular and Chaotic Dynamics, 8(4), 375–394. This is the original paper — surprisingly readable and filled with elegant geometric arguments. | 📄 Read (advanced): Aretxabaleta, X.M. & Monteiro, G. (2020). 'The Dynamics of Digits: Calculating Pi with Galperin's Billiards.' Mathematics, 8(4), 509. Extends the result to all bases and establishes the connection to the Calogero model. | 💻 Simulate: Many browser-based simulators let you set the mass ratio and watch the collisions in real time — try starting at M/m = 100 and verify the 31 clacks yourself before trusting any formula. | 🔗 Connection: Look up Grover's algorithm in quantum computing and compare the angular step $2\\arcsin(1/\\sqrt{N})$ to the billiard step $2\\arctan(\\sqrt{m/M})$ — the structural parallel is striking and deep.",
+              "The clearest visual treatment is 3Blue1Brown's two-part series, **The most unexpected answer to a counting puzzle** and **Why do colliding blocks compute pi?** — its phase-space animations are definitive. The original paper is Galperin, G. (2003), **Playing Pool with π**, in Regular and Chaotic Dynamics 8(4), 375–394 — surprisingly readable. Aretxabaleta & Monteiro (2020), **The Dynamics of Digits**, extends the result to every number base and to the Calogero model.",
+          },
+          {
+            type: "faq",
+            title: "Frequently asked questions",
+            items: [
+              {
+                q: "Why does counting block collisions give the digits of π?",
+                a: "Energy conservation confines the two velocities to a circle in rescaled coordinates, and momentum conservation makes every block-block collision a rotation by a fixed angle $2\\arctan\\sqrt{m/M}$. The blocks stop colliding after the state has swept about $\\pi$ radians, so the number of collisions is $\\lfloor \\pi / \\arctan\\sqrt{m/M} \\rfloor$. For a mass ratio of $100^N$ that floor equals the first $N{+}1$ digits of $\\pi$.",
+              },
+              {
+                q: "Is the result exact or just an approximation?",
+                a: "The collision count is an exact integer for any mass ratio. What is approximate is the step $\\arctan\\varepsilon \\approx \\varepsilon$ used to line the count up with the decimal digits of $\\pi$; that error only ever affects digits beyond the ones you have already recovered.",
+              },
+              {
+                q: "Do all the collisions really happen in a finite time?",
+                a: "Yes. The collisions get closer together as the process runs, but the total elapsed time is finite — the sum of the intervals converges. There is no physical paradox, only an accumulation point.",
+              },
+              {
+                q: "Could you build this and use it to compute π?",
+                a: 'Only in principle. Six digits needs a mass ratio of $10^{10}$ — a 1-gram block paired with a 10,000-tonne one — and collision speeds that climb without bound. Galperin called it "utterly impractical but ingenious." The value is conceptual: π is built into Newton\'s laws.',
+              },
+            ],
+          },
+          {
+            type: "sectionTitle",
+            text: "Keep exploring",
+          },
+          {
+            type: "list",
+            ordered: false,
+            items: [
+              "Set the mass ratio and count the clacks yourself in the [Pi From Collisions simulation](/simulations/PiCollisions).",
+              "Conservation laws written as vectors: [The guide to vector operations](/blog/comprehensive-guide-to-vector-operations).",
+              "Another beautiful result hiding in gravity: [The three-body problem](/blog/physics-behind-three-body-problem).",
+              "Where π enters mechanics through a restoring force: [The physics of the pendulum](/blog/physics-of-pendulum-explained).",
+            ],
           },
         ],
       },

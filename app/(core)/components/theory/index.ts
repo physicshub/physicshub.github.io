@@ -12,4 +12,6 @@ export * from "./elements/TheoryCallout.tsx";
 export * from "./elements/TheoryToggle.tsx";
 export * from "./elements/TheoryTable.tsx";
 export * from "./elements/TheoryImage.tsx";
+export * from "./elements/TheoryTakeaways.tsx";
+export * from "./elements/TheoryFAQ.tsx";
 export { default as TheoryRenderer } from "./TheoryRenderer";

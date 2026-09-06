@@ -6,8 +6,14 @@ const description =
 
 // Applies to the /simulations index. Each /simulations/[id] page overrides
 // title, description, canonical and robots in its own generateMetadata.
+// `absolute` sets this index page's own <title>; `template` is what cascades to
+// the /simulations/[id] pages (a plain-string title here would break that chain).
+// OG/Twitter titles keep the full brand inline — the template doesn't touch those.
 export const metadata: Metadata = {
-  title: "Interactive Physics Simulations – Free Online Lab | PhysicsHub",
+  title: {
+    absolute: "Interactive Physics Simulations – Free Online Lab | PhysicsHub",
+    template: "%s | PhysicsHub",
+  },
   description,
   alternates: { canonical: "/simulations" },
   openGraph: {

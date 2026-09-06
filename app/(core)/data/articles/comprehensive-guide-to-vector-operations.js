@@ -8,16 +8,18 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 
 export const operationVectorsBlog = {
   slug: "comprehensive-guide-to-vector-operations",
-  name: "The Mathematical Universe of Vectors: A Progressive Guide",
-  desc: "From basic geometry to advanced dot and cross products, learn how vectors power physics and computer science.",
+  name: "Vectors: components, addition, dot and cross products",
+  desc: "A vector carries a magnitude and a direction. Split it into components and the algebra falls out: addition, scaling, the dot product for angles, the cross product for area and torque.",
   tags: [
     LEVELS.upperSecondary,
     DIFFICULTIES.core,
     TAGS.MATH,
     TAGS.PHYSICS,
     TAGS.VECTORS,
+    TAGS.TRIGONOMETRY,
   ],
   date: "22/01/2026",
+  updated: "06/09/2026",
   theory: {
     title: "Vector Algebra: The Language of Space and Force",
     sections: [
@@ -25,15 +27,32 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 1: Intuition and Geometric Foundations",
+            text: "What is a vector?",
           },
           {
             type: "paragraph",
-            text: "Imagine you are giving someone directions. If you say 'walk 5 kilometers', they don't know where to go. If you say 'walk North', they don't know how far. A **Vector** is a mathematical object that combines both: it has a **Magnitude** (length) and a **Direction** (angle).",
+            text: "Imagine you are giving someone directions. If you say 'walk 5 kilometres', they don't know where to go. If you say 'walk north', they don't know how far. A **vector** is a mathematical object that combines both: it has a **magnitude** (a length) and a **direction** (an angle). Force, velocity, acceleration and displacement are all vectors.",
+          },
+          {
+            type: "callout",
+            calloutType: "key",
+            title: "Key fact",
+            text: "A vector has size and direction. The trick to working with one is to split it into perpendicular **components** — then every operation becomes ordinary arithmetic on numbers.",
+          },
+          {
+            type: "takeaways",
+            title: "Key takeaways",
+            items: [
+              "A vector = magnitude + direction. Split it into components with $v_x = |v|\\cos\\theta$, $v_y = |v|\\sin\\theta$.",
+              "Add vectors tip-to-tail (or add components); the magnitude of the sum is **not** the sum of the magnitudes.",
+              "**Normalising** ($\\hat{v} = \\vec{v}/|v|$) keeps a vector's direction but sets its length to 1.",
+              "The **dot product** $\\vec a\\cdot\\vec b = |a||b|\\cos\\theta$ returns a number and measures alignment — zero means perpendicular.",
+              "The **cross product** $|a||b|\\sin\\theta$ returns an area (2D) or a perpendicular vector (3D), and is the basis of torque.",
+            ],
           },
           {
             type: "subheading",
-            text: "The Three Pillars of a Vector",
+            text: "The three pillars of a vector",
           },
           {
             type: "list",
@@ -57,7 +76,7 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 2: Trigonometric Decomposition",
+            text: "Breaking a vector into components",
           },
           {
             type: "paragraph",
@@ -92,7 +111,7 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 3: Geometric Addition and Subtraction",
+            text: "Adding and subtracting vectors",
           },
           {
             type: "paragraph",
@@ -130,7 +149,7 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 4: Scaling and Normalization",
+            text: "Scaling and normalising",
           },
           {
             type: "paragraph",
@@ -162,7 +181,7 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 5: The Dot Product (Scalar Product)",
+            text: "The dot product: measuring alignment",
           },
           {
             type: "paragraph",
@@ -208,7 +227,7 @@ export const operationVectorsBlog = {
         blocks: [
           {
             type: "sectionTitle",
-            text: "Level 6: The Cross Product (Vector Product)",
+            text: "The cross product: area and torque",
           },
           {
             type: "paragraph",
@@ -222,61 +241,42 @@ export const operationVectorsBlog = {
 
           {
             type: "paragraph",
-            text: "This is crucial for calculating **Torque** (rotational force) and determining if a point is to the left or right of a line.",
+            text: "This is crucial for calculating **torque** (rotational force) and for determining whether a point lies to the left or the right of a line — the sign of the 2D cross product tells you which side.",
           },
-        ],
-      },
-      {
-        blocks: [
+          {
+            type: "faq",
+            title: "Frequently asked questions",
+            items: [
+              {
+                q: "What is the difference between a vector and a scalar?",
+                a: "A scalar is a single number — mass, temperature, speed. A vector has both a magnitude and a direction — velocity, force, displacement. You can add two scalars with ordinary arithmetic; adding two vectors means combining their directions too.",
+              },
+              {
+                q: "Why isn't the magnitude of a sum equal to the sum of the magnitudes?",
+                a: "Because the vectors point in different directions, so they partly work against each other. Walk 3 m east then 4 m north and you end up 5 m from the start, not 7 m — the components add, and Pythagoras gives the resulting length.",
+              },
+              {
+                q: "What does the dot product actually tell you?",
+                a: "How much two vectors point the same way. It is $|a||b|\\cos\\theta$: positive when the angle between them is under 90°, zero when they are perpendicular, negative when they oppose. In physics, work is the dot product of force and displacement.",
+              },
+              {
+                q: "When do I need to normalise a vector?",
+                a: 'Whenever you only care about direction, not size — for example, to get a unit "which way" vector for steering or for projecting one vector onto another. Divide the vector by its own magnitude and its length becomes exactly 1.',
+              },
+            ],
+          },
           {
             type: "sectionTitle",
-            text: "Final Phase: Computational Implementation",
+            text: "Keep exploring",
           },
           {
-            type: "paragraph",
-            text: "For a student of computer science, here is how a complete 2D Vector Class looks, implementing everything we have learned.",
-          },
-          {
-            type: "code",
-            language: "javascript",
-            code: `class Vector2D {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  // Level 3: Addition
-  add(v) {
-    return new Vector2D(this.x + v.x, this.y + v.y);
-  }
-
-  // Level 4: Scaling & Normalization
-  get magnitude() {
-    return Math.sqrt(this.x**2 + this.y**2);
-  }
-
-  normalize() {
-    const mag = this.magnitude;
-    if (mag === 0) return new Vector2D(0, 0);
-    return new Vector2D(this.x / mag, this.y / mag);
-  }
-
-  // Level 5: Dot Product
-  dot(v) {
-    return this.x * v.x + this.y * v.y;
-  }
-
-  // Level 6: 2D Cross Product (Scalar)
-  cross(v) {
-    return this.x * v.y - this.y * v.x;
-  }
-}`,
-          },
-          {
-            type: "callout",
-            calloutType: "success",
-            title: "Learning Journey Complete",
-            text: "You have successfully navigated from simple arrows to complex algebraic operations. These concepts are the foundation of modern engineering, 3D graphics, and orbital mechanics.",
+            type: "list",
+            ordered: false,
+            items: [
+              "Add, subtract and dot vectors live in the [Vector Operations simulation](/simulations/VectorsOperations).",
+              "Components in action — splitting a launch velocity: [How projectile motion works](/blog/projectile-parabolic-motion).",
+              "The unit circle behind $\\sin$ and $\\cos$: [Trigonometric Circle simulation](/simulations/TrigonometricCircle).",
+            ],
           },
         ],
       },

@@ -4,6 +4,7 @@ import Script from "next/script";
 import Layout from "./(core)/components/Layout.jsx";
 import { Metadata } from "next";
 import { FeedbackProvider } from "./(core)/context/FeedbackProvider.tsx";
+import { SITE_URL, SITE_NAME } from "./(core)/constants/site.js";
 
 const SITE_DESCRIPTION =
   "Explore interactive physics simulations online. Try physical phenomena, visualize complex concepts with PhysicsHub's free educational tools for students and coders.";
@@ -16,8 +17,13 @@ const OG_IMAGE = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://physicshub.github.io"),
-  title: "PhysicsHub – Interactive Physics Simulations Online",
+  metadataBase: new URL(SITE_URL),
+  // `default` is used on the home page; `template` appends " | PhysicsHub" to
+  // every child route's own title. Child routes must NOT re-add that suffix.
+  title: {
+    default: "PhysicsHub – Interactive Physics Simulations Online",
+    template: `%s | ${SITE_NAME}`,
+  },
   description: SITE_DESCRIPTION,
   keywords: [
     "physics",
@@ -85,18 +91,26 @@ export default function RootLayout({
       },
       {
         "@type": "WebSite",
-        "@id": "https://physicshub.github.io/#website",
-        name: "PhysicsHub",
-        url: "https://physicshub.github.io/",
-        publisher: { "@id": "https://physicshub.github.io/#organization" },
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        url: `${SITE_URL}/`,
+        publisher: { "@id": `${SITE_URL}/#organization` },
         inLanguage: "en",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${SITE_URL}/simulations?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
       },
     ],
   };
 
   return (
     <FeedbackProvider>
-      <html lang="en" dir="ltr">
+      <html lang="en" dir="ltr" data-scroll-behavior="smooth">
         <body suppressHydrationWarning>
           {/* Theme initialization — runs inline before paint to avoid flash */}
           <script

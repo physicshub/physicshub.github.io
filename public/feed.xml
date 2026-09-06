@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>PhysicsHub Blog</title>
+  <subtitle>Free, open-source interactive physics simulations with written theory for students, teachers and developers.</subtitle>
+  <link href="https://physicshub.github.io/feed.xml" rel="self" />
+  <link href="https://physicshub.github.io/blog" />
+  <id>https://physicshub.github.io/blog</id>
+  <updated>2026-09-06T00:00:00Z</updated>
+  <entry>
+    <title>Vectors: components, addition, dot and cross products</title>
+    <link href="https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations" />
+    <id>https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations</id>
+    <published>2026-01-22T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>A vector carries a magnitude and a direction. Split it into components and the algebra falls out: addition, scaling, the dot product for angles, the cross product for area and torque.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Math" />
+    <category term="Physics" />
+    <category term="Vectors" />
+    <category term="Trigonometry" />
+  </entry>
+  <entry>
+    <title>How does a ball accelerate toward a target?</title>
+    <link href="https://physicshub.github.io/blog/ball-uniformly-accelerated-motion" />
+    <id>https://physicshub.github.io/blog/ball-uniformly-accelerated-motion</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Acceleration is how fast velocity changes. Point a constant acceleration at a target and the ball speeds up, overshoots, then loops back — here is why, with a simulation to try.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Acceleration" />
+  </entry>
+  <entry>
+    <title>How does a spring work?</title>
+    <link href="https://physicshub.github.io/blog/spring-connection" />
+    <id>https://physicshub.github.io/blog/spring-connection</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>A spring pushes back in proportion to how far you stretch it — that is Hooke's law, and it is exactly what makes a mass on a spring oscillate. Here is the physics, with a simulation.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Springs" />
+    <category term="Energy" />
+  </entry>
+  <entry>
+    <title>How does projectile motion work?</title>
+    <link href="https://physicshub.github.io/blog/projectile-parabolic-motion" />
+    <id>https://physicshub.github.io/blog/projectile-parabolic-motion</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Gravity pulls a projectile straight down while its sideways speed stays constant. Those two independent motions combine into a parabola — here is the maths, with an interactive launcher.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Gravity" />
+    <category term="Acceleration" />
+  </entry>
+  <entry>
+    <title>The Three-Body Problem: The Equation That Broke Physics</title>
+    <link href="https://physicshub.github.io/blog/physics-behind-three-body-problem" />
+    <id>https://physicshub.github.io/blog/physics-behind-three-body-problem</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Two bodies orbiting under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right and wrong.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Advanced" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Dynamics" />
+    <category term="Relativity" />
+    <category term="Animations" />
+  </entry>
+  <entry>
+    <title>How Two Sliding Blocks Compute π — The Most Surprising Result in Physics</title>
+    <link href="https://physicshub.github.io/blog/pi-from-block-collisions-explained" />
+    <id>https://physicshub.github.io/blog/pi-from-block-collisions-explained</id>
+    <published>2026-06-02T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics behind it, from the first collision to the geometric proof.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Math" />
+    <category term="Kinematics" />
+    <category term="Energy" />
+    <category term="Collision" />
+  </entry>
+  <entry>
+    <title>What Is Physics? A Visual, Interactive Introduction for Beginners</title>
+    <link href="https://physicshub.github.io/blog/what-is-physics" />
+    <id>https://physicshub.github.io/blog/what-is-physics</id>
+    <published>2026-03-09T00:00:00Z</published>
+    <updated>2026-03-09T00:00:00Z</updated>
+    <summary>Physics explained visually — not just with formulas. Discover the major branches of physics, real-world applications, and explore free interactive simulations to see the science in action.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Elementary" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Energy" />
+    <category term="Quantum" />
+    <category term="Relativity" />
+  </entry>
+  <entry>
+    <title>Class 12 Physics Complete Guide – All Chapters with Formulas &amp; Examples</title>
+    <link href="https://physicshub.github.io/blog/class-12-physics-complete-guide" />
+    <id>https://physicshub.github.io/blog/class-12-physics-complete-guide</id>
+    <published>2026-03-09T00:00:00Z</published>
+    <updated>2026-03-09T00:00:00Z</updated>
+    <summary>Master Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, and solved examples — Electrostatics, Magnetism, Optics, Modern Physics and more.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Electromagnetism" />
+    <category term="Optics" />
+    <category term="Quantum" />
+    <category term="Waves" />
+  </entry>
+  <entry>
+    <title>The Physics of the Pendulum: This is How It Works</title>
+    <link href="https://physicshub.github.io/blog/physics-of-pendulum-explained" />
+    <id>https://physicshub.github.io/blog/physics-of-pendulum-explained</id>
+    <published>2026-01-26T00:00:00Z</published>
+    <updated>2026-01-26T00:00:00Z</updated>
+    <summary>An exhaustive exploration of pendulum dynamics from elementary observations to advanced nonlinear analysis, encompassing simple harmonic motion, energy conservation, chaotic behavior, and quantum mechanical interpretations.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Animations" />
+  </entry>
+  <entry>
+    <title>Free Fall &amp; Air Resistance: Interactive Physics Simulation Guide</title>
+    <link href="https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide" />
+    <id>https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide</id>
+    <published>2026-01-24T00:00:00Z</published>
+    <updated>2026-01-24T00:00:00Z</updated>
+    <summary>Explore how gravity, air resistance, and wind affect a falling ball. Interactive simulations and clear explanations covering free fall, drag force, and planetary gravity — from beginner to advanced.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Collision" />
+    <category term="Physics" />
+    <category term="Gravity" />
+  </entry>
+  <entry>
+    <title>Physics of Bouncing Balls: How a Bouncing Ball Works</title>
+    <link href="https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide" />
+    <id>https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide</id>
+    <published>2026-01-23T00:00:00Z</published>
+    <updated>2026-01-23T00:00:00Z</updated>
+    <summary>Explore the physics of a bouncing ball: from kinematic equations to energy dissipation. Learn about gravity, restitution, and Newton's laws with our interactive JS simulator.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Collision" />
+    <category term="Animations" />
+  </entry>
+</feed>

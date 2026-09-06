@@ -32,6 +32,8 @@ export const Theme = ({ mode, onToggle }: Props) => {
         <mask id="moon-mask-main-nav">
           <rect x="0" y="0" width="18" height="18" fill="#FFF" />
           <motion.circle
+            cx={10}
+            initial={{ cx: 10 }}
             animate={{ cx: isLight ? 25 : 10 }}
             cy="2"
             r="8"
@@ -41,8 +43,10 @@ export const Theme = ({ mode, onToggle }: Props) => {
         <motion.circle
           cx="9"
           cy="9"
+          r={8}
           fill="currentColor"
           mask="url(#moon-mask-main-nav)"
+          initial={{ r: 8 }}
           animate={{ r: isLight ? 5 : 8 }}
         />
         <g>

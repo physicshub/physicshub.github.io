@@ -24,22 +24,36 @@
   scroll-margin-top: 6.5rem;
 }
 
-.theory-section + .theory-section {
-  margin-top: 0;
+/* --- One vertical rhythm ------------------------------------------------------
+   Values step through the project spacing scale (0.5 / 0.75 / 1 / 1.5 / 2 / 3).
+   ONE gap separates every pair of non-heading blocks; headings then reclaim
+   extra space *above* themselves and hug the block that follows.
+
+   The `.theory-renderer` prefix is load-bearing: it lifts these rules to the
+   same specificity as each block's own `margin: 0` reset (`.theory-callout`,
+   `.theory-formula`, …) but places them earlier / lets the heading rules below
+   win, so the rhythm actually applies instead of collapsing to zero. */
+
+.theory-renderer .theory-blocks > * + * {
+  margin-top: 1.5rem;
 }
 
-/* --- One vertical rhythm ------------------------------------------------------
-   Every block is separated by the same gap; headings then claw back extra
-   space *above* themselves and hug the block that follows. */
-
-.theory-blocks > * + * {
-  margin-top: 1.35rem;
+/* Gen-1 articles split their body across several `.theory-section`s (one per
+   `section.title`); carry the same 1.5rem cadence across that boundary. */
+.theory-renderer .theory-section + .theory-section {
+  margin-top: 1.5rem;
+}
+/* …unless the next section leads with its own H2, which brings its own space. */
+.theory-renderer
+  .theory-section
+  + .theory-section:has(> .theory-blocks > .theory-section-title:first-child) {
+  margin-top: 0;
 }
 
 /* --- Headings --------------------------------------------------------------- */
 
 .theory-renderer .theory-section-title {
-  margin: 3.25rem 0 1rem;
+  margin: 3rem 0 0;
   padding-top: 2rem;
   border-top: 1px solid var(--border-color);
   font-size: clamp(1.45rem, 1.2rem + 1.1vw, 1.65rem);
@@ -49,15 +63,21 @@
   color: var(--text-primary);
 }
 
-/* First section title sits flush — no rule, no gap above it. */
-.theory-renderer .theory-section:first-child .theory-section-title:first-child {
-  margin-top: 0.25rem;
+/* The first heading of the article — or of any later section — sits flush:
+   no rule, no reclaimed space above it. */
+.theory-renderer .theory-section:first-child .theory-section-title:first-child,
+.theory-renderer
+  .theory-section
+  + .theory-section
+  > .theory-blocks
+  > .theory-section-title:first-child {
+  margin-top: 0;
   padding-top: 0;
   border-top: 0;
 }
 
 .theory-renderer .theory-subheading {
-  margin: 2.25rem 0 0.55rem;
+  margin: 2rem 0 0;
   font-size: 1.28rem;
   font-weight: 700;
   line-height: 1.35;
@@ -67,7 +87,7 @@
 /* `subtitle` blocks carry Tailwind size utilities (text-lg / text-base /
    text-sm) from the component; override with the reading scale. */
 .theory-renderer .theory-subtitle {
-  margin: 2rem 0 0.5rem;
+  margin: 1.5rem 0 0;
   font-size: 1.12rem;
   font-weight: 700;
   line-height: 1.4;
@@ -86,11 +106,16 @@
   color: var(--text-secondary);
 }
 
-/* A heading hugs the block it introduces. */
-.theory-blocks
-  > :is(.theory-section-title, .theory-subheading, .theory-subtitle)
+/* A heading hugs the block it introduces: 1rem after an H2, 0.75rem after the
+   smaller headings. */
+.theory-renderer .theory-blocks > .theory-section-title + * {
+  margin-top: 1rem;
+}
+.theory-renderer
+  .theory-blocks
+  > :is(.theory-subheading, .theory-subtitle)
   + * {
-  margin-top: 0.6rem;
+  margin-top: 0.75rem;
 }
 
 .theory-renderer :is(h2, h3, h4)[id] {
@@ -336,6 +361,109 @@
 
 .callout-success .callout-icon {
   color: var(--success-color);
+}
+
+/* "Key fact" — the one-sentence, quotable answer. Same box metrics as every
+   other callout; only the accent hue and slightly brighter ink set it apart. */
+.callout-key {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 55%);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+}
+
+.callout-key .callout-icon {
+  color: var(--accent-color);
+}
+
+.callout-key .callout-content {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* --- Key takeaways --------------------------------------------------------------
+   The "read this if nothing else" list, just under the intro. Same framed-box
+   idiom as callouts (full 1px frame + tint fill, no bar); the uppercase accent
+   label is what makes it read louder. */
+
+.theory-takeaways {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 60%);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+}
+
+.takeaways-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent-color), var(--text-primary) 45%);
+}
+
+.takeaways-label-icon {
+  margin-right: 0.4rem;
+  color: var(--accent-color);
+}
+
+.takeaways-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.takeaways-list li {
+  margin: 0.4rem 0;
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+
+.takeaways-list li::marker {
+  color: var(--accent-color);
+}
+
+/* --- FAQ ------------------------------------------------------------------------
+   Visible questions and answers (never collapsed). The heading takes the exact
+   H2 section-title treatment so an author never sees the "FAQ" H2 spaced
+   differently from every other H2; quiet hairline dividers between items. */
+
+.theory-faq {
+  margin: 0;
+}
+
+.theory-faq .faq-heading {
+  margin: 3rem 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  font-size: clamp(1.45rem, 1.2rem + 1.1vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.faq-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.faq-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.faq-question {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.faq-answer {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 /* --- Examples -----------------------------------------------------------------

@@ -39,13 +39,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const chapter = chapters.find((c) => getSimulationId(c.link) === id);
 
-  if (!chapter) return { title: "Simulation Not Found | PhysicsHub" };
+  if (!chapter) return { title: "Simulation Not Found" };
 
   const level = LEVELS[chapter.level as keyof typeof LEVELS];
   const levelLabel = level ? `${level.name} (${level.age})` : "";
+  // The root layout's `title.template` appends " | PhysicsHub" to <title>.
+  // OG/Twitter titles are not templated, so give them the suffixed form.
   const title = `${chapter.name}: ${
     levelLabel ? `${levelLabel} · ` : ""
-  }Interactive Physics Simulation | PhysicsHub`;
+  }Interactive Physics Simulation`;
+  const ogTitle = `${title} | PhysicsHub`;
   const description = chapter.desc;
   const canonical = `/simulations/${id}`;
 
@@ -59,13 +62,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: `${SITE_URL}${canonical}`,
-      title: title,
+      title: ogTitle,
       description: description,
       images: [chapter.thumbnail],
     },
     twitter: {
       card: "summary_large_image",
-      title: title,
+      title: ogTitle,
       description: description,
       images: [chapter.thumbnail],
     },

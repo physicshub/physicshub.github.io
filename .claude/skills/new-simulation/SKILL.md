@@ -62,7 +62,10 @@ Adding a simulation named `<Name>` touches four places that must agree on the na
 3. **`app/(core)/data/chapters.js`** — the catalogue entry. Missing entry means a
    404 in the static export (`dynamicParams = false`).
 4. Optionally `app/(core)/data/articles/<slug>.js`, registered in
-   `articles/index.js`, referenced by `relatedBlogSlug`.
+   `articles/index.js`, referenced by `relatedBlogSlug`. **Writing that article?
+   Load the `new-article` skill first** (`.claude/skills/new-article/SKILL.md`) —
+   it is the house style: answer-first structure, the `takeaways`/`faq`/key-fact
+   blocks, length targets, and the no-code rule for non-developer articles.
 
 ### 1. The config module
 

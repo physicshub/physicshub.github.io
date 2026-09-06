@@ -4,10 +4,22 @@ import { notFound } from "next/navigation";
 import {
   getReadingTime,
   getTitles,
+  getPlainText,
+  getWordCount,
 } from "../../../(core)/utils/blogHandling.ts";
+import {
+  getFaqSchema,
+  getKeyFactText,
+} from "../../../(core)/utils/blogSchema.ts";
+import { getBlogFacets } from "../../../(core)/utils/catalogFilters.js";
+import { LEVELS } from "../../../(core)/data/tags.js";
+import { resolveAuthor, authorSchema } from "../../../(core)/data/authors.js";
+import {
+  SITE_URL,
+  ORG_ID,
+  WEBSITE_ID,
+} from "../../../(core)/constants/site.js";
 import BlogPostContent from "./BlogPostContent.jsx";
-
-const SITE_URL = "https://physicshub.github.io";
 
 // Articles author their `date` as DD/MM/YYYY. Return an ISO date for schema
 // (`datePublished`), or undefined when it is missing/unparseable.
@@ -39,10 +51,13 @@ export async function generateMetadata({ params }) {
 
   const canonical = `/blog/${slug}`;
   const published = toISODate(blog.date);
+  const modified = toISODate(blog.updated) || published;
+  const { topics } = getBlogFacets(blog);
 
   return {
     title: blog.name,
     description: blog.desc,
+    keywords: topics.length ? topics : undefined,
     alternates: { canonical },
     openGraph: {
       title: blog.name,
@@ -50,7 +65,9 @@ export async function generateMetadata({ params }) {
       type: "article",
       url: `${SITE_URL}${canonical}`,
       publishedTime: published,
-      authors: [blog.author || "PhysicsHub Community"],
+      modifiedTime: modified,
+      authors: [resolveAuthor(blog.author).name],
+      tags: topics,
       images: [firstImage(blog)],
     },
     twitter: {
@@ -78,58 +95,78 @@ export default async function BlogPost({ params }) {
     .slice(0, 3);
 
   const readingTime = blog.theory
-    ? getReadingTime(JSON.stringify(blog.theory))
+    ? getReadingTime(getPlainText(blog.theory))
     : 1;
+  const wordCount = getWordCount(blog.theory);
 
   const tocItems = getTitles(blog);
 
   const canonical = `${SITE_URL}/blog/${slug}`;
   const published = toISODate(blog.date);
+  const modified = toISODate(blog.updated) || published;
+
+  const { topics, levels } = getBlogFacets(blog);
+  const educationalLevel = levels
+    .map((id) => LEVELS[id]?.name)
+    .filter(Boolean)[0];
+  const keyFact = getKeyFactText(blog);
+  const faqSchema = getFaqSchema(blog, canonical);
+  const author = authorSchema(blog.author, canonical);
+  const authorRef = author["@id"] ? { "@id": author["@id"] } : author;
+
+  const blogPosting = {
+    "@type": ["BlogPosting", "LearningResource"],
+    "@id": `${canonical}#article`,
+    headline: blog.name,
+    description: blog.desc,
+    ...(keyFact ? { abstract: keyFact } : {}),
+    image: [firstImage(blog)],
+    url: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    isPartOf: { "@id": WEBSITE_ID },
+    breadcrumb: { "@id": `${canonical}#breadcrumb` },
+    inLanguage: "en",
+    ...(published ? { datePublished: published } : {}),
+    ...(modified ? { dateModified: modified } : {}),
+    author: authorRef,
+    publisher: { "@id": ORG_ID },
+    isAccessibleForFree: true,
+    ...(wordCount ? { wordCount } : {}),
+    timeRequired: `PT${readingTime}M`,
+    ...(topics.length
+      ? {
+          keywords: topics.join(", "),
+          about: topics.map((name) => ({ "@type": "Thing", name })),
+          articleSection: topics[0],
+        }
+      : { articleSection: "Physics" }),
+    learningResourceType: "explanation",
+    ...(educationalLevel ? { educationalLevel } : {}),
+    audience: { "@type": "EducationalAudience", educationalRole: "student" },
+  };
+
+  const breadcrumbList = {
+    "@type": "BreadcrumbList",
+    "@id": `${canonical}#breadcrumb`,
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${SITE_URL}/blog`,
+      },
+      { "@type": "ListItem", position: 3, name: blog.name, item: canonical },
+    ],
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "BlogPosting",
-        "@id": `${canonical}#article`,
-        headline: blog.name,
-        description: blog.desc,
-        image: [firstImage(blog)],
-        url: canonical,
-        mainEntityOfPage: canonical,
-        inLanguage: "en",
-        ...(published
-          ? { datePublished: published, dateModified: published }
-          : {}),
-        author: blog.author
-          ? { "@type": "Person", name: blog.author }
-          : { "@id": `${SITE_URL}/#organization` },
-        publisher: { "@id": `${SITE_URL}/#organization` },
-        isAccessibleForFree: true,
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Home",
-            item: `${SITE_URL}/`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Blog",
-            item: `${SITE_URL}/blog`,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: blog.name,
-            item: canonical,
-          },
-        ],
-      },
+      blogPosting,
+      breadcrumbList,
+      ...(author["@type"] === "Person" ? [author] : []),
+      ...(faqSchema ? [faqSchema] : []),
     ],
   };
 

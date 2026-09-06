@@ -9,7 +9,7 @@ you change the project structure.
 
 ```bash
 npm run dev           # next dev + sitemap regen on routes.js changes
-npm run build         # generate:sitemap, then next build (server mode, API live)
+npm run build         # generate:sitemap + generate:feeds, then next build (server mode, API live)
 npm run build:static  # Pages export: strips app/api, exports to out/, restores
 npm run lint          # eslint (lint:fix to autofix)
 npm run format:check  # prettier --check .  — CI parity
@@ -25,7 +25,9 @@ pre-commit runs `scripts/check-package-lock.js` and lint-staged. Node >= 24 (see
 - **Never edit `version` in package.json** — semantic-release owns it. PR titles
   must be conventional commits (`feat:`, `fix:`, `ci:` …); the squashed title is the changelog.
 - **`routes.js` at the repo root is generated** — `scripts/sitemap-generator.js`
-  rewrites it in place (lastmod churn) and writes `public/sitemap.xml`. Don't hand-edit it.
+  rewrites it in place (lastmod churn) and writes `public/sitemap.xml` + `public/robots.txt`.
+  `scripts/generate-feeds.js` writes `public/feed.xml` (Atom) + `public/llms.txt`. All
+  four run before every `next build`; all are build output — don't hand-edit them.
 - **Two build modes, switched by `app/api` presence** (see `next.config.js`):
   - `npm run build` — API present → normal Next.js app (Vercel, local dev).
   - `npm run build:static` — strips `app/api` via `scripts/strip-api-for-static-export.js`, exports to `out/`.
@@ -50,6 +52,18 @@ must agree on one `<Name>`:
 3. `app/(core)/data/chapters.js` — catalog entry; **a simulation missing here 404s in the static export** (`dynamicParams = false`)
 4. optionally `app/(core)/data/articles/<slug>.js`
 
+### Articles / blog
+
+Writing or restructuring an article: **load the `new-article` skill first**
+(`.claude/skills/new-article/SKILL.md`). Answer-first house style — a
+question-shaped `name`, the answer in the first two sentences, a `key` callout +
+`takeaways` box + a `faq` block, then depth. `code` blocks only in articles
+tagged `TAGS.PROGRAMMING`. Articles are JS modules in `app/(core)/data/articles/`,
+registered in `articles/index.js` (position = listing + prev/next order). Theory
+blocks render via `components/theory/`; the `faq` block also emits `FAQPage`
+JSON-LD server-side through `app/(core)/utils/blogSchema.ts`. Author bylines:
+`app/(core)/data/authors.js`.
+
 ### Engine (`app/(core)/engine/`) — the only physics core
 
 Bodies hold state; everything else is an element (plain object with hooks), composed by addition. Rules that keep it composable:
@@ -67,3 +81,4 @@ See `CLAUDE.md` → “How a simulation is wired” for the full `createSimulati
 - Some comments are in Italian — fine to keep; write new ones in English.
 - i18n is **custom, not a library**: `hooks/useTranslation.ts` reads the `googtrans` cookie, loads `app/(core)/locales/<lang>.json`; `locales/meta.json` marks completed languages. Extract new keys with `npm run i18n:extract` — don't introduce next-intl/i18next.
 - Changing the engine or how simulations are written: update `CLAUDE.md` **and** `.claude/skills/new-simulation/SKILL.md` in the same change.
+- Changing the theory block types, the article object shape, or the blog schema pipeline: update `CLAUDE.md` **and** `.claude/skills/new-article/SKILL.md` in the same change.
