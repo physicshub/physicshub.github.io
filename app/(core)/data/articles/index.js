@@ -10,6 +10,7 @@ import { class12PhysicsBlog } from "./class-12-physics.js";
 import { whatIsPhysicsBlog } from "./what-is-physics.js";
 import { threeBodyProblemBlog } from "./physics-behind-three-body-problem.js";
 import { piCollisionBlog } from "./pi-from-block-collisions-explained.js";
+import { kirchhoffLawsBlog } from "./kirchhoffs-circuit-laws-explained.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
@@ -23,6 +24,7 @@ export const allBlogs = {
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
   [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
   [piCollisionBlog.slug]: piCollisionBlog,
+  [kirchhoffLawsBlog.slug]: kirchhoffLawsBlog,
 };
 
 export const blogsArray = Object.values(allBlogs);
