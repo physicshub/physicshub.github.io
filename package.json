@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d out",
     "generate:sitemap": "node scripts/sitemap-generator.js",
     "generate:feeds": "node scripts/generate-feeds.js",
+    "submit:indexing": "node scripts/submit-indexing.js",
     "i18n:extract": "npx i18next-parser --config i18next-parser.config.cjs",
     "contributors": "node --loader ts-node/esm scripts/contributors/contributors.ts",
     "lint": "eslint",
