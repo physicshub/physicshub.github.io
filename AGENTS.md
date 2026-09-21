@@ -26,8 +26,9 @@ pre-commit runs `scripts/check-package-lock.js` and lint-staged. Node >= 24 (see
   must be conventional commits (`feat:`, `fix:`, `ci:` …); the squashed title is the changelog.
 - **`routes.js` at the repo root is generated** — `scripts/sitemap-generator.js`
   rewrites it in place (lastmod churn) and writes `public/sitemap.xml` + `public/robots.txt`.
-  `scripts/generate-feeds.js` writes `public/feed.xml` (Atom) + `public/llms.txt`. All
-  four run before every `next build`; all are build output — don't hand-edit them.
+  `scripts/generate-feeds.js` writes `public/feed.xml` (Atom), `public/llms.txt`, and
+  `public/llms-full.txt`. All five run before every `next build`; all are build
+  output — don't hand-edit them.
 - **Two build modes, switched by `app/api` presence** (see `next.config.js`):
   - `npm run build` — API present → normal Next.js app (Vercel, local dev).
   - `npm run build:static` — strips `app/api` via `scripts/strip-api-for-static-export.js`, exports to `out/`.

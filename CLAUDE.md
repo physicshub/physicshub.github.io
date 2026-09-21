@@ -16,7 +16,7 @@ npm run preview        # build:static + serve out/
 npm run lint           # eslint  (lint:fix to autofix)
 npm run format         # prettier --write .  (format:check for CI parity)
 npm run generate:sitemap
-npm run generate:feeds # writes public/feed.xml (Atom) + public/llms.txt
+npm run generate:feeds # writes public/feed.xml + public/llms.txt + public/llms-full.txt
 npm run contributors   # regenerate the all-contributors table (needs GH_TOKEN)
 npm run deploy         # gh-pages -d out
 ```
@@ -116,7 +116,7 @@ Bodies those elements position themselves are marked `kinematic: true`, which te
 
 `scripts/sitemap-generator.js` reads `routes.js` + `data/articles/index.js` + `data/chapters.js`, writes `public/sitemap.xml` + `public/robots.txt` **and rewrites `routes.js` in place** — so `routes.js` diffs (lastmod churn) are expected build output, not hand edits. It strips the duplicate XML prolog the `sitemap` + `xml-formatter` combo would otherwise emit, and `assertValidSitemap()` fails the build if the output is not well-formed. `NOINDEX_PATHS` (currently `/blog/create`, `/simulations/test`) are excluded from the sitemap and `routes.js` and emitted as `Disallow` in `robots.txt`; `robots.txt` also carries explicit `Allow` groups for the major AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, …). Blog `lastmod` is `blog.updated || blog.date` (DD/MM/YYYY); everything else is the build date.
 
-`scripts/generate-feeds.js` (also run before every `next build`) writes **`public/feed.xml`** (Atom 1.0, newest-first blog feed; discoverable via `alternates.types` in `blog/layout.tsx`) and **`public/llms.txt`** (the llmstxt.org site map for LLM agents — articles, simulations, per-sim concept summaries). Both are build output like `sitemap.xml`/`robots.txt` — regenerated, not hand-edited, and committed with diff churn.
+`scripts/generate-feeds.js` (also run before every `next build`) writes **`public/feed.xml`** (Atom 1.0, newest-first blog feed; discoverable via `alternates.types` in `blog/layout.tsx`), **`public/llms.txt`** (the llmstxt.org site map for LLM agents — articles, simulations, per-sim concept summaries), and **`public/llms-full.txt`** (expanded simulation controls, concepts, and formulas derived from `simulationOverviews.js`). All three are build output like `sitemap.xml`/`robots.txt` — regenerated, not hand-edited, and committed with diff churn.
 
 **Google Indexing API.** `scripts/submit-indexing.js` (`npm run submit:indexing`) pings Google's Web Search Indexing API (`urlNotifications:publish`, `URL_UPDATED`) with every `<loc>` from the sitemap — by default the **live** one at `physicshub.github.io/sitemap.xml`, overridable with `--sitemap <url|path>`; pass explicit URLs as positional args, `--dry-run` to just list, `--type URL_DELETED` for removals. Zero deps (node:crypto JWT + fetch). Credentials resolve as `GOOGLE_INDEXING_CREDENTIALS` (raw JSON, used by CI) → `INDEXING_KEY_FILE` → the lone `*.json` in `.secrets/` (git-ignored, local dev). The service-account email must be a **verified Owner** of the Search Console property or every publish 403s. `.github/workflows/submit-indexing.yml` runs it weekly (Mon 06:00 UTC) + on manual dispatch, reading the `GOOGLE_INDEXING_CREDENTIALS` repo secret. Note the API is officially scoped to JobPosting/BroadcastEvent pages — it works for ordinary pages but Google may ignore the ping. IndexNow (Bing/Yandex) is not wired up.
 
