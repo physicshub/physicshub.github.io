@@ -22,13 +22,15 @@ const LEVEL_MAP = {
  * @param {Object} chapter - Chapter metadata object from chapters.js
  * @returns {Object} JSON-LD structured data graph
  */
-export function generateSimulationSchema(chapter) {
+export function generateSimulationSchema(chapter, relatedBlog = null) {
   if (!chapter) return null;
 
   const url = `${SITE_URL}${chapter.link}`;
   const thumbnailUrl = chapter.thumbnail ? `${SITE_URL}${chapter.thumbnail}` : `${SITE_URL}/Thumbnail.jpg`;
   const educationalLevel = LEVEL_MAP[chapter.level] || "General Physics Education";
-  const keywords = Array.isArray(chapter.tags) ? chapter.tags.join(", ") : "physics, simulation, interactive";
+  const keywords = Array.isArray(chapter.tags)
+    ? chapter.tags.map((t) => (typeof t === "object" && t !== null ? t.name : t)).filter(Boolean).join(", ")
+    : "physics, simulation, interactive";
 
   return {
     "@context": "https://schema.org",
@@ -42,12 +44,18 @@ export function generateSimulationSchema(chapter) {
         image: thumbnailUrl,
         educationalLevel: educationalLevel,
         learningResourceType: "Interactive Simulation",
+        interactivityType: "active",
         applicationCategory: "EducationalApplication",
         operatingSystem: "Any",
         browserRequirements: "Requires HTML5 and Canvas support",
         inLanguage: "en",
         isAccessibleForFree: true,
         keywords: keywords,
+        ...(relatedBlog
+          ? {
+              isBasedOn: `${SITE_URL}/blog/${relatedBlog.slug}`,
+            }
+          : {}),
         author: {
           "@type": "Organization",
           "@id": `${SITE_URL}/#organization`,

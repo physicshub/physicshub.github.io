@@ -10,7 +10,9 @@
 - **Description**: Simulation of the ball bouncing off the walls. A playful first look at motion, speed and collisions — suited for middle school and even younger explorers.
 - **Target Level**: lowerSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object]
+- **Physics Topics**: Kinematics, Collision
+- **Governing Equations**: Kinematics: y(t) = y₀ + v₀t - ½gt²; Velocity: v(t) = v₀ - gt; Coefficient of restitution: e = v_after / v_before (e ∈ [0, 1])
+- **Key Parameters**: Gravity (g), Initial velocity (v₀), Elasticity/Restitution (e), Ball radius, Surface friction
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide)
 
 ### Vector Operations Calculator
@@ -19,7 +21,9 @@
 - **Description**: Interactive 2D vector calculator — visualize addition, subtraction, and dot products in real time. The standard high-school tool for students learning vector physics.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Math, Vectors, Trigonometry
+- **Governing Equations**: Vector addition: R_x = A_x + B_x, R_y = A_y + B_y; Magnitude: |R| = √(R_x² + R_y²); Dot product: A · B = |A||B|cos(θ) = A_x B_x + A_y B_y; Angle: θ = arccos((A · B)/(|A||B|))
+- **Key Parameters**: Vector A (x, y components / magnitude & angle), Vector B (x, y components / magnitude & angle)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations)
 
 ### Ball Acceleration
@@ -28,7 +32,9 @@
 - **Description**: Simulate a ball accelerating toward your cursor in real time. Explore velocity and uniform acceleration, a core topic from middle-school physics onward — free online.
 - **Target Level**: lowerSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Kinematics, Acceleration, Interactive
+- **Governing Equations**: Newton's Second Law: F_net = ma; Uniform acceleration: v(t) = v₀ + at, r(t) = r₀ + v₀t + ½at²; Direction vector: a_dir = (cursor - r) / |cursor - r|
+- **Key Parameters**: Mass (m), Acceleration magnitude (|a|), Cursor target coordinate, Velocity damping
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/ball-uniformly-accelerated-motion)
 
 ### Ball Gravity
@@ -37,7 +43,9 @@
 - **Description**: Watch a ball fall and bounce under gravity and external forces in real time. Adjust mass, elasticity, and gravitational force to explore Newton's laws — free interactive simulation for high-school physics.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Gravity, Collision
+- **Governing Equations**: Gravitational force: F_g = mg; Aerodynamic drag: F_d = -½ ρ C_d A v² v̂; Net acceleration: a = g - (F_d / m)
+- **Key Parameters**: Mass (m), Gravitational acceleration (g), Air density (ρ), Drag coefficient (C_d), Elasticity
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide)
 
 ### Spring Mass System Simulator
@@ -46,7 +54,9 @@
 - **Description**: Explore Hooke's Law and Simple Harmonic Motion interactively. Adjust mass and spring constant to visualize oscillations and energy conservation — an extended high-school (A-Level) topic.
 - **Target Level**: upperSecondary
 - **Difficulty**: extended
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Springs, Oscillations
+- **Governing Equations**: Hooke's Law: F = -kx; Angular frequency: ω = √(k / m); Period: T = 2π√(m / k); Total Mechanical Energy: E = ½kx² + ½mv² = constant
+- **Key Parameters**: Spring constant (k), Suspended mass (m), Displacement (x), Damping coefficient (c)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/spring-connection)
 
 ### Simple Pendulum Simulation
@@ -55,7 +65,9 @@
 - **Description**: Simulate a pendulum and calculate its period and frequency in real time. Explore how length, gravity, and energy are related, in a standard high-school topic — free interactive physics tool.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Oscillations, Energy
+- **Governing Equations**: Equation of motion: d²θ/dt² + (g/L)sin(θ) = 0; Small-angle approximation (sin θ ≈ θ): θ(t) = θ₀ cos(ωt); Angular frequency: ω = √(g/L); Period: T ≈ 2π√(L/g)
+- **Key Parameters**: Pendulum rod length (L), Gravitational acceleration (g), Bob mass (m), Initial release angle (θ₀)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-of-pendulum-explained)
 
 ### Projectile & Parabolic Motion
@@ -64,7 +76,9 @@
 - **Description**: Simulate projectile motion and predict trajectory, range, and max height instantly. A staple of high-school kinematics — interactive parabolic motion calculator, free online.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Kinematics, Gravity, Math
+- **Governing Equations**: Horizontal: x(t) = v₀ cos(θ) t; Vertical: y(t) = v₀ sin(θ) t - ½gt²; Max height: H = (v₀² sin²θ) / (2g); Range: R = (v₀² sin(2θ)) / g; Flight time: t_flight = (2 v₀ sin θ) / g
+- **Key Parameters**: Launch angle (θ), Initial velocity (v₀), Launch height (y₀), Gravity (g)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/projectile-parabolic-motion)
 
 ### Inclined Plane
@@ -73,7 +87,9 @@
 - **Description**: Simulate a block sliding down an inclined plane with friction. Adjust angle, mass, and surface to explore forces and Newton's laws — a core high-school dynamics experiment.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Forces, Friction
+- **Governing Equations**: Parallel gravitational force: F_∥ = mg sin(θ); Perpendicular / Normal force: N = mg cos(θ); Kinetic friction: f_k = μ_k N = μ_k mg cos(θ); Net acceleration: a = g(sin θ - μ_k cos θ)
+- **Key Parameters**: Incline angle (θ), Mass (m), Friction coefficient (μ_k), Incline length
 
 ### Circular Motion
 
@@ -81,7 +97,9 @@
 - **Description**: Simulate uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed — an extended high-school to first-year university topic.
 - **Target Level**: upperSecondary
 - **Difficulty**: extended
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Kinematics, Vectors
+- **Governing Equations**: Centripetal acceleration: a_c = v² / r = ω²r; Centripetal force: F_c = m v² / r = m ω² r; Angular velocity: ω = 2π / T = 2πf; Tangential speed: v = ωr
+- **Key Parameters**: Radius (r), Angular speed (ω), Tangential speed (v), Mass (m)
 
 ### Three Body Problem
 
@@ -89,7 +107,9 @@
 - **Description**: Simulate a classic physics problem of three bodies operating under the gravity of each other. A numerically advanced topic aimed at university level (and keen high-school students).
 - **Target Level**: undergraduate
 - **Difficulty**: advanced
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Gravity, Kinematics, Forces
+- **Governing Equations**: Gravitational equations of motion: d²r_i/dt² = -G ∑_{j≠i} m_j (r_i - r_j) / |r_i - r_j|³ for i,j ∈ {1, 2, 3}; Energy conservation: E = ∑ ½m_i v_i² - G ∑_{i<j} m_i m_j / |r_i - r_j|
+- **Key Parameters**: Masses (m₁, m₂, m₃), Initial position vectors (r₁, r₂, r₃), Initial velocity vectors (v₁, v₂, v₃), Gravitational constant (G)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-behind-three-body-problem)
 
 ### Horizontal Spring
@@ -98,7 +118,9 @@
 - **Description**: A spring attached to the left wall with a draggable mass. Explore Hooke's Law and oscillation on a horizontal plane — approachable from middle school, standard in high school.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Springs, Oscillations
+- **Governing Equations**: Equation of motion: m (d²x/dt²) + c (dx/dt) + kx = 0; Undamped frequency: ω₀ = √(k/m); Damped frequency: ω_d = √(ω₀² - γ²); Energy: E = ½kx² + ½mv²
+- **Key Parameters**: Mass (m), Spring constant (k), Friction/damping coefficient (c), Amplitude (A)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/spring-connection)
 
 ### Double Pendulum
@@ -107,7 +129,9 @@
 - **Description**: Simulate a double pendulum and explore chaotic motion. Watch how small changes in initial conditions lead to completely different trajectories — a classic university-level example of chaos theory.
 - **Target Level**: undergraduate
 - **Difficulty**: advanced
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Dynamics, Oscillations, Energy
+- **Governing Equations**: Lagrangian: L = T - V with generalised coordinates (θ₁, θ₂); Nonlinear coupled Euler-Lagrange equations producing deterministic chaos; Sensitive dependence on initial conditions (Lyapunov exponent λ > 0)
+- **Key Parameters**: Rod lengths (L₁, L₂), Bob masses (m₁, m₂), Initial angles (θ₁, θ₂), Gravity (g)
 
 ### 1D Collision simulation
 
@@ -115,7 +139,9 @@
 - **Description**: Simulate 1D elastic collisions with velocity vectors, momentum, and kinetic energy visualization — a core momentum topic in high-school physics.
 - **Target Level**: upperSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object]
+- **Physics Topics**: Collision, Vectors
+- **Governing Equations**: Conservation of momentum: m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'; Elastic collision velocity relations: v₁' = [(m₁ - m₂)v₁ + 2m₂v₂] / (m₁ + m₂), v₂' = [(m₂ - m₁)v₂ + 2m₁v₁] / (m₁ + m₂); Kinetic energy: ½m₁v₁² + ½m₂v₂² = ½m₁v₁'² + ½m₂v₂'²
+- **Key Parameters**: Masses (m₁, m₂), Initial velocities (v₁, v₂), Elasticity coefficient (e ∈ [0, 1])
 
 ### Pi From Collisions
 
@@ -123,7 +149,9 @@
 - **Description**: Simulate two colliding blocks of different masses to derive pi. A beautiful conservation-law puzzle for university students (and gifted high-schoolers): adjust the mass of the larger block by a power of 100 to see further precision of pi.
 - **Target Level**: undergraduate
 - **Difficulty**: extended
-- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Physics Topics**: Math, Forces, Dynamics
+- **Governing Equations**: Conservation of energy: ½M V² + ½m v² = E; Scaled coordinates: x = √(M) V, y = √(m) v; Trajectory forms an angle θ = arctan(√(m/M)); Total number of collisions N = ⌊π / θ⌋ = ⌊π √(M/m)⌋
+- **Key Parameters**: Mass of large block (M = 100^k), Mass of small block (m = 1), Elasticity (e = 1)
 - **Related Guide**: [Read Guide](https://physicshub.github.io/blog/pi-from-block-collisions-explained)
 
 ### Trigonometric Circle
@@ -132,7 +160,9 @@
 - **Description**: Interactive unit circle with a draggable angle θ. Visualize sin, cos, tan, cot, sec and csc as circle segments, watch the generalized wave A·sin(ωθ+φ) plot in real time, and trace the inverse functions arcsin, arccos, arctan and arccot — a bridge from middle-school geometry to high-school trig.
 - **Target Level**: lowerSecondary
 - **Difficulty**: core
-- **Physics Topics**: [object Object], [object Object]
+- **Physics Topics**: Math, Trigonometry
+- **Governing Equations**: Unit circle definition: x² + y² = 1; x = cos(θ), y = sin(θ); tan(θ) = sin(θ)/cos(θ); Pythagorean identity: sin²(θ) + cos²(θ) = 1; Wave equation: y(t) = A sin(ωθ + φ)
+- **Key Parameters**: Angle (θ in radians/degrees), Amplitude (A), Angular frequency (ω), Phase shift (φ)
 
 
 ## Educational Articles & Guides

@@ -4,6 +4,7 @@ import SimulationWrapper from "./_components/SimulationWrapper";
 import SimulationOverview from "./_components/SimulationOverview";
 import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
 import { blogsArray } from "@/app/(core)/data/articles/index.js";
+import { generateSimulationSchema } from "@/app/(core)/utils/schema-generator.js";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -94,55 +95,7 @@ export default async function Page({ params }: Props) {
       )
     : null;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "LearningResource",
-        "@id": `${canonical}#resource`,
-        name: chapter.name,
-        description: chapter.desc,
-        url: canonical,
-        learningResourceType: "simulation",
-        interactivityType: "active",
-        isAccessibleForFree: true,
-        inLanguage: "en",
-        ...(level?.name ? { educationalLevel: level.name } : {}),
-        ...(chapter.tags?.length
-          ? { about: chapter.tags.map((t: { name: string }) => t.name) }
-          : {}),
-        publisher: { "@id": `${SITE_URL}/#organization` },
-        ...(relatedBlog
-          ? {
-              isBasedOn: `${SITE_URL}/blog/${relatedBlog.slug}`,
-            }
-          : {}),
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Home",
-            item: `${SITE_URL}/`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: "Simulations",
-            item: `${SITE_URL}/simulations`,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: chapter.name,
-            item: canonical,
-          },
-        ],
-      },
-    ],
-  };
+  const jsonLd = generateSimulationSchema(chapter, relatedBlog);
 
   return (
     <div className="simulation-page">

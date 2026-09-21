@@ -60,11 +60,14 @@ describe("GEO llms.txt generation", () => {
     assert.ok(fullContent.startsWith("# PhysicsHub — Full Knowledge Base"), "Must start with full knowledge base header");
     assert.ok(fullContent.includes("## Simulations Directory"), "Must contain simulations directory");
     assert.ok(fullContent.includes("## Educational Articles & Guides"), "Must contain articles directory");
+    assert.ok(!fullContent.includes("[object Object]"), "llms-full.txt must not contain stringified objects");
 
     for (const chapter of chapters.filter((c) => !NOINDEX_PATHS.has(c.link))) {
       assert.ok(fullContent.includes(`### ${chapter.name}`), `Must contain section for ${chapter.name}`);
       assert.ok(fullContent.includes(`**URL**: https://physicshub.github.io${chapter.link}`), `Must contain URL for ${chapter.name}`);
       assert.ok(fullContent.includes(`**Target Level**:`), "Must detail educational level");
+      assert.ok(fullContent.includes(`**Governing Equations**:`), `Must include governing equations for ${chapter.name}`);
+      assert.ok(fullContent.includes(`**Key Parameters**:`), `Must include key parameters for ${chapter.name}`);
     }
   });
 });
@@ -72,7 +75,8 @@ describe("GEO llms.txt generation", () => {
 describe("Schema.org structured data generator", () => {
   test("generates valid LearningResource and WebApplication schema", () => {
     const sampleChapter = chapters[0]; // Bouncing Ball
-    const schema = generateSimulationSchema(sampleChapter);
+    const sampleBlog = blogsArray[0];
+    const schema = generateSimulationSchema(sampleChapter, sampleBlog);
 
     assert.ok(schema, "Schema must not be null");
     assert.strictEqual(schema["@context"], "https://schema.org");
@@ -87,7 +91,10 @@ describe("Schema.org structured data generator", () => {
     assert.strictEqual(simNode.description, sampleChapter.desc);
     assert.strictEqual(simNode.isAccessibleForFree, true);
     assert.strictEqual(simNode.learningResourceType, "Interactive Simulation");
+    assert.strictEqual(simNode.interactivityType, "active");
     assert.strictEqual(simNode.inLanguage, "en");
+    assert.ok(!simNode.keywords.includes("[object Object]"), "Keywords must not contain [object Object]");
+    assert.ok(simNode.isBasedOn.includes(sampleBlog.slug), "Must include isBasedOn when relatedBlog is provided");
 
     const breadcrumbNode = schema["@graph"].find((node) => node["@type"] === "BreadcrumbList");
     assert.ok(breadcrumbNode, "Must contain BreadcrumbList node");
