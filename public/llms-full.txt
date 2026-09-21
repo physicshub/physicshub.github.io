@@ -1,0 +1,205 @@
+# PhysicsHub — Full Knowledge Base (LLMs Full)
+
+> Comprehensive directory of interactive simulations, physical formulas, and educational resources for Large Language Models and AI answer engines.
+
+## Simulations Directory
+
+### Bouncing Ball
+
+- **URL**: https://physicshub.github.io/simulations/BouncingBall
+- **Description**: Simulation of the ball bouncing off the walls. A playful first look at motion, speed and collisions — suited for middle school and even younger explorers.
+- **Target Level**: lowerSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide)
+
+### Vector Operations Calculator
+
+- **URL**: https://physicshub.github.io/simulations/VectorsOperations
+- **Description**: Interactive 2D vector calculator — visualize addition, subtraction, and dot products in real time. The standard high-school tool for students learning vector physics.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations)
+
+### Ball Acceleration
+
+- **URL**: https://physicshub.github.io/simulations/BallAcceleration
+- **Description**: Simulate a ball accelerating toward your cursor in real time. Explore velocity and uniform acceleration, a core topic from middle-school physics onward — free online.
+- **Target Level**: lowerSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/ball-uniformly-accelerated-motion)
+
+### Ball Gravity
+
+- **URL**: https://physicshub.github.io/simulations/BallGravity
+- **Description**: Watch a ball fall and bounce under gravity and external forces in real time. Adjust mass, elasticity, and gravitational force to explore Newton's laws — free interactive simulation for high-school physics.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide)
+
+### Spring Mass System Simulator
+
+- **URL**: https://physicshub.github.io/simulations/SpringConnection
+- **Description**: Explore Hooke's Law and Simple Harmonic Motion interactively. Adjust mass and spring constant to visualize oscillations and energy conservation — an extended high-school (A-Level) topic.
+- **Target Level**: upperSecondary
+- **Difficulty**: extended
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/spring-connection)
+
+### Simple Pendulum Simulation
+
+- **URL**: https://physicshub.github.io/simulations/SimplePendulum
+- **Description**: Simulate a pendulum and calculate its period and frequency in real time. Explore how length, gravity, and energy are related, in a standard high-school topic — free interactive physics tool.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-of-pendulum-explained)
+
+### Projectile & Parabolic Motion
+
+- **URL**: https://physicshub.github.io/simulations/ParabolicMotion
+- **Description**: Simulate projectile motion and predict trajectory, range, and max height instantly. A staple of high-school kinematics — interactive parabolic motion calculator, free online.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/projectile-parabolic-motion)
+
+### Inclined Plane
+
+- **URL**: https://physicshub.github.io/simulations/InclinedPlane
+- **Description**: Simulate a block sliding down an inclined plane with friction. Adjust angle, mass, and surface to explore forces and Newton's laws — a core high-school dynamics experiment.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+
+### Circular Motion
+
+- **URL**: https://physicshub.github.io/simulations/CircularMotion
+- **Description**: Simulate uniform circular motion in real time. Visualize velocity and centripetal acceleration vectors while adjusting radius and speed — an extended high-school to first-year university topic.
+- **Target Level**: upperSecondary
+- **Difficulty**: extended
+- **Physics Topics**: [object Object], [object Object], [object Object]
+
+### Three Body Problem
+
+- **URL**: https://physicshub.github.io/simulations/ThreeBody
+- **Description**: Simulate a classic physics problem of three bodies operating under the gravity of each other. A numerically advanced topic aimed at university level (and keen high-school students).
+- **Target Level**: undergraduate
+- **Difficulty**: advanced
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/physics-behind-three-body-problem)
+
+### Horizontal Spring
+
+- **URL**: https://physicshub.github.io/simulations/HorizontalSpring
+- **Description**: A spring attached to the left wall with a draggable mass. Explore Hooke's Law and oscillation on a horizontal plane — approachable from middle school, standard in high school.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/spring-connection)
+
+### Double Pendulum
+
+- **URL**: https://physicshub.github.io/simulations/DoublePendulum
+- **Description**: Simulate a double pendulum and explore chaotic motion. Watch how small changes in initial conditions lead to completely different trajectories — a classic university-level example of chaos theory.
+- **Target Level**: undergraduate
+- **Difficulty**: advanced
+- **Physics Topics**: [object Object], [object Object], [object Object]
+
+### 1D Collision simulation
+
+- **URL**: https://physicshub.github.io/simulations/CollisionSimulation
+- **Description**: Simulate 1D elastic collisions with velocity vectors, momentum, and kinetic energy visualization — a core momentum topic in high-school physics.
+- **Target Level**: upperSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object]
+
+### Pi From Collisions
+
+- **URL**: https://physicshub.github.io/simulations/PiCollisions
+- **Description**: Simulate two colliding blocks of different masses to derive pi. A beautiful conservation-law puzzle for university students (and gifted high-schoolers): adjust the mass of the larger block by a power of 100 to see further precision of pi.
+- **Target Level**: undergraduate
+- **Difficulty**: extended
+- **Physics Topics**: [object Object], [object Object], [object Object]
+- **Related Guide**: [Read Guide](https://physicshub.github.io/blog/pi-from-block-collisions-explained)
+
+### Trigonometric Circle
+
+- **URL**: https://physicshub.github.io/simulations/TrigonometricCircle
+- **Description**: Interactive unit circle with a draggable angle θ. Visualize sin, cos, tan, cot, sec and csc as circle segments, watch the generalized wave A·sin(ωθ+φ) plot in real time, and trace the inverse functions arcsin, arccos, arctan and arccot — a bridge from middle-school geometry to high-school trig.
+- **Target Level**: lowerSecondary
+- **Difficulty**: core
+- **Physics Topics**: [object Object], [object Object]
+
+
+## Educational Articles & Guides
+
+### What Is Physics? A Visual, Interactive Introduction for Beginners
+
+- **URL**: https://physicshub.github.io/blog/what-is-physics
+- **Summary**: Physics explained visually — not just with formulas. Discover the major branches of physics, real-world applications, and explore free interactive simulations to see the science in action.
+- **Date Published**: 09/03/2026
+
+### Class 12 Physics Complete Guide – All Chapters with Formulas & Examples
+
+- **URL**: https://physicshub.github.io/blog/class-12-physics-complete-guide
+- **Summary**: Master Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, and solved examples — Electrostatics, Magnetism, Optics, Modern Physics and more.
+- **Date Published**: 09/03/2026
+
+### Physics of Bouncing Balls: How a Bouncing Ball Works
+
+- **URL**: https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide
+- **Summary**: Explore the physics of a bouncing ball: from kinematic equations to energy dissipation. Learn about gravity, restitution, and Newton's laws with our interactive JS simulator.
+- **Date Published**: 23/01/2026
+
+### Vectors: components, addition, dot and cross products
+
+- **URL**: https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations
+- **Summary**: A vector carries a magnitude and a direction. Split it into components and the algebra falls out: addition, scaling, the dot product for angles, the cross product for area and torque.
+- **Date Published**: 22/01/2026
+
+### How does a ball accelerate toward a target?
+
+- **URL**: https://physicshub.github.io/blog/ball-uniformly-accelerated-motion
+- **Summary**: Acceleration is how fast velocity changes. Point a constant acceleration at a target and the ball speeds up, overshoots, then loops back — here is why, with a simulation to try.
+- **Date Published**: 21/01/2026
+
+### Free Fall & Air Resistance: Interactive Physics Simulation Guide
+
+- **URL**: https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide
+- **Summary**: Explore how gravity, air resistance, and wind affect a falling ball. Interactive simulations and clear explanations covering free fall, drag force, and planetary gravity — from beginner to advanced.
+- **Date Published**: 24/01/2026
+
+### How does a spring work?
+
+- **URL**: https://physicshub.github.io/blog/spring-connection
+- **Summary**: A spring pushes back in proportion to how far you stretch it — that is Hooke's law, and it is exactly what makes a mass on a spring oscillate. Here is the physics, with a simulation.
+- **Date Published**: 21/01/2026
+
+### The Physics of the Pendulum: This is How It Works
+
+- **URL**: https://physicshub.github.io/blog/physics-of-pendulum-explained
+- **Summary**: An exhaustive exploration of pendulum dynamics from elementary observations to advanced nonlinear analysis, encompassing simple harmonic motion, energy conservation, chaotic behavior, and quantum mechanical interpretations.
+- **Date Published**: 26/01/2026
+
+### How does projectile motion work?
+
+- **URL**: https://physicshub.github.io/blog/projectile-parabolic-motion
+- **Summary**: Gravity pulls a projectile straight down while its sideways speed stays constant. Those two independent motions combine into a parabola — here is the maths, with an interactive launcher.
+- **Date Published**: 21/01/2026
+
+### The Three-Body Problem: The Equation That Broke Physics
+
+- **URL**: https://physicshub.github.io/blog/physics-behind-three-body-problem
+- **Summary**: Two bodies orbiting under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right and wrong.
+- **Date Published**: 20/04/2026
+
+### How Two Sliding Blocks Compute π — The Most Surprising Result in Physics
+
+- **URL**: https://physicshub.github.io/blog/pi-from-block-collisions-explained
+- **Summary**: Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics behind it, from the first collision to the geometric proof.
+- **Date Published**: 02/06/2026
+
