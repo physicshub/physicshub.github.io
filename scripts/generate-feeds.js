@@ -1,11 +1,13 @@
 // generate-feeds.js
 //
-// Two build artifacts that make the site legible to machines that are not
+// Three build artifacts that make the site legible to machines that are not
 // Googlebot:
 //   public/feed.xml  — Atom 1.0 feed of the blog, for readers and AI crawlers
 //                       that subscribe to sources.
 //   public/llms.txt  — the llmstxt.org convention: a flat, link-first map of the
 //                       site's primary content for LLM agents.
+//   public/llms-full.txt — expanded simulation context derived from the same
+//                          source rendered on each simulation page.
 //
 // Runs before `next build` (see package.json) so the export in out/ picks the
 // files up. Mirrors scripts/sitemap-generator.js: same imports, same dual write
@@ -20,6 +22,7 @@ import { blogsArray } from "../app/(core)/data/articles/index.js";
 import chapters from "../app/(core)/data/chapters.js";
 import simulationOverviews from "../app/(core)/data/simulationOverviews.js";
 import { resolveAuthor } from "../app/(core)/data/authors.js";
+import { LEVELS, DIFFICULTIES } from "../app/(core)/data/tags.js";
 import { SITE_URL, SITE_NAME } from "../app/(core)/constants/site.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -52,6 +55,10 @@ const escapeXml = (s = "") =>
 
 const getSimId = (link) =>
   link.split("/simulations/")[1]?.split(/[?#]/)[0] || "";
+
+const indexableChapters = chapters.filter(
+  (chapter) => chapter.level !== "tool" && getSimId(chapter.link) !== "test"
+);
 
 // Newest first, by last substantive edit.
 const sortedBlogs = [...blogsArray].sort(
@@ -112,10 +119,6 @@ ${entries}
 
 // ─── llms.txt (llmstxt.org) ──────────────────────────────────────────────────
 function buildLlmsTxt() {
-  const indexableChapters = chapters.filter(
-    (c) => c.level !== "tool" && getSimId(c.link) !== "test"
-  );
-
   const line = (label, url, desc) =>
     `- [${label}](${url})${desc ? `: ${desc.replace(/\s+/g, " ").trim()}` : ""}`;
 
@@ -157,8 +160,69 @@ ${line("About PhysicsHub", `${SITE_URL}/about`, "Who builds PhysicsHub, why it e
 ${line("Contribute", `${SITE_URL}/contribute`, "How to add a simulation, write theory, or translate the site.")}
 
 ## Optional
+${line("Full simulation context", `${SITE_URL}/llms-full.txt`, "Concepts, controls, and formulas for every indexed simulation.")}
 ${line("Sitemap", `${SITE_URL}/sitemap.xml`)}
 ${line("Atom feed", `${SITE_URL}/feed.xml`)}
+`;
+}
+
+function buildLlmsFullTxt() {
+  const simulations = indexableChapters
+    .map((chapter) => {
+      const id = getSimId(chapter.link);
+      const overview = simulationOverviews[id];
+      if (!overview) {
+        throw new Error(`Missing simulation overview for ${id}`);
+      }
+
+      const levels = [chapter.level, ...(chapter.alsoFor || [])].map(
+        (level) => {
+          const label = LEVELS[level]?.name;
+          if (!label) {
+            throw new Error(`Unknown level "${level}" for ${id}`);
+          }
+          return label;
+        }
+      );
+      const difficulty = DIFFICULTIES[chapter.difficulty]?.name;
+      if (!difficulty) {
+        throw new Error(`Unknown difficulty "${chapter.difficulty}" for ${id}`);
+      }
+      const topics = chapter.tags.map((tag) => tag.name).join(", ");
+      const controls = overview.controls
+        .map((control) => `- ${control}`)
+        .join("\n");
+      const concepts = overview.concepts
+        .map((concept) => `- ${concept}`)
+        .join("\n");
+      const formulas = overview.formulas
+        .map((formula) => `- ${formula.label}: \`${formula.latex}\``)
+        .join("\n");
+
+      return `## [${chapter.name}](${SITE_URL}${chapter.link})
+
+${overview.intro}
+
+- Educational levels: ${levels.join(", ")}
+- Difficulty: ${difficulty}
+- Topics: ${topics}
+
+### Controls
+${controls}
+
+### Key concepts
+${concepts}
+
+### Governing formulas
+${formulas}`;
+    })
+    .join("\n\n");
+
+  return `# ${SITE_NAME} simulation context
+
+> Expanded educational context for the interactive simulations listed in [llms.txt](${SITE_URL}/llms.txt). This file is generated from the same catalogue and overview data rendered by the site.
+
+${simulations}
 `;
 }
 
@@ -171,6 +235,8 @@ function main() {
   console.log(`✅ feed.xml — ${sortedBlogs.length} entries`);
   writeBoth("llms.txt", buildLlmsTxt());
   console.log("✅ llms.txt");
+  writeBoth("llms-full.txt", buildLlmsFullTxt());
+  console.log("✅ llms-full.txt");
 }
 
 try {

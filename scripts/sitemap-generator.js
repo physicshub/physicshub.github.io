@@ -177,6 +177,7 @@ async function generateSitemap() {
     ...aiCrawlers.map((ua) => `User-agent: ${ua}\nAllow: /`),
     `Sitemap: ${hostname}/${sitemapName}.xml`,
     `# Atom feed: ${hostname}/feed.xml`,
+    `# LLM context: ${hostname}/llms.txt`,
   ]
     .join("\n\n")
     .trim();
