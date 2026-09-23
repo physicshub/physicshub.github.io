@@ -8,9 +8,11 @@ type Props = {
   id: string;
   /** Server-rendered learning content, slotted below the canvas by the layout. */
   overview?: ReactNode;
+  /** Server-rendered recommended reading, slotted at the bottom of the page. */
+  related?: ReactNode;
 };
 
-export default function SimulationWrapper({ id, overview }: Props) {
+export default function SimulationWrapper({ id, overview, related }: Props) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
@@ -18,11 +20,11 @@ export default function SimulationWrapper({ id, overview }: Props) {
   const DynamicSimulation = dynamic(() => import(`@/simulations/${id}`), {
     ssr: false,
     loading: () => <p>{t("Loading simulation...")}</p>,
-  }) as ComponentType<{ overview?: ReactNode }>;
+  }) as ComponentType<{ overview?: ReactNode; related?: ReactNode }>;
 
   return (
     <div className={isCompleted ? "notranslate" : ""}>
-      <DynamicSimulation overview={overview} />
+      <DynamicSimulation overview={overview} related={related} />
     </div>
   );
 }

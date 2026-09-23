@@ -1,14 +1,11 @@
 // app/components/SimulationLayout.jsx
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import useTranslation from "../hooks/useTranslation.ts";
 import { resetTime } from "../constants/Time.js";
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
 import TopSim from "./TopSim.tsx";
 import Controls from "./Controls.jsx";
-import TheoryRenderer from "./theory/TheoryRenderer.tsx";
-import chapters from "../data/chapters.js";
-import { allBlogs } from "../data/articles/index.js";
 
 export default function SimulationLayout({
   onReset,
@@ -18,16 +15,10 @@ export default function SimulationLayout({
   children,
   dynamicInputs,
   overview,
+  related,
 }) {
   const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
-
-  const theory = useMemo(() => {
-    const chapter = chapters.find((ch) => ch.link === simulation);
-    const slug = chapter?.relatedBlogSlug;
-
-    return slug && allBlogs[slug] ? allBlogs[slug].theory : { sections: [] };
-  }, [simulation]);
 
   // Reset time on simulation change
   useEffect(() => {
@@ -57,11 +48,10 @@ export default function SimulationLayout({
         </aside>
       </div>
 
-      {/* Concise, server-rendered summary — sits directly under the stage, above
-          the long theory article. */}
+      {/* Server-rendered slots: the concise summary sits directly under the
+          stage, the recommended-reading list closes the page. */}
       {overview}
-
-      <TheoryRenderer theory={theory} />
+      {related}
     </div>
   );
 }

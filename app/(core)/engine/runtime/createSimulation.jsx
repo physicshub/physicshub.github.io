@@ -99,7 +99,7 @@ export default function createSimulation(spec) {
 
   const { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper } = config;
 
-  return function Simulation({ overview } = {}) {
+  return function Simulation({ overview, related } = {}) {
     const location = usePathname();
     const storageKey = location.replaceAll(/[/#]/g, "");
 
@@ -274,6 +274,7 @@ export default function createSimulation(spec) {
         simulation={location}
         onLoad={handleLoad}
         overview={overview}
+        related={related}
         dynamicInputs={
           <DynamicInputs
             config={INPUT_FIELDS}

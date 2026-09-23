@@ -41,7 +41,7 @@
 @media (min-width: 1080px) {
   .simulation-stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 372px);
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
     align-items: start;
     gap: 1.25rem;
   }
@@ -557,8 +557,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 0.85rem;
-  width: 100%;
-  max-width: var(--sim-max-width);
+  width: calc(100% - 2 * var(--sim-gutter));
+  max-width: calc(var(--sim-max-width) - 2 * var(--sim-gutter));
   margin: 0.75rem auto 0;
   padding: 0.55rem clamp(0.85rem, 2vw, 1.15rem);
   border: 1px solid
@@ -602,14 +602,38 @@
   padding: 0.15rem 0.6rem;
 }
 
-/* --- Server-rendered learning content (between canvas and full theory) --- */
+/* --- Server-rendered learning content (under the stage) ---
+   Same width and gutters as the stage. From 1080px it reuses the stage's
+   two-column grid, so the aside lines up under the parameters panel. */
+
+.simulation-overview,
+.simulation-related {
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--sim-gutter));
+  max-width: calc(var(--sim-max-width) - 2 * var(--sim-gutter));
+  margin-inline: auto;
+  border-top: 1px solid var(--border-color);
+}
 
 .simulation-overview {
-  box-sizing: border-box;
-  max-width: 780px;
-  margin: 3rem auto 1rem;
-  padding: 2rem var(--sim-gutter) 0;
-  border-top: 1px solid var(--border-color);
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 1.25rem;
+}
+
+.simulation-overview__main,
+.simulation-overview__aside {
+  min-width: 0;
+}
+
+@media (min-width: 1080px) {
+  .simulation-overview {
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
+    align-items: start;
+  }
 }
 
 .simulation-overview__title {
@@ -622,6 +646,7 @@
 }
 
 .simulation-overview__intro {
+  max-width: 72ch;
   font-size: 1.02rem;
   line-height: 1.7;
   color: var(--text-color);
@@ -663,11 +688,14 @@
 }
 
 .simulation-overview__formulas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
   margin: 0;
 }
 
 .simulation-overview__formulas > div {
-  margin-bottom: 1rem;
+  min-width: 0;
   padding: 0.9rem 1rem;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -689,7 +717,7 @@
 }
 
 .simulation-overview__theory-link {
-  margin: 0;
+  margin: 0 0 2rem;
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -704,4 +732,52 @@
 
 .simulation-overview__theory-link a:hover {
   text-decoration: underline;
+}
+
+/* --- Recommended reading (bottom of the page) -------------------------------
+   Frame (width, gutters, top rule) comes from the shared rule with
+   `.simulation-overview` above. The cards are the shared `.chapter-card`
+   (components/Chapter.jsx), the same as the /blog index. */
+
+.simulation-related {
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+  padding-top: 2rem;
+}
+
+.simulation-related__header {
+  margin-bottom: 1.5rem;
+}
+
+.simulation-related__title {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--title-color);
+  margin: 0 0 0.4rem;
+}
+
+.simulation-related__lead {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.simulation-related__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .simulation-related__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .simulation-related__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

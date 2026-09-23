@@ -2,6 +2,7 @@
 import chapters from "@/app/(core)/data/chapters";
 import SimulationWrapper from "./_components/SimulationWrapper";
 import SimulationOverview from "./_components/SimulationOverview";
+import RelatedArticles from "./_components/RelatedArticles";
 import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
 import { blogsArray } from "@/app/(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
@@ -184,12 +185,12 @@ export default async function Page({ params }: Props) {
         </div>
       )}
 
-      {/* The concise overview is a server component passed as a slot so it
-          renders between the interactive stage and the full theory article,
-          not after it. */}
+      {/* Server components passed as slots: the concise overview renders right
+          under the interactive stage, the recommended reading closes the page. */}
       <SimulationWrapper
         id={id}
         overview={<SimulationOverview id={id} chapter={chapter} />}
+        related={<RelatedArticles chapter={chapter} />}
       />
     </div>
   );

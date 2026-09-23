@@ -6,6 +6,7 @@ import {
   faGraduationCap,
   faGaugeHigh,
   faBookOpen,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import Tag from "./Tag.jsx";
 import Link from "next/link.js";
@@ -40,8 +41,8 @@ function Chapter(props) {
     <section
       id={props.id}
       className={`chapter-card ${isBlog ? "chapter-card--blog" : ""} ${
-        isCompleted ? "notranslate" : ""
-      }`}
+        props.detailed ? "chapter-card--detailed" : ""
+      } ${isCompleted ? "notranslate" : ""}`}
     >
       {/* Stage */}
       <div
@@ -89,27 +90,7 @@ function Chapter(props) {
 
         <p>{t(props.desc)}</p>
 
-        {isBlog ? (
-          (() => {
-            // Blog entries carry a long tag array (topics + level + difficulty).
-            // Showing all of them turns the card into confetti — cap the card to
-            // the first few and roll the rest into a count.
-            const MAX_TAGS = 4;
-            const bodyTags = props.tags.slice(1);
-            const shown = bodyTags.slice(0, MAX_TAGS);
-            const overflow = bodyTags.length - shown.length;
-            return (
-              <div className="chapter-card-tags">
-                {shown.map((tag, idx) => (
-                  <Tag tag={tag} key={tag.id || idx} />
-                ))}
-                {overflow > 0 && (
-                  <span className="chapter-card-tags-more">+{overflow}</span>
-                )}
-              </div>
-            );
-          })()
-        ) : (
+        {(!isBlog || props.detailed) && (
           <div className="chapter-card-meta">
             {level && (
               <div
@@ -130,7 +111,7 @@ function Chapter(props) {
                 </span>
               </div>
             )}
-            {difficulty && (
+            {(!isBlog || props.difficulty) && difficulty && (
               <div className="chapter-card-metric">
                 <FontAwesomeIcon icon={faGaugeHigh} />
                 <span className="chapter-card-metric-label">
@@ -138,6 +119,17 @@ function Chapter(props) {
                 </span>
                 <span className="chapter-card-metric-value">
                   {t(difficulty.name)}
+                </span>
+              </div>
+            )}
+            {props.readingTime > 0 && (
+              <div className="chapter-card-metric">
+                <FontAwesomeIcon icon={faClock} />
+                <span className="chapter-card-metric-label">
+                  {t("Read time")}
+                </span>
+                <span className="chapter-card-metric-value">
+                  {props.readingTime} {t("min")}
                 </span>
               </div>
             )}
@@ -152,6 +144,27 @@ function Chapter(props) {
             )}
           </div>
         )}
+
+        {isBlog &&
+          (() => {
+            // Blog entries carry a long tag array (topics + level + difficulty).
+            // Showing all of them turns the card into confetti — cap the card to
+            // the first few and roll the rest into a count.
+            const MAX_TAGS = 4;
+            const bodyTags = props.tags.slice(1);
+            const shown = bodyTags.slice(0, MAX_TAGS);
+            const overflow = bodyTags.length - shown.length;
+            return (
+              <div className="chapter-card-tags">
+                {shown.map((tag, idx) => (
+                  <Tag tag={tag} key={tag.id || idx} />
+                ))}
+                {overflow > 0 && (
+                  <span className="chapter-card-tags-more">+{overflow}</span>
+                )}
+              </div>
+            );
+          })()}
 
         <Link href={isBlog ? `/blog/${props.slug}` : props.link}>
           {isBlog ? t("Go to blog") : t("Go to simulation")}

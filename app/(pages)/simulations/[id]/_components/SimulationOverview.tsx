@@ -55,52 +55,58 @@ export default function SimulationOverview({
 
   return (
     <section className="simulation-overview">
-      <h1 className="simulation-overview__title">{chapter.name}</h1>
-      <p className="simulation-overview__intro">{intro}</p>
+      <div className="simulation-overview__main">
+        <h1 className="simulation-overview__title">{chapter.name}</h1>
+        <p className="simulation-overview__intro">{intro}</p>
 
-      {controls.length > 0 && (
-        <div className="simulation-overview__block">
-          <h2>What you can change</h2>
-          <ul className="simulation-overview__inputs">
-            {controls.map((label) => (
-              <li key={label}>{label}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {formulas.length > 0 && (
+          <div className="simulation-overview__block">
+            <h2>Key formulas</h2>
+            <dl className="simulation-overview__formulas">
+              {formulas.map((f) => (
+                <div key={f.label}>
+                  <dt>{f.label}</dt>
+                  <dd
+                    dangerouslySetInnerHTML={{ __html: renderMath(f.latex) }}
+                  />
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+      </div>
 
-      {concepts.length > 0 && (
-        <div className="simulation-overview__block">
-          <h2>Key concepts</h2>
-          <ul className="simulation-overview__concepts">
-            {concepts.map((concept) => (
-              <li key={concept}>{concept}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className="simulation-overview__aside">
+        {controls.length > 0 && (
+          <div className="simulation-overview__block">
+            <h2>What you can change</h2>
+            <ul className="simulation-overview__inputs">
+              {controls.map((label) => (
+                <li key={label}>{label}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {formulas.length > 0 && (
-        <div className="simulation-overview__block">
-          <h2>Key formulas</h2>
-          <dl className="simulation-overview__formulas">
-            {formulas.map((f) => (
-              <div key={f.label}>
-                <dt>{f.label}</dt>
-                <dd dangerouslySetInnerHTML={{ __html: renderMath(f.latex) }} />
-              </div>
-            ))}
-          </dl>
-        </div>
-      )}
+        {concepts.length > 0 && (
+          <div className="simulation-overview__block">
+            <h2>Key concepts</h2>
+            <ul className="simulation-overview__concepts">
+              {concepts.map((concept) => (
+                <li key={concept}>{concept}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {relatedBlog && (
-        <p className="simulation-overview__theory-link">
-          <Link href={`/blog/${relatedBlog.slug}`}>
-            Read the full theory: {relatedBlog.name} →
-          </Link>
-        </p>
-      )}
+        {relatedBlog && (
+          <p className="simulation-overview__theory-link">
+            <Link href={`/blog/${relatedBlog.slug}`}>
+              Read the full theory: {relatedBlog.name} →
+            </Link>
+          </p>
+        )}
+      </div>
     </section>
   );
 }
