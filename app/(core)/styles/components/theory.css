@@ -63,14 +63,10 @@
   color: var(--text-primary);
 }
 
-/* The first heading of the article — or of any later section — sits flush:
-   no rule, no reclaimed space above it. */
-.theory-renderer .theory-section:first-child .theory-section-title:first-child,
-.theory-renderer
-  .theory-section
-  + .theory-section
-  > .theory-blocks
-  > .theory-section-title:first-child {
+/* Only the very first heading of the article sits flush — no rule, no reclaimed
+   space above it. A heading that opens a later section keeps its full H2
+   treatment (the section itself adds no margin, see the `:has()` rule above). */
+.theory-renderer .theory-section:first-child .theory-section-title:first-child {
   margin-top: 0;
   padding-top: 0;
   border-top: 0;

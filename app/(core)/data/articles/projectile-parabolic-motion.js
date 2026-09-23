@@ -4,7 +4,7 @@ export const projectileParabolicBlog = {
   id: "bb-007",
   slug: "projectile-parabolic-motion",
   name: "How does projectile motion work?",
-  desc: "Gravity pulls a projectile straight down while its sideways speed stays constant. Those two independent motions combine into a parabola — here is the maths, with an interactive launcher.",
+  desc: "Gravity pulls a projectile down while its sideways speed stays constant; together they trace a parabola. The equations, range and angle, with a launcher.",
   tags: [
     LEVELS.upperSecondary,
     DIFFICULTIES.core,

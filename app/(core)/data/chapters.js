@@ -96,6 +96,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     thumbnail: "/thumbnails/incline-plane.webp",
+    relatedBlogSlug: "inclined-plane-forces",
   },
   {
     id: 9,
@@ -107,6 +108,7 @@ const chapters = [
     difficulty: "extended",
     tags: [TAGS.DYNAMICS, TAGS.KINEMATICS, TAGS.VECTORS],
     thumbnail: "/thumbnails/circular.webp",
+    relatedBlogSlug: "circular-motion-centripetal-force",
   },
   {
     id: 10,
@@ -141,6 +143,7 @@ const chapters = [
     difficulty: "advanced",
     tags: [TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
     thumbnail: "/thumbnails/double-pendulum.webp",
+    relatedBlogSlug: "double-pendulum-chaos",
   },
   {
     id: 13,
@@ -152,6 +155,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.COLLISION, TAGS.VECTORS],
     thumbnail: "/thumbnails/1d-collision.webp",
+    relatedBlogSlug: "elastic-inelastic-collisions",
   },
   {
     id: 14,
@@ -185,6 +189,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.MATH, TAGS.TRIGONOMETRY],
     thumbnail: "/thumbnails/trigonometric-circle.webp",
+    relatedBlogSlug: "unit-circle-trigonometry",
   },
 ];
 

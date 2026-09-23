@@ -9,7 +9,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const operationVectorsBlog = {
   slug: "comprehensive-guide-to-vector-operations",
   name: "Vectors: components, addition, dot and cross products",
-  desc: "A vector carries a magnitude and a direction. Split it into components and the algebra falls out: addition, scaling, the dot product for angles, the cross product for area and torque.",
+  desc: "A vector has magnitude and direction. Split it into components and addition, scaling, dot and cross products all become simple arithmetic.",
   tags: [
     LEVELS.upperSecondary,
     DIFFICULTIES.core,

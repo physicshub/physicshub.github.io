@@ -3,7 +3,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const class12PhysicsBlog = {
   slug: "class-12-physics-complete-guide",
   name: "Class 12 Physics Complete Guide – All Chapters with Formulas & Examples",
-  desc: "Master Class 12 Physics (CBSE 2025–26) with clear explanations, key formulas, derivations, and solved examples — Electrostatics, Magnetism, Optics, Modern Physics and more.",
+  desc: "Class 12 Physics (CBSE 2025–26) chapter by chapter: clear explanations, key formulas, derivations and exam strategy from electrostatics to semiconductors.",
   tags: [
     LEVELS.upperSecondary,
     DIFFICULTIES.extended,
@@ -14,6 +14,7 @@ export const class12PhysicsBlog = {
     TAGS.WAVES,
   ],
   date: "09/03/2026",
+  updated: "24/09/2026",
   theory: {
     title: "Class 12 Physics: Master Every Chapter for Board Exams",
     sections: [
@@ -30,6 +31,23 @@ export const class12PhysicsBlog = {
           {
             type: "paragraph",
             text: "This guide walks through every chapter in a way that actually makes sense—starting with the concept, building the mathematics, and giving you the key formulas, typical exam questions, and tricks that will help you score full marks. Whether you're studying for the first time or revising the night before an exam, this is your complete reference.",
+          },
+          {
+            type: "callout",
+            calloutType: "key",
+            title: "Key fact",
+            text: "Class 12 Physics is built on one idea — electric and magnetic fields. It runs from static charges (Unit I), through circuits, magnetism and induction, to light as an electromagnetic wave (Units V–VI), and ends with how atoms and semiconductors behave (Units VII–IX).",
+          },
+          {
+            type: "takeaways",
+            title: "What this guide covers",
+            items: [
+              "**Units I–IV:** charges, fields and potential; circuits and Kirchhoff's laws; moving charges and magnetism; induction and AC.",
+              "**Units V–VI:** electromagnetic waves and optics (ray and wave) — light as a wave.",
+              "**Units VII–IX:** photoelectric effect and matter waves, atoms and nuclei, semiconductor devices — the quantum side.",
+              "Each unit opens with a one-paragraph summary, then the concepts, formulas and worked examples; the last section is an exam strategy and formula reference.",
+              "Jump straight to a unit from the contents list; every unit can be read on its own.",
+            ],
           },
           {
             type: "table",
@@ -1332,6 +1350,46 @@ export const class12PhysicsBlog = {
             title: "Important Physical Constants to Memorise",
             content:
               "Speed of light: c = 3 × 10⁸ m/s | Planck's constant: h = 6.626 × 10⁻³⁴ J s | Electron charge: e = 1.6 × 10⁻¹⁹ C | Electron mass: mₑ = 9.1 × 10⁻³¹ kg | Proton mass: mₚ = 1.67 × 10⁻²⁷ kg | Permittivity of free space: ε₀ = 8.85 × 10⁻¹² C² N⁻¹ m⁻² | Permeability of free space: μ₀ = 4π × 10⁻⁷ T m A⁻¹ | Boltzmann constant: k_B = 1.38 × 10⁻²³ J/K | Avogadro number: Nₐ = 6.023 × 10²³ mol⁻¹ | 1 eV = 1.6 × 10⁻¹⁹ J | 1 u = 1.66 × 10⁻²⁷ kg = 931.5 MeV/c²",
+          },
+          {
+            type: "faq",
+            title: "Frequently asked questions",
+            items: [
+              {
+                q: "How many units and chapters are in Class 12 Physics?",
+                a: "The CBSE syllabus followed in this guide has 9 units covering 14 chapters, from Electric Charges and Fields to Semiconductor Devices. The table at the top of the guide maps each unit to its chapters.",
+              },
+              {
+                q: "Where do I find the important derivations?",
+                a: "In the last section, **Exam Strategy, High-Weightage Derivations & Formula Quick-Reference**, which lists the must-know derivations for the 5-mark questions and a formula reference for last-minute revision.",
+              },
+              {
+                q: "Do I need calculus for Class 12 Physics?",
+                a: "Some derivations use it — Gauss's law, induction and the photoelectric equation are easier with it — but most numerical problems need algebra, trigonometry and vectors. The guide states each formula so you can use it even before you can derive it.",
+              },
+              {
+                q: "In what order should I study the units?",
+                a: "Follow the syllabus order: electrostatics and current electricity first, because magnetism, induction and electromagnetic waves build directly on them. Optics and the modern-physics units (VII–IX) can then be taken in any order.",
+              },
+              {
+                q: "How should I revise before the exam?",
+                a: "Write the derivations out by hand instead of just rereading them, solve the NCERT examples and exercises, and do previous-year papers under timed conditions — the revision plan at the end of the guide breaks this into weeks.",
+              },
+            ],
+          },
+          {
+            type: "sectionTitle",
+            text: "Keep exploring",
+          },
+          {
+            type: "list",
+            ordered: false,
+            items: [
+              "Start from the big picture: [What is physics?](/blog/what-is-physics).",
+              "The cross product behind the magnetic force: [Vectors: components, addition, dot and cross products](/blog/comprehensive-guide-to-vector-operations).",
+              "Phasors and waves start on the unit circle: [Trigonometric Circle simulation](/simulations/TrigonometricCircle).",
+              "Another oscillating system: [How does a spring work?](/blog/spring-connection).",
+            ],
           },
         ],
       },

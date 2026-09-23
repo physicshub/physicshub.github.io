@@ -4,7 +4,7 @@ export const ballAcceleratingBlog = {
   id: "bb-003",
   slug: "ball-uniformly-accelerated-motion",
   name: "How does a ball accelerate toward a target?",
-  desc: "Acceleration is how fast velocity changes. Point a constant acceleration at a target and the ball speeds up, overshoots, then loops back — here is why, with a simulation to try.",
+  desc: "Acceleration is how fast velocity changes. Aim a constant acceleration at a target and the ball speeds up, overshoots and loops back — here is why.",
   tags: [
     LEVELS.lowerSecondary,
     DIFFICULTIES.core,

@@ -10,16 +10,32 @@ import { class12PhysicsBlog } from "./class-12-physics.js";
 import { whatIsPhysicsBlog } from "./what-is-physics.js";
 import { threeBodyProblemBlog } from "./physics-behind-three-body-problem.js";
 import { piCollisionBlog } from "./pi-from-block-collisions-explained.js";
+import { codingBouncingBallBlog } from "./coding-a-bouncing-ball-simulation.js";
+import { simulatingAirResistanceBlog } from "./simulating-air-resistance-in-code.js";
+import { simulatingPendulumBlog } from "./simulating-a-pendulum-in-code.js";
+import { inclinedPlaneBlog } from "./inclined-plane-forces.js";
+import { circularMotionBlog } from "./circular-motion-centripetal-force.js";
+import { collisionsBlog } from "./elastic-inelastic-collisions.js";
+import { unitCircleBlog } from "./unit-circle-trigonometry.js";
+import { doublePendulumBlog } from "./double-pendulum-chaos.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
   [class12PhysicsBlog.slug]: class12PhysicsBlog,
   [bouncingBallBlog.slug]: bouncingBallBlog,
+  [codingBouncingBallBlog.slug]: codingBouncingBallBlog,
+  [collisionsBlog.slug]: collisionsBlog,
   [operationVectorsBlog.slug]: operationVectorsBlog,
+  [unitCircleBlog.slug]: unitCircleBlog,
   [ballAcceleratingBlog.slug]: ballAcceleratingBlog,
   [ballFreeFallBlog.slug]: ballFreeFallBlog,
+  [simulatingAirResistanceBlog.slug]: simulatingAirResistanceBlog,
+  [inclinedPlaneBlog.slug]: inclinedPlaneBlog,
+  [circularMotionBlog.slug]: circularMotionBlog,
   [springConnectionBlog.slug]: springConnectionBlog,
   [pendulumBlog.slug]: pendulumBlog,
+  [simulatingPendulumBlog.slug]: simulatingPendulumBlog,
+  [doublePendulumBlog.slug]: doublePendulumBlog,
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
   [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
   [piCollisionBlog.slug]: piCollisionBlog,

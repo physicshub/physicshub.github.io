@@ -4,7 +4,7 @@ export const springConnectionBlog = {
   id: "bb-005",
   slug: "spring-connection",
   name: "How does a spring work?",
-  desc: "A spring pushes back in proportion to how far you stretch it — that is Hooke's law, and it is exactly what makes a mass on a spring oscillate. Here is the physics, with a simulation.",
+  desc: "A spring pushes back in proportion to how far you stretch it (Hooke's law) — which is why a mass on a spring oscillates. The physics, with a simulation.",
   tags: [
     LEVELS.upperSecondary,
     DIFFICULTIES.extended,

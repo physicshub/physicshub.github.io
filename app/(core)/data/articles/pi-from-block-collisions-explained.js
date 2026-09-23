@@ -3,7 +3,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const piCollisionBlog = {
   slug: "pi-from-block-collisions-explained",
   name: "How Two Sliding Blocks Compute π — The Most Surprising Result in Physics",
-  desc: "Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics behind it, from the first collision to the geometric proof.",
+  desc: "Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics, from first collision to proof.",
   tags: [
     LEVELS.undergraduate,
     DIFFICULTIES.extended,

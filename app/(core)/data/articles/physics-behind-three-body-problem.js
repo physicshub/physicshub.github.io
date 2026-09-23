@@ -3,7 +3,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const threeBodyProblemBlog = {
   slug: "physics-behind-three-body-problem",
   name: "The Three-Body Problem: The Equation That Broke Physics",
-  desc: "Two bodies orbiting under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right and wrong.",
+  desc: "Two bodies under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right.",
   tags: [
     LEVELS.undergraduate,
     DIFFICULTIES.advanced,
