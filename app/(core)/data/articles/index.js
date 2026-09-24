@@ -18,20 +18,30 @@ import { circularMotionBlog } from "./circular-motion-centripetal-force.js";
 import { collisionsBlog } from "./elastic-inelastic-collisions.js";
 import { unitCircleBlog } from "./unit-circle-trigonometry.js";
 import { doublePendulumBlog } from "./double-pendulum-chaos.js";
+import { skyBlueBlog } from "./why-is-the-sky-blue.js";
+import { airplanesFlyBlog } from "./how-do-airplanes-fly.js";
+import { lightningThunderBlog } from "./why-do-we-see-lightning-before-thunder.js";
+import { astronautsFloatBlog } from "./why-do-astronauts-float-in-space.js";
+import { metalColderThanWoodBlog } from "./why-does-metal-feel-colder-than-wood.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
   [class12PhysicsBlog.slug]: class12PhysicsBlog,
+  [skyBlueBlog.slug]: skyBlueBlog,
+  [metalColderThanWoodBlog.slug]: metalColderThanWoodBlog,
   [bouncingBallBlog.slug]: bouncingBallBlog,
   [codingBouncingBallBlog.slug]: codingBouncingBallBlog,
   [collisionsBlog.slug]: collisionsBlog,
   [operationVectorsBlog.slug]: operationVectorsBlog,
   [unitCircleBlog.slug]: unitCircleBlog,
   [ballAcceleratingBlog.slug]: ballAcceleratingBlog,
+  [lightningThunderBlog.slug]: lightningThunderBlog,
   [ballFreeFallBlog.slug]: ballFreeFallBlog,
   [simulatingAirResistanceBlog.slug]: simulatingAirResistanceBlog,
+  [airplanesFlyBlog.slug]: airplanesFlyBlog,
   [inclinedPlaneBlog.slug]: inclinedPlaneBlog,
   [circularMotionBlog.slug]: circularMotionBlog,
+  [astronautsFloatBlog.slug]: astronautsFloatBlog,
   [springConnectionBlog.slug]: springConnectionBlog,
   [pendulumBlog.slug]: pendulumBlog,
   [simulatingPendulumBlog.slug]: simulatingPendulumBlog,

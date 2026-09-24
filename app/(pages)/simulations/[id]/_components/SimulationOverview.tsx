@@ -1,7 +1,9 @@
-// Server-rendered learning content shown above the interactive canvas. This is
-// the crawlable, citable part of a /simulations/<id> page — the canvas itself
-// is loaded client-only (ssr: false), so without this block the page has no
-// body text at all.
+// Server-rendered learning content shown right under the interactive stage.
+// This is the crawlable, citable part of a /simulations/<id> page — the canvas
+// itself is loaded client-only (ssr: false), so without this block the page has
+// no body text at all. SimulationWrapper slots it beside the client-only
+// simulation (not inside it), so it is in the initial HTML and its space is
+// already reserved when the stage mounts.
 import katex from "katex";
 import Link from "next/link";
 import simulationOverviews from "@/app/(core)/data/simulationOverviews.js";

@@ -1,6 +1,7 @@
 // app/(pages)/simulations/[id]/page.tsx
 import chapters from "@/app/(core)/data/chapters";
 import SimulationWrapper from "./_components/SimulationWrapper";
+import type { SkeletonField } from "./_components/SimulationSkeleton";
 import SimulationOverview from "./_components/SimulationOverview";
 import RelatedArticles from "./_components/RelatedArticles";
 import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
@@ -74,6 +75,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [chapter.thumbnail],
     },
   };
+}
+
+// The parameters panel is client-rendered, so the loading skeleton has to
+// reserve its height up front. Mirror DynamicInputs: a number field with a full
+// min/max range is a slider (a tall field); everything else is compact.
+async function getSkeletonFields(id: string): Promise<SkeletonField[]> {
+  try {
+    const { INPUT_FIELDS } = await import(`@/app/(core)/data/configs/${id}.js`);
+    return (INPUT_FIELDS as { type: string; min?: number; max?: number }[]).map(
+      (f) =>
+        f.type === "number" &&
+        typeof f.min === "number" &&
+        typeof f.max === "number"
+          ? "slider"
+          : "compact"
+    );
+  } catch {
+    return [];
+  }
 }
 
 export default async function Page({ params }: Props) {
@@ -189,6 +209,7 @@ export default async function Page({ params }: Props) {
           under the interactive stage, the recommended reading closes the page. */}
       <SimulationWrapper
         id={id}
+        fields={await getSkeletonFields(id)}
         overview={<SimulationOverview id={id} chapter={chapter} />}
         related={<RelatedArticles chapter={chapter} />}
       />

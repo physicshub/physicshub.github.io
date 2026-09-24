@@ -14,8 +14,6 @@ export default function SimulationLayout({
   onLoad,
   children,
   dynamicInputs,
-  overview,
-  related,
 }) {
   const { meta } = useTranslation();
   const isCompleted = meta?.completed || false;
@@ -47,11 +45,6 @@ export default function SimulationLayout({
           {dynamicInputs}
         </aside>
       </div>
-
-      {/* Server-rendered slots: the concise summary sits directly under the
-          stage, the recommended-reading list closes the page. */}
-      {overview}
-      {related}
     </div>
   );
 }

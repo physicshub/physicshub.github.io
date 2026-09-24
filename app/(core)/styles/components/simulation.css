@@ -153,17 +153,27 @@
 }
 
 @media (max-width: 1079px) {
-  /* No stage grid below 1080; the toast would overlap the canvas, so keep it
-     in flow and let it wrap under the bar instead. */
-  .top-nav-sim {
-    flex-wrap: wrap;
-  }
-
+  /* No side panel below 1080, so the toast spans the bar's full width. It
+     stays out of flow at every width: it appears and disappears without ever
+     moving the content underneath (that would be layout shift). */
   .top-nav-sim-filler {
-    position: static;
-    width: 100%;
-    order: 3;
-    margin-top: 0.75rem;
+    right: var(--sim-gutter);
+  }
+}
+
+/* The bar's narrow-screen form is pure CSS (never a JS breakpoint), so the
+   server-rendered skeleton and the hydrated bar have identical geometry. */
+@media (min-width: 768px) {
+  .top-nav-sim-inner {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 767px) {
+  .top-nav-sim-back-to-home-wrapper,
+  .top-nav-sim-filler,
+  .back-to-home__text--responsive {
+    display: none;
   }
 }
 
@@ -779,5 +789,45 @@
 @media (min-width: 1080px) {
   .simulation-related__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* --- Loading skeleton (server-rendered stand-in for the client-only stage) --
+   Reuses the real layout classes; only the parts whose height depends on
+   client-rendered content need reserving here. */
+
+.simulation-skeleton__icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+/* Transport row + utility groups, as tall as the wrapped live controls. */
+.simulation-skeleton__controls {
+  min-height: 9.5rem;
+}
+
+.simulation-skeleton__field--slider {
+  min-height: 6.4rem;
+}
+
+.simulation-skeleton__field--compact {
+  min-height: 4.4rem;
+}
+
+.simulation-skeleton__pulse {
+  animation: simulation-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* Opacity only: it never touches layout. */
+@keyframes simulation-skeleton-pulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simulation-skeleton__pulse {
+    animation: none;
   }
 }
