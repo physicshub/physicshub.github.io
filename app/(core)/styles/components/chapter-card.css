@@ -244,8 +244,9 @@
 
 /* --- Body ------------------------------------------------------------------- */
 
+/* No `position` here on purpose: the CTA's stretched-link ::after must resolve
+   against .chapter-card, not the body, or the thumbnail stays unclickable. */
 .chapter-card-body {
-  position: relative;
   padding: 18px;
   display: flex;
   flex-direction: column;

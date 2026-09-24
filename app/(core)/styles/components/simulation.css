@@ -25,10 +25,17 @@
   gap: 1rem;
 }
 
+/* The stage height lives in one place so the canvas and, when it docks beside
+   it, the side panel are always exactly as tall as each other. */
+.simulation-stage {
+  --sim-stage-height: min(64vh, 560px);
+  --sim-stage-min-height: 360px;
+}
+
 .simulation-stage__canvas {
   position: relative; /* offset parent for canvas overlays (wind, banners) */
-  height: min(64vh, 560px);
-  min-height: 360px;
+  height: var(--sim-stage-height);
+  min-height: var(--sim-stage-min-height);
 }
 
 .simulation-stage__panel {
@@ -46,19 +53,26 @@
     gap: 1.25rem;
   }
 
-  .simulation-stage__canvas {
-    height: min(78vh, 780px);
-    min-height: 460px;
+  .simulation-stage {
+    --sim-stage-height: min(78vh, 780px);
+    --sim-stage-min-height: 460px;
   }
 
-  /* Keeps the controls and parameters in view while the sketch runs. */
+  /* Docked beside the canvas: same height as the stage, top and bottom edges
+     aligned. Parameters that don't fit scroll inside the panel; the last block
+     (the parameters card) grows to fill any spare height so the bottom edge
+     lines up with the canvas frame too. */
   .simulation-stage__panel {
-    position: sticky;
-    top: 5.25rem;
-    max-height: calc(100vh - 6.5rem);
+    height: var(--sim-stage-height);
+    min-height: var(--sim-stage-min-height);
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-right: 2px;
+  }
+
+  .simulation-stage__panel > .inputs-container {
+    flex: 1 1 auto;
+    align-content: start;
   }
 }
 

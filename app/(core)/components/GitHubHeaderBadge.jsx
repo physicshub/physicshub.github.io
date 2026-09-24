@@ -1,13 +1,12 @@
 "use client";
 
 import useTranslation from "../hooks/useTranslation.ts";
+import useRepoStats from "../hooks/useRepoStats.ts";
 import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const REPO_URL = "https://github.com/physicshub/physicshub.github.io";
-const REPO_API = "https://api.github.com/repos/physicshub/physicshub.github.io";
-const CONTRIBUTORS_API = `${REPO_API}/contributors?per_page=100`;
 
 // Height of one carousel label — must match --gh-badge-line in
 // styles/components/github-header-badge.css.
@@ -15,47 +14,9 @@ const LINE_HEIGHT_REM = 1.15;
 const ROTATE_INTERVAL_MS = 2600;
 
 export default function GitHubHeaderBadge({ mode }) {
-  const [stats, setStats] = useState({ stars: null, contributors: null });
+  const stats = useRepoStats();
   const [messageIndex, setMessageIndex] = useState(0);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadStats() {
-      try {
-        const [repoRes, contributorsRes] = await Promise.all([
-          fetch(REPO_API),
-          fetch(CONTRIBUTORS_API),
-        ]);
-
-        const repoData = await repoRes.json();
-        const contributorsData = await contributorsRes.json();
-
-        if (cancelled) return;
-
-        setStats({
-          stars:
-            typeof repoData?.stargazers_count === "number"
-              ? repoData.stargazers_count
-              : null,
-          contributors: Array.isArray(contributorsData)
-            ? contributorsData.length
-            : null,
-        });
-      } catch {
-        if (!cancelled) {
-          setStats({ stars: null, contributors: null });
-        }
-      }
-    }
-
-    loadStats();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const messages = useMemo(
     () => [

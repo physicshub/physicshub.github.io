@@ -3,9 +3,18 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useTranslation from "../hooks/useTranslation.ts";
+import useRepoStats from "../hooks/useRepoStats.ts";
+import {
+  ContributorsGridSkeleton,
+  FALLBACK_CONTRIBUTOR_COUNT,
+} from "./ContributorsSectionSkeleton.tsx";
 
 export default function ContributorsSection() {
   const [contributors, setContributors] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  // The header badge already fetched the head-count, so the title and the
+  // placeholder grid can be sized before this list arrives.
+  const { contributors: knownCount } = useRepoStats();
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
@@ -31,8 +40,13 @@ export default function ContributorsSection() {
       return all;
     }
 
-    getAllContributors().then(setContributors);
+    getAllContributors()
+      .then(setContributors)
+      .catch(() => {})
+      .finally(() => setLoaded(true));
   }, []);
+
+  const total = contributors.length || knownCount;
 
   return (
     <div
@@ -40,10 +54,14 @@ export default function ContributorsSection() {
       id="contributors"
     >
       <h2 className="title text-2xl">
-        {t("Project Contributors")}{" "}
-        {`(${contributors.length ? contributors.length : "-"})`}
+        {t("Project Contributors")} {`(${total ? total : "-"})`}
       </h2>
       <div className="contributors-grid">
+        {!loaded && (
+          <ContributorsGridSkeleton
+            count={knownCount ?? FALLBACK_CONTRIBUTOR_COUNT}
+          />
+        )}
         {contributors.map((c) => (
           <div key={c.id} className="contributor-card">
             <a href={c.html_url} target="_blank" rel="noopener noreferrer">
