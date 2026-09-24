@@ -114,50 +114,32 @@
   outline: none;
 }
 
-/* --- Sign-in dialog (components/account/SignInDialog.tsx) ----------------- */
-
-.signin {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  max-width: 26rem;
-}
+/* --- Sign-in dialog (components/account/SignInDialog.tsx) -----------------
+   Built from the popup primitives in popup.css; only the layout that is
+   specific to sign-in lives here. */
 
 .signin__providers {
   display: grid;
   gap: 0.5rem;
 }
 
-.signin__provider {
-  justify-content: center;
-  gap: 0.5rem;
+.signin__providers .popup__action {
+  width: 100%;
 }
 
-.signin__divider {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.signin__privacy {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+}
+
+.community-presets__error,
+.account-card__error {
   margin: 0;
-  font-size: 0.78rem;
-  color: var(--subtitle-color);
+  color: var(--error-color);
+  font-size: 0.85rem;
 }
 
-.signin__divider::before,
-.signin__divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--border-color);
-}
-
-.signin__email {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.signin__email input,
-.preset-publish__field input,
-.preset-publish__field textarea,
 .account-card__row input {
   flex: 1;
   min-width: 0;
@@ -169,41 +151,9 @@
   font: inherit;
 }
 
-.signin__email input:focus-visible,
-.preset-publish__field input:focus-visible,
-.preset-publish__field textarea:focus-visible,
 .account-card__row input:focus-visible {
   border-color: var(--accent-color);
   outline: none;
-}
-
-.signin__sent {
-  margin: 0;
-  padding: 0.75rem;
-  border-radius: var(--radius);
-  background: var(--bg-success);
-  color: var(--text-color);
-  font-size: 0.88rem;
-}
-
-.signin__error,
-.preset-publish__error,
-.community-presets__error,
-.account-card__error {
-  margin: 0;
-  color: var(--error-color);
-  font-size: 0.85rem;
-}
-
-.signin__privacy {
-  margin: 0;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--subtitle-color);
-}
-
-.signin__privacy a {
-  color: var(--accent-color);
 }
 
 /* --- Community presets (simulations/[id]/_components/CommunityPresets) -----
@@ -486,48 +436,6 @@
   margin: 0;
   color: var(--subtitle-color);
   font-size: 0.8rem;
-}
-
-/* --- Publish dialog ----------------------------------------------------------- */
-
-.preset-publish {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  max-width: 32rem;
-}
-
-.preset-publish__label {
-  margin: 0 0 0.4rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--subtitle-color);
-}
-
-.preset-publish__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.88rem;
-  color: var(--title-color);
-}
-
-.preset-publish__field textarea {
-  resize: vertical;
-}
-
-.preset-publish__count {
-  align-self: flex-end;
-  color: var(--subtitle-color);
-  font-size: 0.72rem;
-}
-
-.preset-publish__note,
-.preset-publish__empty {
-  margin: 0;
-  color: var(--subtitle-color);
-  font-size: 0.8rem;
-  line-height: 1.5;
 }
 
 /* --- /account ------------------------------------------------------------------- */

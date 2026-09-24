@@ -5,6 +5,13 @@
 // published.
 
 import { useState, type FormEvent } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleExclamation,
+  faCircleInfo,
+  faPaperPlane,
+  faShareNodes,
+} from "@fortawesome/free-solid-svg-icons";
 import Popup from "@/app/(core)/components/Popup";
 import useTranslation from "@/app/(core)/hooks/useTranslation";
 import {
@@ -16,6 +23,8 @@ import {
 import { notifyPresetsChanged } from "@/app/(core)/utils/simulationEvents.js";
 import PresetChanges from "./PresetChanges";
 import type { PresetChange } from "./presetFormat";
+
+const FORM_ID = "preset-publish-form";
 
 type Props = {
   open: boolean;
@@ -72,32 +81,47 @@ export default function PublishPresetDialog({
     <Popup
       isOpen={open}
       onClose={close}
+      icon={faShareNodes}
       popupContent={{
         title: "Share your setup",
         description:
           "Publish the parameters on the simulation right now so others can try them.",
+        buttons: nothingChanged
+          ? [{ label: "Got it", onClick: close, type: "primary" }]
+          : [
+              { label: "Cancel", onClick: close },
+              {
+                label: busy ? "Publishing…" : "Publish preset",
+                icon: faPaperPlane,
+                type: "primary",
+                form: FORM_ID,
+                disabled: busy || title.trim().length < 3,
+              },
+            ],
       }}
     >
       {nothingChanged ? (
-        <p className="preset-publish__empty">
-          {inputs
-            ? t(
-                "These are the default parameters. Change at least one value on the simulation, then share it."
-              )
-            : t("The simulation is still loading — try again in a moment.")}
+        <p className="popup-alert popup-alert--info">
+          <FontAwesomeIcon icon={faCircleInfo} />
+          <span>
+            {inputs
+              ? t(
+                  "These are the default parameters. Change at least one value on the simulation, then share it."
+                )
+              : t("The simulation is still loading — try again in a moment.")}
+          </span>
         </p>
       ) : (
-        <form className="preset-publish" onSubmit={submit}>
-          <div className="preset-publish__summary">
-            <p className="preset-publish__label">
-              {t("Parameters you changed")}
-            </p>
+        <form id={FORM_ID} className="popup-stack" onSubmit={submit}>
+          <div className="popup-field">
+            <p className="popup-label">{t("Parameters you changed")}</p>
             <PresetChanges changes={changes} />
           </div>
 
-          <label className="preset-publish__field">
-            <span>{t("Title")}</span>
+          <label className="popup-field">
+            <span className="popup-field__label">{t("Title")}</span>
             <input
+              className="popup-input"
               type="text"
               required
               minLength={3}
@@ -108,11 +132,18 @@ export default function PublishPresetDialog({
             />
           </label>
 
-          <label className="preset-publish__field">
-            <span>
-              {t("What should people notice?")} <small>({t("optional")})</small>
+          <label className="popup-field">
+            <span className="popup-field__head">
+              <span className="popup-field__label">
+                {t("What should people notice?")}
+                <span className="popup-field__optional">({t("optional")})</span>
+              </span>
+              <span className="popup-field__count">
+                {description.length}/{PRESET_DESCRIPTION_MAX}
+              </span>
             </span>
             <textarea
+              className="popup-input"
               rows={4}
               maxLength={PRESET_DESCRIPTION_MAX}
               placeholder={t(
@@ -121,30 +152,20 @@ export default function PublishPresetDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <small className="preset-publish__count">
-              {description.length}/{PRESET_DESCRIPTION_MAX}
-            </small>
           </label>
 
           {error && (
-            <p className="preset-publish__error" role="alert">
-              {t(error)}
+            <p className="popup-alert popup-alert--error" role="alert">
+              <FontAwesomeIcon icon={faCircleExclamation} />
+              <span>{t(error)}</span>
             </p>
           )}
 
-          <p className="preset-publish__note">
+          <p className="popup-note">
             {t(
               "Published presets are public and show your nickname. Keep it about physics: presets reported by several people are hidden automatically."
             )}
           </p>
-
-          <button
-            type="submit"
-            className="ph-btn ph-btn--primary"
-            disabled={busy || title.trim().length < 3}
-          >
-            {busy ? t("Publishing…") : t("Publish preset")}
-          </button>
         </form>
       )}
     </Popup>

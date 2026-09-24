@@ -109,14 +109,13 @@ export default function RootLayout({
   };
 
   return (
-    <FeedbackProvider>
-      <html lang="en" dir="ltr" data-scroll-behavior="smooth">
-        <body suppressHydrationWarning>
-          {/* Theme + embed-mode initialization — runs inline before paint to
+    <html lang="en" dir="ltr" data-scroll-behavior="smooth">
+      <body suppressHydrationWarning>
+        {/* Theme + embed-mode initialization — runs inline before paint to
               avoid flash. `?embed=1` hides the site chrome (simulation.css). */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
                 (function() {
                   try {
                     if (new URLSearchParams(location.search).get('embed') === '1') {
@@ -134,46 +133,50 @@ export default function RootLayout({
                   } catch(e) {}
                 })();
               `,
-            }}
-          />
+          }}
+        />
 
-          {/* JSON-LD structured data */}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          />
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
 
-          {/* Microsoft Clarity */}
-          <Script id="microsoft-clarity" strategy="afterInteractive">
-            {`
+        {/* Microsoft Clarity */}
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`
               (function(c,l,a,r,i,t,y){
                   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
               })(window, document, "clarity", "script", "xpg8g0yoq0");
             `}
-          </Script>
+        </Script>
 
-          {/* Google Analytics */}
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
-            strategy="afterInteractive"
-          />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-ELZTKTE86N"
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-ELZTKTE86N');
             `}
-          </Script>
+        </Script>
 
+        {/* Inside <body>, not around <html>: React owns <html>/<body> as
+            singletons, and a portal committed from a component outside them
+            (the feedback Popup) is swept out of <body> on first open. */}
+        <FeedbackProvider>
           <Layout showStars={true} showGradient={true}>
             {children}
           </Layout>
-        </body>
-      </html>
-    </FeedbackProvider>
+        </FeedbackProvider>
+      </body>
+    </html>
   );
 }
 

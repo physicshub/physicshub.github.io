@@ -118,6 +118,8 @@ Bodies those elements position themselves are marked `kinematic: true`, which te
 
 **Catalogue cards.** `Chapter` makes the whole card one click target with a stretched link: the CTA's `::after` covers `.chapter-card`. Don't give `.chapter-card-body` (or any wrapper between the card and the CTA) a `position`, or the overlay shrinks to that wrapper and the thumbnail stops being clickable.
 
+**Dialogs.** `components/Popup.tsx` is the site's only modal (feedback, share link, download, sign-in, publish preset, landing CTAs) — don't build another. Props: `isOpen`, `onClose`, `popupContent: { title, description?, buttons? }`, optional `icon` (accent badge by the title) and `size` (`"sm"` 26rem / `"md"` 32rem); `children` go in a body that scrolls on its own while header and footer stay put. A footer button can be a link (`href`) or submit a form in the body (`form: "<form id>"`). It handles Escape, backdrop click, focus trap and restore, and scroll lock, and docks to the bottom as a sheet under 640px. Build dialog content from the primitives in `styles/components/popup.css` — `.popup-stack`, `.popup-field` (+ `__label`/`__optional`/`__count`), `.popup-input`, `.popup-inline`, `.popup-label`, `.popup-note`, `.popup-divider`, `.popup-alert--error|success|info` — rather than per-dialog form CSS.
+
 ### Conventions that still hold
 
 - **Coordinates**: all physics is in **meters, Y-up, origin bottom-left**. Conversion to screen space (Y-down, pixels) happens only at render time, through `constants/Utils.js` (`toPixels`/`toMeters`/`physicsToScreen`, `SCALE` from `constants/Config.js`) or `engine/render/Shapes.js`. `Utils.js` holds a module-global `CANVAS_HEIGHT` set by `setCanvasHeight()`.

@@ -7,7 +7,11 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleExclamation,
+  faEnvelopeCircleCheck,
+  faUserAstronaut,
+} from "@fortawesome/free-solid-svg-icons";
 import Popup from "../Popup";
 import { OAUTH_PROVIDERS } from "../../lib/supabase";
 import useTranslation from "../../hooks/useTranslation";
@@ -54,6 +58,8 @@ export default function SignInDialog() {
     <Popup
       isOpen={signInOpen}
       onClose={close}
+      size="sm"
+      icon={faUserAstronaut}
       popupContent={{
         title: "Sign in to PhysicsHub",
         description:
@@ -61,12 +67,12 @@ export default function SignInDialog() {
       }}
     >
       {/* Masked from Clarity session recordings: the email being typed. */}
-      <div className="signin" data-clarity-mask="True">
+      <div className="popup-stack signin" data-clarity-mask="True">
         <div className="signin__providers">
           {OAUTH_PROVIDERS.includes("github") && (
             <button
               type="button"
-              className="ph-btn ph-btn--ghost signin__provider"
+              className="ph-btn ph-btn--ghost popup__action"
               onClick={() => withProvider("github")}
             >
               <FontAwesomeIcon icon={faGithub} /> {t("Continue with GitHub")}
@@ -75,7 +81,7 @@ export default function SignInDialog() {
           {OAUTH_PROVIDERS.includes("google") && (
             <button
               type="button"
-              className="ph-btn ph-btn--ghost signin__provider"
+              className="ph-btn ph-btn--ghost popup__action"
               onClick={() => withProvider("google")}
             >
               <FontAwesomeIcon icon={faGoogle} /> {t("Continue with Google")}
@@ -83,24 +89,27 @@ export default function SignInDialog() {
           )}
         </div>
 
-        <p className="signin__divider">
+        <p className="popup-divider">
           <span>{t("or with your email")}</span>
         </p>
 
         {status === "sent" ? (
-          <p className="signin__sent" role="status">
-            <FontAwesomeIcon icon={faEnvelope} />{" "}
-            {t(
-              "Check your inbox: we sent you a sign-in link. Open it in this browser to come back here signed in."
-            )}
+          <p className="popup-alert popup-alert--success" role="status">
+            <FontAwesomeIcon icon={faEnvelopeCircleCheck} />
+            <span>
+              {t(
+                "Check your inbox: we sent you a sign-in link. Open it in this browser to come back here signed in."
+              )}
+            </span>
           </p>
         ) : (
-          <form className="signin__email" onSubmit={withEmail}>
+          <form className="popup-inline" onSubmit={withEmail}>
             <label className="sr-only" htmlFor="signin-email">
               {t("Email address")}
             </label>
             <input
               id="signin-email"
+              className="popup-input"
               type="email"
               required
               autoComplete="email"
@@ -110,7 +119,7 @@ export default function SignInDialog() {
             />
             <button
               type="submit"
-              className="ph-btn ph-btn--primary"
+              className="ph-btn ph-btn--primary popup__action"
               disabled={status === "sending"}
             >
               {status === "sending" ? t("Sending…") : t("Send link")}
@@ -119,12 +128,13 @@ export default function SignInDialog() {
         )}
 
         {error && (
-          <p className="signin__error" role="alert">
-            {t(error)}
+          <p className="popup-alert popup-alert--error" role="alert">
+            <FontAwesomeIcon icon={faCircleExclamation} />
+            <span>{t(error)}</span>
           </p>
         )}
 
-        <p className="signin__privacy">
+        <p className="popup-note signin__privacy">
           {t(
             "We store only what sign-in needs, a public nickname you can change, and what you choose to publish. No passwords, no ads, no tracking. Under 16? Ask a parent or teacher first."
           )}{" "}
