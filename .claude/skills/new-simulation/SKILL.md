@@ -130,9 +130,12 @@ Field `type` is one of `number` (`min`/`max`/`step`/`placeholder`), `checkbox`,
   simulation-unit quantities that have no SI unit.
 
 A `number` field with **both `min` and `max`** renders as a slider + editable
-value box + min/max scale, and the typed value is clamped to that range — so
-pick bounds a learner would actually want. Without a full range it renders as a
-value box with −/+ steppers.
+value box + min/max scale. The range bounds the slider only: a learner may type
+a value beyond it (the thumb pins to the nearest end), so the simulation must
+stay stable for out-of-range inputs — pick slider bounds a learner would
+actually want, and never rely on them for safety. Without a full range it
+renders as a value box with −/+ steppers, and a single `min` or `max` is a hard
+limit.
 
 ### 2. The simulation
 
