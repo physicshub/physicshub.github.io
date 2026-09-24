@@ -17,6 +17,7 @@ const links = [
   { label: "Blog", to: "/blog" },
   { label: "About", to: "/about" },
   { label: "Contribute", to: "/contribute" },
+  { label: "Privacy Policy", to: "/privacy" },
 ];
 
 function Footer() {

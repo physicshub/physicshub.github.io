@@ -373,3 +373,28 @@
     transition-delay: 0ms;
   }
 }
+
+/* --- Narrow phones (<= 480px) ------------------------------------------------
+   Logo + menu toggle + four controls (curriculum, language, theme, account)
+   must fit in 360px of bar. The two dropdown triggers drop their chevron
+   (the popover still opens on tap) and, with the account button, shrink to a
+   2.5rem square. The theme toggle keeps its own size. */
+@media (max-width: 480px) {
+  .controls {
+    gap: 0.3rem;
+  }
+
+  .curriculum-switcher__chevron,
+  .lang-switcher__chevron {
+    display: none;
+  }
+
+  .curriculum-switcher__trigger,
+  .lang-switcher__trigger,
+  .account-menu__trigger {
+    width: 2.5rem;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+  }
+}

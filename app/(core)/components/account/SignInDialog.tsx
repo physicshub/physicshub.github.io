@@ -136,10 +136,10 @@ export default function SignInDialog() {
 
         <p className="popup-note signin__privacy">
           {t(
-            "We store only what sign-in needs, a public nickname you can change, and what you choose to publish. No passwords, no ads, no tracking. Under 16? Ask a parent or teacher first."
+            "We store only what sign-in needs, a public nickname you can change, and what you choose to publish. No passwords, no ads, nothing sold. Under 16? Ask a parent or teacher first."
           )}{" "}
-          <Link href="/account#privacy" onClick={close}>
-            {t("Privacy & your data")}
+          <Link href="/privacy" onClick={close}>
+            {t("Privacy Policy")}
           </Link>
         </p>
       </div>

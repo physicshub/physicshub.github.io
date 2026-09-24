@@ -41,7 +41,7 @@ The consequence for features: **anything under `app/api` does not exist on `phys
 ### Route groups
 
 - `app/(core)/` — everything shared: `engine/`, `components/`, `constants/`, `data/`, `hooks/`, `lib/`, `utils/`, `locales/`, `styles/`. Not a route segment.
-- `app/(pages)/` — the actual pages (`about`, `account`, `blog`, `contribute`, `simulations`).
+- `app/(pages)/` — the actual pages (`about`, `account`, `blog`, `contribute`, `privacy`, `simulations`). `privacy/page.tsx` is the privacy policy (a static server component, linked from the footer, the sign-in dialog and `/account`): **when a feature starts sending data somewhere new — an analytics tool, a sign-in provider, an email sender, any third-party script — add it to its "Who else processes data" table and bump `LAST_UPDATED` in the same change.**
 - `supabase/` — the community database: SQL migrations + setup/moderation README (see "Community layer").
 - `app/api/auth/` — GitHub OAuth: `github/` starts the flow (random `state` in a short-lived cookie), `github/callback/` verifies `state` and exchanges the code for a token, `github/logout/` clears it, `me/` reports the signed-in user. The token lives in an `httpOnly` `gh_session` cookie (8h) via `app/(core)/lib/githubSession.ts`; needs `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`.
 - `app/api/publish/route.ts` — a POST handler that publishes a blog proposal **as the signed-in contributor**: it reads their token from the session, ensures their fork of the repo exists, branches from upstream `main`, commits the JSON and opens a PR against `physicshub`. Returns `401 { requiresAuth: true }` when there is no session, which the editor turns into a sign-in redirect.
@@ -147,7 +147,7 @@ Bodies those elements position themselves are marked `kinematic: true`, which te
 
 ### i18n
 
-Custom, not a library: `hooks/useTranslation.ts` reads the Google Translate `googtrans` cookie to pick a language, loads `app/(core)/locales/<lang>.json`, and `locales/meta.json` marks which languages are `completed`. Incomplete languages fall back to Google Translate widget behaviour (`notranslate` is applied when a locale is complete). Extract new keys with `npm run i18n:extract`.
+Custom, not a library: `hooks/useTranslation.ts` reads the Google Translate `googtrans` cookie to pick a language, loads `app/(core)/locales/<lang>.json`, and `locales/meta.json` marks which languages are `completed`. Incomplete languages fall back to Google Translate widget behaviour (`notranslate` is applied when a locale is complete) — so a key missing from a **completed** locale shows in English. `npm run i18n:extract` (`scripts/i18n-extract.js`, zero deps) finds every string literal passed to `t()`, every literal inside a `popupContent={{…}}` prop (Popup translates those itself) and every literal marked `/* i18n */ "…"` (strings that reach `t()` through a variable, e.g. the error messages in `lib/community.ts`); it appends missing keys to `en.json` and lists what each completed locale lacks, which you then translate by hand. `--check` only reports and exits 1 if anything is missing. Run it whenever you add UI copy.
 
 ## Conventions
 

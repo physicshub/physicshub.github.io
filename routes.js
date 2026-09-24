@@ -24,6 +24,12 @@ export const routes = [
     priority: 0.7,
   },
   {
+    path: "/privacy",
+    component: "Privacy",
+    changefreq: "yearly",
+    priority: 0.3,
+  },
+  {
     path: "/blog",
     component: "Blog",
     changefreq: "weekly",

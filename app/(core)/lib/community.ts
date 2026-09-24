@@ -57,24 +57,27 @@ async function client() {
 
 // Database errors are terse; turn the ones a user can act on into sentences.
 // The rate-limit and rule names come from the triggers in supabase/migrations.
+// Components show these through t(); the i18n marker comment before each one
+// is what lets `npm run i18n:extract` find them.
 function friendly(message: string | undefined | null): string | null {
   if (!message) return null;
   if (message.includes("rate_limited"))
-    return "You're doing that too often. Please wait a while and try again.";
+    return /* i18n */ "You're doing that too often. Please wait a while and try again.";
   if (message.includes("account_too_new"))
-    return "New accounts can report presets after 24 hours.";
+    return /* i18n */ "New accounts can report presets after 24 hours.";
   if (
     message.includes("display_name_taken") ||
     message.includes("profiles_display_name_lower")
   )
-    return "That nickname is already taken.";
+    return /* i18n */ "That nickname is already taken.";
   if (message.includes("duplicate key"))
-    return "You've already done that for this preset.";
+    return /* i18n */ "You've already done that for this preset.";
   if (message.includes("violates check constraint"))
-    return "Some of the text isn't allowed (too long, too short, or it contains a link).";
-  if (message.includes("row-level security")) return "You can't do that.";
+    return /* i18n */ "Some of the text isn't allowed (too long, too short, or it contains a link).";
+  if (message.includes("row-level security"))
+    return /* i18n */ "You can't do that.";
   if (message.includes("JWT") || message.includes("not_authenticated"))
-    return "Your session expired. Please sign in again.";
+    return /* i18n */ "Your session expired. Please sign in again.";
   return message;
 }
 

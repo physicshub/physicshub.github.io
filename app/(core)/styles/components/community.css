@@ -454,6 +454,8 @@
 .account-page h1 {
   margin: 0;
   color: var(--title-color);
+  font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+  line-height: 1.2;
 }
 
 .account-page__note {
@@ -504,6 +506,7 @@
 .account-card--privacy ul {
   margin: 0;
   padding-left: 1.2rem;
+  list-style: disc;
   color: var(--subtitle-color);
   font-size: 0.88rem;
   line-height: 1.6;
@@ -545,6 +548,96 @@
 
 .account-presets__hidden {
   color: var(--warning-color);
+}
+
+/* --- /privacy (app/(pages)/privacy/page.tsx) --------------------------------
+   A long-form reading page: same ~70ch measure as the blog articles. */
+
+.legal-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 46rem;
+  margin: 6rem auto 3rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  color: var(--text-color);
+  line-height: 1.65;
+}
+
+/* The base reset strips heading sizes and list markers; restore them here. */
+.legal-page h1 {
+  margin: 0;
+  color: var(--title-color);
+  font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+  line-height: 1.2;
+}
+
+.legal-page h2 {
+  margin: 2rem 0 0.6rem;
+  color: var(--title-color);
+  font-size: 1.2rem;
+}
+
+.legal-page p,
+.legal-page li {
+  font-size: 0.95rem;
+}
+
+.legal-page ul {
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.legal-page li::marker {
+  color: var(--accent-color);
+}
+
+.legal-page li + li {
+  margin-top: 0.5rem;
+}
+
+.legal-page a {
+  color: var(--accent-color);
+}
+
+.legal-page__updated {
+  margin: 0.3rem 0 0;
+  color: var(--subtitle-color);
+  font-size: 0.85rem;
+}
+
+.legal-page__lead {
+  margin: 1rem 0 0;
+  font-size: 1.02rem;
+}
+
+/* Wide table: scrolls inside itself on phones, never the page. */
+.legal-page__table {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.legal-page__table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.legal-page__table th,
+.legal-page__table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal-page__table th {
+  background: var(--bg-light);
+  color: var(--title-color);
+}
+
+.legal-page__table tr:last-child td {
+  border-bottom: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

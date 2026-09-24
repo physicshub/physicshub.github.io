@@ -352,6 +352,10 @@ function PrivacySummary() {
           )}
         </li>
       </ul>
+      <p className="account-card__hint">
+        {t("The full details are in our")}{" "}
+        <Link href="/privacy">{t("Privacy Policy")}</Link>.
+      </p>
     </section>
   );
 }

@@ -25,6 +25,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://physicshub.github.io/privacy</loc>
+    <lastmod>2026-09-24T00:00:00.000Z</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://physicshub.github.io/blog</loc>
     <lastmod>2026-09-24T00:00:00.000Z</lastmod>
     <changefreq>weekly</changefreq>

@@ -30,7 +30,8 @@ const sameValue = (a: unknown, b: unknown) =>
 function formatValue(field: PresetField | undefined, value: unknown): string {
   const option = field?.options?.find((opt) => sameValue(opt.value, value));
   if (option) return option.label;
-  if (typeof value === "boolean") return value ? "On" : "Off";
+  if (typeof value === "boolean")
+    return value ? /* i18n */ "On" : /* i18n */ "Off";
   if (typeof value === "number") return String(Number(value.toPrecision(4)));
   return String(value);
 }
