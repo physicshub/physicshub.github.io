@@ -1,6 +1,6 @@
 // app/(pages)/blog/page.jsx
 "use client";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Tag from "../../(core)/components/Tag.jsx";
 import { blogsArray } from "../../(core)/data/articles/index.js";
@@ -17,6 +17,8 @@ import {
 import { useRouter } from "next/navigation";
 import useMobile from "../../(core)/hooks/useMobile.ts";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../(core)/hooks/useCurriculum.ts";
+import { getPlacement, localizeTags } from "../../(core)/data/curricula.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -39,7 +41,7 @@ const emptyFilter = {
   sort: DEFAULT_SORT,
 };
 
-const textMatches = (blog, text) => {
+const textMatches = (blog, text, curriculumId) => {
   const terms = text
     .toLowerCase()
     .trim()
@@ -48,17 +50,25 @@ const textMatches = (blog, text) => {
   if (terms.length === 0) return true;
 
   const tagNames = getChapterTagNames(blog.tags);
+  // The reader's own level vocabulary too: "a-level", "year 12", "class 11".
+  const placement = getPlacement(blog, curriculumId);
+  const levelText = placement
+    ? [placement.stage.name, placement.grades].filter(Boolean).join(" ")
+    : "";
   return terms.every(
     (term) =>
       blog.name.toLowerCase().includes(term) ||
       (blog.desc || "").toLowerCase().includes(term) ||
-      tagNames.includes(term)
+      tagNames.includes(term) ||
+      levelText.toLowerCase().includes(term)
   );
 };
 
 // ─── ListRow – used only in list view ─────────────────────────────────────────
 function ListRow({ chap, t }) {
   const router = useRouter();
+  const { curriculumId } = useCurriculum();
+  const tags = localizeTags(chap.tags, chap, curriculumId);
   return (
     <article
       className="blog-list-row"
@@ -69,7 +79,7 @@ function ListRow({ chap, t }) {
     >
       <div className="blog-list-row__meta">
         <div className="blog-list-row__tags">
-          {chap.tags.map((tag, i) => (
+          {tags.map((tag, i) => (
             <Tag key={tag.id || i} tag={tag} />
           ))}
         </div>
@@ -84,6 +94,8 @@ function ListRow({ chap, t }) {
 // ─── CompactCard – used only in compact view ──────────────────────────────────
 function CompactCard({ chap, t }) {
   const router = useRouter();
+  const { curriculumId } = useCurriculum();
+  const tags = localizeTags(chap.tags, chap, curriculumId);
   return (
     <article
       className="blog-compact-card"
@@ -93,7 +105,7 @@ function CompactCard({ chap, t }) {
       onKeyDown={(e) => e.key === "Enter" && router.push(`/blog/${chap.slug}`)}
     >
       <div className="blog-compact-card__tags">
-        {chap.tags.map((tag, i) => (
+        {tags.map((tag, i) => (
           <Tag key={tag.id || i} tag={tag} />
         ))}
       </div>
@@ -126,6 +138,7 @@ function ViewToggle({ current, onChange, t, viewModes }) {
 export default function Blog() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const { curriculumId } = useCurriculum();
 
   const VIEW_MODES = [
     { id: "card", icon: faTableCells, label: t("Card view") },
@@ -143,14 +156,21 @@ export default function Blog() {
 
   const isFiltering = hasActiveFacets(filter);
 
+  // Level facets are stage ids of the reader's curriculum.
+  const getFacets = useCallback(
+    (blog) => getBlogFacets(blog, curriculumId),
+    [curriculumId]
+  );
+
   const filteredUnpinned = useMemo(() => {
     const matched = unpinnedBlogs.filter(
       (blog) =>
-        textMatches(blog, filter.text) &&
-        facetMatches(getBlogFacets(blog), filter)
+        textMatches(blog, filter.text, curriculumId) &&
+        facetMatches(getFacets(blog), filter)
     );
     return sortCatalog(matched, filter.sort, {
-      getFacets: getBlogFacets,
+      getFacets,
+      curriculumId,
       getName: (blog) => blog.name,
       getRecency: (blog) => parseCatalogDate(blog.date),
     });
@@ -203,7 +223,7 @@ export default function Blog() {
         <div className="header-controls">
           <Search
             dataset={blogsArray}
-            getFacets={getBlogFacets}
+            getFacets={getFacets}
             onChange={setFilter}
             itemNoun="blogs"
             resultCount={filteredUnpinned.length}

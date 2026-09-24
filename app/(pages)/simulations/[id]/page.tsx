@@ -4,12 +4,12 @@ import SimulationWrapper from "./_components/SimulationWrapper";
 import type { SkeletonField } from "./_components/SimulationSkeleton";
 import SimulationOverview from "./_components/SimulationOverview";
 import RelatedArticles from "./_components/RelatedArticles";
-import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
+import LevelBanner from "./_components/LevelBanner";
+import { LEVELS, DIFFICULTIES } from "@/app/(core)/data/tags";
 import { blogsArray } from "@/app/(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 
 export const dynamicParams = false;
 
@@ -181,28 +181,14 @@ export default async function Page({ params }: Props) {
       </nav>
 
       {level && (
-        <div
-          className="simulation-level-banner"
-          style={
-            {
-              "--level-accent":
-                COLORS[level.color as keyof typeof COLORS]?.primary ||
-                "#00e6e6",
-            } as CSSProperties
-          }
-        >
-          <span className="simulation-level-banner-name">
-            {level.name} · {level.age}
-          </span>
-          <span className="simulation-level-banner-equiv">
-            {level.equivalents.join(" · ")}
-          </span>
-          {difficulty && (
-            <span className="simulation-level-banner-difficulty">
-              {difficulty.name}
-            </span>
-          )}
-        </div>
+        <LevelBanner
+          chapter={{
+            link: chapter.link,
+            level: chapter.level,
+            alsoFor: "alsoFor" in chapter ? chapter.alsoFor : undefined,
+          }}
+          difficulty={difficulty?.name}
+        />
       )}
 
       {/* Server components passed as slots: the concise overview renders right

@@ -88,6 +88,14 @@ export const someArticleBlog = {
 _within_ the level). Pick the level a curious reader at that stage can follow;
 push anything harder into a `toggle`.
 
+`LEVELS` is the international default; the reader also sees the level in their
+own country's system (A-Level · Year 13, Class 11, JC1…). That comes from
+`data/curriculumTopics.js`: add a `"blog:<slug>": "<concept>"` row to
+`CONTENT_TOPICS`, reusing a concept from `TOPIC_PLACEMENTS` if one fits or
+adding one with a placement for all six curricula, checked against each
+country's real syllabus (see the header comment there). Without a row the
+article falls back to its international level, only approximately.
+
 ### Sections
 
 Use **one section** with a flat `blocks` array unless you have a real reason to

@@ -1,9 +1,10 @@
 "use client";
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
-import { LEVELS, DIFFICULTIES } from "../../(core)/data/tags.js";
+import { DIFFICULTIES } from "../../(core)/data/tags.js";
+import { getPlacement } from "../../(core)/data/curricula.js";
 import {
   getSimulationFacets,
   facetMatches,
@@ -11,6 +12,7 @@ import {
   DEFAULT_SORT,
 } from "../../(core)/utils/catalogFilters.js";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../(core)/hooks/useCurriculum.ts";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
@@ -22,7 +24,7 @@ const emptyFilter = {
   sort: DEFAULT_SORT,
 };
 
-const textMatches = (chap, text) => {
+const textMatches = (chap, text, curriculumId) => {
   const terms = text
     .toLowerCase()
     .trim()
@@ -31,10 +33,19 @@ const textMatches = (chap, text) => {
 
   if (terms.length === 0) return true;
 
-  const levelIds = [chap.level, ...(chap.alsoFor || [])];
-  const levelNames = levelIds
-    .map((id) => LEVELS[id]?.name?.toLowerCase())
-    .filter(Boolean);
+  // Everything a reader might type for a level: the stage name and the precise
+  // grade in their own curriculum ("a-level", "year 12", "class 11").
+  const placement = getPlacement(chap, curriculumId);
+  const levelText = placement
+    ? [
+        placement.stage.name,
+        placement.grades,
+        ...placement.alsoStages.map((stage) => stage.name),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+    : "";
   const difficultyName = (
     DIFFICULTIES[chap.difficulty]?.name || ""
   ).toLowerCase();
@@ -45,7 +56,7 @@ const textMatches = (chap, text) => {
     return (
       chap.name.toLowerCase().includes(term) ||
       getChapterTagNames(chap.tags).includes(term) ||
-      levelNames.includes(term) ||
+      levelText.includes(term) ||
       difficultyName.includes(term) ||
       (chap.id && chap.id.toString().includes(term)) ||
       (chap.id &&
@@ -55,13 +66,14 @@ const textMatches = (chap, text) => {
   });
 };
 
-const chapterMatches = (chap, filter) =>
-  textMatches(chap, filter.text) &&
-  facetMatches(getSimulationFacets(chap), filter);
+const chapterMatches = (chap, filter, curriculumId, getFacets) =>
+  textMatches(chap, filter.text, curriculumId) &&
+  facetMatches(getFacets(chap), filter);
 
 export default function Simulations() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const { curriculumId, stages } = useCurriculum();
   const [filter, setFilter] = useState(emptyFilter);
   const [showHero] = useState(() => {
     if (typeof window !== "undefined") {
@@ -109,14 +121,23 @@ export default function Simulations() {
     requestAnimationFrame(animateScroll);
   };
 
+  // Level facets are stage ids of the reader's curriculum.
+  const getFacets = useCallback(
+    (chap) => getSimulationFacets(chap, curriculumId),
+    [curriculumId]
+  );
+
   const filteredChapters = useMemo(() => {
-    const matched = Chapters.filter((chap) => chapterMatches(chap, filter));
+    const matched = Chapters.filter((chap) =>
+      chapterMatches(chap, filter, curriculumId, getFacets)
+    );
     return sortCatalog(matched, filter.sort, {
-      getFacets: getSimulationFacets,
+      getFacets,
+      curriculumId,
       getName: (chap) => chap.name,
       getRecency: (chap) => chap.id,
     });
-  }, [filter]);
+  }, [filter, curriculumId, getFacets]);
 
   const hasAnyFilter =
     filter.text.trim() !== "" ||
@@ -133,7 +154,7 @@ export default function Simulations() {
     filteredChapters.length > 0 &&
     filteredChapters.length <= 2;
   const thinLevelName = isThinLevelResult
-    ? LEVELS[filter.levels[0]]?.name
+    ? stages.find((stage) => stage.id === filter.levels[0])?.name
     : null;
 
   return (
@@ -165,7 +186,7 @@ export default function Simulations() {
         </h1>
         <Search
           dataset={Chapters}
-          getFacets={getSimulationFacets}
+          getFacets={getFacets}
           onChange={setFilter}
           itemNoun="simulations"
           resultCount={filteredChapters.length}

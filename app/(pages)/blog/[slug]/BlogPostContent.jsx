@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../../(core)/hooks/useCurriculum.ts";
+import { localizeTags } from "../../../(core)/data/curricula.js";
 import { resolveAuthor } from "../../../(core)/data/authors.js";
 
 export default function BlogPostContent({
@@ -25,7 +27,9 @@ export default function BlogPostContent({
   slug,
 }) {
   const { t, meta } = useTranslation();
+  const { curriculumId } = useCurriculum();
   const isCompleted = meta?.completed || false;
+  const tags = localizeTags(blog.tags, blog, curriculumId);
   const author = resolveAuthor(blog.author);
   const hasUpdate = blog.updated && blog.updated !== blog.date;
 
@@ -45,7 +49,7 @@ export default function BlogPostContent({
           <div className="blog-container">
             <div className="blog-header">
               <div className="chapter-card-tags-container">
-                {blog.tags.map((tag, idx) => (
+                {tags.map((tag, idx) => (
                   <Tag tag={tag} key={tag.id || idx} />
                 ))}
               </div>

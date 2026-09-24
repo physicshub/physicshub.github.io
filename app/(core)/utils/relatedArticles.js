@@ -50,7 +50,7 @@ export function getRelatedArticles(chapter, blogs, limit = 3) {
   const simTopics = new Set(sim.topics.filter((t) => !GENERIC_TOPICS.has(t)));
   const nameWords = words(chapter.name).filter((w) => !NAME_STOPWORDS.has(w));
 
-  const blogFacets = blogs.map(getBlogFacets);
+  const blogFacets = blogs.map((blog) => getBlogFacets(blog));
   const topicCount = {};
   for (const { topics } of blogFacets)
     for (const topic of topics)

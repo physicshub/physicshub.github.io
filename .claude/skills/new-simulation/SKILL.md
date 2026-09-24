@@ -216,6 +216,17 @@ bands. Topic tags are purely topical; never place the old `EASY` / `MEDIUM` /
 content, not the target band: e.g. SHM is `upperSecondary` + `extended`, phase
 space or chaos is `undergraduate` + `advanced`.
 
+`LEVELS` is the international default. Readers also see the level in their own
+country's system (UK "A-Level · Year 13", India "Class 11", Singapore "JC1"…),
+resolved from `data/curriculumTopics.js`. **Add a `"sim:<Name>": "<concept>"` row
+to `CONTENT_TOPICS` there**, reusing a concept from `TOPIC_PLACEMENTS` when one
+fits (two springs sims share Hooke's law, say) or adding one with a placement for
+all six curricula (`us uk in au it sg`). Place it where each country first
+teaches the depth the sim actually reaches, not where the concept is first
+mentioned — check the real syllabus, and use the `note` argument for quirks. If
+you skip this the sim still works (it falls back to its international level) but
+its per-country level is only approximate.
+
 ## The createSimulation spec
 
 `createSimulation` already owns: input state and localStorage, URL params, the

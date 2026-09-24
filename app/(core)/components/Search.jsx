@@ -7,6 +7,12 @@
 // On phones every popover becomes a bottom sheet. Filter + sort state
 // round-trips through the URL (?q=&levels=&difficulty=&tags=&sort=) so a
 // narrowed view stays shareable.
+//
+// "School level" lists the stages of the reader's curriculum (Year 12 / A-Level,
+// Class 11, Sec 3…), so `getFacets` must return stage ids for that curriculum —
+// pages build it with getSimulationFacets/getBlogFacets(item, curriculumId). A
+// stage id that the active curriculum doesn't have (a shared link from another
+// country, or a curriculum switch) is dropped from the selection.
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,7 +29,8 @@ import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import Tag from "./Tag";
 import useTranslation from "../hooks/useTranslation.ts";
 import useMobile from "../hooks/useMobile.ts";
-import TAGS, { LEVELS, LEVEL_ORDER, DIFFICULTIES } from "../data/tags.js";
+import useCurriculum from "../hooks/useCurriculum.ts";
+import TAGS, { DIFFICULTIES } from "../data/tags.js";
 import { SORT_OPTIONS, DEFAULT_SORT } from "../utils/catalogFilters.js";
 
 const TAGS_MAP = Object.values(TAGS).reduce((acc, tag) => {
@@ -196,6 +203,7 @@ export function Search({
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const isMobile = useMobile();
+  const { stages, ready: curriculumReady } = useCurriculum();
 
   const [searchText, setSearchText] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -240,6 +248,18 @@ export function Search({
     emit?.(fromUrl);
   }, []);
 
+  // Drop selected levels the active curriculum doesn't have. Waits for the
+  // client's curriculum: until then the stages are the server's default ones and
+  // a level from a shared URL would be thrown away too early.
+  useEffect(() => {
+    if (!curriculumReady) return;
+    const valid = new Set(stages.map((stage) => stage.id));
+    if (selectedLevels.every((id) => valid.has(id))) return;
+    const levels = selectedLevels.filter((id) => valid.has(id));
+    setSelectedLevels(levels);
+    emitFilter({ ...current(), levels });
+  }, [curriculumReady, stages, selectedLevels]);
+
   // Dismiss an open popover on outside click / Escape.
   useEffect(() => {
     if (!openId) return;
@@ -282,12 +302,12 @@ export function Search({
         topic[name] = (topic[name] || 0) + 1;
     }
     return { level, difficulty, topic };
-  }, [dataset]);
+  }, [dataset, getFacets]);
 
   const activeChips = [
     ...selectedLevels.map((id) => ({
       key: `level:${id}`,
-      data: LEVELS[id],
+      data: stages.find((stage) => stage.id === id),
       remove: () => toggleLevel(id),
     })),
     ...selectedDifficulties.map((id) => ({
@@ -411,15 +431,15 @@ export function Search({
           isMobile={isMobile}
           t={t}
         >
-          {LEVEL_ORDER.map((level) => (
+          {stages.map((stage) => (
             <OptionRow
-              key={level.id}
-              tag={level}
-              sub={level.age}
-              count={counts.level[level.id] || 0}
-              selected={selectedLevels.includes(level.id)}
-              disabled={!counts.level[level.id]}
-              onClick={() => toggleLevel(level.id)}
+              key={stage.id}
+              tag={stage}
+              sub={stage.grades ? `${stage.grades} · ${stage.age}` : stage.age}
+              count={counts.level[stage.id] || 0}
+              selected={selectedLevels.includes(stage.id)}
+              disabled={!counts.level[stage.id]}
+              onClick={() => toggleLevel(stage.id)}
               t={t}
             />
           ))}
