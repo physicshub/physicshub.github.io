@@ -23,6 +23,33 @@
     <category term="Waves" />
   </entry>
   <entry>
+    <title>Why is the sky blue?</title>
+    <link href="https://physicshub.github.io/blog/why-is-the-sky-blue" />
+    <id>https://physicshub.github.io/blog/why-is-the-sky-blue</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Air molecules scatter short-wavelength blue light about six times more than red — Rayleigh scattering. The same effect turns sunsets red and clouds white.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Optics" />
+    <category term="Waves" />
+  </entry>
+  <entry>
+    <title>Why does metal feel colder than wood?</title>
+    <link href="https://physicshub.github.io/blog/why-does-metal-feel-colder-than-wood" />
+    <id>https://physicshub.github.io/blog/why-does-metal-feel-colder-than-wood</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Metal and wood in the same room are at the same temperature. Metal feels colder because it conducts heat out of your skin much faster than wood does.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Thermodynamics" />
+  </entry>
+  <entry>
     <title>What is the difference between elastic and inelastic collisions?</title>
     <link href="https://physicshub.github.io/blog/elastic-inelastic-collisions" />
     <id>https://physicshub.github.io/blog/elastic-inelastic-collisions</id>
@@ -50,6 +77,34 @@
     <category term="Math" />
     <category term="Trigonometry" />
     <category term="Waves" />
+  </entry>
+  <entry>
+    <title>Why do we see lightning before we hear thunder?</title>
+    <link href="https://physicshub.github.io/blog/why-do-we-see-lightning-before-thunder" />
+    <id>https://physicshub.github.io/blog/why-do-we-see-lightning-before-thunder</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Light travels almost a million times faster than sound. Count the seconds between flash and thunder, divide by 3, and you have the distance in kilometres.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Waves" />
+    <category term="Kinematics" />
+  </entry>
+  <entry>
+    <title>How do airplanes fly?</title>
+    <link href="https://physicshub.github.io/blog/how-do-airplanes-fly" />
+    <id>https://physicshub.github.io/blog/how-do-airplanes-fly</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>A wing pushes air downward and the air pushes the wing up. That lift grows with speed squared and balances the plane's weight in level flight.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Fluids" />
+    <category term="Forces" />
   </entry>
   <entry>
     <title>How does an inclined plane work?</title>
@@ -80,6 +135,20 @@
     <category term="Forces" />
     <category term="Acceleration" />
     <category term="Vectors" />
+  </entry>
+  <entry>
+    <title>Why do astronauts float in space?</title>
+    <link href="https://physicshub.github.io/blog/why-do-astronauts-float-in-space" />
+    <id>https://physicshub.github.io/blog/why-do-astronauts-float-in-space</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Gravity at the ISS is still almost 90% of what it is on the ground. Astronauts float because they and the station are in constant free fall around Earth.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Forces" />
   </entry>
   <entry>
     <title>Why is the double pendulum chaotic?</title>
