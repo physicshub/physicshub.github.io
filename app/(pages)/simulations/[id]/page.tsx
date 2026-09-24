@@ -5,6 +5,9 @@ import type { SkeletonField } from "./_components/SimulationSkeleton";
 import SimulationOverview from "./_components/SimulationOverview";
 import RelatedArticles from "./_components/RelatedArticles";
 import LevelBanner from "./_components/LevelBanner";
+import CommunityPresets from "./_components/CommunityPresets";
+import type { PresetField } from "./_components/presetFormat";
+import type { PresetInputs } from "@/app/(core)/lib/community";
 import { LEVELS, DIFFICULTIES } from "@/app/(core)/data/tags";
 import { blogsArray } from "@/app/(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
@@ -93,6 +96,37 @@ async function getSkeletonFields(id: string): Promise<SkeletonField[]> {
     );
   } catch {
     return [];
+  }
+}
+
+// What the community presets section needs to describe a preset: the defaults
+// (a preset shows only what it changes) and each field's label/unit/options.
+// Plain data, so it crosses into the client component as props.
+async function getPresetSchema(id: string): Promise<{
+  fields: PresetField[];
+  initialInputs: PresetInputs;
+}> {
+  try {
+    const { INPUT_FIELDS, INITIAL_INPUTS } = await import(
+      `@/app/(core)/data/configs/${id}.js`
+    );
+    const fields = (INPUT_FIELDS as PresetField[]).map(
+      ({ name, label, type, unit, symbol, options }) => ({
+        name,
+        label,
+        type,
+        ...(unit ? { unit } : {}),
+        ...(symbol ? { symbol } : {}),
+        ...(Array.isArray(options)
+          ? {
+              options: options.map(({ value, label }) => ({ value, label })),
+            }
+          : {}),
+      })
+    );
+    return { fields, initialInputs: INITIAL_INPUTS as PresetInputs };
+  } catch {
+    return { fields: [], initialInputs: {} };
   }
 }
 
@@ -198,6 +232,13 @@ export default async function Page({ params }: Props) {
         fields={await getSkeletonFields(id)}
         overview={<SimulationOverview id={id} chapter={chapter} />}
         related={<RelatedArticles chapter={chapter} />}
+        community={
+          <CommunityPresets
+            simId={id}
+            simName={chapter.name}
+            {...await getPresetSchema(id)}
+          />
+        }
       />
     </div>
   );

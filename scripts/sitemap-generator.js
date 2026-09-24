@@ -18,7 +18,11 @@ const sitemapName = "sitemap";
 // Routes that are reachable but must never be indexed (kept out of the sitemap
 // and served with a noindex robots tag by their own metadata). The blog editor
 // is a pure app screen; `/simulations/test` is a browser stress test.
-const NOINDEX_PATHS = new Set(["/blog/create", "/simulations/test"]);
+const NOINDEX_PATHS = new Set([
+  "/blog/create",
+  "/simulations/test",
+  "/account",
+]);
 
 // Current date in W3C format (YYYY-MM-DD) for lastmod
 const getCurrentDate = () => new Date().toISOString().split("T")[0];

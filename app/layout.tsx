@@ -112,11 +112,17 @@ export default function RootLayout({
     <FeedbackProvider>
       <html lang="en" dir="ltr" data-scroll-behavior="smooth">
         <body suppressHydrationWarning>
-          {/* Theme initialization — runs inline before paint to avoid flash */}
+          {/* Theme + embed-mode initialization — runs inline before paint to
+              avoid flash. `?embed=1` hides the site chrome (simulation.css). */}
           <script
             dangerouslySetInnerHTML={{
               __html: `
                 (function() {
+                  try {
+                    if (new URLSearchParams(location.search).get('embed') === '1') {
+                      document.body.dataset.embed = '1';
+                    }
+                  } catch(e) {}
                   try {
                     const key = 'physicshub-theme';
                     const saved = localStorage.getItem(key);

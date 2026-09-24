@@ -76,6 +76,14 @@ Adding a simulation named `<Name>` touches four places that must agree on the na
 // app/(core)/data/configs/Example.js
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
+// Every key here is a shareable URL parameter (`?mass=2`) and part of any
+// community preset, and the *type* of each default decides how a URL or preset
+// value is parsed (utils/simulationUrl.js — values of another type are dropped):
+// keep numbers as numbers and booleans as booleans, never "1" or "true".
+// Only flat values (number / boolean / string) round-trip through a link, a
+// colour default must be a hex string ("#rrggbb"), a string that isn't a
+// colour must be a select with `options` (or a short plain token ≤ 32 chars),
+// and a preset stores at most 64 inputs.
 export const INITIAL_INPUTS = {
   mass: 1, // SI units throughout: kg, m, s, N
   gravity: EARTH_G_SI,

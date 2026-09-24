@@ -868,3 +868,84 @@
     animation: none;
   }
 }
+
+/* --- Embed mode (?embed=1) -------------------------------------------------
+   Set as body[data-embed="1"] by the inline script in app/layout.tsx, before
+   first paint, so the site chrome never flashes in and nothing shifts. Only
+   the stage (canvas + toolbar + parameters) is left, sized to the iframe. */
+
+.embed-open-link {
+  display: none;
+}
+
+body[data-embed="1"] .header,
+body[data-embed="1"] footer,
+body[data-embed="1"] .simulation-breadcrumb,
+body[data-embed="1"] .simulation-level-banner,
+body[data-embed="1"] .top-nav-sim,
+body[data-embed="1"] .simulation-overview,
+body[data-embed="1"] .simulation-related,
+body[data-embed="1"] .community-presets {
+  display: none;
+}
+
+body[data-embed="1"] .simulation-page {
+  --sim-gutter: 0.5rem;
+  --sim-panel-width: clamp(240px, 32vw, 340px);
+}
+
+body[data-embed="1"] .simulation-stage {
+  max-width: none;
+  margin: 0.5rem 0;
+  --sim-stage-height: calc(100vh - 1rem);
+  --sim-stage-min-height: 280px;
+}
+
+@media (max-width: 719px) {
+  /* Too narrow to dock the panel: canvas first, parameters scroll below. */
+  body[data-embed="1"] .simulation-stage {
+    --sim-stage-height: 70vh;
+  }
+}
+
+@media (min-width: 720px) {
+  body[data-embed="1"] .simulation-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
+    align-items: start;
+    gap: 0.75rem;
+  }
+
+  body[data-embed="1"] .simulation-stage__panel {
+    height: var(--sim-stage-height);
+    min-height: var(--sim-stage-min-height);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body[data-embed="1"] .simulation-stage__panel > .inputs-container {
+    flex: 1 1 auto;
+    align-content: start;
+  }
+}
+
+/* Attribution + way back to the full page (with the current inputs). */
+body[data-embed="1"] .embed-open-link {
+  display: inline-flex;
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 7;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--subtitle-color);
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+body[data-embed="1"] .embed-open-link:hover {
+  color: var(--accent-color);
+}

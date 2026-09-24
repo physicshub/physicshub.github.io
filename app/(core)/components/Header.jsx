@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import LanguageSwitcher from "./LanguageSwitcher.jsx";
 import CurriculumSelector from "./CurriculumSelector.jsx";
+import AccountMenu from "./account/AccountMenu";
 import { usePathname } from "next/navigation.js";
 
 const NAV_ID = "site-nav";
@@ -153,6 +154,7 @@ export default function Header() {
             <CurriculumSelector />
             <LanguageSwitcher />
             <Theme mode={mode} onToggle={toggleMode} />
+            <AccountMenu />
           </div>
         </div>
       </header>

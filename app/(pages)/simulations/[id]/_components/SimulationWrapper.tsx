@@ -11,6 +11,9 @@ type Props = {
   overview?: ReactNode;
   /** Server-rendered recommended reading, closing the page. */
   related?: ReactNode;
+  /** Community presets — client-loaded, so it goes last (nothing but the
+   *  footer below it can shift when the list arrives). */
+  community?: ReactNode;
   /** Shape of the parameters panel, so the skeleton reserves the right height. */
   fields?: SkeletonField[];
 };
@@ -38,6 +41,7 @@ export default function SimulationWrapper({
   id,
   overview,
   related,
+  community,
   fields = [],
 }: Props) {
   const { meta } = useTranslation();
@@ -52,6 +56,7 @@ export default function SimulationWrapper({
           the stage mounts above them, and crawlable without running p5. */}
       {overview}
       {related}
+      {community}
     </div>
   );
 }

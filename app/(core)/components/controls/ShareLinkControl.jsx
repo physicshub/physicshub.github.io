@@ -14,19 +14,23 @@ import {
   faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
 import Popup from "../Popup";
+import { buildSimulationUrl } from "../../utils/simulationUrl.js";
 
-export default function ShareLinkControl({ simulation, inputs }) {
+export default function ShareLinkControl({
+  simulation,
+  inputs,
+  initialInputs = {},
+}) {
   const [open, setOpen] = useState(false);
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const DEFAULT_SHARE_MESSAGE = `${t("Check out this simulation on PhysicsHub, it's")} ${simulation}! `;
 
-  // Build URL with query parameters
-  const url = useMemo(() => {
-    if (typeof window === "undefined") return "";
-    const params = new URLSearchParams(inputs).toString();
-    return `${window.location.origin}${simulation}?${params}`;
-  }, [simulation, inputs]);
+  // Only the inputs that differ from their defaults end up in the link.
+  const url = useMemo(
+    () => buildSimulationUrl(simulation, inputs, initialInputs),
+    [simulation, inputs, initialInputs]
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(url);

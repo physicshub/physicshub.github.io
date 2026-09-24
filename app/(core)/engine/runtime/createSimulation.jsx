@@ -45,6 +45,8 @@ import SimInfoPanel from "../../components/SimInfoPanel.jsx";
 
 import useSimulationState from "../../hooks/useSimulationState";
 import useSimInfo from "../../hooks/useSimInfo";
+import useExternalInputs from "../../hooks/useExternalInputs";
+import { sanitizeInputs, simIdFromPath } from "../../utils/simulationUrl.js";
 
 /**
  * A live view over the current inputs. Elements capture it once at build time
@@ -105,7 +107,8 @@ export default function createSimulation(spec) {
 
     const { inputs, setInputs, inputsRef } = useSimulationState(
       INITIAL_INPUTS,
-      storageKey
+      storageKey,
+      INPUT_FIELDS
     );
     const [resetVersion, setResetVersion] = useState(0);
 
@@ -259,18 +262,35 @@ export default function createSimulation(spec) {
       setResetVersion((v) => v + 1);
     }, []);
 
+    // Every set of inputs from outside the controls — an uploaded JSON file, a
+    // community preset, a cloud-saved config — is untrusted: sanitised against
+    // the config and laid over the defaults.
     const handleLoad = useCallback(
       (loadedInputs) => {
-        setInputs(loadedInputs);
+        setInputs({
+          ...INITIAL_INPUTS,
+          ...sanitizeInputs(loadedInputs, INITIAL_INPUTS, INPUT_FIELDS),
+        });
         setResetVersion((v) => v + 1);
       },
       [setInputs]
+    );
+
+    // Community presets ("Try") and the signed-in user's cloud-saved config.
+    const simId = simIdFromPath(location);
+    useExternalInputs(
+      simId,
+      INITIAL_INPUTS,
+      INPUT_FIELDS,
+      inputsRef,
+      handleLoad
     );
 
     return (
       <SimulationLayout
         onReset={handleReset}
         inputs={inputs}
+        initialInputs={INITIAL_INPUTS}
         simulation={location}
         onLoad={handleLoad}
         dynamicInputs={
