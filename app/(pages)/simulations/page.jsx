@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
@@ -75,51 +75,6 @@ export default function Simulations() {
   const isCompleted = meta?.completed || false;
   const { curriculumId, stages } = useCurriculum();
   const [filter, setFilter] = useState(emptyFilter);
-  const [showHero] = useState(() => {
-    if (typeof window !== "undefined") {
-      // A shared filtered link (see Search's URL sync) should land on the
-      // results, not the splash — a link that dumps a visitor at the hero
-      // defeats the point of sharing it.
-      if (window.location.search.length > 1) return false;
-      return !localStorage.getItem("hasVisitedSimulations");
-    }
-    return true;
-  });
-  const contentRef = useRef(null);
-  const duration = 1200;
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-  }, []);
-
-  const handleStart = () => {
-    localStorage.setItem("hasVisitedSimulations", "true");
-    scrollToContent();
-  };
-
-  const scrollToContent = () => {
-    if (!contentRef.current) return;
-    const start = window.scrollY;
-    const target = contentRef.current.offsetTop;
-    const distance = target - start;
-    let startTime = null;
-
-    const animateScroll = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const ease =
-        progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-      window.scrollTo(0, start + distance * ease);
-      if (progress < 1) requestAnimationFrame(animateScroll);
-    };
-    requestAnimationFrame(animateScroll);
-  };
 
   // Level facets are stage ids of the reader's curriculum.
   const getFacets = useCallback(
@@ -161,26 +116,7 @@ export default function Simulations() {
     <div
       className={`simulations-container ${isCompleted ? "notranslate" : ""}`}
     >
-      {showHero && (
-        <section className="simulations-hero">
-          <p className="simulations-hero__title">
-            {t("Interactive Physics Simulations")}
-          </p>
-          <p>
-            {t(
-              "Explore core physics concepts through real-time, interactive experiments"
-            )}
-          </p>
-          <button
-            className="ph-btn ph-btn--primary main-btn"
-            onClick={handleStart}
-          >
-            {t("Let's begin")}
-          </button>
-        </section>
-      )}
-
-      <section ref={contentRef} className="simulations-content">
+      <section className="simulations-content">
         <h1 className="simulations-content__title">
           {t("Interactive Physics Simulations")}
         </h1>
