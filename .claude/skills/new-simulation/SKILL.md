@@ -257,11 +257,16 @@ of it in a simulation.
 | `simInfoRefs`                | no       | factory for refs that accumulate across frames     |
 
 Hook context: `{ p, world, inputs, handles, refs, infoRefs, bounds, dt, steps,
-setOverlay, rebuild }`.
+setOverlay, setInput, rebuild }`.
 
 - **`inputs` is a live proxy.** Safe to capture in a closure; always current.
 - **`bounds`** is `{ width, height }` in metres, kept in sync with the canvas.
 - **`refs`** is free-form per-simulation storage, reset on reset.
+- **`setInput(name, value)`** writes an input back from the sketch: the
+  slider/value box follows, and `inputs` returns the new value from the next
+  frame on. Use it only when a canvas gesture _is_ a parameter change (dragging
+  the light in `RayTracing` moves its position sliders) — never to smuggle
+  simulation state through the inputs; that belongs in `refs` or on a body.
 - **`rebuild()`** discards the world and re-runs `build` — use it when an input
   changes _what exists_ (a body count), not merely a parameter.
 - **`build` re-runs on every resize, so it must be idempotent.** Never mutate
@@ -405,6 +410,7 @@ worse than no simulation. Before you finish:
 | `ThreeBody.jsx`           | `substeps`, and initial conditions that are real solutions |
 | `DoublePendulum.jsx`      | when to leave the pipeline: exact Lagrangian + `rk4`       |
 | `PiCollisions.jsx`        | event-driven element, `kinematic: true` bodies             |
+| `RayTracing.jsx`          | no forces: cached progressive render, `setInput` on drag   |
 
 ## Before you call it done
 

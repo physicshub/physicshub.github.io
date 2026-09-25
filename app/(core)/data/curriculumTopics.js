@@ -329,6 +329,20 @@ export const TOPIC_PLACEMENTS = {
     sg: at("primary", "P1–P6"),
   },
 
+  // Ray tracing: rays from geometric optics, vector ray–sphere intersection,
+  // Lambert's cosine law, the inverse-square law, shadows and recursive mirror
+  // reflection. The laws of reflection and inverse-square are school physics,
+  // but combining them in vector form (the quadratic in t, N̂·L̂, the Phong
+  // lobe) is a first-year university / computer-graphics course.
+  "ray-tracing": {
+    us: at("college", "Undergraduate", ["high"]),
+    uk: at("university", "Undergraduate", ["alevel"]),
+    in: at("university", "B.Sc / B.Tech", ["senior"]),
+    au: at("university", "Undergraduate", ["senior"]),
+    it: at("universita", "Università", ["triennio"]),
+    sg: at("university", "Undergraduate", ["jc"]),
+  },
+
   // Coding a physics simulation: computational modelling for developers.
   "programming-simulation": {
     us: at("college", "Undergraduate"),
@@ -357,6 +371,7 @@ export const CONTENT_TOPICS = {
   "sim:CollisionSimulation": "collisions",
   "sim:PiCollisions": "pi-collisions",
   "sim:TrigonometricCircle": "trigonometry-unit-circle",
+  "sim:RayTracing": "ray-tracing",
 
   // Articles
   "blog:what-is-physics": "physics-intro",
@@ -384,4 +399,5 @@ export const CONTENT_TOPICS = {
   "blog:projectile-parabolic-motion": "projectile",
   "blog:physics-behind-three-body-problem": "three-body",
   "blog:pi-from-block-collisions-explained": "pi-collisions",
+  "blog:how-does-ray-tracing-work": "ray-tracing",
 };
