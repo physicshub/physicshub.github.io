@@ -198,6 +198,8 @@ export function Search({
   extraButton,
   itemNoun = "results",
   resultCount,
+  // A surface can drop sorts it can't honour (the Formulary has no dates).
+  sortOptions = SORT_OPTIONS,
 }) {
   const emit = onChange || onFilter;
   const { t, meta } = useTranslation();
@@ -387,7 +389,7 @@ export function Search({
   };
 
   const sortLabel = t(
-    SORT_OPTIONS.find((o) => o.id === sort)?.label || "Recommended"
+    sortOptions.find((o) => o.id === sort)?.label || "Recommended"
   );
 
   return (
@@ -509,7 +511,7 @@ export function Search({
           isMobile={isMobile}
           t={t}
         >
-          {SORT_OPTIONS.map((option) => (
+          {sortOptions.map((option) => (
             <OptionRow
               key={option.id}
               sub={option.label}

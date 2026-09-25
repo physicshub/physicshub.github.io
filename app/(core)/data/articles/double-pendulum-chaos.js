@@ -68,6 +68,7 @@ export const doublePendulumBlog = {
           },
           {
             type: "formula",
+            ref: "euler-lagrange",
             latex:
               "\\frac{d}{dt}\\frac{\\partial\\mathcal{L}}{\\partial\\dot\\theta_i} - \\frac{\\partial\\mathcal{L}}{\\partial\\theta_i} = 0, \\qquad i = 1, 2",
           },

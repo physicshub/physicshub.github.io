@@ -73,6 +73,7 @@ export const ballAcceleratingBlog = {
           },
           {
             type: "formula",
+            ref: "displacement-constant-acceleration",
             latex:
               "\\begin{aligned}v(t) &= v_0 + a\\,t \\\\[2pt] x(t) &= x_0 + v_0\\,t + \\tfrac{1}{2}a\\,t^2\\end{aligned}",
           },

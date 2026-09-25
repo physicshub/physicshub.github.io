@@ -201,6 +201,7 @@ export const piCollisionBlog = {
           },
           {
             type: "formula",
+            ref: "momentum-conservation",
             latex: "MV + mv = MV' + mv'",
             inline: false,
           },
@@ -444,6 +445,7 @@ export const piCollisionBlog = {
           },
           {
             type: "formula",
+            ref: "pi-collision-count",
             latex:
               "N_{\\text{clacks}} = \\lfloor\\, \\pi \\,/\\, \\arctan(10^{-N}) \\,\\rfloor \\approx \\lfloor\\, \\pi \\,/\\, 10^{-N} \\,\\rfloor = \\lfloor\\, \\pi \\times 10^N \\,\\rfloor",
             inline: false,

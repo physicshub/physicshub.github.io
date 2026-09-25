@@ -50,6 +50,7 @@ export const unitCircleBlog = {
           },
           {
             type: "formula",
+            ref: "pythagorean-identity",
             latex: "\\sin^{2}\\theta + \\cos^{2}\\theta = 1",
           },
           {
@@ -125,6 +126,7 @@ export const unitCircleBlog = {
           },
           {
             type: "formula",
+            ref: "sine-wave",
             latex: "y = A\\,\\sin(\\omega\\theta + \\varphi)",
           },
           {

@@ -64,6 +64,7 @@ export const rayTracingBlog = {
           },
           {
             type: "formula",
+            ref: "ray-equation",
             latex:
               "\\vec{P}(t) = \\vec{O} + t\\,\\hat{D},\\qquad \\hat{D} = \\operatorname{normalize}\\!\\left(s_x\\hat{u} + s_y\\hat{v} - \\hat{w}\\right)",
           },
@@ -86,6 +87,7 @@ export const rayTracingBlog = {
           },
           {
             type: "formula",
+            ref: "ray-sphere-intersection",
             latex:
               "a = \\hat{D}\\cdot\\hat{D},\\quad b = 2\\,\\hat{D}\\cdot(\\vec{O}-\\vec{C}),\\quad c = |\\vec{O}-\\vec{C}|^2 - r^2",
           },
@@ -132,6 +134,7 @@ export const rayTracingBlog = {
           },
           {
             type: "formula",
+            ref: "inverse-square-law",
             latex:
               "\\vec{L} = \\vec{S} - \\vec{P},\\quad d = |\\vec{L}|,\\quad \\hat{L} = \\vec{L}/d,\\qquad E = \\frac{I_0}{d^2}",
           },
@@ -145,6 +148,7 @@ export const rayTracingBlog = {
           },
           {
             type: "formula",
+            ref: "lamberts-cosine-law",
             latex: "I_d = k_d\\,E\\,\\max(0,\\ \\hat{N}\\cdot\\hat{L})",
           },
           {
@@ -203,6 +207,7 @@ export const rayTracingBlog = {
           },
           {
             type: "formula",
+            ref: "law-of-reflection",
             latex:
               "\\hat{D}_r = \\hat{D} - 2(\\hat{D}\\cdot\\hat{N})\\,\\hat{N},\\qquad \\theta_i = \\theta_r",
           },

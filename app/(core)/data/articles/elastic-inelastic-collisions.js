@@ -52,6 +52,7 @@ export const collisionsBlog = {
           },
           {
             type: "formula",
+            ref: "momentum-conservation",
             latex: "m_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2",
           },
           {
@@ -68,6 +69,7 @@ export const collisionsBlog = {
           },
           {
             type: "formula",
+            ref: "elastic-collision",
             latex:
               "v_1 = \\frac{m_1 - m_2}{m_1 + m_2}\\,u_1 + \\frac{2m_2}{m_1 + m_2}\\,u_2, \\qquad v_2 = \\frac{2m_1}{m_1 + m_2}\\,u_1 + \\frac{m_2 - m_1}{m_1 + m_2}\\,u_2",
           },
@@ -85,6 +87,7 @@ export const collisionsBlog = {
           },
           {
             type: "formula",
+            ref: "coefficient-of-restitution",
             latex: "e = \\frac{v_2 - v_1}{u_1 - u_2}, \\qquad 0 \\le e \\le 1",
           },
           {

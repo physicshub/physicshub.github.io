@@ -32,6 +32,9 @@ export interface BlockData {
   items?: string[] | string | Array<{ q: string; a: string }>;
   ordered?: boolean;
   latex?: string;
+  // `formula` block: id of a Formulary card (data/formulas/). Supplies the
+  // LaTeX when `latex` is omitted and adds a link to the card.
+  ref?: string;
   inline?: boolean;
   code?: string;
   language?: string;

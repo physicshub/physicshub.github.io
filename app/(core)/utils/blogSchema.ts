@@ -6,6 +6,7 @@
 // straight from the same block data. Keep this file free of React / "use client".
 
 import type { BlockData, BlogContent } from "../components/theory/types";
+import { getFormula } from "../data/formulas/index.js";
 
 type Article = { theory?: BlogContent } & Record<string, unknown>;
 
@@ -13,10 +14,12 @@ type Article = { theory?: BlogContent } & Record<string, unknown>;
  * Drop the lightweight inline syntax (see components/theory/utils.tsx) so a
  * string is safe to put in schema text or a meta description:
  *   $x=vt$ → x=vt   **bold** → bold   `code` → code   [label](url) → label
+ *   [[formula-id]] → the formula's name
  */
 export function stripInlineSyntax(input: string): string {
   if (!input || typeof input !== "string") return "";
   return input
+    .replace(/\[\[([a-z0-9-]+)\]\]/g, (_, id) => getFormula(id)?.name ?? id)
     .replace(/\[([^\]]+?)\]\(([^)\s]+?)\)/g, "$1")
     .replace(/\*\*([^*]+?)\*\*/g, "$1")
     .replace(/`([^`]+?)`/g, "$1")

@@ -23,8 +23,8 @@ A ball moves in a straight line at constant speed until it meets a wall, then re
 - Coefficient of restitution
 
 ### Governing formulas
-- Position after a time step: `\vec{x}_{t+\Delta t} = \vec{x}_t + \vec{v}\,\Delta t`
-- Bounce off a vertical wall: `v_x \rightarrow -e\,v_x`
+- Uniform motion: `x = x_0 + v\,t` (https://physicshub.github.io/formulas#uniform-motion)
+- Bounce off a vertical wall: `v_x \rightarrow -e\,v_x` (https://physicshub.github.io/formulas#coefficient-of-restitution)
 
 ## [Vector Operations Calculator](https://physicshub.github.io/simulations/VectorsOperations)
 
@@ -47,9 +47,9 @@ Vectors are the language of physics: force, velocity, acceleration and displacem
 - The dot product and the angle between vectors
 
 ### Governing formulas
-- Magnitude of a 2-D vector: `|\vec{a}| = \sqrt{a_x^{2} + a_y^{2}}`
-- Sum of two vectors: `\vec{a} + \vec{b} = (a_x + b_x,\; a_y + b_y)`
-- Dot product: `\vec{a}\cdot\vec{b} = a_x b_x + a_y b_y = |\vec{a}||\vec{b}|\cos\theta`
+- Magnitude of a vector: `|\vec{a}| = \sqrt{a_x^{2} + a_y^{2}}` (https://physicshub.github.io/formulas#vector-magnitude)
+- Sum of two vectors: `\vec{a} + \vec{b} = (a_x + b_x,\; a_y + b_y)` (https://physicshub.github.io/formulas#vector-sum)
+- Dot product: `\vec{a}\cdot\vec{b} = a_x b_x + a_y b_y = |\vec{a}||\vec{b}|\cos\theta` (https://physicshub.github.io/formulas#dot-product)
 
 ## [Ball Acceleration](https://physicshub.github.io/simulations/BallAcceleration)
 
@@ -71,9 +71,9 @@ A ball is pulled toward your cursor: the further away the cursor, the longer the
 - Why velocity and acceleration can point in different directions
 
 ### Governing formulas
-- Newton's second law: `\vec{F} = m\,\vec{a}`
-- Velocity under constant acceleration: `v = v_0 + a\,t`
-- Displacement under constant acceleration: `x = x_0 + v_0 t + \tfrac{1}{2} a t^{2}`
+- Newton's second law: `\vec{F} = m\,\vec{a}` (https://physicshub.github.io/formulas#newtons-second-law)
+- Velocity under constant acceleration: `v = v_0 + a\,t` (https://physicshub.github.io/formulas#velocity-constant-acceleration)
+- Displacement under constant acceleration: `x = x_0 + v_0 t + \tfrac{1}{2} a t^{2}` (https://physicshub.github.io/formulas#displacement-constant-acceleration)
 
 ## [Ball Gravity](https://physicshub.github.io/simulations/BallGravity)
 
@@ -98,9 +98,9 @@ A ball falls under gravity, bounces off the floor and loses a little energy on e
 - Kinetic and gravitational potential energy
 
 ### Governing formulas
-- Weight: `W = m\,g`
-- Speed after falling a height h: `v = \sqrt{2 g h}`
-- Restitution at a bounce: `e = \dfrac{v_{\text{after}}}{v_{\text{before}}}`
+- Weight: `W = m\,g` (https://physicshub.github.io/formulas#weight)
+- Speed after a free fall: `v = \sqrt{2 g h}` (https://physicshub.github.io/formulas#free-fall-speed)
+- Restitution at a bounce: `e = \dfrac{v_{\text{after}}}{v_{\text{before}}}` (https://physicshub.github.io/formulas#coefficient-of-restitution)
 
 ## [Spring Mass System Simulator](https://physicshub.github.io/simulations/SpringConnection)
 
@@ -124,9 +124,9 @@ A mass hangs from a spring and oscillates. The spring pulls back with a force pr
 - Damped oscillation
 
 ### Governing formulas
-- Hooke's law: `F = -k\,x`
-- Angular frequency: `\omega = \sqrt{\dfrac{k}{m}}`
-- Period of a mass–spring system: `T = 2\pi\sqrt{\dfrac{m}{k}}`
+- Hooke's law: `F = -k\,x` (https://physicshub.github.io/formulas#hookes-law)
+- Angular frequency of a mass on a spring: `\omega = \sqrt{\dfrac{k}{m}}` (https://physicshub.github.io/formulas#spring-angular-frequency)
+- Period of a mass on a spring: `T = 2\pi\sqrt{\dfrac{m}{k}}` (https://physicshub.github.io/formulas#spring-period)
 
 ## [Simple Pendulum Simulation](https://physicshub.github.io/simulations/SimplePendulum)
 
@@ -150,9 +150,9 @@ A bob on a string swings back and forth about its lowest point. For small swings
 - Energy conservation between the top and bottom of the swing
 
 ### Governing formulas
-- Period for small oscillations: `T = 2\pi\sqrt{\dfrac{L}{g}}`
-- Equation of motion: `\ddot{\theta} + \dfrac{g}{L}\sin\theta = 0`
-- Speed at the bottom: `v = \sqrt{2 g L\,(1 - \cos\theta_0)}`
+- Period of a simple pendulum: `T = 2\pi\sqrt{\dfrac{L}{g}}` (https://physicshub.github.io/formulas#pendulum-period)
+- Pendulum equation of motion: `\ddot{\theta} + \dfrac{g}{L}\sin\theta = 0` (https://physicshub.github.io/formulas#pendulum-equation-of-motion)
+- Pendulum speed at the bottom: `v = \sqrt{2 g L\,(1 - \cos\theta_0)}` (https://physicshub.github.io/formulas#pendulum-speed-bottom)
 
 ## [Projectile & Parabolic Motion](https://physicshub.github.io/simulations/ParabolicMotion)
 
@@ -177,9 +177,9 @@ Launch a projectile and watch its path. With gravity as the only force, horizont
 - Effect of launch angle (45° for maximum range in a vacuum)
 
 ### Governing formulas
-- Trajectory: `y = x\tan\theta - \dfrac{g\,x^{2}}{2\,v_0^{2}\cos^{2}\theta}`
-- Range on level ground: `R = \dfrac{v_0^{2}\sin 2\theta}{g}`
-- Maximum height: `H = \dfrac{v_0^{2}\sin^{2}\theta}{2g}`
+- Projectile trajectory: `y = x\tan\theta - \dfrac{g\,x^{2}}{2\,v_0^{2}\cos^{2}\theta}` (https://physicshub.github.io/formulas#projectile-trajectory)
+- Range of a projectile: `R = \dfrac{v_0^{2}\sin 2\theta}{g}` (https://physicshub.github.io/formulas#projectile-range)
+- Maximum height of a projectile: `H = \dfrac{v_0^{2}\sin^{2}\theta}{2g}` (https://physicshub.github.io/formulas#projectile-max-height)
 
 ## [Inclined Plane](https://physicshub.github.io/simulations/InclinedPlane)
 
@@ -204,9 +204,9 @@ A block rests on a ramp. Gravity still points straight down, but the surface spl
 - The angle of repose, tan θ = μₛ
 
 ### Governing formulas
-- Component of weight along the slope: `F_\parallel = m g \sin\theta`
-- Normal force: `N = m g \cos\theta`
-- Maximum static friction: `f_{s,\max} = \mu_s N = \mu_s m g \cos\theta`
+- Weight along a slope: `F_\parallel = m g \sin\theta` (https://physicshub.github.io/formulas#incline-parallel-force)
+- Normal force on a slope: `N = m g \cos\theta` (https://physicshub.github.io/formulas#incline-normal-force)
+- Maximum static friction: `f_{s,\max} = \mu_s N = \mu_s m g \cos\theta` (https://physicshub.github.io/formulas#static-friction-max)
 
 ## [Circular Motion](https://physicshub.github.io/simulations/CircularMotion)
 
@@ -229,9 +229,9 @@ An object moves around a circle at constant speed. Its velocity is constant in s
 - Angular velocity and period
 
 ### Governing formulas
-- Centripetal acceleration: `a_c = \dfrac{v^{2}}{r} = \omega^{2} r`
-- Centripetal force: `F_c = \dfrac{m v^{2}}{r}`
-- Period: `T = \dfrac{2\pi r}{v} = \dfrac{2\pi}{\omega}`
+- Centripetal acceleration: `a_c = \dfrac{v^{2}}{r} = \omega^{2} r` (https://physicshub.github.io/formulas#centripetal-acceleration)
+- Centripetal force: `F_c = \dfrac{m v^{2}}{r}` (https://physicshub.github.io/formulas#centripetal-force)
+- Period of circular motion: `T = \dfrac{2\pi r}{v} = \dfrac{2\pi}{\omega}` (https://physicshub.github.io/formulas#circular-period)
 
 ## [Three Body Problem](https://physicshub.github.io/simulations/ThreeBody)
 
@@ -255,8 +255,8 @@ Three masses attract each other through Newtonian gravity. Unlike the two-body p
 - Numerical integration and conservation checks
 
 ### Governing formulas
-- Gravitational force between two bodies: `\vec{F}_{ij} = -\,G\,\dfrac{m_i m_j}{|\vec{r}_{ij}|^{2}}\,\hat{r}_{ij}`
-- Net force on body i: `\vec{F}_i = \sum_{j \ne i} \vec{F}_{ij}`
+- Gravitational force between two bodies: `\vec{F}_{ij} = -\,G\,\dfrac{m_i m_j}{|\vec{r}_{ij}|^{2}}\,\hat{r}_{ij}` (https://physicshub.github.io/formulas#newtons-law-of-gravitation)
+- Net gravitational force: `\vec{F}_i = \sum_{j \ne i} \vec{F}_{ij}` (https://physicshub.github.io/formulas#gravitational-superposition)
 
 ## [Horizontal Spring](https://physicshub.github.io/simulations/HorizontalSpring)
 
@@ -279,9 +279,9 @@ A mass on a frictionless horizontal surface is tied to a wall by a spring. With 
 - Total mechanical energy stays constant without friction
 
 ### Governing formulas
-- Restoring force: `F = -k\,x`
-- Position over time: `x(t) = A\cos(\omega t + \varphi),\quad \omega = \sqrt{k/m}`
-- Total energy: `E = \tfrac{1}{2} k A^{2}`
+- Hooke's law: `F = -k\,x` (https://physicshub.github.io/formulas#hookes-law)
+- Simple harmonic motion: `x(t) = A\cos(\omega t + \varphi)` (https://physicshub.github.io/formulas#shm-position)
+- Total energy: `E = \tfrac{1}{2} k A^{2}` (https://physicshub.github.io/formulas#elastic-potential-energy)
 
 ## [Double Pendulum](https://physicshub.github.io/simulations/DoublePendulum)
 
@@ -305,8 +305,8 @@ A second pendulum hangs from the end of the first. The system has just two degre
 - Energy conservation in the absence of damping
 
 ### Governing formulas
-- Lagrangian: `\mathcal{L} = T - V`
-- Euler–Lagrange equation: `\dfrac{d}{dt}\dfrac{\partial \mathcal{L}}{\partial \dot{\theta}_i} - \dfrac{\partial \mathcal{L}}{\partial \theta_i} = 0`
+- Lagrangian: `\mathcal{L} = T - V` (https://physicshub.github.io/formulas#lagrangian)
+- Euler–Lagrange equation: `\dfrac{d}{dt}\dfrac{\partial \mathcal{L}}{\partial \dot{q}_i} - \dfrac{\partial \mathcal{L}}{\partial q_i} = 0` (https://physicshub.github.io/formulas#euler-lagrange)
 
 ## [1D Collision simulation](https://physicshub.github.io/simulations/CollisionSimulation)
 
@@ -328,9 +328,9 @@ Two bodies move along a line and collide. Momentum is always conserved in the co
 - Centre-of-mass frame
 
 ### Governing formulas
-- Momentum conservation: `m_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2`
-- Elastic collision, final velocity of body 1: `v_1 = \dfrac{m_1 - m_2}{m_1 + m_2}\,u_1 + \dfrac{2 m_2}{m_1 + m_2}\,u_2`
-- Restitution: `e = \dfrac{v_2 - v_1}{u_1 - u_2}`
+- Conservation of momentum: `m_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2` (https://physicshub.github.io/formulas#momentum-conservation)
+- Elastic collision, final velocity of body 1: `v_1 = \dfrac{m_1 - m_2}{m_1 + m_2}\,u_1 + \dfrac{2 m_2}{m_1 + m_2}\,u_2` (https://physicshub.github.io/formulas#elastic-collision)
+- Coefficient of restitution: `e = \dfrac{v_2 - v_1}{u_1 - u_2}` (https://physicshub.github.io/formulas#coefficient-of-restitution)
 
 ## [Pi From Collisions](https://physicshub.github.io/simulations/PiCollisions)
 
@@ -353,8 +353,9 @@ Two blocks slide on a frictionless floor with a wall on one side. When the left 
 - Why the count is exact (no collision may be missed)
 
 ### Governing formulas
-- Collisions for a mass ratio of 100ᴺ: `N_{\text{collisions}} = \lfloor \pi \cdot 10^{N} \rfloor`
-- Conserved quantities per collision: `\sum m_i v_i = \text{const},\qquad \sum \tfrac{1}{2} m_i v_i^{2} = \text{const}`
+- π from colliding blocks: `N_{\text{collisions}} = \lfloor \pi \cdot 10^{N} \rfloor` (https://physicshub.github.io/formulas#pi-collision-count)
+- Conservation of momentum: `m_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2` (https://physicshub.github.io/formulas#momentum-conservation)
+- Kinetic energy: `K = \tfrac{1}{2} m v^{2}` (https://physicshub.github.io/formulas#kinetic-energy)
 
 ## [Trigonometric Circle](https://physicshub.github.io/simulations/TrigonometricCircle)
 
@@ -379,9 +380,9 @@ Drag the angle θ around the unit circle and watch every trigonometric function 
 - Inverse trigonometric functions
 
 ### Governing formulas
-- Pythagorean identity: `\sin^{2}\theta + \cos^{2}\theta = 1`
-- Tangent: `\tan\theta = \dfrac{\sin\theta}{\cos\theta}`
-- Generalized sine wave: `y = A\sin(\omega\theta + \varphi)`
+- Pythagorean identity: `\sin^{2}\theta + \cos^{2}\theta = 1` (https://physicshub.github.io/formulas#pythagorean-identity)
+- Tangent as a ratio: `\tan\theta = \dfrac{\sin\theta}{\cos\theta}` (https://physicshub.github.io/formulas#tangent-ratio)
+- Sine wave: `y = A\sin(\omega\theta + \varphi)` (https://physicshub.github.io/formulas#sine-wave)
 
 ## [Ray Tracing](https://physicshub.github.io/simulations/RayTracing)
 
@@ -408,8 +409,8 @@ A ray tracer makes an image by following rays of light backwards: from the camer
 - The law of reflection and specular highlights
 
 ### Governing formulas
-- A ray: `\vec{P}(t) = \vec{O} + t\,\hat{D}`
-- Ray–sphere discriminant: `\Delta = b^2 - 4ac,\quad b = 2\,\hat{D}\cdot(\vec{O}-\vec{C}),\quad c = |\vec{O}-\vec{C}|^2 - r^2`
-- Inverse-square law: `E = \dfrac{I_0}{d^2}`
-- Lambert's cosine law: `I_d = k_d\,E\,\max(0,\ \hat{N}\cdot\hat{L})`
-- Law of reflection: `\hat{D}_r = \hat{D} - 2(\hat{D}\cdot\hat{N})\,\hat{N}`
+- Parametric ray: `\vec{P}(t) = \vec{O} + t\,\hat{D}` (https://physicshub.github.io/formulas#ray-equation)
+- Ray–sphere intersection: `\Delta = b^2 - 4ac,\quad b = 2\,\hat{D}\cdot(\vec{O}-\vec{C}),\quad c = |\vec{O}-\vec{C}|^2 - r^2` (https://physicshub.github.io/formulas#ray-sphere-intersection)
+- Inverse-square law of light: `E = \dfrac{I_0}{d^2}` (https://physicshub.github.io/formulas#inverse-square-law)
+- Lambert's cosine law: `I_d = k_d\,E\,\max(0,\ \hat{N}\cdot\hat{L})` (https://physicshub.github.io/formulas#lamberts-cosine-law)
+- Law of reflection: `\hat{D}_r = \hat{D} - 2(\hat{D}\cdot\hat{N})\,\hat{N}` (https://physicshub.github.io/formulas#law-of-reflection)

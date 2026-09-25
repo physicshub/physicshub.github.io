@@ -52,6 +52,7 @@ export const circularMotionBlog = {
           },
           {
             type: "formula",
+            ref: "centripetal-acceleration",
             latex:
               "a_c = \\frac{v^2}{r} = \\omega^2 r, \\qquad F_c = \\frac{m\\,v^2}{r}, \\qquad T = \\frac{2\\pi r}{v}",
           },

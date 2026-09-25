@@ -28,6 +28,10 @@ export const getSimulationFacets = (
   topics: (chap.tags || []).map((tag) => tag.name),
 });
 
+// Formulary cards carry `level`/`difficulty`/`tags` exactly like a simulation
+// (and have no curriculum topic, so levels come from the international band).
+export const getFormulaFacets = getSimulationFacets;
+
 export const getBlogFacets = (blog, curriculumId = DEFAULT_CURRICULUM) => {
   const difficulties = [];
   const topics = [];
@@ -103,6 +107,11 @@ export const SORT_OPTIONS = [
   { id: "newest", label: "Newest first" },
   { id: "oldest", label: "Oldest first" },
 ];
+
+// Sorts that make sense without dates, for the Formulary.
+export const UNDATED_SORT_OPTIONS = SORT_OPTIONS.filter(
+  (option) => option.id !== "newest" && option.id !== "oldest"
+);
 
 const primaryLevelIndex = (facets, index) => {
   const indices = facets.levels

@@ -80,6 +80,7 @@ export const projectileParabolicBlog = {
           },
           {
             type: "formula",
+            ref: "projectile-trajectory",
             latex:
               "y = h_0 + x\\tan\\theta - \\frac{g\\,x^2}{2\\,v_0^2\\cos^2\\theta}",
           },

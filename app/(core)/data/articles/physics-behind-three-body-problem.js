@@ -94,6 +94,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "formula",
+            ref: "newtons-law-of-gravitation",
             latex: "F = G\\frac{m_1 m_2}{r^2}",
             inline: false,
           },

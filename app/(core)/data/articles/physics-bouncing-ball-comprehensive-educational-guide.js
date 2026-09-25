@@ -53,6 +53,7 @@ export const bouncingBallBlog = {
           },
           {
             type: "formula",
+            ref: "free-fall-speed",
             latex:
               "v_0 = \\sqrt{2\\,g\\,h_0}, \\qquad t_0 = \\sqrt{\\dfrac{2\\,h_0}{g}}",
           },
@@ -72,6 +73,7 @@ export const bouncingBallBlog = {
           },
           {
             type: "formula",
+            ref: "coefficient-of-restitution",
             latex:
               "e = \\frac{v_{\\text{after}}}{v_{\\text{before}}}, \\qquad 0 \\le e \\le 1",
           },

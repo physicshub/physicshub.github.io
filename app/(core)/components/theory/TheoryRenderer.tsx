@@ -33,6 +33,7 @@ import { TheoryTable } from "./elements/TheoryTable";
 import { TheoryImage } from "./elements/TheoryImage";
 import { TheoryTakeaways } from "./elements/TheoryTakeaways";
 import { TheoryFAQ, FaqItem } from "./elements/TheoryFAQ";
+import { getFormula } from "../../data/formulas/index.js";
 
 // Block Editor Controls with Drag & Drop
 const BlockEditorControls: React.FC<BlockControlsProps> = ({
@@ -179,7 +180,8 @@ const renderBlock = (
       return (
         <TheoryFormula
           {...commonProps}
-          latex={block.latex || ""}
+          latex={block.latex || getFormula(block.ref)?.latex || ""}
+          formulaRef={block.ref}
           inline={block.inline || false}
         />
       );

@@ -54,6 +54,7 @@ export const springConnectionBlog = {
           },
           {
             type: "formula",
+            ref: "hookes-law",
             latex: "F = -k\\,x",
           },
           {
@@ -89,11 +90,12 @@ export const springConnectionBlog = {
           },
           {
             type: "formula",
+            ref: "spring-period",
             latex: "T = 2\\pi\\sqrt{\\frac{m}{k}}",
           },
           {
             type: "paragraph",
-            text: "Notice what is **not** in that formula: the amplitude. Pull the mass 2 cm or 10 cm from rest and it still takes exactly the same time to complete one bounce. Notice also what changes it — a heavier mass slows the oscillation down, a stiffer spring speeds it up.",
+            text: "Notice what is **not** in that formula: the amplitude. Pull the mass 2 cm or 10 cm from rest and it still takes exactly the same time to complete one bounce. Notice also what changes it — a heavier mass slows the oscillation down, a stiffer spring speeds it up. Try your own numbers in the calculator on the [[spring-period]] card.",
           },
           {
             type: "toggle",

@@ -15,6 +15,7 @@ const links = [
   { label: "Home", to: "/", exact: true },
   { label: "Simulations", to: "/simulations" },
   { label: "Blog", to: "/blog" },
+  { label: /* i18n */ "Formulas", to: "/formulas" },
   { label: "About", to: "/about" },
   { label: "Contribute", to: "/contribute" },
   { label: "Privacy Policy", to: "/privacy" },

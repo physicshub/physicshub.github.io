@@ -94,6 +94,7 @@ export const airplanesFlyBlog = {
           },
           {
             type: "formula",
+            ref: "lift-equation",
             latex: "L = \\tfrac{1}{2}\\,\\rho\\, v^{2}\\, S\\, C_L",
           },
           {

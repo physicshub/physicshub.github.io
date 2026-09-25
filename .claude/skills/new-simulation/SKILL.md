@@ -52,7 +52,8 @@ integrates motion by hand, stop: the answer is an element.
 
 ## The four files
 
-Adding a simulation named `<Name>` touches four places that must agree on the name.
+Adding a simulation named `<Name>` touches four places that must agree on the name
+(plus its overview, below).
 
 1. **`simulations/<Name>.jsx`** — `"use client"`, default-exports
    `createSimulation({...})`. Nothing else. Imports use _relative_ paths
@@ -237,6 +238,34 @@ teaches the depth the sim actually reaches, not where the concept is first
 mentioned — check the real syllabus, and use the `note` argument for quirks. If
 you skip this the sim still works (it falls back to its international level) but
 its per-country level is only approximate.
+
+### 4. The overview and its formulas
+
+`app/(core)/data/simulationOverviews.js`, keyed by `<Name>`, holds the
+server-rendered text under the stage: `intro`, `controls`, `concepts` and
+`formulas`. **`formulas` lists Formulary ids, not LaTeX.** Each formula is a card
+in `app/(core)/data/formulas/<domain>.js`. The simulation page shows a compact
+version of the card, and `/formulas` automatically lists the simulation under
+"Used in".
+
+```js
+formulas: [
+  "hookes-law",                                   // a card, shown as it is
+  { ref: "elastic-potential-energy",              // the card, in this sim's own form
+    label: "Total energy", latex: "E = \\tfrac{1}{2} k A^{2}" },
+],
+```
+
+If the formula you need has no card yet, add one to the right domain file. It
+needs `id` (kebab-case, permanent: it is the URL anchor), `name`, `latex`,
+`summary`, `variables` (`key`, `latex`, `name`, SI `unit`, a typical `value`),
+`validity`, `tags`, `level`, `difficulty` and `related`. Add `solve` (one plain
+function per variable the calculator can solve for, taking SI values and
+radians; return NaN when there is no real solution) wherever the formula makes
+sense to compute. `example`, `pitfalls`, `note` and `history` are optional, so
+only write them when they teach something. An unknown id or a broken card fails
+the build (`validateFormulas` in `utils/formulaUsage.js`, run by
+`generate:feeds`).
 
 ## The createSimulation spec
 

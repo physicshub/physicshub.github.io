@@ -131,7 +131,7 @@ items: [{ q, a }] }`, 3–6 pairs. Each answer self-contained, 2–4 sentences,
 
 `sectionTitle` (H2, in the table of contents) · `subheading` (H3) ·
 `subtitle` (`level` 1–3, H4) · `paragraph` · `list` (`items`, `ordered`) ·
-`formula` (`latex`, `inline`) · `callout` (`calloutType`: `info` `tip` `warning`
+`formula` (`latex`, `inline`, `ref`) · `callout` (`calloutType`: `info` `tip` `warning`
 `success` `key`; `title`, `text`) · `note` · `example` (`title`, `content`) ·
 `toggle` (`title`, `content` — collapsible; use for optional depth) ·
 `table` (`columns`, `data`) · `image` (`src`, `alt`, `caption`, `size`, `href`) ·
@@ -139,8 +139,21 @@ items: [{ q, a }] }`, 3–6 pairs. Each answer self-contained, 2–4 sentences,
 
 **Inline syntax** in any prose field (`paragraph`, `list` items, `callout`/
 `toggle` body, `faq` q & a, `takeaways` items, **and `table` cells/headers**):
-`$x = vt$` → KaTeX · `**bold**` · `` `code` `` · `[label](url)`. Nothing else —
+`$x = vt$` → KaTeX · `**bold**` · `` `code` `` · `[label](url)` ·
+`[[formula-id]]` → a link to that Formulary card, labelled with its name. Nothing else —
 **no single-`*` italics** (they render literally), no block `$$`, no line breaks.
+
+**Formulas from the Formulary.** The headline formulas of an article (the ones a
+reader would look up, usually one to three) belong to cards in
+`app/(core)/data/formulas/`. Give their block a `ref`:
+`{ type: "formula", ref: "hookes-law" }` takes its LaTeX from the card, and
+`{ type: "formula", ref: "hookes-law", latex: "…" }` keeps the article's own form
+(several equations aligned, a special case). Either way a link to the card
+appears under the formula, and `/formulas` lists the article under "Used in".
+Derivation steps stay plain `{ type: "formula", latex }`. A formula the article
+leans on that has no card yet gets one (see the `new-simulation` skill,
+"The overview and its formulas", for the card fields). An unknown `ref` or
+`[[id]]` fails the build.
 
 ## Length targets
 

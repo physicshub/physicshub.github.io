@@ -54,6 +54,7 @@ export const metalColderThanWoodBlog = {
           },
           {
             type: "formula",
+            ref: "heat-conduction",
             latex: "\\dot Q = -k\\,A\\,\\frac{\\Delta T}{d}",
           },
           {

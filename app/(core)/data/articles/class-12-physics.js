@@ -145,6 +145,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "formula",
+            ref: "coulombs-law",
             latex:
               "F = k \\frac{q_1 q_2}{r^2} = \\frac{1}{4\\pi\\varepsilon_0} \\cdot \\frac{q_1 q_2}{r^2}",
             inline: false,
@@ -316,6 +317,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "formula",
+            ref: "wire-resistance",
             latex: "R = \\frac{\\rho L}{A}",
             inline: false,
           },
@@ -795,6 +797,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "formula",
+            ref: "snells-law",
             latex:
               "n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2 \\quad \\Rightarrow \\quad \\frac{\\sin i}{\\sin r} = \\frac{n_2}{n_1} = {_1}\\mu_2",
             inline: false,
@@ -939,6 +942,7 @@ export const class12PhysicsBlog = {
           },
           {
             type: "formula",
+            ref: "de-broglie-wavelength",
             latex: "\\lambda = \\frac{h}{p} = \\frac{h}{mv}",
             inline: false,
           },

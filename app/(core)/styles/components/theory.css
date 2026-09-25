@@ -219,6 +219,33 @@
   color: var(--text-primary);
 }
 
+/* A `formula` block with a `ref` links its Formulary card underneath. */
+.theory-formula__card-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.theory-formula__card-link:hover {
+  text-decoration: underline;
+}
+
+/* Inline `[[id]]` mention of a Formulary card in running text. */
+.theory-inline-formula {
+  color: var(--accent-color);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed
+    color-mix(in oklab, var(--accent-color) 60%, transparent);
+}
+
+.theory-inline-formula:hover {
+  border-bottom-style: solid;
+}
+
 .copy-btn {
   background: none;
   border: 0;

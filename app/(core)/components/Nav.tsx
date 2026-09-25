@@ -10,6 +10,7 @@ const menuItems = [
   { href: "/", label: "Home" },
   { href: "/simulations", label: "Simulations" },
   { href: "/blog", label: "Blog" },
+  { href: "/formulas", label: /* i18n */ "Formulas" },
   { href: "/about", label: "About" },
   { href: "/contribute", label: "Contribute" },
 ];

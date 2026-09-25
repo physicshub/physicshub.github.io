@@ -50,6 +50,7 @@ export const astronautsFloatBlog = {
           },
           {
             type: "formula",
+            ref: "gravity-at-altitude",
             latex: "g(h) = g_0\\left(\\frac{R}{R+h}\\right)^{2}",
           },
           {
@@ -95,6 +96,7 @@ export const astronautsFloatBlog = {
           },
           {
             type: "formula",
+            ref: "orbital-speed",
             latex:
               "v = \\sqrt{\\frac{GM}{r}} \\approx 7.7\\ \\text{km/s}, \\qquad T = \\frac{2\\pi r}{v} \\approx 92\\ \\text{min}",
           },

@@ -65,6 +65,16 @@ blocks render via `components/theory/`; the `faq` block also emits `FAQPage`
 JSON-LD server-side through `app/(core)/utils/blogSchema.ts`. Author bylines:
 `app/(core)/data/authors.js`.
 
+### Formulary (`/formulas`)
+
+Every formula shown on the site is a card in `app/(core)/data/formulas/`
+(one file per domain; name, LaTeX, variables with units, when it holds, an
+optional calculator via `solve`, related formulas). Simulations reference cards
+by id from `simulationOverviews.js`. Articles reference them with
+`{ type: "formula", ref }` blocks and inline `[[id]]`. Where each card is used is
+derived by `utils/formulaUsage.js`, never written by hand, and an unknown id
+fails the build. See `CLAUDE.md` → "Formulary".
+
 ### Engine (`app/(core)/engine/`) — the only physics core
 
 Bodies hold state; everything else is an element (plain object with hooks), composed by addition. Rules that keep it composable:

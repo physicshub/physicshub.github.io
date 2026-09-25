@@ -9,6 +9,9 @@
 //   public/llms-full.txt — expanded simulation context derived from the same
 //                          source rendered on each simulation page.
 //
+// It also validates the Formulary (data/formulas/) and every ref to it from
+// simulation overviews and articles, and fails the build on a broken one.
+//
 // Runs before `next build` (see package.json) so the export in out/ picks the
 // files up. Mirrors scripts/sitemap-generator.js: same imports, same dual write
 // to public/ and out/, xml-formatter as a parse-check.
@@ -24,6 +27,13 @@ import simulationOverviews from "../app/(core)/data/simulationOverviews.js";
 import { resolveAuthor } from "../app/(core)/data/authors.js";
 import { LEVELS, DIFFICULTIES } from "../app/(core)/data/tags.js";
 import { SITE_URL, SITE_NAME } from "../app/(core)/constants/site.js";
+import {
+  formulas,
+  resolveFormulaRef,
+  plainText,
+  formulaHref,
+} from "../app/(core)/data/formulas/index.js";
+import { validateFormulas } from "../app/(core)/utils/formulaUsage.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, "../public");
@@ -140,6 +150,13 @@ function buildLlmsTxt() {
     .filter(Boolean)
     .join("\n");
 
+  const formulary = formulas
+    .map(
+      (f) =>
+        `${line(f.name, `${SITE_URL}${formulaHref(f.id)}`, plainText(f.summary))} \`${f.latex}\``
+    )
+    .join("\n");
+
   return `# ${SITE_NAME}
 
 > ${SITE_TAGLINE}
@@ -154,6 +171,9 @@ ${sims}
 
 ## Simulation concepts
 ${concepts}
+
+## Formulary
+${formulary}
 
 ## About
 ${line("About PhysicsHub", `${SITE_URL}/about`, "Who builds PhysicsHub, why it exists, and how the engine works.")}
@@ -195,8 +215,13 @@ function buildLlmsFullTxt() {
       const concepts = overview.concepts
         .map((concept) => `- ${concept}`)
         .join("\n");
-      const formulas = overview.formulas
-        .map((formula) => `- ${formula.label}: \`${formula.latex}\``)
+      const keyFormulas = overview.formulas
+        .map(resolveFormulaRef)
+        .filter(Boolean)
+        .map(
+          (formula) =>
+            `- ${formula.name}: \`${formula.latex}\` (${SITE_URL}${formulaHref(formula.id)})`
+        )
         .join("\n");
 
       return `## [${chapter.name}](${SITE_URL}${chapter.link})
@@ -214,7 +239,7 @@ ${controls}
 ${concepts}
 
 ### Governing formulas
-${formulas}`;
+${keyFormulas}`;
     })
     .join("\n\n");
 
@@ -231,6 +256,16 @@ function main() {
     console.error("❌ public/ not found — run from the repo root");
     process.exit(1);
   }
+  const formulaErrors = validateFormulas({
+    overviews: simulationOverviews,
+    articles: blogsArray,
+  });
+  if (formulaErrors.length) {
+    console.error("❌ Formulary validation failed:");
+    for (const error of formulaErrors) console.error(`   - ${error}`);
+    process.exit(1);
+  }
+  console.log(`✅ Formulary — ${formulas.length} formulas, all refs resolve`);
   writeBoth("feed.xml", buildAtom());
   console.log(`✅ feed.xml — ${sortedBlogs.length} entries`);
   writeBoth("llms.txt", buildLlmsTxt());

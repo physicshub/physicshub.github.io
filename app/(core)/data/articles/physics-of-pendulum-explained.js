@@ -87,6 +87,7 @@ export const pendulumBlog = {
           },
           {
             type: "formula",
+            ref: "pendulum-equation-of-motion",
             latex:
               "F_t = -mg\\sin\\theta \\quad\\Longrightarrow\\quad \\frac{d^2\\theta}{dt^2} = -\\frac{g}{L}\\sin\\theta",
           },
@@ -96,6 +97,7 @@ export const pendulumBlog = {
           },
           {
             type: "formula",
+            ref: "pendulum-period",
             latex:
               "\\frac{d^2\\theta}{dt^2} = -\\frac{g}{L}\\,\\theta \\quad\\Longrightarrow\\quad \\theta(t) = \\theta_0\\cos(\\omega_0 t + \\varphi), \\qquad T = \\frac{2\\pi}{\\omega_0} = 2\\pi\\sqrt{\\frac{L}{g}}",
           },

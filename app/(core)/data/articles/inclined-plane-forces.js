@@ -51,6 +51,7 @@ export const inclinedPlaneBlog = {
           },
           {
             type: "formula",
+            ref: "incline-parallel-force",
             latex:
               "\\begin{aligned}F_\\parallel &= mg\\sin\\theta \\\\[2pt] N &= mg\\cos\\theta\\end{aligned}",
           },
@@ -74,6 +75,7 @@ export const inclinedPlaneBlog = {
           },
           {
             type: "formula",
+            ref: "angle-of-repose",
             latex: "\\tan\\theta_{\\text{repose}} = \\mu_s",
           },
           {

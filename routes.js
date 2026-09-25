@@ -36,6 +36,12 @@ export const routes = [
     priority: 0.9,
   },
   {
+    path: "/formulas",
+    component: "Formulas",
+    changefreq: "weekly",
+    priority: 0.8,
+  },
+  {
     path: "/blog/what-is-physics",
     changefreq: "monthly",
     priority: 0.8,

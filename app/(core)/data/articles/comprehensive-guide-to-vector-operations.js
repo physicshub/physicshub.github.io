@@ -94,6 +94,7 @@ export const operationVectorsBlog = {
           },
           {
             type: "formula",
+            ref: "vector-magnitude",
             latex:
               "|v| = \\sqrt{v_x^2 + v_y^2} \\quad , \\quad \\theta = \\arctan\\left(\\frac{v_y}{v_x}\\right)",
             inline: false,
@@ -189,6 +190,7 @@ export const operationVectorsBlog = {
           },
           {
             type: "formula",
+            ref: "dot-product",
             latex:
               "\\vec{a} \\cdot \\vec{b} = |a||b| \\cos(\\theta) = a_x b_x + a_y b_y",
             inline: false,

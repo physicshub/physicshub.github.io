@@ -152,6 +152,7 @@ export const ballFreeFallBlog = {
           },
           {
             type: "formula",
+            ref: "drag-equation",
             latex: "F_{\\text{drag}} = \\tfrac{1}{2}\\,C_d\\,\\rho\\,A\\,v^2",
           },
           {
@@ -160,6 +161,7 @@ export const ballFreeFallBlog = {
           },
           {
             type: "formula",
+            ref: "terminal-velocity",
             latex:
               "v_{\\text{terminal}} = \\sqrt{\\dfrac{2\\,m\\,g}{C_d\\,\\rho\\,A}}",
           },
