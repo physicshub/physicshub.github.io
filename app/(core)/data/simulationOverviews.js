@@ -443,6 +443,50 @@ const simulationOverviews = {
       },
     ],
   },
+
+  RayTracing: {
+    intro:
+      "A ray tracer makes an image by following rays of light backwards: from the camera, through each pixel, into the scene. At the first surface a ray hits, the laws of geometric optics decide the colour — how squarely the surface faces the light, how far away the light is, whether something casts a shadow, and what the surface reflects. Click any pixel to follow its ray and see every equation with its live numbers.",
+    controls: [
+      "Camera, sphere and light positions (drag them in the diagram)",
+      "Field of view",
+      "Sphere radius",
+      "Light intensity I₀",
+      "Ambient, diffuse and specular coefficients",
+      "Shininess n and reflectivity ρ",
+    ],
+    concepts: [
+      "Rays as the model of geometric optics",
+      "Ray–sphere intersection and the discriminant",
+      "Lambert's cosine law",
+      "The inverse-square law for a point source",
+      "Shadows as blocked straight-line paths",
+      "The law of reflection and specular highlights",
+    ],
+    formulas: [
+      {
+        label: "A ray",
+        latex: "\\vec{P}(t) = \\vec{O} + t\\,\\hat{D}",
+      },
+      {
+        label: "Ray–sphere discriminant",
+        latex:
+          "\\Delta = b^2 - 4ac,\\quad b = 2\\,\\hat{D}\\cdot(\\vec{O}-\\vec{C}),\\quad c = |\\vec{O}-\\vec{C}|^2 - r^2",
+      },
+      {
+        label: "Inverse-square law",
+        latex: "E = \\dfrac{I_0}{d^2}",
+      },
+      {
+        label: "Lambert's cosine law",
+        latex: "I_d = k_d\\,E\\,\\max(0,\\ \\hat{N}\\cdot\\hat{L})",
+      },
+      {
+        label: "Law of reflection",
+        latex: "\\hat{D}_r = \\hat{D} - 2(\\hat{D}\\cdot\\hat{N})\\,\\hat{N}",
+      },
+    ],
+  },
 };
 
 export default simulationOverviews;

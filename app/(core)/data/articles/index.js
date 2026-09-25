@@ -23,6 +23,7 @@ import { airplanesFlyBlog } from "./how-do-airplanes-fly.js";
 import { lightningThunderBlog } from "./why-do-we-see-lightning-before-thunder.js";
 import { astronautsFloatBlog } from "./why-do-astronauts-float-in-space.js";
 import { metalColderThanWoodBlog } from "./why-does-metal-feel-colder-than-wood.js";
+import { rayTracingBlog } from "./how-does-ray-tracing-work.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
@@ -49,6 +50,7 @@ export const allBlogs = {
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
   [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
   [piCollisionBlog.slug]: piCollisionBlog,
+  [rayTracingBlog.slug]: rayTracingBlog,
 };
 
 export const blogsArray = Object.values(allBlogs);

@@ -267,6 +267,20 @@
     <category term="Programming" />
   </entry>
   <entry>
+    <title>How does ray tracing work?</title>
+    <link href="https://physicshub.github.io/blog/how-does-ray-tracing-work" />
+    <id>https://physicshub.github.io/blog/how-does-ray-tracing-work</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Ray tracing follows straight-line light rays backwards from the camera through each pixel, then applies the laws of optics where they hit to decide the pixel's colour.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Optics" />
+    <category term="Vectors" />
+  </entry>
+  <entry>
     <title>Vectors: components, addition, dot and cross products</title>
     <link href="https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations" />
     <id>https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations</id>

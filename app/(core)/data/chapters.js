@@ -191,6 +191,18 @@ const chapters = [
     thumbnail: "/thumbnails/trigonometric-circle.webp",
     relatedBlogSlug: "unit-circle-trigonometry",
   },
+  {
+    id: 17,
+    name: "Ray Tracing",
+    desc: "Follow a single ray of light from a camera into a 3D scene and watch a real ray tracer colour each pixel. Drag the camera, sphere and light to see the ray–sphere quadratic, Lambert's cosine law, the inverse-square law, shadows and the law of reflection update live.",
+    link: "/simulations/RayTracing",
+    level: "undergraduate",
+    alsoFor: ["upperSecondary"],
+    difficulty: "core",
+    tags: [TAGS.OPTICS, TAGS.VECTORS, TAGS.INTERACTIVE],
+    thumbnail: "/thumbnails/ray-tracing.webp",
+    relatedBlogSlug: "how-does-ray-tracing-work",
+  },
 ];
 
 export default chapters;

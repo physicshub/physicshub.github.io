@@ -269,4 +269,16 @@ export const routes = [
     priority: 0.8,
     lastmod: "2026-09-24",
   },
+  {
+    path: "/blog/how-does-ray-tracing-work",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
+  },
+  {
+    path: "/simulations/RayTracing",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-25",
+  },
 ];

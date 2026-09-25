@@ -98,7 +98,7 @@ Rules that keep it composable — breaking any of them reintroduces the duplicat
 - **Forces only ever call `body.applyForce(f, label)`**; the integrator converts to motion. The label records the force in `body.appliedForces`, which is what `ForceVectors` draws — so a force can never be drawn differently from how it was integrated. Never compute a force a second time for rendering.
 - **Constraints are positional**: `solve` projects positions (repeated `solverIterations` times), then `afterStep` cancels the constraint-violating velocity. `Distance` also publishes its tension as a pseudo-force so it appears in free-body diagrams.
 
-`createSimulation(spec)` owns all the boilerplate — input state and localStorage, reset/load controls, canvas setup and resize, the fixed-timestep loop, pointer dispatch, background, sim-info panel. A simulation supplies only `config` and `build({ world, p, inputs, bounds, refs, infoRefs, setOverlay })`, plus optional `update`, `draw`, `info`, `overlay`, `world` and `simInfoRefs`. `build` re-runs on every resize, so it must be idempotent. `inputs` is a live proxy: safe to capture in a closure, always current.
+`createSimulation(spec)` owns all the boilerplate — input state and localStorage, reset/load controls, canvas setup and resize, the fixed-timestep loop, pointer dispatch, background, sim-info panel. A simulation supplies only `config` and `build({ world, p, inputs, bounds, refs, infoRefs, setOverlay, setInput })`, plus optional `update`, `draw`, `info`, `overlay`, `world` and `simInfoRefs`. `build` re-runs on every resize, so it must be idempotent. `inputs` is a live proxy: safe to capture in a closure, always current. `setInput(name, value)` writes an input back from the sketch (the slider follows and the next frame already reads the new value) — for when dragging something on the canvas _is_ changing a parameter, as in `RayTracing.jsx`.
 
 `SimplePendulum.jsx` (constraint as pendulum), `ParabolicMotion.jsx` (analytic guide vs numerical flight) and `InclinedPlane.jsx` (emergent normal force) are the clearest references — read one before writing a new simulation.
 
@@ -109,6 +109,8 @@ Three simulations deliberately bypass the force/integrate pipeline, and the reas
 - `ThreeBody.jsx` — uses the normal pipeline but with `world: { substeps: 40 }`, because close approaches are too stiff for a single 1/120 s step.
 
 Bodies those elements position themselves are marked `kinematic: true`, which tells World to skip integration while still recording forces.
+
+Two more have no forces at all and draw in pixel space from the `draw` hook: `TrigonometricCircle.jsx` (pure maths) and `RayTracing.jsx` (geometric optics — a Whitted ray tracer; the image is cached and re-traced progressively only when the scene changes, since a full trace per frame is far too slow).
 
 **GitHub stats & the contributors CLS.** `hooks/useRepoStats.ts` is a `useSyncExternalStore` store (no provider, same pattern as `useCurriculum`) holding the repo's star count and contributor count: it fetches once, mirrors the result to `localStorage` (`physicshub-repo-stats`) and serves the server/hydration pass an empty value. `GitHubHeaderBadge` (mounted on every route) feeds it; `/contribute` reads it so `ContributorsSection` and `ContributorsSectionSkeleton` can print the `(N)` in the title and render N placeholder cards before the real list loads. A skeleton card is a real `.contributor-card` with its text swapped for bars, so it has the same box as the card replacing it — keep it that way when the card changes.
 
