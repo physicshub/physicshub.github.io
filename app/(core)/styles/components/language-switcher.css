@@ -105,16 +105,8 @@
   background: color-mix(in oklab, var(--accent-color), transparent 92%);
 }
 
-@media (max-width: 840px) {
-  .lang-switcher__code {
-    display: none;
-  }
-
-  .lang-switcher__trigger {
-    padding: 0 0.55rem;
-    min-width: 2.75rem;
-  }
-}
+/* Below 640px the header collapses this trigger to a square
+   (styles/layout/header.css). */
 
 /* ----------------------------------------------------------------------------
    Google Translate hardening

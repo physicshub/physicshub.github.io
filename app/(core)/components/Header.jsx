@@ -16,7 +16,8 @@ import AccountMenu from "./account/AccountMenu";
 import { usePathname } from "next/navigation.js";
 
 const NAV_ID = "site-nav";
-const DRAWER_QUERY = "(max-width: 840px)";
+// Keep in sync with the drawer breakpoint in styles/layout/header.css.
+const DRAWER_QUERY = "(max-width: 1079px)";
 
 export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function Header() {
   const handleMenuToggle = useCallback(() => setMenuOpen((open) => !open), []);
   const handleMenuClose = useCallback(() => setMenuOpen(false), []);
 
-  // The drawer only exists below 840px. If the viewport grows past that while
+  // The drawer only exists below 1080px. If the viewport grows past that while
   // it is open, close it so body scroll isn't left locked.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
@@ -136,6 +137,17 @@ export default function Header() {
         <div className="header-inner">
           <Logo />
 
+          <NavMenu id={NAV_ID} onNavigate={handleMenuClose} />
+
+          <div className="controls">
+            <GitHubHeaderBadge mode={mode} />
+            <CurriculumSelector />
+            <LanguageSwitcher />
+            <Theme mode={mode} onToggle={toggleMode} />
+            <AccountMenu />
+          </div>
+
+          {/* Last in the row: below 1080px it closes the bar on the right. */}
           <button
             className="menu-toggle"
             type="button"
@@ -146,16 +158,6 @@ export default function Header() {
           >
             <FontAwesomeIcon icon={faBars} />
           </button>
-
-          <NavMenu id={NAV_ID} onNavigate={handleMenuClose} />
-
-          <div className="controls">
-            <GitHubHeaderBadge mode={mode} />
-            <CurriculumSelector />
-            <LanguageSwitcher />
-            <Theme mode={mode} onToggle={toggleMode} />
-            <AccountMenu />
-          </div>
         </div>
       </header>
 

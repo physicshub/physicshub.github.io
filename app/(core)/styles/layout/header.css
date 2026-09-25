@@ -3,16 +3,30 @@
 
    Layout
      .header          fixed, full-width, blurred bar (z: --z-header)
-       .header-inner  centered 1200px flex row: logo · toggle · nav · controls
+       .header-inner  centered 1200px flex row: logo · nav · controls · toggle
      .nav-backdrop    dimmed layer behind the mobile drawer (sibling of
                       .header so it escapes the bar's backdrop-filter
-                      containing block; < 840px only)
+                      containing block; < 1080px only)
+
+   Responsive tiers (every control keeps a fixed size inside a tier, so the
+   bar never shifts once auth / curriculum detection / repo stats land):
+     >= 1280px     full bar: nav inline, GitHub badge with its stat carousel
+     1080–1279px   GitHub badge collapses to its icon, nav tightens
+     < 1080px      nav moves to the drawer (DRAWER_QUERY in Header.jsx), the
+                   GitHub badge moves into the drawer, toggle closes the row
+     < 640px       curriculum / language triggers drop code + chevron and
+                   become squares, like theme and account
+     < 400px       everything shrinks one step to fit a 320px phone
 
    Every selector here is class-scoped on purpose: bare `nav` / `nav a` rules
    used to leak into unrelated navs (e.g. the blog breadcrumb).
    ============================================================================ */
 
 :root {
+  /* Side of every square header control (theme, account, menu toggle, and
+     the curriculum / language triggers once they collapse). */
+  --header-control-size: 2.75rem;
+
   /* Stacking order for the header system. */
   --z-header-backdrop: 1990;
   --z-header: 2000;
@@ -61,8 +75,7 @@
 .header-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: clamp(0.5rem, 3vw, 1.5rem);
+  gap: clamp(0.5rem, 2.5vw, 1.5rem);
   max-width: var(--max-content-width);
   margin-inline: auto;
 }
@@ -87,35 +100,36 @@
   }
 }
 
-/* --- Menu toggle (drawer trigger, < 840px) --------------------------------- */
+/* --- Menu toggle (drawer trigger, < 1080px) ------------------------------
+   Same square as the curriculum / language / account triggers, so the right
+   end of the bar reads as one row of controls. */
 
 .menu-toggle {
   display: none;
+  flex-shrink: 0;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  /* keep the 44px hit area without inflating the bar */
-  margin-block: -0.5rem;
-  border: 1px solid transparent;
-  border-radius: var(--border-radius);
-  background: none;
+  width: var(--header-control-size);
+  height: var(--header-control-size);
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background: var(--bg-color);
   color: var(--accent-color);
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   line-height: 1;
   cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-@media (hover: hover) {
-  .menu-toggle:hover {
-    background: color-mix(in oklab, var(--accent-color), transparent 90%);
-  }
-}
-
+.menu-toggle:hover,
 .menu-toggle:focus-visible {
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color), transparent 75%);
+  outline: none;
 }
 
 /* --- Primary navigation --------------------------------------------------- */
@@ -124,6 +138,7 @@
   position: relative;
   z-index: 1;
   flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: center;
 }
@@ -133,7 +148,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.75rem, 3vw, 3.5rem);
+  gap: clamp(0.5rem, 1.8vw, 2.5rem);
   list-style: none;
 }
 
@@ -194,22 +209,43 @@
   pointer-events: none;
 }
 
-/* Close button — only shown inside the mobile drawer. */
-.nav-close {
+/* Close button and GitHub link — only shown inside the mobile drawer. */
+.nav-close,
+.nav-drawer-github {
   display: none;
 }
 
-/* --- Header controls (GitHub badge · language · theme) ------------------- */
+/* --- Header controls (GitHub · curriculum · language · theme · account) -- */
 
 .controls {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(0.4rem, 2vw, 0.75rem);
+  gap: clamp(0.3rem, 1.5vw, 0.75rem);
   flex-shrink: 0;
+  /* Below 1080px the nav leaves the row: push the controls to the right. */
+  margin-left: auto;
 }
 
-/* --- Mobile drawer (<= 840px): nav slides in from the right ------------- */
+/* Tailwind sizes the theme button (size-11); the tiers below resize it with
+   the other squares. Unlayered CSS wins over Tailwind's utilities layer. */
+.header .theme-toggle {
+  flex-shrink: 0;
+  width: var(--header-control-size);
+  height: var(--header-control-size);
+}
+
+/* --- Compact desktop (1080–1279px) -----------------------------------------
+   Logo + six links + five controls need ~1200px at full size. Collapse the
+   GitHub badge to its icon (its label stays in aria-label/title) and tighten
+   the links before giving up and moving the nav into the drawer. */
+@media (max-width: 1279px) {
+  .nav-link {
+    font-size: 0.95rem;
+  }
+}
+
+/* --- Mobile drawer (< 1080px): nav slides in from the right ------------ */
 
 .nav-backdrop {
   position: fixed;
@@ -240,7 +276,7 @@
   pointer-events: auto;
 }
 
-@media (max-width: 840px) {
+@media (max-width: 1079px) {
   .nav-backdrop {
     display: block;
   }
@@ -315,6 +351,47 @@
     font-size: 1rem;
   }
 
+  .nav-drawer-github {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0.5rem 1.25rem 1.25rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateX(16px);
+    transition:
+      transform 0.35s ease,
+      opacity 0.35s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .nav-drawer-github:hover,
+  .nav-drawer-github:focus-visible {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    outline: none;
+  }
+
+  .nav-drawer-github__count {
+    margin-left: auto;
+    color: var(--subtitle-color);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .header.open .nav-drawer-github {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.42s, 0.42s, 0s, 0s;
+  }
+
   .nav-link.active {
     background: color-mix(in oklab, var(--accent-color), transparent 90%);
   }
@@ -360,6 +437,9 @@
   .header.open .nav-list li:nth-child(5) {
     transition-delay: 0.3s;
   }
+  .header.open .nav-list li:nth-child(6) {
+    transition-delay: 0.36s;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -368,33 +448,88 @@
   .nav-link,
   .nav-link::after,
   .nav-underline,
-  .nav-list li {
+  .nav-list li,
+  .nav-drawer-github {
     transition-duration: 0.01ms;
     transition-delay: 0ms;
   }
 }
 
-/* --- Narrow phones (<= 480px) ------------------------------------------------
-   Logo + menu toggle + four controls (curriculum, language, theme, account)
-   must fit in 360px of bar. The two dropdown triggers drop their chevron
-   (the popover still opens on tap) and, with the account button, shrink to a
-   2.5rem square. The theme toggle keeps its own size. */
-@media (max-width: 480px) {
-  .controls {
-    gap: 0.3rem;
+/* --- Phones (< 640px) ---------------------------------------------------------
+   Logo + curriculum + language + theme + account + menu must fit a 360px bar.
+   The two dropdown triggers drop their code and chevron (the popover still
+   opens on tap; the code is in the trigger's title) and every control becomes
+   the same square. Selectors are scoped to .header so they outrank the
+   component stylesheets, which are imported after this file. */
+@media (max-width: 639px) {
+  :root {
+    --header-control-size: 2.5rem;
   }
 
-  .curriculum-switcher__chevron,
-  .lang-switcher__chevron {
+  .header .curriculum-switcher__code,
+  .header .curriculum-switcher__chevron,
+  .header .lang-switcher__code,
+  .header .lang-switcher__chevron {
     display: none;
   }
 
-  .curriculum-switcher__trigger,
-  .lang-switcher__trigger,
-  .account-menu__trigger {
-    width: 2.5rem;
-    min-width: 2.5rem;
-    height: 2.5rem;
+  .header .curriculum-switcher__trigger,
+  .header .lang-switcher__trigger,
+  .header .account-menu__trigger {
+    width: var(--header-control-size);
+    min-width: var(--header-control-size);
+    height: var(--header-control-size);
     padding: 0;
+  }
+
+  .header .theme-toggle svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .logo img {
+    height: 2.5rem;
+  }
+}
+
+/* --- Small phones (< 400px, down to 320px) --------------------------------- */
+@media (max-width: 399px) {
+  :root {
+    --header-control-size: 2.25rem;
+  }
+
+  .header {
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .header-inner {
+    gap: 0.4rem;
+  }
+
+  .controls {
+    gap: 0.25rem;
+  }
+
+  .header .curriculum-switcher__trigger,
+  .header .lang-switcher__trigger,
+  .header .account-menu__trigger,
+  .header .theme-toggle,
+  .menu-toggle {
+    border-radius: 0.6rem;
+  }
+
+  .header .theme-toggle svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .header .account-menu__initial {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .logo img {
+    height: 2.1rem;
   }
 }

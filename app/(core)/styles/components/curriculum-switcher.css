@@ -207,16 +207,9 @@
   outline: none;
 }
 
+/* Below 640px the header collapses the trigger to a square
+   (styles/layout/header.css). */
 @media (max-width: 840px) {
-  .curriculum-switcher__code {
-    display: none;
-  }
-
-  .curriculum-switcher__trigger {
-    padding: 0 0.55rem;
-    min-width: 2.75rem;
-  }
-
   /* The trigger sits mid-bar here, so a menu anchored to it would run off the
      left edge of a phone. Anchor to the (fixed) header instead and span it. */
   .curriculum-switcher {

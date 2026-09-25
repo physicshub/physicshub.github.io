@@ -1,7 +1,8 @@
 /* ============================================================================
    GITHUB HEADER BADGE  (components/GitHubHeaderBadge.jsx)
    Pill in the header controls with a vertical carousel of repo stats.
-   Hidden below the drawer breakpoint (840px) — space goes to language/theme.
+   Icon-only between 1080 and 1279px; hidden below the drawer breakpoint
+   (1080px), where Nav.tsx shows a GitHub link inside the drawer instead.
    ============================================================================ */
 
 .github-header-badge {
@@ -72,7 +73,20 @@
   white-space: nowrap;
 }
 
-@media (max-width: 840px) {
+@media (max-width: 1279px) {
+  .github-header-badge {
+    justify-content: center;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0;
+  }
+
+  .github-header-badge__viewport {
+    display: none;
+  }
+}
+
+@media (max-width: 1079px) {
   .github-header-badge {
     display: none;
   }
