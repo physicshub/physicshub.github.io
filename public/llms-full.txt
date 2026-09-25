@@ -382,3 +382,34 @@ Drag the angle θ around the unit circle and watch every trigonometric function 
 - Pythagorean identity: `\sin^{2}\theta + \cos^{2}\theta = 1`
 - Tangent: `\tan\theta = \dfrac{\sin\theta}{\cos\theta}`
 - Generalized sine wave: `y = A\sin(\omega\theta + \varphi)`
+
+## [Ray Tracing](https://physicshub.github.io/simulations/RayTracing)
+
+A ray tracer makes an image by following rays of light backwards: from the camera, through each pixel, into the scene. At the first surface a ray hits, the laws of geometric optics decide the colour — how squarely the surface faces the light, how far away the light is, whether something casts a shadow, and what the surface reflects. Click any pixel to follow its ray and see every equation with its live numbers.
+
+- Educational levels: University, High School
+- Difficulty: Core
+- Topics: Optics, Vectors, Interactive
+
+### Controls
+- Camera, sphere and light positions (drag them in the diagram)
+- Field of view
+- Sphere radius
+- Light intensity I₀
+- Ambient, diffuse and specular coefficients
+- Shininess n and reflectivity ρ
+
+### Key concepts
+- Rays as the model of geometric optics
+- Ray–sphere intersection and the discriminant
+- Lambert's cosine law
+- The inverse-square law for a point source
+- Shadows as blocked straight-line paths
+- The law of reflection and specular highlights
+
+### Governing formulas
+- A ray: `\vec{P}(t) = \vec{O} + t\,\hat{D}`
+- Ray–sphere discriminant: `\Delta = b^2 - 4ac,\quad b = 2\,\hat{D}\cdot(\vec{O}-\vec{C}),\quad c = |\vec{O}-\vec{C}|^2 - r^2`
+- Inverse-square law: `E = \dfrac{I_0}{d^2}`
+- Lambert's cosine law: `I_d = k_d\,E\,\max(0,\ \hat{N}\cdot\hat{L})`
+- Law of reflection: `\hat{D}_r = \hat{D} - 2(\hat{D}\cdot\hat{N})\,\hat{N}`

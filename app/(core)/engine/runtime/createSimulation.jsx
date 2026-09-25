@@ -73,8 +73,9 @@ function createInputsProxy(inputsRef) {
  * @param {object} spec.config - The simulation's config module:
  *   `{ INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper? }`.
  * @param {(ctx: object) => object} spec.build - Populate the world. Receives
- *   `{ p, world, inputs, bounds, refs }` and returns named handles (bodies,
- *   constraints) that later hooks get back as `handles`. Re-runs on resize.
+ *   `{ p, world, inputs, bounds, refs, setOverlay, setInput }` and returns
+ *   named handles (bodies, constraints) that later hooks get back as
+ *   `handles`. Re-runs on resize.
  * @param {(ctx: object) => void} [spec.update] - Runs once per frame before the
  *   physics steps, for logic that is not a force (relaunching, measuring).
  *   Call `ctx.rebuild()` from here to discard the world and re-run `build`,
@@ -149,6 +150,19 @@ export default function createSimulation(spec) {
       [setInputs]
     );
 
+    /**
+     * Lets the sketch write an input back, e.g. when dragging an object on the
+     * canvas should move its sliders too. The ref is updated synchronously so
+     * the very next frame already reads the new value through `inputs`.
+     */
+    const setInput = useCallback(
+      (name, value) => {
+        inputsRef.current = { ...inputsRef.current, [name]: value };
+        handleInputChange(name, value);
+      },
+      [inputsRef, handleInputChange]
+    );
+
     const sketch = useCallback(
       (p) => {
         /** (Re)build the world from scratch — on setup and on every resize. */
@@ -175,6 +189,7 @@ export default function createSimulation(spec) {
               infoRefs: simInfoRefsRef.current,
               bounds: world.bounds,
               setOverlay: setOverlayState,
+              setInput,
             }) ?? {};
         };
 
@@ -188,6 +203,7 @@ export default function createSimulation(spec) {
           infoRefs: simInfoRefsRef.current,
           bounds: worldRef.current.bounds,
           setOverlay: setOverlayState,
+          setInput,
           rebuild,
           ...extra,
         });
@@ -251,7 +267,7 @@ export default function createSimulation(spec) {
         p.mouseReleased = () => dispatch("onPointerUp");
         p.doubleClicked = () => dispatch("onDoubleClick");
       },
-      [inputsRef, liveInputs, updateSimInfo]
+      [inputsRef, liveInputs, updateSimInfo, setInput]
     );
 
     const handleReset = useCallback(() => {
