@@ -6,11 +6,15 @@
 // - `controls` : the physical quantities a visitor can change (kept in sync by
 //                hand with the matching config's INPUT_FIELDS).
 // - `concepts` : the physics ideas the simulation demonstrates.
-// - `formulas` : { label, latex } pairs, rendered with KaTeX.
+// - `formulas` : ids of Formulary cards (data/formulas/). An entry can also be
+//                `{ ref, label?, latex? }` to show the simulation's own form of
+//                the formula (vector form, a special case) while still linking
+//                the card. Unknown ids fail the build.
 
 /**
+ * @typedef {string | { ref: string, label?: string, latex?: string }} FormulaRef
  * @typedef {{ intro: string, controls: string[], concepts: string[],
- *   formulas: { label: string, latex: string }[] }} SimulationOverview
+ *   formulas: FormulaRef[] }} SimulationOverview
  * @type {Record<string, SimulationOverview>}
  */
 const simulationOverviews = {
@@ -30,11 +34,9 @@ const simulationOverviews = {
       "Coefficient of restitution",
     ],
     formulas: [
+      "uniform-motion",
       {
-        label: "Position after a time step",
-        latex: "\\vec{x}_{t+\\Delta t} = \\vec{x}_t + \\vec{v}\\,\\Delta t",
-      },
-      {
+        ref: "coefficient-of-restitution",
         label: "Bounce off a vertical wall",
         latex: "v_x \\rightarrow -e\\,v_x",
       },
@@ -56,21 +58,7 @@ const simulationOverviews = {
       "Components along x and y",
       "The dot product and the angle between vectors",
     ],
-    formulas: [
-      {
-        label: "Magnitude of a 2-D vector",
-        latex: "|\\vec{a}| = \\sqrt{a_x^{2} + a_y^{2}}",
-      },
-      {
-        label: "Sum of two vectors",
-        latex: "\\vec{a} + \\vec{b} = (a_x + b_x,\\; a_y + b_y)",
-      },
-      {
-        label: "Dot product",
-        latex:
-          "\\vec{a}\\cdot\\vec{b} = a_x b_x + a_y b_y = |\\vec{a}||\\vec{b}|\\cos\\theta",
-      },
-    ],
+    formulas: ["vector-magnitude", "vector-sum", "dot-product"],
   },
 
   BallAcceleration: {
@@ -84,15 +72,9 @@ const simulationOverviews = {
       "Why velocity and acceleration can point in different directions",
     ],
     formulas: [
-      { label: "Newton's second law", latex: "\\vec{F} = m\\,\\vec{a}" },
-      {
-        label: "Velocity under constant acceleration",
-        latex: "v = v_0 + a\\,t",
-      },
-      {
-        label: "Displacement under constant acceleration",
-        latex: "x = x_0 + v_0 t + \\tfrac{1}{2} a t^{2}",
-      },
+      "newtons-second-law",
+      "velocity-constant-acceleration",
+      "displacement-constant-acceleration",
     ],
   },
 
@@ -114,9 +96,10 @@ const simulationOverviews = {
       "Kinetic and gravitational potential energy",
     ],
     formulas: [
-      { label: "Weight", latex: "W = m\\,g" },
-      { label: "Speed after falling a height h", latex: "v = \\sqrt{2 g h}" },
+      "weight",
+      "free-fall-speed",
       {
+        ref: "coefficient-of-restitution",
         label: "Restitution at a bounce",
         latex: "e = \\dfrac{v_{\\text{after}}}{v_{\\text{before}}}",
       },
@@ -139,14 +122,7 @@ const simulationOverviews = {
       "Angular frequency, period and frequency",
       "Damped oscillation",
     ],
-    formulas: [
-      { label: "Hooke's law", latex: "F = -k\\,x" },
-      { label: "Angular frequency", latex: "\\omega = \\sqrt{\\dfrac{k}{m}}" },
-      {
-        label: "Period of a mass–spring system",
-        latex: "T = 2\\pi\\sqrt{\\dfrac{m}{k}}",
-      },
-    ],
+    formulas: ["hookes-law", "spring-angular-frequency", "spring-period"],
   },
 
   SimplePendulum: {
@@ -160,18 +136,9 @@ const simulationOverviews = {
       "Energy conservation between the top and bottom of the swing",
     ],
     formulas: [
-      {
-        label: "Period for small oscillations",
-        latex: "T = 2\\pi\\sqrt{\\dfrac{L}{g}}",
-      },
-      {
-        label: "Equation of motion",
-        latex: "\\ddot{\\theta} + \\dfrac{g}{L}\\sin\\theta = 0",
-      },
-      {
-        label: "Speed at the bottom",
-        latex: "v = \\sqrt{2 g L\\,(1 - \\cos\\theta_0)}",
-      },
+      "pendulum-period",
+      "pendulum-equation-of-motion",
+      "pendulum-speed-bottom",
     ],
   },
 
@@ -193,19 +160,9 @@ const simulationOverviews = {
       "Effect of launch angle (45° for maximum range in a vacuum)",
     ],
     formulas: [
-      {
-        label: "Trajectory",
-        latex:
-          "y = x\\tan\\theta - \\dfrac{g\\,x^{2}}{2\\,v_0^{2}\\cos^{2}\\theta}",
-      },
-      {
-        label: "Range on level ground",
-        latex: "R = \\dfrac{v_0^{2}\\sin 2\\theta}{g}",
-      },
-      {
-        label: "Maximum height",
-        latex: "H = \\dfrac{v_0^{2}\\sin^{2}\\theta}{2g}",
-      },
+      "projectile-trajectory",
+      "projectile-range",
+      "projectile-max-height",
     ],
   },
 
@@ -227,13 +184,10 @@ const simulationOverviews = {
       "The angle of repose, tan θ = μₛ",
     ],
     formulas: [
+      "incline-parallel-force",
+      "incline-normal-force",
       {
-        label: "Component of weight along the slope",
-        latex: "F_\\parallel = m g \\sin\\theta",
-      },
-      { label: "Normal force", latex: "N = m g \\cos\\theta" },
-      {
-        label: "Maximum static friction",
+        ref: "static-friction-max",
         latex: "f_{s,\\max} = \\mu_s N = \\mu_s m g \\cos\\theta",
       },
     ],
@@ -250,15 +204,9 @@ const simulationOverviews = {
       "Angular velocity and period",
     ],
     formulas: [
-      {
-        label: "Centripetal acceleration",
-        latex: "a_c = \\dfrac{v^{2}}{r} = \\omega^{2} r",
-      },
-      { label: "Centripetal force", latex: "F_c = \\dfrac{m v^{2}}{r}" },
-      {
-        label: "Period",
-        latex: "T = \\dfrac{2\\pi r}{v} = \\dfrac{2\\pi}{\\omega}",
-      },
+      "centripetal-acceleration",
+      "centripetal-force",
+      "circular-period",
     ],
   },
 
@@ -280,14 +228,12 @@ const simulationOverviews = {
     ],
     formulas: [
       {
+        ref: "newtons-law-of-gravitation",
         label: "Gravitational force between two bodies",
         latex:
           "\\vec{F}_{ij} = -\\,G\\,\\dfrac{m_i m_j}{|\\vec{r}_{ij}|^{2}}\\,\\hat{r}_{ij}",
       },
-      {
-        label: "Net force on body i",
-        latex: "\\vec{F}_i = \\sum_{j \\ne i} \\vec{F}_{ij}",
-      },
+      "gravitational-superposition",
     ],
   },
 
@@ -307,13 +253,13 @@ const simulationOverviews = {
       "Total mechanical energy stays constant without friction",
     ],
     formulas: [
-      { label: "Restoring force", latex: "F = -k\\,x" },
+      "hookes-law",
+      "shm-position",
       {
-        label: "Position over time",
-        latex:
-          "x(t) = A\\cos(\\omega t + \\varphi),\\quad \\omega = \\sqrt{k/m}",
+        ref: "elastic-potential-energy",
+        label: "Total energy",
+        latex: "E = \\tfrac{1}{2} k A^{2}",
       },
-      { label: "Total energy", latex: "E = \\tfrac{1}{2} k A^{2}" },
     ],
   },
 
@@ -333,14 +279,7 @@ const simulationOverviews = {
       "Deterministic chaos and sensitivity to initial conditions",
       "Energy conservation in the absence of damping",
     ],
-    formulas: [
-      { label: "Lagrangian", latex: "\\mathcal{L} = T - V" },
-      {
-        label: "Euler–Lagrange equation",
-        latex:
-          "\\dfrac{d}{dt}\\dfrac{\\partial \\mathcal{L}}{\\partial \\dot{\\theta}_i} - \\dfrac{\\partial \\mathcal{L}}{\\partial \\theta_i} = 0",
-      },
-    ],
+    formulas: ["lagrangian", "euler-lagrange"],
   },
 
   CollisionSimulation: {
@@ -358,16 +297,14 @@ const simulationOverviews = {
       "Centre-of-mass frame",
     ],
     formulas: [
+      "momentum-conservation",
       {
-        label: "Momentum conservation",
-        latex: "m_1 u_1 + m_2 u_2 = m_1 v_1 + m_2 v_2",
-      },
-      {
+        ref: "elastic-collision",
         label: "Elastic collision, final velocity of body 1",
         latex:
           "v_1 = \\dfrac{m_1 - m_2}{m_1 + m_2}\\,u_1 + \\dfrac{2 m_2}{m_1 + m_2}\\,u_2",
       },
-      { label: "Restitution", latex: "e = \\dfrac{v_2 - v_1}{u_1 - u_2}" },
+      "coefficient-of-restitution",
     ],
   },
 
@@ -398,17 +335,7 @@ const simulationOverviews = {
       "Configuration/velocity space and rotations",
       "Why the count is exact (no collision may be missed)",
     ],
-    formulas: [
-      {
-        label: "Collisions for a mass ratio of 100ᴺ",
-        latex: "N_{\\text{collisions}} = \\lfloor \\pi \\cdot 10^{N} \\rfloor",
-      },
-      {
-        label: "Conserved quantities per collision",
-        latex:
-          "\\sum m_i v_i = \\text{const},\\qquad \\sum \\tfrac{1}{2} m_i v_i^{2} = \\text{const}",
-      },
-    ],
+    formulas: ["pi-collision-count", "momentum-conservation", "kinetic-energy"],
   },
 
   TrigonometricCircle: {
@@ -428,19 +355,34 @@ const simulationOverviews = {
       "Amplitude, angular frequency and phase of a sine wave",
       "Inverse trigonometric functions",
     ],
+    formulas: ["pythagorean-identity", "tangent-ratio", "sine-wave"],
+  },
+
+  RayTracing: {
+    intro:
+      "A ray tracer makes an image by following rays of light backwards: from the camera, through each pixel, into the scene. At the first surface a ray hits, the laws of geometric optics decide the colour — how squarely the surface faces the light, how far away the light is, whether something casts a shadow, and what the surface reflects. Click any pixel to follow its ray and see every equation with its live numbers.",
+    controls: [
+      "Camera, sphere and light positions (drag them in the diagram)",
+      "Field of view",
+      "Sphere radius",
+      "Light intensity I₀",
+      "Ambient, diffuse and specular coefficients",
+      "Shininess n and reflectivity ρ",
+    ],
+    concepts: [
+      "Rays as the model of geometric optics",
+      "Ray–sphere intersection and the discriminant",
+      "Lambert's cosine law",
+      "The inverse-square law for a point source",
+      "Shadows as blocked straight-line paths",
+      "The law of reflection and specular highlights",
+    ],
     formulas: [
-      {
-        label: "Pythagorean identity",
-        latex: "\\sin^{2}\\theta + \\cos^{2}\\theta = 1",
-      },
-      {
-        label: "Tangent",
-        latex: "\\tan\\theta = \\dfrac{\\sin\\theta}{\\cos\\theta}",
-      },
-      {
-        label: "Generalized sine wave",
-        latex: "y = A\\sin(\\omega\\theta + \\varphi)",
-      },
+      "ray-equation",
+      "ray-sphere-intersection",
+      "inverse-square-law",
+      "lamberts-cosine-law",
+      "law-of-reflection",
     ],
   },
 

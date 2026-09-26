@@ -1,32 +1,44 @@
 // app/components/controls/EmbedCodeControl.jsx
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useTranslation from "../../hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCode } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCode } from "@fortawesome/free-solid-svg-icons";
+import { buildSimulationUrl } from "../../utils/simulationUrl.js";
 
 export default function EmbedCodeControl({
   simulation,
   inputs,
-  width = 600,
-  height = 400,
+  initialInputs = {},
+  width = "100%",
+  height = 640,
 }) {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
-  // Build URL with query parameters
-  const url = useMemo(() => {
-    //useMemo hook grabs window immedialtely causing error during server side rendering
-    if (typeof window === "undefined") return "";
-    const params = new URLSearchParams(inputs).toString();
-    return `${window.location.origin}/${simulation}?${params}`;
-  }, [simulation, inputs]);
+  const [copied, setCopied] = useState(false);
 
-  // Generate embed code
-  const embedCode = `<iframe src="${url}" width="${width}" height="${height}" frameborder="0" allowfullscreen></iframe>`;
+  // `?embed=1` strips the site chrome (see the inline script in app/layout.tsx).
+  const url = useMemo(
+    () =>
+      buildSimulationUrl(simulation, inputs, initialInputs, { embed: true }),
+    [simulation, inputs, initialInputs]
+  );
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(embedCode);
-    alert(t("Embed code copied!"));
+  const embedCode = `<iframe src="${url}" title="PhysicsHub simulation" width="${width}" height="${height}" style="border:0" loading="lazy" allowfullscreen></iframe>`;
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(embedCode);
+      setCopied(true);
+    } catch (error) {
+      console.warn("[EmbedCodeControl] Clipboard write failed:", error);
+    }
   };
 
   return (
@@ -34,9 +46,14 @@ export default function EmbedCodeControl({
       <button
         onClick={handleCopy}
         className="btn-glow"
-        title={t("Copy embed code to clipboard")}
+        title={
+          copied ? t("Embed code copied!") : t("Copy embed code to clipboard")
+        }
+        aria-label={
+          copied ? t("Embed code copied!") : t("Copy embed code to clipboard")
+        }
       >
-        <FontAwesomeIcon icon={faCode} />
+        <FontAwesomeIcon icon={copied ? faCheck : faCode} />
       </button>
     </div>
   );

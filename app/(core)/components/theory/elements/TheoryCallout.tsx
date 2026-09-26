@@ -6,12 +6,13 @@ import {
   faExclamationTriangle,
   faLightbulb,
   faCheck,
+  faKey,
 } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps, Children } from "../types";
 import { parseBoldText } from "../utils";
 
 interface TheoryCalloutProps extends EditableProps, Children {
-  type?: "info" | "warning" | "tip" | "success";
+  type?: "info" | "warning" | "tip" | "success" | "key";
   title?: string;
 }
 
@@ -35,6 +36,7 @@ export const TheoryCallout: React.FC<TheoryCalloutProps> = ({
     },
     tip: { icon: faLightbulb, cls: "callout-tip", label: t("Tip") },
     success: { icon: faCheck, cls: "callout-success", label: t("Success") },
+    key: { icon: faKey, cls: "callout-key", label: t("Key fact") },
   };
 
   const cfg = CALLOUT_CONFIG[type] || CALLOUT_CONFIG.info;

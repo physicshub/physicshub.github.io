@@ -9,15 +9,20 @@ import {
   faSquareRootAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { BlockMath, InlineMath } from "react-katex";
+import Link from "next/link";
 import { EditableProps } from "../types";
+import { getFormula, formulaHref } from "../../../data/formulas/index.js";
 
 interface TheoryFormulaProps extends EditableProps {
   latex: string;
+  // Id of the Formulary card this formula belongs to; adds a link to it.
+  formulaRef?: string;
   inline?: boolean;
 }
 
 export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
   latex,
+  formulaRef,
   inline,
   isEditing,
   onContentUpdate,
@@ -32,6 +37,7 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
     isEditing ? "preview" : "edit"
   );
   const [currentLatex, setCurrentLatex] = useState(latex);
+  const card = formulaRef ? getFormula(formulaRef) : null;
 
   useEffect(() => {
     setCurrentLatex(latex);
@@ -150,6 +156,11 @@ export const TheoryFormula: React.FC<TheoryFormulaProps> = ({
           <BlockMath math={latex} />
         )
       ) : null}
+      {card && (
+        <Link className="theory-formula__card-link" href={formulaHref(card.id)}>
+          {card.name} · {t("formula card")} →
+        </Link>
+      )}
       <span aria-live="polite" className="visually-hidden" ref={liveRef}></span>
     </div>
   );

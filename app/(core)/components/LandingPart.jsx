@@ -124,6 +124,8 @@ export function LandingPart({
       <Popup
         isOpen={open}
         onClose={() => setOpen(false)}
+        size="sm"
+        icon={ctas.find((cta) => cta.popup)?.icon}
         popupContent={ctas.find((cta) => cta.popup)?.popup}
       />
 

@@ -301,6 +301,25 @@
   align-items: stretch;
 }
 
+/* Takeaways / FAQ: the heading, questions and answers are edited in place but
+   don't carry the .editable-block class, so give them their own affordance. */
+.theory-faq [contenteditable="true"],
+.theory-takeaways [contenteditable="true"] {
+  outline: none;
+  border-radius: var(--radius-sm);
+  transition: box-shadow 0.15s;
+}
+
+.theory-faq [contenteditable="true"]:hover,
+.theory-takeaways [contenteditable="true"]:hover {
+  background-color: var(--color-background-hover);
+}
+
+.theory-faq [contenteditable="true"]:focus,
+.theory-takeaways [contenteditable="true"]:focus {
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
 /* --- Drag & drop block wrapper --------------------------------------------- */
 
 .theory-block-wrapper {

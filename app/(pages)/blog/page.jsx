@@ -1,9 +1,10 @@
 // app/(pages)/blog/page.jsx
 "use client";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Tag from "../../(core)/components/Tag.jsx";
 import { blogsArray } from "../../(core)/data/articles/index.js";
+import { getFirstBlogImage } from "../../(core)/utils/blogImages.js";
 import { Search } from "../../(core)/components/Search.jsx";
 import {
   getBlogFacets,
@@ -16,6 +17,8 @@ import {
 import { useRouter } from "next/navigation";
 import useMobile from "../../(core)/hooks/useMobile.ts";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../(core)/hooks/useCurriculum.ts";
+import { getPlacement, localizeTags } from "../../(core)/data/curricula.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -38,7 +41,7 @@ const emptyFilter = {
   sort: DEFAULT_SORT,
 };
 
-const textMatches = (blog, text) => {
+const textMatches = (blog, text, curriculumId) => {
   const terms = text
     .toLowerCase()
     .trim()
@@ -47,57 +50,25 @@ const textMatches = (blog, text) => {
   if (terms.length === 0) return true;
 
   const tagNames = getChapterTagNames(blog.tags);
+  // The reader's own level vocabulary too: "a-level", "year 12", "class 11".
+  const placement = getPlacement(blog, curriculumId);
+  const levelText = placement
+    ? [placement.stage.name, placement.grades].filter(Boolean).join(" ")
+    : "";
   return terms.every(
     (term) =>
       blog.name.toLowerCase().includes(term) ||
       (blog.desc || "").toLowerCase().includes(term) ||
-      tagNames.includes(term)
+      tagNames.includes(term) ||
+      levelText.toLowerCase().includes(term)
   );
-};
-
-const BLOG_THUMBNAILS = {
-  "what-is-physics":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Milky_Way_Night_Sky_Black_Rock_Desert_Nevada.jpg",
-  "class-12-physics-complete-guide":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Single_slit_and_double_slit2.jpg",
-  "physics-bouncing-ball-comprehensive-educational-guide":
-    "https://www.fisicalab.com/sites/all/files/contenidos/en/kinematic/freefall.png",
-  "comprehensive-guide-to-vector-operations":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Vector_addition.svg",
-  "ball-uniformly-accelerated-motion":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Acceleration.svg",
-  "ball-free-fall-comprehensive-guide":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Free_fall.svg",
-  "spring-connection":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Simple_harmonic_motion_animation.gif",
-  "physics-of-pendulum-explained":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Pendulum_animation.gif",
-  "projectile-parabolic-motion":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Projectile_motion.svg",
-  "physics-behind-three-body-problem":
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Three-body_Problem_Animation_with_COM.gif",
-  "pi-from-block-collisions-explained":
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Galperin_billiards.svg/600px-Galperin_billiards.svg.png",
-};
-
-const getFirstBlogImage = (blog) => {
-  if (blog.thumbnail) return blog.thumbnail;
-  if (BLOG_THUMBNAILS[blog.slug]) return BLOG_THUMBNAILS[blog.slug];
-
-  for (const section of blog.theory?.sections ?? []) {
-    const imageBlock = section.blocks?.find(
-      (block) => block.type === "image" && block.src
-    );
-
-    if (imageBlock?.src) return imageBlock.src;
-  }
-
-  return "";
 };
 
 // ─── ListRow – used only in list view ─────────────────────────────────────────
 function ListRow({ chap, t }) {
   const router = useRouter();
+  const { curriculumId } = useCurriculum();
+  const tags = localizeTags(chap.tags, chap, curriculumId);
   return (
     <article
       className="blog-list-row"
@@ -108,7 +79,7 @@ function ListRow({ chap, t }) {
     >
       <div className="blog-list-row__meta">
         <div className="blog-list-row__tags">
-          {chap.tags.map((tag, i) => (
+          {tags.map((tag, i) => (
             <Tag key={tag.id || i} tag={tag} />
           ))}
         </div>
@@ -123,6 +94,8 @@ function ListRow({ chap, t }) {
 // ─── CompactCard – used only in compact view ──────────────────────────────────
 function CompactCard({ chap, t }) {
   const router = useRouter();
+  const { curriculumId } = useCurriculum();
+  const tags = localizeTags(chap.tags, chap, curriculumId);
   return (
     <article
       className="blog-compact-card"
@@ -132,7 +105,7 @@ function CompactCard({ chap, t }) {
       onKeyDown={(e) => e.key === "Enter" && router.push(`/blog/${chap.slug}`)}
     >
       <div className="blog-compact-card__tags">
-        {chap.tags.map((tag, i) => (
+        {tags.map((tag, i) => (
           <Tag key={tag.id || i} tag={tag} />
         ))}
       </div>
@@ -165,6 +138,7 @@ function ViewToggle({ current, onChange, t, viewModes }) {
 export default function Blog() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const { curriculumId } = useCurriculum();
 
   const VIEW_MODES = [
     { id: "card", icon: faTableCells, label: t("Card view") },
@@ -182,14 +156,21 @@ export default function Blog() {
 
   const isFiltering = hasActiveFacets(filter);
 
+  // Level facets are stage ids of the reader's curriculum.
+  const getFacets = useCallback(
+    (blog) => getBlogFacets(blog, curriculumId),
+    [curriculumId]
+  );
+
   const filteredUnpinned = useMemo(() => {
     const matched = unpinnedBlogs.filter(
       (blog) =>
-        textMatches(blog, filter.text) &&
-        facetMatches(getBlogFacets(blog), filter)
+        textMatches(blog, filter.text, curriculumId) &&
+        facetMatches(getFacets(blog), filter)
     );
     return sortCatalog(matched, filter.sort, {
-      getFacets: getBlogFacets,
+      getFacets,
+      curriculumId,
       getName: (blog) => blog.name,
       getRecency: (blog) => parseCatalogDate(blog.date),
     });
@@ -242,7 +223,7 @@ export default function Blog() {
         <div className="header-controls">
           <Search
             dataset={blogsArray}
-            getFacets={getBlogFacets}
+            getFacets={getFacets}
             onChange={setFilter}
             itemNoun="blogs"
             resultCount={filteredUnpinned.length}

@@ -4,6 +4,7 @@ import useTranslation from "../../../../../app/(core)/hooks/useTranslation.ts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { EditableProps } from "../types.ts";
+import { parseBoldText } from "../utils.tsx";
 
 interface TheoryTableProps extends EditableProps {
   columns: string[];
@@ -133,7 +134,7 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
                 onBlur={(e) => handleHeaderBlur(e, i, c)}
                 className={isBlockEditable ? "editable-block" : ""}
               >
-                {t(c)}
+                {isBlockEditable ? c : parseBoldText(t(c))}
               </th>
             ))}
           </tr>
@@ -149,7 +150,9 @@ export const TheoryTable: React.FC<TheoryTableProps> = ({
                   onBlur={(e) => handleCellBlur(e, r, c)}
                   className={isBlockEditable ? "editable-block" : ""}
                 >
-                  {t(row[c] as string)}
+                  {isBlockEditable
+                    ? (row[c] as string)
+                    : parseBoldText(t(row[c] as string))}
                 </td>
               ))}
             </tr>

@@ -4,7 +4,9 @@ import useTranslation from "../../hooks/useTranslation.ts";
  * The unified numeric parameter control.
  *
  * - When the field declares BOTH `min` and `max` it renders as a slider with a
- *   glowing accent fill, an editable value box and a min/max scale.
+ *   glowing accent fill, an editable value box and a min/max scale. The range
+ *   bounds the slider only: a typed value may go beyond it (the thumb pins to
+ *   the nearest end).
  * - Otherwise it renders as a value box flanked by −/+ stepper buttons.
  *
  * The unit of measure is shown once, as the standardized chip in the head

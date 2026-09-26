@@ -781,60 +781,106 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+}
+
+/* Each step is a card; the number badge sits on the top edge and a hairline
+   connects the badges across the row, so the three read as one sequence. */
+.lp-how__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklab, var(--ph-fg), transparent 90%);
+  background: color-mix(in oklab, var(--ph-fg), transparent 96%);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.lp-how__step:hover {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 55%);
+  background: color-mix(in oklab, var(--accent-color), transparent 94%);
+}
+
+/* Connector: from this badge to the next card. */
+.lp-how__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(clamp(1.25rem, 2.4vw, 1.75rem) + 1.25rem);
+  left: calc(100% - 0.5rem);
+  width: calc(clamp(1rem, 2.4vw, 1.5rem) + 1rem);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--accent-color), transparent 40%),
+    color-mix(in oklab, var(--accent-color), transparent 85%)
+  );
+  pointer-events: none;
 }
 
 .lp-how__num {
+  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  margin-bottom: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--accent-color), transparent 55%);
+  background: color-mix(in oklab, var(--accent-color), transparent 88%);
   color: var(--accent-color);
   font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
+.lp-how__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 .lp-how__step-title {
-  margin: 0 0 0.5rem;
+  margin: 0;
   font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .lp-how__step-body {
   margin: 0;
-  max-width: 34ch;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--ph-fg-muted);
 }
 
 @media (max-width: 760px) {
   .lp-how__steps {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
   }
 
-  /* Stacked: pair the number with its step title on one baseline instead of
-     letting it float alone above the text. */
+  /* Stacked: number on the left, text on the right; the connector becomes a
+     short vertical line between cards' badges. */
   .lp-how__step {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: 0.85rem;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
   }
 
-  .lp-how__num {
-    margin-bottom: 0;
-  }
-
-  .lp-how__step-title {
-    margin: 0;
-  }
-
-  .lp-how__step-body {
-    grid-column: 2;
+  .lp-how__step:not(:last-child)::after {
+    top: calc(100% - 0.5rem);
+    left: calc(clamp(1.25rem, 2.4vw, 1.75rem) + 1.25rem);
+    width: 1px;
+    height: calc(clamp(1rem, 2.4vw, 1.5rem) + 1rem);
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--accent-color), transparent 40%),
+      color-mix(in oklab, var(--accent-color), transparent 85%)
+    );
   }
 }
 

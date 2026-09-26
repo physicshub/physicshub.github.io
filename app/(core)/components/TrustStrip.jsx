@@ -20,7 +20,7 @@ export default function TrustStrip() {
 
   const points = [
     { icon: faCircleCheck, label: t("Free forever") },
-    { icon: faUserSlash, label: t("No account") },
+    { icon: faUserSlash, label: t("No login required") },
     { icon: faBan, label: t("No ads") },
     { icon: faCodeBranch, label: t("Open source") },
     { icon: faCircleCheck, label: `${total} ${t("simulations")}` },

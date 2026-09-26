@@ -31,6 +31,7 @@ export default function DownloadButton({ inputs, simulation }) {
         onClick={handleClick}
         className="btn-glow"
         title={t("Download inputs as JSON file")}
+        aria-label={t("Download inputs as JSON file")}
       >
         <FontAwesomeIcon icon={faDownload} />
       </button>
@@ -38,19 +39,21 @@ export default function DownloadButton({ inputs, simulation }) {
       <Popup
         isOpen={open}
         onClose={() => setOpen(false)}
+        size="sm"
+        icon={faDownload}
         popupContent={{
-          title: t("Download is starting..."),
-          description: t(
-            "If the download does not start automatically, please click on 'Download'."
-          ),
+          title: "Your download is starting",
+          description:
+            "The current parameters are saved as a JSON file. Load it later with the upload button to pick up where you left off.",
           buttons: [
             {
-              label: (
-                <span>
-                  <FontAwesomeIcon icon={faDownload} /> {t("Download")}
-                </span>
-              ),
-              onClick: () => handleDownload(),
+              label: "Close",
+              onClick: () => setOpen(false),
+            },
+            {
+              label: "Download again",
+              icon: faDownload,
+              onClick: handleDownload,
               type: "primary",
             },
           ],

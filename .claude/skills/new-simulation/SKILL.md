@@ -52,7 +52,8 @@ integrates motion by hand, stop: the answer is an element.
 
 ## The four files
 
-Adding a simulation named `<Name>` touches four places that must agree on the name.
+Adding a simulation named `<Name>` touches four places that must agree on the name
+(plus its overview, below).
 
 1. **`simulations/<Name>.jsx`** — `"use client"`, default-exports
    `createSimulation({...})`. Nothing else. Imports use _relative_ paths
@@ -62,7 +63,13 @@ Adding a simulation named `<Name>` touches four places that must agree on the na
 3. **`app/(core)/data/chapters.js`** — the catalogue entry. Missing entry means a
    404 in the static export (`dynamicParams = false`).
 4. Optionally `app/(core)/data/articles/<slug>.js`, registered in
-   `articles/index.js`, referenced by `relatedBlogSlug`.
+   `articles/index.js`, referenced by `relatedBlogSlug`. The article is not embedded
+   on the simulation page: the page links to it and lists related articles
+   (`RelatedArticles`, shown as the same cards as `/blog`, ranked by `utils/relatedArticles.js` from the simulation's
+   `tags` and name, so pick accurate topical tags). **Writing that article?
+   Load the `new-article` skill first** (`.claude/skills/new-article/SKILL.md`) —
+   it is the house style: answer-first structure, the `takeaways`/`faq`/key-fact
+   blocks, length targets, and the no-code rule for non-developer articles.
 
 ### 1. The config module
 
@@ -70,6 +77,14 @@ Adding a simulation named `<Name>` touches four places that must agree on the na
 // app/(core)/data/configs/Example.js
 import { gravityTypes, EARTH_G_SI } from "../../constants/Config.js";
 
+// Every key here is a shareable URL parameter (`?mass=2`) and part of any
+// community preset, and the *type* of each default decides how a URL or preset
+// value is parsed (utils/simulationUrl.js — values of another type are dropped):
+// keep numbers as numbers and booleans as booleans, never "1" or "true".
+// Only flat values (number / boolean / string) round-trip through a link, a
+// colour default must be a hex string ("#rrggbb"), a string that isn't a
+// colour must be a select with `options` (or a short plain token ≤ 32 chars),
+// and a preset stores at most 64 inputs.
 export const INITIAL_INPUTS = {
   mass: 1, // SI units throughout: kg, m, s, N
   gravity: EARTH_G_SI,
@@ -124,9 +139,12 @@ Field `type` is one of `number` (`min`/`max`/`step`/`placeholder`), `checkbox`,
   simulation-unit quantities that have no SI unit.
 
 A `number` field with **both `min` and `max`** renders as a slider + editable
-value box + min/max scale, and the typed value is clamped to that range — so
-pick bounds a learner would actually want. Without a full range it renders as a
-value box with −/+ steppers.
+value box + min/max scale. The range bounds the slider only: a learner may type
+a value beyond it (the thumb pins to the nearest end), so the simulation must
+stay stable for out-of-range inputs — pick slider bounds a learner would
+actually want, and never rely on them for safety. Without a full range it
+renders as a value box with −/+ steppers, and a single `min` or `max` is a hard
+limit.
 
 ### 2. The simulation
 
@@ -210,6 +228,45 @@ bands. Topic tags are purely topical; never place the old `EASY` / `MEDIUM` /
 content, not the target band: e.g. SHM is `upperSecondary` + `extended`, phase
 space or chaos is `undergraduate` + `advanced`.
 
+`LEVELS` is the international default. Readers also see the level in their own
+country's system (UK "A-Level · Year 13", India "Class 11", Singapore "JC1"…),
+resolved from `data/curriculumTopics.js`. **Add a `"sim:<Name>": "<concept>"` row
+to `CONTENT_TOPICS` there**, reusing a concept from `TOPIC_PLACEMENTS` when one
+fits (two springs sims share Hooke's law, say) or adding one with a placement for
+all six curricula (`us uk in au it sg`). Place it where each country first
+teaches the depth the sim actually reaches, not where the concept is first
+mentioned — check the real syllabus, and use the `note` argument for quirks. If
+you skip this the sim still works (it falls back to its international level) but
+its per-country level is only approximate.
+
+### 4. The overview and its formulas
+
+`app/(core)/data/simulationOverviews.js`, keyed by `<Name>`, holds the
+server-rendered text under the stage: `intro`, `controls`, `concepts` and
+`formulas`. **`formulas` lists Formulary ids, not LaTeX.** Each formula is a card
+in `app/(core)/data/formulas/<domain>.js`. The simulation page shows a compact
+version of the card, and `/formulas` automatically lists the simulation under
+"Used in".
+
+```js
+formulas: [
+  "hookes-law",                                   // a card, shown as it is
+  { ref: "elastic-potential-energy",              // the card, in this sim's own form
+    label: "Total energy", latex: "E = \\tfrac{1}{2} k A^{2}" },
+],
+```
+
+If the formula you need has no card yet, add one to the right domain file. It
+needs `id` (kebab-case, permanent: it is the URL anchor), `name`, `latex`,
+`summary`, `variables` (`key`, `latex`, `name`, SI `unit`, a typical `value`),
+`validity`, `tags`, `level`, `difficulty` and `related`. Add `solve` (one plain
+function per variable the calculator can solve for, taking SI values and
+radians; return NaN when there is no real solution) wherever the formula makes
+sense to compute. `example`, `pitfalls`, `note` and `history` are optional, so
+only write them when they teach something. An unknown id or a broken card fails
+the build (`validateFormulas` in `utils/formulaUsage.js`, run by
+`generate:feeds`).
+
 ## The createSimulation spec
 
 `createSimulation` already owns: input state and localStorage, URL params, the
@@ -229,11 +286,16 @@ of it in a simulation.
 | `simInfoRefs`                | no       | factory for refs that accumulate across frames     |
 
 Hook context: `{ p, world, inputs, handles, refs, infoRefs, bounds, dt, steps,
-setOverlay, rebuild }`.
+setOverlay, setInput, rebuild }`.
 
 - **`inputs` is a live proxy.** Safe to capture in a closure; always current.
 - **`bounds`** is `{ width, height }` in metres, kept in sync with the canvas.
 - **`refs`** is free-form per-simulation storage, reset on reset.
+- **`setInput(name, value)`** writes an input back from the sketch: the
+  slider/value box follows, and `inputs` returns the new value from the next
+  frame on. Use it only when a canvas gesture _is_ a parameter change (dragging
+  the light in `RayTracing` moves its position sliders) — never to smuggle
+  simulation state through the inputs; that belongs in `refs` or on a body.
 - **`rebuild()`** discards the world and re-runs `build` — use it when an input
   changes _what exists_ (a body count), not merely a parameter.
 - **`build` re-runs on every resize, so it must be idempotent.** Never mutate
@@ -377,6 +439,7 @@ worse than no simulation. Before you finish:
 | `ThreeBody.jsx`           | `substeps`, and initial conditions that are real solutions |
 | `DoublePendulum.jsx`      | when to leave the pipeline: exact Lagrangian + `rk4`       |
 | `PiCollisions.jsx`        | event-driven element, `kinematic: true` bodies             |
+| `RayTracing.jsx`          | no forces: cached progressive render, `setInput` on drag   |
 
 ## Before you call it done
 

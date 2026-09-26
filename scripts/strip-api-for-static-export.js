@@ -16,6 +16,12 @@
 // strip and restore the directory stays in the backup, showing up as a deleted
 // app/api in `git status`; the next strip run puts it back before doing
 // anything else, and `git checkout app/api` recovers it by hand.
+//
+// It also clears the generated route types under `.next/`. tsconfig.json
+// includes `.next/types` and `.next/dev/types`, and `next dev` / a server-mode
+// build leave a `validator.ts` there that imports every `app/api/**/route.js`.
+// With app/api moved aside, the type-check of the export would fail with
+// TS2307 "Cannot find module '../../../app/api/...'". Next regenerates them.
 
 import { rename, rm } from "fs/promises";
 import { existsSync } from "fs";
@@ -23,6 +29,10 @@ import path from "path";
 
 const apiDir = path.resolve("app/api");
 const backupDir = path.resolve(".api-backup-during-static-build");
+const staleTypeDirs = [
+  path.resolve(".next/types"),
+  path.resolve(".next/dev/types"),
+];
 
 async function main() {
   // Self-heal a backup left behind by an earlier crashed build.
@@ -43,6 +53,10 @@ async function main() {
 
   console.log("Moving app/api aside for the static export build...");
   await rename(apiDir, backupDir);
+
+  for (const dir of staleTypeDirs) {
+    await rm(dir, { recursive: true, force: true });
+  }
 }
 
 main().catch((err) => {

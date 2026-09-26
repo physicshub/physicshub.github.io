@@ -42,12 +42,19 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
    * `snap` rounds to the field's `step` precision — used for slider / stepper
    * moves so they don't leave float dust like 0.30000000000000004; typed input
    * keeps whatever precision the user entered.
+   * A slider field (both `min` and `max`) only bounds the slider itself: a
+   * typed value may go beyond the range, so only `snap` moves are clamped.
+   * Fields with a single bound (a stepper) keep it as a hard limit.
    */
   const commitNumber = (field: FieldConfig, num: number, snap = false) => {
     let v = num;
     if (snap) v = Number(v.toFixed(decimalsOf(field.step)));
-    if (typeof field.min === "number") v = Math.max(field.min, v);
-    if (typeof field.max === "number") v = Math.min(field.max, v);
+    const isSlider =
+      typeof field.min === "number" && typeof field.max === "number";
+    if (snap || !isSlider) {
+      if (typeof field.min === "number") v = Math.max(field.min, v);
+      if (typeof field.max === "number") v = Math.min(field.max, v);
+    }
     onChange(field.name, v);
     setLastValidValues((prev) => ({ ...prev, [field.name]: v }));
   };
@@ -116,7 +123,7 @@ export default function DynamicInputs({ config, values, onChange }: Props) {
                 const currentValue = values[field.name];
 
                 if (typeof currentValue === "number") {
-                  // Re-clamp in case min/max changed with another input.
+                  // Re-apply single-bound limits in case they changed with another input.
                   commitNumber(field, currentValue);
                   return;
                 }

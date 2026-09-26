@@ -54,6 +54,13 @@
   transform: translateY(-1px);
 }
 
+/* A disabled button must look disabled, or a click on it reads as broken. */
+.ph-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Larger call to action variant */
 .main-btn {
   --pad-x: 1.35rem;

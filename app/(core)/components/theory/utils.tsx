@@ -2,6 +2,7 @@
 import React, { useCallback } from "react";
 import { InlineMath } from "react-katex";
 import { EditableProps } from "./types";
+import { getFormula, formulaHref } from "../../data/formulas/index.js";
 
 /**
  * Render a run of prose text into React nodes, resolving the lightweight
@@ -13,6 +14,8 @@ import { EditableProps } from "./types";
  *   **text**          → <strong>
  *   `code`            → <code class="theory-inline-code">
  *   [label](https://) → <a class="theory-inline-link">
+ *   [[formula-id]]    → link to that Formulary card, labelled with its name
+ *                       (an unknown id fails the build; see utils/formulaUsage.js)
  *
  * Math is matched first so a `$...$` span is never chewed up by the `**` or
  * backtick rules. `**bold**` is parsed recursively so emphasis can still wrap
@@ -24,7 +27,7 @@ export const parseInlineText = (text: string): React.ReactNode[] => {
   // Constructed per call: the `g` flag carries lastIndex state, and this
   // function recurses into bold spans.
   const token =
-    /\$([^$]+?)\$|`([^`]+?)`|\[([^\]]+?)\]\(([^)\s]+?)\)|\*\*([^*]+?)\*\*/g;
+    /\$([^$]+?)\$|`([^`]+?)`|\[\[([a-z0-9-]+)\]\]|\[([^\]]+?)\]\(([^)\s]+?)\)|\*\*([^*]+?)\*\*/g;
 
   const nodes: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -36,7 +39,9 @@ export const parseInlineText = (text: string): React.ReactNode[] => {
       nodes.push(text.slice(lastIndex, match.index));
     }
 
-    const [, mathBody, codeBody, linkLabel, linkHref, boldBody] = match;
+    const [, mathBody, codeBody, formulaId, linkLabel, linkHref, boldBody] =
+      match;
+    const formula = formulaId !== undefined ? getFormula(formulaId) : null;
 
     if (mathBody !== undefined) {
       nodes.push(<InlineMath key={key++} math={mathBody.trim()} />);
@@ -45,6 +50,20 @@ export const parseInlineText = (text: string): React.ReactNode[] => {
         <code key={key++} className="theory-inline-code">
           {codeBody}
         </code>
+      );
+    } else if (formulaId !== undefined) {
+      nodes.push(
+        formula ? (
+          <a
+            key={key++}
+            className="theory-inline-formula"
+            href={formulaHref(formula.id)}
+          >
+            {formula.name}
+          </a>
+        ) : (
+          match[0]
+        )
       );
     } else if (linkLabel !== undefined) {
       const external = /^https?:\/\//.test(linkHref);

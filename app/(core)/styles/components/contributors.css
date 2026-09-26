@@ -69,16 +69,48 @@
 
 /* --- Loading skeleton ------------------------------------------------------ */
 
-.contributor-card-skeleton {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 15rem;
-  padding: 0.5rem;
-  border-radius: var(--border-radius);
-  background: #00e6e614;
-  border: #00e6e64b solid 1px;
-  animation: pulse 1.5s infinite;
+/* A skeleton is a real .contributor-card whose text is replaced by bars, so it
+   has the exact same box as the card it stands in for (no layout shift). */
+.contributor-card--skeleton {
+  pointer-events: none;
+  box-shadow: none;
+  animation: contributor-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.contributor-card--skeleton:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.contributor-skeleton__avatar {
+  flex: none;
+  box-sizing: border-box;
+  background: color-mix(in oklab, var(--accent-color), transparent 82%);
+}
+
+.contributor-skeleton__bar {
+  display: inline-block;
+  max-width: 100%;
+  border-radius: 6px;
+  vertical-align: top;
+  background: color-mix(in oklab, currentColor, transparent 86%);
+  user-select: none;
+}
+
+@keyframes contributor-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contributor-card--skeleton {
+    animation: none;
+  }
 }
 
 /* --- Light theme ----------------------------------------------------------- */

@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { motion, useReducedMotion } from "framer-motion";
 import chapters from "../data/chapters.js";
-import { LEVELS } from "../data/tags.js";
+import { getPlacement } from "../data/curricula.js";
 import useTranslation from "../hooks/useTranslation.ts";
+import useCurriculum from "../hooks/useCurriculum.ts";
 
 const container = (rm) => ({
   hidden: { opacity: 0 },
@@ -36,6 +37,7 @@ const FEATURED_LINKS = [
 export default function FeaturedSimulations() {
   const reduceMotion = useReducedMotion();
   const { t, meta } = useTranslation();
+  const { curriculumId } = useCurriculum();
   const isCompleted = meta?.completed || false;
 
   const list = Array.isArray(chapters) ? chapters : [];
@@ -71,7 +73,7 @@ export default function FeaturedSimulations() {
 
       <ul className="lp-featured__grid">
         {items.map((sim) => {
-          const level = LEVELS[sim.level];
+          const level = getPlacement(sim, curriculumId)?.stage;
           return (
             <motion.li
               key={sim.id}

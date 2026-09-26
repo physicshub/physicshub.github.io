@@ -4,12 +4,17 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import useTranslation from "../../(core)/hooks/useTranslation";
+import useRepoStats from "../../(core)/hooks/useRepoStats";
+
+const REPO_URL = "https://github.com/physicshub/physicshub.github.io";
 
 const menuItems = [
   { href: "/", label: "Home" },
   { href: "/simulations", label: "Simulations" },
   { href: "/blog", label: "Blog" },
+  { href: "/formulas", label: /* i18n */ "Formulas" },
   { href: "/about", label: "About" },
   { href: "/contribute", label: "Contribute" },
 ];
@@ -25,6 +30,7 @@ export default function NavMenu({ id, onNavigate }: NavMenuProps) {
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
   const { t, meta } = useTranslation();
+  const { stars } = useRepoStats();
   const isCompleted = meta?.completed || false;
 
   const updateUnderline = useCallback(() => {
@@ -94,6 +100,20 @@ export default function NavMenu({ id, onNavigate }: NavMenuProps) {
           style={{ left: underlineStyle.left, width: underlineStyle.width }}
         />
       </ul>
+
+      {/* Drawer only: the header's GitHub badge is hidden below 1080px. */}
+      <a
+        className="nav-drawer-github"
+        href={REPO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FontAwesomeIcon icon={faGithub} aria-hidden="true" />
+        <span>{t("Star the repo")}</span>
+        {stars != null ? (
+          <span className="nav-drawer-github__count">★ {stars}</span>
+        ) : null}
+      </a>
     </nav>
   );
 }

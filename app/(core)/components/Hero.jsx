@@ -165,7 +165,9 @@ export function Hero() {
         {/* Info text */}
         <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
           {chaptersCount}{" "}
-          {t("interactive simulations. Free forever, no account, no ads.")}
+          {t(
+            "interactive simulations. Free forever, no login required, no ads."
+          )}
         </motion.p>
       </div>
 

@@ -96,6 +96,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.DYNAMICS, TAGS.FORCES, TAGS.FRICTION],
     thumbnail: "/thumbnails/incline-plane.webp",
+    relatedBlogSlug: "inclined-plane-forces",
   },
   {
     id: 9,
@@ -107,6 +108,7 @@ const chapters = [
     difficulty: "extended",
     tags: [TAGS.DYNAMICS, TAGS.KINEMATICS, TAGS.VECTORS],
     thumbnail: "/thumbnails/circular.webp",
+    relatedBlogSlug: "circular-motion-centripetal-force",
   },
   {
     id: 10,
@@ -141,6 +143,7 @@ const chapters = [
     difficulty: "advanced",
     tags: [TAGS.DYNAMICS, TAGS.OSCILLATIONS, TAGS.ENERGY],
     thumbnail: "/thumbnails/double-pendulum.webp",
+    relatedBlogSlug: "double-pendulum-chaos",
   },
   {
     id: 13,
@@ -152,6 +155,7 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.COLLISION, TAGS.VECTORS],
     thumbnail: "/thumbnails/1d-collision.webp",
+    relatedBlogSlug: "elastic-inelastic-collisions",
   },
   {
     id: 14,
@@ -185,6 +189,19 @@ const chapters = [
     difficulty: "core",
     tags: [TAGS.MATH, TAGS.TRIGONOMETRY],
     thumbnail: "/thumbnails/trigonometric-circle.webp",
+    relatedBlogSlug: "unit-circle-trigonometry",
+  },
+  {
+    id: 17,
+    name: "Ray Tracing",
+    desc: "Follow a single ray of light from a camera into a 3D scene and watch a real ray tracer colour each pixel. Drag the camera, sphere and light to see the ray–sphere quadratic, Lambert's cosine law, the inverse-square law, shadows and the law of reflection update live.",
+    link: "/simulations/RayTracing",
+    level: "undergraduate",
+    alsoFor: ["upperSecondary"],
+    difficulty: "core",
+    tags: [TAGS.OPTICS, TAGS.VECTORS, TAGS.INTERACTIVE],
+    thumbnail: "/thumbnails/ray-tracing.webp",
+    relatedBlogSlug: "how-does-ray-tracing-work",
   },
   {
     id: 17,

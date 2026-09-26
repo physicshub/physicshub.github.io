@@ -244,8 +244,9 @@
 
 /* --- Body ------------------------------------------------------------------- */
 
+/* No `position` here on purpose: the CTA's stretched-link ::after must resolve
+   against .chapter-card, not the body, or the thumbnail stays unclickable. */
 .chapter-card-body {
-  position: relative;
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -332,7 +333,9 @@
   margin-top: 2px;
 }
 
-.chapter-card--blog .chapter-card-meta {
+/* Blog cards hide the metric tiles unless `detailed` (recommended reading on
+   simulation pages) asks for level, difficulty and read time. */
+.chapter-card--blog:not(.chapter-card--detailed) .chapter-card-meta {
   display: none;
 }
 
@@ -483,12 +486,6 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-}
-
-/* --- Blog variant ---------------------------------------------------------- */
-
-.chapter-card--blog .chapter-card-meta {
-  display: none;
 }
 
 /* --- Small screens ------------------------------------------------------------

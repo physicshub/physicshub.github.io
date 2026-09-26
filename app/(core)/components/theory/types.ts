@@ -27,13 +27,18 @@ export interface BlockData {
   type: string;
   text?: string;
   level?: number;
-  items?: string[] | string;
+  // string[] for `list` / `takeaways`; {q,a}[] for `faq`; a JSON string of
+  // either when a value is round-tripped through the editor.
+  items?: string[] | string | Array<{ q: string; a: string }>;
   ordered?: boolean;
   latex?: string;
+  // `formula` block: id of a Formulary card (data/formulas/). Supplies the
+  // LaTeX when `latex` is omitted and adds a link to the card.
+  ref?: string;
   inline?: boolean;
   code?: string;
   language?: string;
-  calloutType?: "info" | "warning" | "tip" | "success";
+  calloutType?: "info" | "warning" | "tip" | "success" | "key";
   title?: string;
   content?: string;
   columns?: string[];

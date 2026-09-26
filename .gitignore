@@ -42,6 +42,10 @@ lerna-debug.log*
 .env.local
 .env.*.local
 
+# ──────────────── Secrets ────────────────
+# Google service-account key for the Indexing API — never commit.
+.secrets/
+
 # ──────────────── Vercel ────────────────
 .vercel
 

@@ -1,0 +1,1083 @@
+/* ============================================================================
+   FORMULARY
+   /formulas (components/formulas/, app/(pages)/formulas/) and the compact
+   formula cards in a simulation's "Key formulas" (SimulationOverview).
+
+   The page is a reference instrument, not a card wall: a sticky index on the
+   left, and every formula as a full-width spec sheet — the formula on a
+   blueprint plate, its name, meaning and symbol legend beside it, and the
+   identity card (with the calculator as a readout panel) folding out below.
+   ============================================================================ */
+
+/* --- Shared ---------------------------------------------------------------- */
+
+/* Unit chip: same look as .sim-field__unit on the parameters panel, so a unit
+   reads the same on a slider and on a formula. */
+.formula-unit {
+  flex: none;
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent-color) 35%, transparent);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+/* The blueprint plate: a formula sits on the site's signature masked grid. */
+.fx-plate,
+.fx-mini__plate {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: var(--text-primary);
+}
+
+.fx-plate::before,
+.fx-mini__plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--ph-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ph-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse at center, #000 15%, transparent 78%);
+  pointer-events: none;
+}
+
+.fx-plate .katex-display,
+.fx-mini__plate .katex-display {
+  margin: 0;
+}
+
+/* --- Page ------------------------------------------------------------------ */
+
+.formulary {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8rem 2rem 6rem;
+}
+
+.formulary__header {
+  max-width: 68ch;
+  margin-bottom: 2.5rem;
+}
+
+.formulary__title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(2rem, 4.2vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--title-color);
+  text-wrap: balance;
+}
+
+.formulary__intro {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.formulary__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  margin: 1.1rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.formulary__stats span + span::before {
+  content: "·";
+  margin: 0 0.6rem;
+  color: color-mix(in oklab, var(--accent-color) 60%, transparent);
+}
+
+.formulary__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+}
+
+.formulary__main {
+  min-width: 0;
+}
+
+/* The shared catalogue bar is a full-page band elsewhere; here it sits in
+   the main column and aligns with the domain headings. */
+.formulary__main .filterbar {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/* --- Index (≥1024px) -------------------------------------------------------- */
+
+.formulary__index {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .formulary__layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  .formulary__index {
+    display: block;
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+    padding-right: 0.5rem;
+  }
+}
+
+.fx-index {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.fx-index__domain {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.fx-index__domain:hover {
+  color: var(--text-primary);
+  background: var(--color-background-hover);
+}
+
+.fx-index__count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.fx-index__list {
+  display: none;
+  list-style: none;
+  margin: 0.15rem 0 0.6rem 0.6rem;
+  padding: 0;
+  border-left: 1px solid var(--border-color);
+}
+
+.fx-index__group.is-active .fx-index__domain {
+  color: var(--accent-color);
+}
+
+.fx-index__group.is-active .fx-index__list,
+.fx-index--flat .fx-index__list {
+  display: block;
+}
+
+.fx-index__list a {
+  display: block;
+  margin-left: -1px;
+  padding: 0.3rem 0.75rem;
+  border-left: 1px solid transparent;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.fx-index__list a:hover {
+  color: var(--accent-color);
+  border-left-color: var(--accent-color);
+}
+
+/* Domain chips: the index for narrow screens. */
+.formulary__chips {
+  display: flex;
+  gap: 0.4rem;
+  margin: 1.25rem -2rem 0;
+  padding: 0 2rem 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.formulary__chips::-webkit-scrollbar {
+  display: none;
+}
+
+.formulary__chips a {
+  flex: none;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.84rem;
+  color: var(--text-color);
+  text-decoration: none;
+  white-space: nowrap;
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 70%);
+  border-radius: 999px;
+  transition: border-color 0.2s ease;
+}
+
+.formulary__chips a:hover {
+  border-color: var(--accent-color);
+}
+
+@media (min-width: 1024px) {
+  .formulary__chips {
+    display: none;
+  }
+}
+
+/* --- Domain groups ----------------------------------------------------------- */
+
+.formulary__group {
+  margin-top: 3.5rem;
+  scroll-margin-top: 6rem;
+}
+
+.formulary__group-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0;
+  padding-bottom: 0.85rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--title-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.formulary__group-count {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.formulary__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.formulary__empty {
+  margin: 3rem 0;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* --- A formula: the spec sheet ------------------------------------------------ */
+
+.fx {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border-color);
+  scroll-margin-top: 6rem;
+}
+
+.fx__face {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+@media (min-width: 760px) {
+  .fx__face {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2rem;
+    align-items: start;
+  }
+}
+
+.fx-plate {
+  min-height: 9rem;
+  padding: 1.75rem 2.75rem;
+  background: color-mix(in oklab, var(--accent-color) 3%, var(--card-bg));
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 80%);
+  border-radius: var(--border-radius);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.fx-plate__math {
+  max-width: 100%;
+  font-size: 1.28rem;
+}
+
+.fx-icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.fx-icon-btn:hover {
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color), transparent 90%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 70%);
+}
+
+.fx-plate__copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+/* A #hash that lands on an entry lights its plate for a moment. */
+.fx--flash .fx-plate {
+  border-color: var(--accent-color);
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--accent-color), transparent 75%),
+    0 0 24px color-mix(in oklab, var(--accent-color), transparent 70%);
+}
+
+.fx__info {
+  min-width: 0;
+}
+
+.fx__name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--title-color);
+}
+
+.fx__anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fx__anchor-icon {
+  margin-left: 0.5rem;
+  font-size: 0.7em;
+  color: var(--accent-color);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.fx__anchor:hover .fx__anchor-icon,
+.fx__anchor:focus-visible .fx__anchor-icon {
+  opacity: 1;
+}
+
+.fx__aka {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fx__summary {
+  max-width: 65ch;
+  margin: 0.8rem 0 1.1rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+/* Symbol legend: symbol · name · unit, in columns that wrap. */
+.fx-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 0.45rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fx-legend__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  min-width: 0;
+  font-size: 0.86rem;
+}
+
+.fx-legend__symbol {
+  flex: none;
+  min-width: 1.6rem;
+  color: var(--text-primary);
+}
+
+.fx-legend__name {
+  min-width: 0;
+  color: var(--text-secondary);
+}
+
+.fx-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1.1rem;
+  margin: 1.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.fx-meta__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fx-meta__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+/* --- Identity card ------------------------------------------------------------ */
+
+.fx-details {
+  margin-top: 1.4rem;
+}
+
+.fx-details__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.95rem;
+  list-style: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color), transparent 93%);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 70%);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.fx-details__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.fx-details__toggle:hover {
+  background: color-mix(in oklab, var(--accent-color), transparent 88%);
+  border-color: color-mix(in oklab, var(--accent-color), transparent 45%);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--accent-color), transparent 80%);
+}
+
+.fx-details__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-left: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-left: 1px solid
+    color-mix(in oklab, var(--accent-color), transparent 70%);
+}
+
+.fx-details__hint svg {
+  font-size: 0.8em;
+  color: var(--accent-color);
+}
+
+.fx-details__chevron {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: 0.1rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.fx-details[open] > .fx-details__toggle .fx-details__chevron {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.fx-details__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  margin-top: 1.25rem;
+  padding: 1.75rem;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--ph-radius);
+}
+
+@media (min-width: 900px) {
+  .fx-details__body {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+    gap: 2.5rem;
+  }
+}
+
+.fx-details__main,
+.fx-details__side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  min-width: 0;
+}
+
+.fx-section__title {
+  margin: 0 0 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent-color) 70%, var(--text-primary));
+}
+
+.fx-prose {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: var(--text-color);
+}
+
+.fx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.fx-table tr + tr th,
+.fx-table tr + tr td {
+  border-top: 1px solid var(--border-color);
+}
+
+.fx-table th,
+.fx-table td {
+  padding: 0.5rem 0.4rem;
+  text-align: left;
+  vertical-align: baseline;
+  color: var(--text-color);
+}
+
+.fx-table th {
+  width: 3.25rem;
+  padding-left: 0;
+  font-weight: 400;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.fx-table__unit {
+  width: 1%;
+  padding-right: 0;
+  text-align: right;
+}
+
+.fx-constants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.9rem 0 0;
+  padding: 0.75rem 0.9rem;
+  list-style: none;
+  font-size: 0.86rem;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius);
+}
+
+.fx-constants li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.fx-constants__value {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.fx-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  list-style: disc;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+.fx-list li + li {
+  margin-top: 0.35rem;
+}
+
+.fx-list li::marker {
+  color: var(--accent-color);
+}
+
+.fx-list--warn li::marker {
+  color: var(--warning-color);
+}
+
+.fx-example {
+  padding: 1rem 1.15rem;
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.fx-example__solution {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.fx-history__year {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.fx-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.fx-links a {
+  color: var(--accent-color);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+.fx-links a:hover {
+  text-decoration: underline;
+}
+
+.fx-links--usage li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.fx-links__kind {
+  flex: none;
+  min-width: 5.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --- Calculator: a readout panel --------------------------------------------- */
+
+.fx-calc {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: color-mix(in oklab, var(--accent-color) 3%, var(--card-bg));
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 78%);
+  border-radius: var(--border-radius);
+}
+
+.fx-calc__solve {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.fx-calc__solve-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fx-calc__segments {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+}
+
+.fx-calc__segment {
+  min-width: 2.3rem;
+  height: 1.9rem;
+  padding: 0 0.65rem;
+  font: inherit;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.fx-calc__segment:hover {
+  color: var(--text-primary);
+  background: var(--color-background-hover);
+}
+
+.fx-calc__segment.is-active {
+  color: var(--bg-color);
+  background: var(--accent-color);
+}
+
+.fx-calc__segment:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.fx-calc__readout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  min-height: 3.9rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-darker);
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 72%);
+  border-radius: var(--radius);
+}
+
+.fx-calc__readout-symbol {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+}
+
+.fx-calc__readout-value {
+  justify-self: end;
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.fx-calc__readout-value strong {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-color);
+}
+
+.fx-calc__readout-value sup {
+  font-size: 0.65em;
+}
+
+.fx-calc__readout-unit {
+  margin-left: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.fx-calc__warning {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+  color: var(--warning-color);
+}
+
+.fx-calc__readout.is-error {
+  grid-template-columns: minmax(0, 1fr);
+  border-color: color-mix(in oklab, var(--warning-color), transparent 55%);
+  background: color-mix(in oklab, var(--warning-color) 7%, var(--bg-darker));
+}
+
+.fx-calc__error {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--text-color);
+}
+
+.fx-calc__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fx-calc__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.fx-calc__symbol {
+  flex: none;
+  min-width: 1.5rem;
+  color: var(--text-primary);
+}
+
+.fx-calc__name {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.fx-calc__control {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.fx-calc__control:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent-color), transparent 55%);
+}
+
+.fx-calc__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  caret-color: var(--accent-color);
+  background: transparent;
+  border: 0;
+  outline: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.fx-calc__input::-webkit-outer-spin-button,
+.fx-calc__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.fx-calc__unit {
+  display: flex;
+  align-items: center;
+  padding: 0 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  border-left: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.fx-calc__field.is-constant .fx-calc__control {
+  background: transparent;
+  border-style: dashed;
+}
+
+.fx-calc__const {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .fx-calc__segment.is-active {
+  color: #fff;
+}
+
+/* --- Compact card (simulation pages) ------------------------------------------ */
+
+.fx-mini {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--ph-radius);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.fx-mini:hover {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 58%);
+  box-shadow: 0 0 24px 2px
+    color-mix(in oklab, var(--accent-color), transparent 85%);
+}
+
+.fx-mini__plate {
+  min-height: 6rem;
+  padding: 1.25rem 1rem;
+  font-size: 1.12rem;
+  background: color-mix(in oklab, var(--accent-color) 3%, var(--card-bg));
+  border-bottom: 1px solid var(--border-color);
+}
+
+.fx-mini__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.fx-mini__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--title-color);
+}
+
+.fx-mini__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.fx-mini__legend > div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.fx-mini__legend dt {
+  flex: none;
+  min-width: 1.6rem;
+  color: var(--text-primary);
+}
+
+.fx-mini__legend dd {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.fx-mini__link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 0.25rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+.fx-mini__link:hover {
+  text-decoration: underline;
+}
+
+/* --- Small screens / motion ------------------------------------------------- */
+
+@media (max-width: 600px) {
+  .formulary {
+    padding: 6.5rem 1rem 4rem;
+  }
+
+  .formulary__chips {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+
+  .formulary__group {
+    margin-top: 2.5rem;
+  }
+
+  .fx {
+    padding: 1.5rem 0;
+  }
+
+  .fx-plate {
+    min-height: 7rem;
+    padding: 1.5rem 2.5rem 1.5rem 1rem;
+  }
+
+  .fx-plate__math {
+    font-size: 1.1rem;
+  }
+
+  .fx-details__body {
+    padding: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-plate,
+  .fx-mini,
+  .fx-details__toggle,
+  .fx-details__chevron,
+  .fx-calc__control,
+  .fx-calc__segment,
+  .fx-index__list a {
+    transition: none;
+  }
+}

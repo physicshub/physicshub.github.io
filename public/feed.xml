@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>PhysicsHub Blog</title>
+  <subtitle>Free, open-source interactive physics simulations with written theory for students, teachers and developers.</subtitle>
+  <link href="https://physicshub.github.io/feed.xml" rel="self" />
+  <link href="https://physicshub.github.io/blog" />
+  <id>https://physicshub.github.io/blog</id>
+  <updated>2026-09-24T00:00:00Z</updated>
+  <entry>
+    <title>Class 12 Physics Complete Guide – All Chapters with Formulas &amp; Examples</title>
+    <link href="https://physicshub.github.io/blog/class-12-physics-complete-guide" />
+    <id>https://physicshub.github.io/blog/class-12-physics-complete-guide</id>
+    <published>2026-03-09T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Class 12 Physics (CBSE 2025–26) chapter by chapter: clear explanations, key formulas, derivations and exam strategy from electrostatics to semiconductors.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Electromagnetism" />
+    <category term="Optics" />
+    <category term="Quantum" />
+    <category term="Waves" />
+  </entry>
+  <entry>
+    <title>Why is the sky blue?</title>
+    <link href="https://physicshub.github.io/blog/why-is-the-sky-blue" />
+    <id>https://physicshub.github.io/blog/why-is-the-sky-blue</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Air molecules scatter short-wavelength blue light about six times more than red — Rayleigh scattering. The same effect turns sunsets red and clouds white.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Optics" />
+    <category term="Waves" />
+  </entry>
+  <entry>
+    <title>Why does metal feel colder than wood?</title>
+    <link href="https://physicshub.github.io/blog/why-does-metal-feel-colder-than-wood" />
+    <id>https://physicshub.github.io/blog/why-does-metal-feel-colder-than-wood</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Metal and wood in the same room are at the same temperature. Metal feels colder because it conducts heat out of your skin much faster than wood does.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Thermodynamics" />
+  </entry>
+  <entry>
+    <title>What is the difference between elastic and inelastic collisions?</title>
+    <link href="https://physicshub.github.io/blog/elastic-inelastic-collisions" />
+    <id>https://physicshub.github.io/blog/elastic-inelastic-collisions</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Momentum is conserved in every collision; kinetic energy only in elastic ones. See both cases with worked numbers and the restitution coefficient that links them.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Collision" />
+    <category term="Energy" />
+    <category term="Dynamics" />
+  </entry>
+  <entry>
+    <title>What is the unit circle?</title>
+    <link href="https://physicshub.github.io/blog/unit-circle-trigonometry" />
+    <id>https://physicshub.github.io/blog/unit-circle-trigonometry</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>On a circle of radius 1, cosine and sine are the x and y coordinates of a point at angle θ. Tangent and the other functions are lengths too — and sin(ωθ+φ) is a wave.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Math" />
+    <category term="Trigonometry" />
+    <category term="Waves" />
+  </entry>
+  <entry>
+    <title>Why do we see lightning before we hear thunder?</title>
+    <link href="https://physicshub.github.io/blog/why-do-we-see-lightning-before-thunder" />
+    <id>https://physicshub.github.io/blog/why-do-we-see-lightning-before-thunder</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Light travels almost a million times faster than sound. Count the seconds between flash and thunder, divide by 3, and you have the distance in kilometres.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Waves" />
+    <category term="Kinematics" />
+  </entry>
+  <entry>
+    <title>How do airplanes fly?</title>
+    <link href="https://physicshub.github.io/blog/how-do-airplanes-fly" />
+    <id>https://physicshub.github.io/blog/how-do-airplanes-fly</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>A wing pushes air downward and the air pushes the wing up. That lift grows with speed squared and balances the plane's weight in level flight.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Fluids" />
+    <category term="Forces" />
+  </entry>
+  <entry>
+    <title>How does an inclined plane work?</title>
+    <link href="https://physicshub.github.io/blog/inclined-plane-forces" />
+    <id>https://physicshub.github.io/blog/inclined-plane-forces</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>On a ramp, weight splits into mg sin θ along the slope and mg cos θ into it. Friction decides whether the block slides — the maths, with a simulation.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Forces" />
+    <category term="Friction" />
+    <category term="Dynamics" />
+  </entry>
+  <entry>
+    <title>What is centripetal force?</title>
+    <link href="https://physicshub.github.io/blog/circular-motion-centripetal-force" />
+    <id>https://physicshub.github.io/blog/circular-motion-centripetal-force</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>A body in circular motion always accelerates toward the centre, needing an inward force F = mv²/r. If that force vanishes, the body flies off straight.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Forces" />
+    <category term="Acceleration" />
+    <category term="Vectors" />
+  </entry>
+  <entry>
+    <title>Why do astronauts float in space?</title>
+    <link href="https://physicshub.github.io/blog/why-do-astronauts-float-in-space" />
+    <id>https://physicshub.github.io/blog/why-do-astronauts-float-in-space</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Gravity at the ISS is still almost 90% of what it is on the ground. Astronauts float because they and the station are in constant free fall around Earth.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Forces" />
+  </entry>
+  <entry>
+    <title>Why is the double pendulum chaotic?</title>
+    <link href="https://physicshub.github.io/blog/double-pendulum-chaos" />
+    <id>https://physicshub.github.io/blog/double-pendulum-chaos</id>
+    <published>2026-09-24T00:00:00Z</published>
+    <updated>2026-09-24T00:00:00Z</updated>
+    <summary>Hang one pendulum from another and the motion becomes unpredictable: a start difference of one millionth of a radian grows to a completely different path within seconds.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Advanced" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Dynamics" />
+  </entry>
+  <entry>
+    <title>What is physics? A visual introduction</title>
+    <link href="https://physicshub.github.io/blog/what-is-physics" />
+    <id>https://physicshub.github.io/blog/what-is-physics</id>
+    <published>2026-03-09T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Physics is the science of matter, energy, space, time and the forces between them. A short visual guide to what it studies, how it works and how to start.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Elementary" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Energy" />
+    <category term="Quantum" />
+    <category term="Relativity" />
+  </entry>
+  <entry>
+    <title>How does a bouncing ball work?</title>
+    <link href="https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide" />
+    <id>https://physicshub.github.io/blog/physics-bouncing-ball-comprehensive-educational-guide</id>
+    <published>2026-01-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>A bouncing ball loses speed at each impact, keeping a fraction e (restitution). Every bounce reaches e² of the last height — the maths, with a simulation.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Energy" />
+    <category term="Collision" />
+  </entry>
+  <entry>
+    <title>How do you code a bouncing ball?</title>
+    <link href="https://physicshub.github.io/blog/coding-a-bouncing-ball-simulation" />
+    <id>https://physicshub.github.io/blog/coding-a-bouncing-ball-simulation</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Gravity, a floor and a restitution factor make a bouncing ball — but a naive floor check changes the energy. Handle the impact time exactly, in JavaScript.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Collision" />
+    <category term="Programming" />
+  </entry>
+  <entry>
+    <title>How does free fall work?</title>
+    <link href="https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide" />
+    <id>https://physicshub.github.io/blog/ball-free-fall-comprehensive-guide</id>
+    <published>2026-01-24T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>In free fall every object accelerates at g ≈ 9.81 m/s², whatever its mass. Equations, gravity on other worlds, and how air resistance sets terminal velocity.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Kinematics" />
+    <category term="Acceleration" />
+  </entry>
+  <entry>
+    <title>How do you code air resistance?</title>
+    <link href="https://physicshub.github.io/blog/simulating-air-resistance-in-code" />
+    <id>https://physicshub.github.io/blog/simulating-air-resistance-in-code</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Add a drag term proportional to v² to a falling object and it reaches a terminal velocity. Code it in a few lines of JavaScript and check it against the exact solution.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Programming" />
+  </entry>
+  <entry>
+    <title>How does a pendulum work?</title>
+    <link href="https://physicshub.github.io/blog/physics-of-pendulum-explained" />
+    <id>https://physicshub.github.io/blog/physics-of-pendulum-explained</id>
+    <published>2026-01-26T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>A pendulum's period depends only on its length and gravity, not its mass: T = 2π√(L/g). The physics of the swing, energy and damping, with a simulation.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Energy" />
+  </entry>
+  <entry>
+    <title>How do you simulate a pendulum in code?</title>
+    <link href="https://physicshub.github.io/blog/simulating-a-pendulum-in-code" />
+    <id>https://physicshub.github.io/blog/simulating-a-pendulum-in-code</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Turn the pendulum equation into a state you can step forward in time. Compare explicit Euler, semi-implicit Euler and RK4 with real energy-drift numbers, in JavaScript.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Advanced" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Programming" />
+  </entry>
+  <entry>
+    <title>How does ray tracing work?</title>
+    <link href="https://physicshub.github.io/blog/how-does-ray-tracing-work" />
+    <id>https://physicshub.github.io/blog/how-does-ray-tracing-work</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Ray tracing follows straight-line light rays backwards from the camera through each pixel, then applies the laws of optics where they hit to decide the pixel's colour.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Optics" />
+    <category term="Vectors" />
+  </entry>
+  <entry>
+    <title>Vectors: components, addition, dot and cross products</title>
+    <link href="https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations" />
+    <id>https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations</id>
+    <published>2026-01-22T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>A vector has magnitude and direction. Split it into components and addition, scaling, dot and cross products all become simple arithmetic.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Math" />
+    <category term="Physics" />
+    <category term="Vectors" />
+    <category term="Trigonometry" />
+  </entry>
+  <entry>
+    <title>How does a ball accelerate toward a target?</title>
+    <link href="https://physicshub.github.io/blog/ball-uniformly-accelerated-motion" />
+    <id>https://physicshub.github.io/blog/ball-uniformly-accelerated-motion</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Acceleration is how fast velocity changes. Aim a constant acceleration at a target and the ball speeds up, overshoots and loops back — here is why.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="Middle School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Acceleration" />
+  </entry>
+  <entry>
+    <title>How does a spring work?</title>
+    <link href="https://physicshub.github.io/blog/spring-connection" />
+    <id>https://physicshub.github.io/blog/spring-connection</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>A spring pushes back in proportion to how far you stretch it (Hooke's law) — which is why a mass on a spring oscillates. The physics, with a simulation.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Oscillations" />
+    <category term="Springs" />
+    <category term="Energy" />
+  </entry>
+  <entry>
+    <title>How does projectile motion work?</title>
+    <link href="https://physicshub.github.io/blog/projectile-parabolic-motion" />
+    <id>https://physicshub.github.io/blog/projectile-parabolic-motion</id>
+    <published>2026-01-21T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Gravity pulls a projectile down while its sideways speed stays constant; together they trace a parabola. The equations, range and angle, with a launcher.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Core" />
+    <category term="Physics" />
+    <category term="Kinematics" />
+    <category term="Gravity" />
+    <category term="Acceleration" />
+  </entry>
+  <entry>
+    <title>The Three-Body Problem: The Equation That Broke Physics</title>
+    <link href="https://physicshub.github.io/blog/physics-behind-three-body-problem" />
+    <id>https://physicshub.github.io/blog/physics-behind-three-body-problem</id>
+    <published>2026-04-20T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Two bodies under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Advanced" />
+    <category term="Physics" />
+    <category term="Gravity" />
+    <category term="Dynamics" />
+    <category term="Relativity" />
+    <category term="Animations" />
+  </entry>
+  <entry>
+    <title>How Two Sliding Blocks Compute π — The Most Surprising Result in Physics</title>
+    <link href="https://physicshub.github.io/blog/pi-from-block-collisions-explained" />
+    <id>https://physicshub.github.io/blog/pi-from-block-collisions-explained</id>
+    <published>2026-06-02T00:00:00Z</published>
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Two frictionless blocks and a wall, all collisions elastic: count the clacks and you get the digits of π. The physics, from first collision to proof.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="University" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Math" />
+    <category term="Kinematics" />
+    <category term="Energy" />
+    <category term="Collision" />
+  </entry>
+</feed>

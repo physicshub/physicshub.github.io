@@ -1,0 +1,647 @@
+/* ============================================================================
+   COMMUNITY
+   Account menu (header), sign-in dialog, community presets on simulation
+   pages, the publish dialog and the /account page. Only rendered when the
+   deploy has Supabase configured (lib/supabase.ts).
+   ============================================================================ */
+
+/* --- Account menu (components/account/AccountMenu.tsx) --------------------
+   Same trigger box as the curriculum / language switchers; fixed size in
+   every state so the header never shifts when the session resolves. */
+
+.account-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.account-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background: var(--bg-color);
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-menu__trigger:hover:not(:disabled),
+.account-menu__trigger:focus-visible {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color), transparent 75%);
+  outline: none;
+}
+
+.account-menu__trigger:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.account-menu__initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--accent-color);
+  color: var(--bg-color);
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.account-menu__menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 50;
+  width: min(16rem, calc(100vw - 2rem));
+  padding: 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background: var(--bg-color);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.account-menu__name {
+  margin: 0.2rem 0.45rem 0;
+  font-weight: 700;
+  color: var(--title-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__email {
+  margin: 0.1rem 0.45rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--subtitle-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.45rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ph-fg-muted, var(--text-color));
+  font-size: 0.88rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-menu__item:hover,
+.account-menu__item:focus-visible {
+  background: var(--color-background-active);
+  color: var(--accent-color);
+  outline: none;
+}
+
+/* --- Sign-in dialog (components/account/SignInDialog.tsx) -----------------
+   Built from the popup primitives in popup.css; only the layout that is
+   specific to sign-in lives here. */
+
+.signin__providers {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.signin__providers .popup__action {
+  width: 100%;
+}
+
+.signin__privacy {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+}
+
+.community-presets__error,
+.account-card__error {
+  margin: 0;
+  color: var(--error-color);
+  font-size: 0.85rem;
+}
+
+.account-card__row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-color);
+  font: inherit;
+}
+
+.account-card__row input:focus-visible {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+/* --- Community presets (simulations/[id]/_components/CommunityPresets) -----
+   Same inset width as the overview and related bands. */
+
+.community-presets {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--sim-max-width);
+  margin: 2.5rem auto 0;
+  padding: 0 var(--sim-gutter) 2rem;
+}
+
+.community-presets__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.community-presets__head h2 {
+  margin: 0;
+  color: var(--title-color);
+  font-size: clamp(1.25rem, 1.2vw + 0.9rem, 1.6rem);
+}
+
+.community-presets__intro {
+  margin: 0.3rem 0 0;
+  color: var(--subtitle-color);
+  font-size: 0.92rem;
+}
+
+.community-presets__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.community-presets__sort {
+  display: inline-flex;
+  padding: 0.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+}
+
+.community-presets__sort button {
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--subtitle-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.community-presets__sort button.is-active {
+  background: var(--accent-color);
+  color: var(--bg-color);
+  font-weight: 700;
+}
+
+.community-presets__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .community-presets__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .community-presets__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.community-presets__empty {
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--ph-radius);
+  color: var(--subtitle-color);
+  text-align: center;
+}
+
+.community-presets__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+/* --- Preset card ------------------------------------------------------------ */
+
+.preset-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--ph-radius);
+  background: var(--card-bg);
+}
+
+.preset-card.is-featured {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 50%);
+}
+
+.preset-card--skeleton {
+  min-height: 12rem;
+  animation: simulation-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+.preset-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.preset-card__title {
+  margin: 0;
+  color: var(--title-color);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.preset-card__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent-color), transparent 85%);
+  color: var(--accent-color);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.preset-card__meta {
+  margin: -0.3rem 0 0;
+  color: var(--subtitle-color);
+  font-size: 0.78rem;
+}
+
+.preset-card__description {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.preset-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.3rem;
+}
+
+.preset-card__actions .ph-btn {
+  margin-right: auto;
+}
+
+.preset-card__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--subtitle-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.preset-card__icon-btn:hover:not(:disabled),
+.preset-card__icon-btn:focus-visible {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.preset-card__icon-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.preset-card__icon-btn.is-liked {
+  color: #f43f5e;
+  border-color: color-mix(in oklab, #f43f5e, transparent 60%);
+}
+
+.preset-card__icon-btn--danger:hover:not(:disabled) {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.preset-card__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--bg-warning);
+  font-size: 0.85rem;
+}
+
+.preset-card__confirm p {
+  margin: 0;
+}
+
+.preset-card__confirm div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+/* --- Changed-parameter chips ------------------------------------------------ */
+
+.preset-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preset-changes__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 0.76rem;
+}
+
+.preset-changes__label {
+  color: var(--subtitle-color);
+}
+
+.preset-changes__value {
+  color: var(--accent-color);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.preset-changes__swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+}
+
+.preset-changes__none {
+  margin: 0;
+  color: var(--subtitle-color);
+  font-size: 0.8rem;
+}
+
+/* --- /account ------------------------------------------------------------------- */
+
+.account-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 48rem;
+  margin: 6rem auto 3rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.account-page h1 {
+  margin: 0;
+  color: var(--title-color);
+  font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+  line-height: 1.2;
+}
+
+.account-page__note {
+  color: var(--subtitle-color);
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--ph-radius);
+  background: var(--card-bg);
+}
+
+.account-card h2 {
+  margin: 0;
+  color: var(--title-color);
+  font-size: 1.15rem;
+}
+
+.account-card__hint,
+.account-card__status {
+  margin: 0;
+  color: var(--subtitle-color);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.account-card__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.account-card__danger-title {
+  margin: 0.75rem 0 0;
+  color: var(--error-color);
+  font-size: 1rem;
+}
+
+.account-card__danger:not(:disabled) {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.account-card--privacy ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+  color: var(--subtitle-color);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.account-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.account-presets__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.account-presets__title {
+  color: var(--title-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.account-presets__title:hover {
+  color: var(--accent-color);
+}
+
+.account-presets__meta {
+  margin: 0.15rem 0 0;
+  color: var(--subtitle-color);
+  font-size: 0.78rem;
+}
+
+.account-presets__hidden {
+  color: var(--warning-color);
+}
+
+/* --- /privacy (app/(pages)/privacy/page.tsx) --------------------------------
+   A long-form reading page: same ~70ch measure as the blog articles. */
+
+.legal-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 46rem;
+  margin: 6rem auto 3rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  color: var(--text-color);
+  line-height: 1.65;
+}
+
+/* The base reset strips heading sizes and list markers; restore them here. */
+.legal-page h1 {
+  margin: 0;
+  color: var(--title-color);
+  font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+  line-height: 1.2;
+}
+
+.legal-page h2 {
+  margin: 2rem 0 0.6rem;
+  color: var(--title-color);
+  font-size: 1.2rem;
+}
+
+.legal-page p,
+.legal-page li {
+  font-size: 0.95rem;
+}
+
+.legal-page ul {
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.legal-page li::marker {
+  color: var(--accent-color);
+}
+
+.legal-page li + li {
+  margin-top: 0.5rem;
+}
+
+.legal-page a {
+  color: var(--accent-color);
+}
+
+.legal-page__updated {
+  margin: 0.3rem 0 0;
+  color: var(--subtitle-color);
+  font-size: 0.85rem;
+}
+
+.legal-page__lead {
+  margin: 1rem 0 0;
+  font-size: 1.02rem;
+}
+
+/* Wide table: scrolls inside itself on phones, never the page. */
+.legal-page__table {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.legal-page__table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.legal-page__table th,
+.legal-page__table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal-page__table th {
+  background: var(--bg-light);
+  color: var(--title-color);
+}
+
+.legal-page__table tr:last-child td {
+  border-bottom: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preset-card--skeleton {
+    animation: none;
+  }
+}

@@ -25,10 +25,17 @@
   gap: 1rem;
 }
 
+/* The stage height lives in one place so the canvas and, when it docks beside
+   it, the side panel are always exactly as tall as each other. */
+.simulation-stage {
+  --sim-stage-height: min(64vh, 560px);
+  --sim-stage-min-height: 360px;
+}
+
 .simulation-stage__canvas {
   position: relative; /* offset parent for canvas overlays (wind, banners) */
-  height: min(64vh, 560px);
-  min-height: 360px;
+  height: var(--sim-stage-height);
+  min-height: var(--sim-stage-min-height);
 }
 
 .simulation-stage__panel {
@@ -41,24 +48,31 @@
 @media (min-width: 1080px) {
   .simulation-stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 372px);
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
     align-items: start;
     gap: 1.25rem;
   }
 
-  .simulation-stage__canvas {
-    height: min(78vh, 780px);
-    min-height: 460px;
+  .simulation-stage {
+    --sim-stage-height: min(78vh, 780px);
+    --sim-stage-min-height: 460px;
   }
 
-  /* Keeps the controls and parameters in view while the sketch runs. */
+  /* Docked beside the canvas: same height as the stage, top and bottom edges
+     aligned. Parameters that don't fit scroll inside the panel; the last block
+     (the parameters card) grows to fill any spare height so the bottom edge
+     lines up with the canvas frame too. */
   .simulation-stage__panel {
-    position: sticky;
-    top: 5.25rem;
-    max-height: calc(100vh - 6.5rem);
+    height: var(--sim-stage-height);
+    min-height: var(--sim-stage-min-height);
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-right: 2px;
+  }
+
+  .simulation-stage__panel > .inputs-container {
+    flex: 1 1 auto;
+    align-content: start;
   }
 }
 
@@ -153,17 +167,27 @@
 }
 
 @media (max-width: 1079px) {
-  /* No stage grid below 1080; the toast would overlap the canvas, so keep it
-     in flow and let it wrap under the bar instead. */
-  .top-nav-sim {
-    flex-wrap: wrap;
-  }
-
+  /* No side panel below 1080, so the toast spans the bar's full width. It
+     stays out of flow at every width: it appears and disappears without ever
+     moving the content underneath (that would be layout shift). */
   .top-nav-sim-filler {
-    position: static;
-    width: 100%;
-    order: 3;
-    margin-top: 0.75rem;
+    right: var(--sim-gutter);
+  }
+}
+
+/* The bar's narrow-screen form is pure CSS (never a JS breakpoint), so the
+   server-rendered skeleton and the hydrated bar have identical geometry. */
+@media (min-width: 768px) {
+  .top-nav-sim-inner {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 767px) {
+  .top-nav-sim-back-to-home-wrapper,
+  .top-nav-sim-filler,
+  .back-to-home__text--responsive {
+    display: none;
   }
 }
 
@@ -549,16 +573,22 @@
   }
 }
 
-/* --- School-level banner --------------------------------------------------- */
+/* --- School-level banner ---------------------------------------------------
+   One line at every width. LevelBanner re-words the level in the reader's
+   curriculum once it is known ("A-Level (KS5) · Year 12"), and text of a
+   different length must not change the banner's height: overflow is clipped
+   with an ellipsis, the full text lives in the title tooltip. */
 
 .simulation-level-banner {
   box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.35rem 0.85rem;
-  width: 100%;
-  max-width: var(--sim-max-width);
+  min-height: 2.6rem;
+  overflow: hidden;
+  width: calc(100% - 2 * var(--sim-gutter));
+  max-width: calc(var(--sim-max-width) - 2 * var(--sim-gutter));
   margin: 0.75rem auto 0;
   padding: 0.55rem clamp(0.85rem, 2vw, 1.15rem);
   border: 1px solid
@@ -572,6 +602,11 @@
 }
 
 .simulation-level-banner-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -580,6 +615,11 @@
 }
 
 .simulation-level-banner-equiv {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.78rem;
   font-weight: 500;
   color: color-mix(
@@ -590,6 +630,7 @@
 }
 
 .simulation-level-banner-difficulty {
+  flex: 0 0 auto;
   margin-left: auto;
   font-size: 0.68rem;
   font-weight: 700;
@@ -602,14 +643,44 @@
   padding: 0.15rem 0.6rem;
 }
 
-/* --- Server-rendered learning content (between canvas and full theory) --- */
+@media (max-width: 600px) {
+  .simulation-level-banner-equiv {
+    display: none;
+  }
+}
+
+/* --- Server-rendered learning content (under the stage) ---
+   Same width and gutters as the stage. From 1080px it reuses the stage's
+   two-column grid, so the aside lines up under the parameters panel. */
+
+.simulation-overview,
+.simulation-related {
+  box-sizing: border-box;
+  width: calc(100% - 2 * var(--sim-gutter));
+  max-width: calc(var(--sim-max-width) - 2 * var(--sim-gutter));
+  margin-inline: auto;
+  border-top: 1px solid var(--border-color);
+}
 
 .simulation-overview {
-  box-sizing: border-box;
-  max-width: 780px;
-  margin: 3rem auto 1rem;
-  padding: 2rem var(--sim-gutter) 0;
-  border-top: 1px solid var(--border-color);
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 1.25rem;
+}
+
+.simulation-overview__main,
+.simulation-overview__aside {
+  min-width: 0;
+}
+
+@media (min-width: 1080px) {
+  .simulation-overview {
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
+    align-items: start;
+  }
 }
 
 .simulation-overview__title {
@@ -622,6 +693,7 @@
 }
 
 .simulation-overview__intro {
+  max-width: 72ch;
   font-size: 1.02rem;
   line-height: 1.7;
   color: var(--text-color);
@@ -663,33 +735,16 @@
 }
 
 .simulation-overview__formulas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
   margin: 0;
-}
-
-.simulation-overview__formulas > div {
-  margin-bottom: 1rem;
-  padding: 0.9rem 1rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-}
-
-.simulation-overview__formulas dt {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--subtitle-color);
-  margin-bottom: 0.4rem;
-}
-
-.simulation-overview__formulas dd {
-  margin: 0;
-  overflow-x: auto;
 }
 
 .simulation-overview__theory-link {
-  margin: 0;
+  margin: 0 0 2rem;
   font-size: 0.95rem;
   font-weight: 600;
 }
@@ -704,4 +759,173 @@
 
 .simulation-overview__theory-link a:hover {
   text-decoration: underline;
+}
+
+/* --- Recommended reading (bottom of the page) -------------------------------
+   Frame (width, gutters, top rule) comes from the shared rule with
+   `.simulation-overview` above. The cards are the shared `.chapter-card`
+   (components/Chapter.jsx), the same as the /blog index. */
+
+.simulation-related {
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+  padding-top: 2rem;
+}
+
+.simulation-related__header {
+  margin-bottom: 1.5rem;
+}
+
+.simulation-related__title {
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--title-color);
+  margin: 0 0 0.4rem;
+}
+
+.simulation-related__lead {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.simulation-related__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .simulation-related__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .simulation-related__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* --- Loading skeleton (server-rendered stand-in for the client-only stage) --
+   Reuses the real layout classes; only the parts whose height depends on
+   client-rendered content need reserving here. */
+
+.simulation-skeleton__icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+/* Transport row + utility groups, as tall as the wrapped live controls. */
+.simulation-skeleton__controls {
+  min-height: 9.5rem;
+}
+
+.simulation-skeleton__field--slider {
+  min-height: 6.4rem;
+}
+
+.simulation-skeleton__field--compact {
+  min-height: 4.4rem;
+}
+
+.simulation-skeleton__pulse {
+  animation: simulation-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* Opacity only: it never touches layout. */
+@keyframes simulation-skeleton-pulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simulation-skeleton__pulse {
+    animation: none;
+  }
+}
+
+/* --- Embed mode (?embed=1) -------------------------------------------------
+   Set as body[data-embed="1"] by the inline script in app/layout.tsx, before
+   first paint, so the site chrome never flashes in and nothing shifts. Only
+   the stage (canvas + toolbar + parameters) is left, sized to the iframe. */
+
+.embed-open-link {
+  display: none;
+}
+
+body[data-embed="1"] .header,
+body[data-embed="1"] footer,
+body[data-embed="1"] .simulation-breadcrumb,
+body[data-embed="1"] .simulation-level-banner,
+body[data-embed="1"] .top-nav-sim,
+body[data-embed="1"] .simulation-overview,
+body[data-embed="1"] .simulation-related,
+body[data-embed="1"] .community-presets {
+  display: none;
+}
+
+body[data-embed="1"] .simulation-page {
+  --sim-gutter: 0.5rem;
+  --sim-panel-width: clamp(240px, 32vw, 340px);
+}
+
+body[data-embed="1"] .simulation-stage {
+  max-width: none;
+  margin: 0.5rem 0;
+  --sim-stage-height: calc(100vh - 1rem);
+  --sim-stage-min-height: 280px;
+}
+
+@media (max-width: 719px) {
+  /* Too narrow to dock the panel: canvas first, parameters scroll below. */
+  body[data-embed="1"] .simulation-stage {
+    --sim-stage-height: 70vh;
+  }
+}
+
+@media (min-width: 720px) {
+  body[data-embed="1"] .simulation-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--sim-panel-width);
+    align-items: start;
+    gap: 0.75rem;
+  }
+
+  body[data-embed="1"] .simulation-stage__panel {
+    height: var(--sim-stage-height);
+    min-height: var(--sim-stage-min-height);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  body[data-embed="1"] .simulation-stage__panel > .inputs-container {
+    flex: 1 1 auto;
+    align-content: start;
+  }
+}
+
+/* Attribution + way back to the full page (with the current inputs). */
+body[data-embed="1"] .embed-open-link {
+  display: inline-flex;
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 7;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--subtitle-color);
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+body[data-embed="1"] .embed-open-link:hover {
+  color: var(--accent-color);
 }

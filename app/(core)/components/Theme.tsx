@@ -20,7 +20,7 @@ export const Theme = ({ mode, onToggle }: Props) => {
   return (
     <button
       type="button"
-      className={`grid size-11 place-items-center cursor-pointer rounded-xl bg-gradient-to-t shadow-lg ${isLight ? "from-[#f8fafc] to-[#f1f5f9] text-stone-950" : "from-[#020617] to-[#0F172A] text-stone-50"}`}
+      className={`theme-toggle grid size-11 place-items-center cursor-pointer rounded-xl bg-gradient-to-t shadow-lg ${isLight ? "from-[#f8fafc] to-[#f1f5f9] text-stone-950" : "from-[#020617] to-[#0F172A] text-stone-50"}`}
       onClick={onToggle}
       aria-label="Toggle theme"
     >
@@ -32,6 +32,8 @@ export const Theme = ({ mode, onToggle }: Props) => {
         <mask id="moon-mask-main-nav">
           <rect x="0" y="0" width="18" height="18" fill="#FFF" />
           <motion.circle
+            cx={10}
+            initial={{ cx: 10 }}
             animate={{ cx: isLight ? 25 : 10 }}
             cy="2"
             r="8"
@@ -41,8 +43,10 @@ export const Theme = ({ mode, onToggle }: Props) => {
         <motion.circle
           cx="9"
           cy="9"
+          r={8}
           fill="currentColor"
           mask="url(#moon-mask-main-nav)"
+          initial={{ r: 8 }}
           animate={{ r: isLight ? 5 : 8 }}
         />
         <g>

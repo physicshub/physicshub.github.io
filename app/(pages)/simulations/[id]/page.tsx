@@ -1,13 +1,18 @@
 // app/(pages)/simulations/[id]/page.tsx
 import chapters from "@/app/(core)/data/chapters";
 import SimulationWrapper from "./_components/SimulationWrapper";
+import type { SkeletonField } from "./_components/SimulationSkeleton";
 import SimulationOverview from "./_components/SimulationOverview";
-import { LEVELS, DIFFICULTIES, COLORS } from "@/app/(core)/data/tags";
+import RelatedArticles from "./_components/RelatedArticles";
+import LevelBanner from "./_components/LevelBanner";
+import CommunityPresets from "./_components/CommunityPresets";
+import type { PresetField } from "./_components/presetFormat";
+import type { PresetInputs } from "@/app/(core)/lib/community";
+import { LEVELS, DIFFICULTIES } from "@/app/(core)/data/tags";
 import { blogsArray } from "@/app/(core)/data/articles/index.js";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 
 export const dynamicParams = false;
 
@@ -39,13 +44,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const chapter = chapters.find((c) => getSimulationId(c.link) === id);
 
-  if (!chapter) return { title: "Simulation Not Found | PhysicsHub" };
+  if (!chapter) return { title: "Simulation Not Found" };
 
   const level = LEVELS[chapter.level as keyof typeof LEVELS];
   const levelLabel = level ? `${level.name} (${level.age})` : "";
+  // The root layout's `title.template` appends " | PhysicsHub" to <title>.
+  // OG/Twitter titles are not templated, so give them the suffixed form.
   const title = `${chapter.name}: ${
     levelLabel ? `${levelLabel} · ` : ""
-  }Interactive Physics Simulation | PhysicsHub`;
+  }Interactive Physics Simulation`;
+  const ogTitle = `${title} | PhysicsHub`;
   const description = chapter.desc;
   const canonical = `/simulations/${id}`;
 
@@ -59,17 +67,67 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: `${SITE_URL}${canonical}`,
-      title: title,
+      title: ogTitle,
       description: description,
       images: [chapter.thumbnail],
     },
     twitter: {
       card: "summary_large_image",
-      title: title,
+      title: ogTitle,
       description: description,
       images: [chapter.thumbnail],
     },
   };
+}
+
+// The parameters panel is client-rendered, so the loading skeleton has to
+// reserve its height up front. Mirror DynamicInputs: a number field with a full
+// min/max range is a slider (a tall field); everything else is compact.
+async function getSkeletonFields(id: string): Promise<SkeletonField[]> {
+  try {
+    const { INPUT_FIELDS } = await import(`@/app/(core)/data/configs/${id}.js`);
+    return (INPUT_FIELDS as { type: string; min?: number; max?: number }[]).map(
+      (f) =>
+        f.type === "number" &&
+        typeof f.min === "number" &&
+        typeof f.max === "number"
+          ? "slider"
+          : "compact"
+    );
+  } catch {
+    return [];
+  }
+}
+
+// What the community presets section needs to describe a preset: the defaults
+// (a preset shows only what it changes) and each field's label/unit/options.
+// Plain data, so it crosses into the client component as props.
+async function getPresetSchema(id: string): Promise<{
+  fields: PresetField[];
+  initialInputs: PresetInputs;
+}> {
+  try {
+    const { INPUT_FIELDS, INITIAL_INPUTS } = await import(
+      `@/app/(core)/data/configs/${id}.js`
+    );
+    const fields = (INPUT_FIELDS as PresetField[]).map(
+      ({ name, label, type, unit, symbol, options }) => ({
+        name,
+        label,
+        type,
+        ...(unit ? { unit } : {}),
+        ...(symbol ? { symbol } : {}),
+        ...(Array.isArray(options)
+          ? {
+              options: options.map(({ value, label }) => ({ value, label })),
+            }
+          : {}),
+      })
+    );
+    return { fields, initialInputs: INITIAL_INPUTS as PresetInputs };
+  } catch {
+    return { fields: [], initialInputs: {} };
+  }
 }
 
 export default async function Page({ params }: Props) {
@@ -157,36 +215,30 @@ export default async function Page({ params }: Props) {
       </nav>
 
       {level && (
-        <div
-          className="simulation-level-banner"
-          style={
-            {
-              "--level-accent":
-                COLORS[level.color as keyof typeof COLORS]?.primary ||
-                "#00e6e6",
-            } as CSSProperties
-          }
-        >
-          <span className="simulation-level-banner-name">
-            {level.name} · {level.age}
-          </span>
-          <span className="simulation-level-banner-equiv">
-            {level.equivalents.join(" · ")}
-          </span>
-          {difficulty && (
-            <span className="simulation-level-banner-difficulty">
-              {difficulty.name}
-            </span>
-          )}
-        </div>
+        <LevelBanner
+          chapter={{
+            link: chapter.link,
+            level: chapter.level,
+            alsoFor: "alsoFor" in chapter ? chapter.alsoFor : undefined,
+          }}
+          difficulty={difficulty?.name}
+        />
       )}
 
-      {/* The concise overview is a server component passed as a slot so it
-          renders between the interactive stage and the full theory article,
-          not after it. */}
+      {/* Server components passed as slots: the concise overview renders right
+          under the interactive stage, the recommended reading closes the page. */}
       <SimulationWrapper
         id={id}
+        fields={await getSkeletonFields(id)}
         overview={<SimulationOverview id={id} chapter={chapter} />}
+        related={<RelatedArticles chapter={chapter} />}
+        community={
+          <CommunityPresets
+            simId={id}
+            simName={chapter.name}
+            {...await getPresetSchema(id)}
+          />
+        }
       />
     </div>
   );
