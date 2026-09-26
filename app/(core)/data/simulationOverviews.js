@@ -385,6 +385,51 @@ const simulationOverviews = {
       "law-of-reflection",
     ],
   },
+
+  KirchhoffCircuit: {
+    intro:
+      "Four DC circuits — a single loop, three resistors in series, three in parallel, and a two-loop network driven by two cells — solved live by Kirchhoff's laws. Charge carriers drift along each wire at a speed set by that branch's current, resistors glow with the power they dissipate, and the readout walks each loop term by term so you can watch the voltages add up to exactly zero.",
+    controls: [
+      "Circuit layout",
+      "EMF of each cell",
+      "Internal resistance of each cell",
+      "The three resistances",
+    ],
+    concepts: [
+      "Kirchhoff's current law (junction rule) as charge conservation",
+      "Kirchhoff's voltage law (loop rule) as energy conservation",
+      "Ohm's law and equivalent resistance in series and parallel",
+      "EMF, internal resistance and terminal voltage",
+      "Power delivered by a cell and dissipated as heat",
+      "Sign conventions: a negative branch current means a cell is charging",
+    ],
+    formulas: [
+      {
+        label: "Ohm's law",
+        latex: "V = IR",
+      },
+      {
+        label: "Junction rule (KCL)",
+        latex: "\\sum_{\\text{into node}} I = \\sum_{\\text{out of node}} I",
+      },
+      {
+        label: "Loop rule (KVL)",
+        latex: "\\sum_{\\text{closed loop}} \\Delta V = 0",
+      },
+      {
+        label: "Current in a branch of EMF E and resistance R",
+        latex: "I = \\dfrac{V_{\\text{from}} - V_{\\text{to}} + E}{R}",
+      },
+      {
+        label: "Terminal voltage of a real cell",
+        latex: "V_{\\text{term}} = E - I r",
+      },
+      {
+        label: "Power dissipated in a resistance",
+        latex: "P = I^{2} R",
+      },
+    ],
+  },
 };
 
 export default simulationOverviews;

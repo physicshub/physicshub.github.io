@@ -50,7 +50,7 @@ export const allBlogs = {
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
   [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
   [piCollisionBlog.slug]: piCollisionBlog,
-  [rayTracingBlog.slug]: rayTracingBlog,
+  [kirchhoffLawsBlog.slug]: kirchhoffLawsBlog,
 };
 
 export const blogsArray = Object.values(allBlogs);

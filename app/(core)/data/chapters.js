@@ -203,6 +203,18 @@ const chapters = [
     thumbnail: "/thumbnails/ray-tracing.webp",
     relatedBlogSlug: "how-does-ray-tracing-work",
   },
+  {
+    id: 17,
+    name: "Kirchhoff's Circuit Laws",
+    desc: "Build and solve DC circuits online: single loop, series, parallel and a two-loop network with two cells. Watch charge flow, drag a voltmeter and an ammeter onto the circuit, and see Kirchhoff's current and voltage laws balance to zero in real time.",
+    link: "/simulations/KirchhoffCircuit",
+    level: "upperSecondary",
+    alsoFor: ["lowerSecondary"],
+    difficulty: "extended",
+    tags: [TAGS.ELECTROMAGNETISM, TAGS.ENERGY, TAGS.INTERACTIVE],
+    thumbnail: "/thumbnails/kirchhoff-circuit.webp",
+    relatedBlogSlug: "kirchhoffs-circuit-laws-explained",
+  },
 ];
 
 export default chapters;
