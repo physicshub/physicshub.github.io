@@ -30,6 +30,8 @@ community layer switches itself off, so forks and local checkouts need none of t
    `supabase db push` with the CLI linked to the project):
    1. `migrations/20260924000000_community.sql`
    2. `migrations/20260925000000_hardening.sql`
+   3. `migrations/20260926000000_official_presets.sql` — one or two featured
+      starter presets per simulation, signed by a banned, password-less "PhysicsHub" system account
 3. **Auth → URL Configuration**
    - Site URL: `https://physicshub.github.io`
    - Redirect URLs — exactly these, no broader wildcards:

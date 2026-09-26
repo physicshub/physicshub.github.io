@@ -225,8 +225,8 @@ export default async function Page({ params }: Props) {
         />
       )}
 
-      {/* Server components passed as slots: the concise overview renders right
-          under the interactive stage, the recommended reading closes the page. */}
+      {/* Slots: the community presets sit right under the interactive stage,
+          then the concise overview; the recommended reading closes the page. */}
       <SimulationWrapper
         id={id}
         fields={await getSkeletonFields(id)}

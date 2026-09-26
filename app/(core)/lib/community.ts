@@ -33,8 +33,9 @@ export interface Preset {
 
 export type PresetSort = "top" | "new";
 
-/** Cards shown per "Show more" step (client-side; see listPresets). */
-export const PRESET_PAGE_SIZE = 12;
+/** Grid rows shown at first and added per "Show more" (client-side; see
+ *  listPresets). The first rows are reserved in CSS before the list loads. */
+export const PRESET_PAGE_ROWS = 1;
 /** Presets fetched per simulation, in one request, then sorted in the browser. */
 export const PRESET_FETCH_LIMIT = 60;
 /** How long a fetched list is reused before the next visit refetches it. */

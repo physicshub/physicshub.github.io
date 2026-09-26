@@ -7,12 +7,12 @@ import SimulationSkeleton, { type SkeletonField } from "./SimulationSkeleton";
 
 type Props = {
   id: string;
-  /** Server-rendered learning content, shown right under the stage. */
+  /** Server-rendered learning content, under the community presets. */
   overview?: ReactNode;
   /** Server-rendered recommended reading, closing the page. */
   related?: ReactNode;
-  /** Community presets — client-loaded, so it goes last (nothing but the
-   *  footer below it can shift when the list arrives). */
+  /** Community presets — client-loaded, right under the stage and before the
+   *  overview; its skeleton cards reserve space while the list arrives. */
   community?: ReactNode;
   /** Shape of the parameters panel, so the skeleton reserves the right height. */
   fields?: SkeletonField[];
@@ -54,9 +54,9 @@ export default function SimulationWrapper({
       {/* Slotted here, not passed into the client-only simulation: this way
           they are part of the server HTML, already occupying their space when
           the stage mounts above them, and crawlable without running p5. */}
+      {community}
       {overview}
       {related}
-      {community}
     </div>
   );
 }

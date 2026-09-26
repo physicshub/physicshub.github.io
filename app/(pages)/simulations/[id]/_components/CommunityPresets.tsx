@@ -1,10 +1,13 @@
 "use client";
 // Community presets for one simulation: setups other readers published, which
 // load into the simulation above with one click ("Try"), plus the button to
-// publish your own. Placed last on the page (after the related articles): the
-// list arrives after hydration, and there nothing below it but the footer can
-// move when it does. It is only requested once the section nears the
-// viewport, and then once per visit (see the request budget in
+// publish your own. Sits right under the stage, before the overview and the
+// related articles, so the list — which arrives after hydration — must not
+// push them: the grid always
+// holds exactly PRESET_PAGE_ROWS rows of fixed-height cards (skeletons while
+// loading, an invitation card in the first free slot), and the "Show more" row
+// keeps its space even when hidden. It is only requested once the section
+// nears the viewport, and then once per visit (see the request budget in
 // lib/community.ts).
 //
 // Renders nothing when the deploy has no Supabase configured.
@@ -33,7 +36,7 @@ import {
   setLiked,
   sortPresets,
   updateCachedPreset,
-  PRESET_PAGE_SIZE,
+  PRESET_PAGE_ROWS,
   type Preset,
   type PresetInputs,
   type PresetSort,
@@ -50,6 +53,31 @@ import {
 import PresetChanges from "./PresetChanges";
 import PublishPresetDialog from "./PublishPresetDialog";
 import { describeChanges, type PresetField } from "./presetFormat";
+
+// Must match the .community-presets__grid breakpoints in community.css.
+const TWO_COLUMNS = "(min-width: 720px)";
+const THREE_COLUMNS = "(min-width: 1080px)";
+const MAX_COLUMNS = 3;
+
+/** How many columns the preset grid has at the current width. Only read once
+ *  the list has loaded (after mount); the skeleton is clamped in CSS instead,
+ *  since it is in the server HTML. */
+function useGridColumns() {
+  const [columns, setColumns] = useState(MAX_COLUMNS);
+  useEffect(() => {
+    const two = window.matchMedia(TWO_COLUMNS);
+    const three = window.matchMedia(THREE_COLUMNS);
+    const update = () => setColumns(three.matches ? 3 : two.matches ? 2 : 1);
+    update();
+    two.addEventListener("change", update);
+    three.addEventListener("change", update);
+    return () => {
+      two.removeEventListener("change", update);
+      three.removeEventListener("change", update);
+    };
+  }, []);
+  return columns;
+}
 
 type Props = {
   simId: string;
@@ -74,8 +102,8 @@ function CommunityPresetsSection({
   const { user } = useAuth();
   const userId = user?.id ?? null;
 
-  // Nothing is fetched until the section is about to scroll into view: most
-  // visitors never reach the bottom of a simulation page.
+  // Nothing is fetched until the section is about to scroll into view, so a
+  // visitor who never scrolls past the stage costs no request.
   const sectionRef = useRef<HTMLElement>(null);
   const [nearViewport, setNearViewport] = useState(false);
   useEffect(() => {
@@ -103,7 +131,8 @@ function CommunityPresetsSection({
 
   const [sort, setSort] = useState<PresetSort>("top");
   const [presets, setPresets] = useState<Preset[]>([]);
-  const [visible, setVisible] = useState(PRESET_PAGE_SIZE);
+  const [rows, setRows] = useState(PRESET_PAGE_ROWS);
+  const columns = useGridColumns();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [liked, setLikedIds] = useState<Set<string>>(new Set());
@@ -140,7 +169,9 @@ function CommunityPresetsSection({
   }, [simId, reloadKey, nearViewport]);
 
   const sorted = useMemo(() => sortPresets(presets, sort), [presets, sort]);
-  const shown = sorted.slice(0, visible);
+  const slots = rows * columns;
+  const shown = sorted.slice(0, slots);
+  const hasMore = !loading && sorted.length > slots;
 
   // Which presets the signed-in reader already liked: one request per list
   // (keyed on the ids, so a like updating a count doesn't refetch it).
@@ -248,7 +279,7 @@ function CommunityPresetsSection({
                 className={sort === option ? "is-active" : ""}
                 onClick={() => {
                   setSort(option);
-                  setVisible(PRESET_PAGE_SIZE);
+                  setRows(PRESET_PAGE_ROWS);
                 }}
               >
                 {option === "top" ? t("Top") : t("New")}
@@ -272,17 +303,16 @@ function CommunityPresetsSection({
       )}
 
       {loading && presets.length === 0 ? (
-        <ul className="community-presets__grid" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
+        // Enough skeletons for the widest grid; CSS hides those past the
+        // first PRESET_PAGE_ROWS rows at each width.
+        <ul
+          className="community-presets__grid community-presets__grid--loading"
+          aria-hidden="true"
+        >
+          {Array.from({ length: PRESET_PAGE_ROWS * MAX_COLUMNS }, (_, i) => (
             <li key={i} className="preset-card preset-card--skeleton" />
           ))}
         </ul>
-      ) : presets.length === 0 && !error ? (
-        <p className="community-presets__empty">
-          {t(
-            "No presets yet. Find a setup worth showing and be the first to share it!"
-          )}
-        </p>
       ) : (
         <ul className="community-presets__grid">
           {shown.map((preset) => (
@@ -336,20 +366,38 @@ function CommunityPresetsSection({
               }}
             />
           ))}
+          {shown.length < slots && (
+            <li className="preset-card preset-card--invite">
+              <p>
+                {presets.length === 0
+                  ? t(
+                      "No presets yet. Find a setup worth showing and be the first to share it!"
+                    )
+                  : t("Found a setup worth showing?")}
+              </p>
+              <button
+                type="button"
+                className="ph-btn ph-btn--ghost"
+                onClick={openPublish}
+              >
+                <FontAwesomeIcon icon={faPlus} /> {t("Share your setup")}
+              </button>
+            </li>
+          )}
         </ul>
       )}
 
-      {sorted.length > visible && (
-        <div className="community-presets__more">
-          <button
-            type="button"
-            className="ph-btn ph-btn--ghost"
-            onClick={() => setVisible((v) => v + PRESET_PAGE_SIZE)}
-          >
-            {t("Show more")}
-          </button>
-        </div>
-      )}
+      {/* Always rendered, so its height is reserved before the list arrives;
+          hidden (not removed) when everything is already shown. */}
+      <div className={`community-presets__more ${hasMore ? "" : "is-hidden"}`}>
+        <button
+          type="button"
+          className="ph-btn ph-btn--ghost"
+          onClick={() => setRows((r) => r + PRESET_PAGE_ROWS)}
+        >
+          {t("Show more")}
+        </button>
+      </div>
 
       <PublishPresetDialog
         open={publishOpen}

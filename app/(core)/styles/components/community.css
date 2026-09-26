@@ -160,6 +160,10 @@
    Same inset width as the overview and related bands. */
 
 .community-presets {
+  /* Every preset card (and its skeleton) has this box, so the reserved rows
+     hold exactly what replaces them. Content is clamped to fit. */
+  --preset-card-height: 16.5rem;
+  --preset-grid-gap: 1rem;
   box-sizing: border-box;
   width: 100%;
   max-width: var(--sim-max-width);
@@ -221,15 +225,28 @@
 .community-presets__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-auto-rows: var(--preset-card-height);
+  gap: var(--preset-grid-gap);
+  /* PRESET_PAGE_ROWS (lib/community.ts) rows, reserved before the list loads. */
+  min-height: var(--preset-card-height);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Breakpoints mirrored in useGridColumns (CommunityPresets.tsx). The loading
+   grid renders skeletons for three columns; these keep only the first row. */
+.community-presets__grid--loading > :nth-child(n + 2) {
+  display: none;
+}
+
 @media (min-width: 720px) {
   .community-presets__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .community-presets__grid--loading > :nth-child(2) {
+    display: flex;
   }
 }
 
@@ -237,15 +254,10 @@
   .community-presets__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
 
-.community-presets__empty {
-  margin: 0;
-  padding: 1.5rem;
-  border: 1px dashed var(--border-color);
-  border-radius: var(--ph-radius);
-  color: var(--subtitle-color);
-  text-align: center;
+  .community-presets__grid--loading > :nth-child(3) {
+    display: flex;
+  }
 }
 
 .community-presets__more {
@@ -254,13 +266,20 @@
   margin-top: 1.25rem;
 }
 
+.community-presets__more.is-hidden {
+  visibility: hidden;
+}
+
 /* --- Preset card ------------------------------------------------------------ */
 
 .preset-card {
   position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  height: var(--preset-card-height);
+  overflow: hidden;
   padding: 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--ph-radius);
@@ -272,7 +291,6 @@
 }
 
 .preset-card--skeleton {
-  min-height: 12rem;
   animation: simulation-skeleton-pulse 1.6s ease-in-out infinite;
 }
 
@@ -374,12 +392,19 @@
 }
 
 .preset-card__confirm {
+  /* Over the card's lower part, so the card keeps its fixed height. */
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
   border-radius: var(--radius);
-  background: var(--bg-warning);
+  background:
+    linear-gradient(var(--bg-warning), var(--bg-warning)), var(--card-bg);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.25);
   font-size: 0.85rem;
 }
 
@@ -391,6 +416,38 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.4rem;
+}
+
+.preset-card--invite {
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  border-style: dashed;
+  background: transparent;
+  color: var(--subtitle-color);
+  text-align: center;
+}
+
+.preset-card--invite p {
+  max-width: 28ch;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Clamps that keep every card inside --preset-card-height. */
+.preset-card__title,
+.preset-card__description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.preset-card .preset-changes {
+  flex-shrink: 0;
+  max-height: calc(2 * 1.7rem + 0.35rem);
+  overflow: hidden;
 }
 
 /* --- Changed-parameter chips ------------------------------------------------ */
