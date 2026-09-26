@@ -287,4 +287,16 @@ export const routes = [
     priority: 0.7,
     lastmod: "2026-09-26",
   },
+  {
+    path: "/blog/kirchhoffs-circuit-laws-explained",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-11",
+  },
+  {
+    path: "/simulations/KirchhoffCircuit",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-26",
+  },
 ];

@@ -414,3 +414,33 @@ A ray tracer makes an image by following rays of light backwards: from the camer
 - Inverse-square law of light: `E = \dfrac{I_0}{d^2}` (https://physicshub.github.io/formulas#inverse-square-law)
 - Lambert's cosine law: `I_d = k_d\,E\,\max(0,\ \hat{N}\cdot\hat{L})` (https://physicshub.github.io/formulas#lamberts-cosine-law)
 - Law of reflection: `\hat{D}_r = \hat{D} - 2(\hat{D}\cdot\hat{N})\,\hat{N}` (https://physicshub.github.io/formulas#law-of-reflection)
+
+## [Kirchhoff's Circuit Laws](https://physicshub.github.io/simulations/KirchhoffCircuit)
+
+Four DC circuits — a single loop, three resistors in series, three in parallel, and a two-loop network driven by two cells — solved live by Kirchhoff's laws. Charge carriers drift along each wire at a speed set by that branch's current, resistors glow with the power they dissipate, and the readout walks each loop term by term so you can watch the voltages add up to exactly zero.
+
+- Educational levels: High School, Middle School
+- Difficulty: Extended
+- Topics: Electromagnetism, Energy, Interactive
+
+### Controls
+- Circuit layout
+- EMF of each cell
+- Internal resistance of each cell
+- The three resistances
+
+### Key concepts
+- Kirchhoff's current law (junction rule) as charge conservation
+- Kirchhoff's voltage law (loop rule) as energy conservation
+- Ohm's law and equivalent resistance in series and parallel
+- EMF, internal resistance and terminal voltage
+- Power delivered by a cell and dissipated as heat
+- Sign conventions: a negative branch current means a cell is charging
+
+### Governing formulas
+- Ohm's law: `V = IR` (https://physicshub.github.io/formulas#ohms-law)
+- Junction rule (KCL): `\sum_{\text{into node}} I = \sum_{\text{out of node}} I` (https://physicshub.github.io/formulas#kirchhoffs-current-law)
+- Loop rule (KVL): `\sum_{\text{closed loop}} \Delta V = 0` (https://physicshub.github.io/formulas#kirchhoffs-voltage-law)
+- Current in a branch of EMF E and resistance R: `I = \dfrac{V_{\text{from}} - V_{\text{to}} + E}{R}` (https://physicshub.github.io/formulas#ohms-law)
+- Terminal voltage of a real cell: `V_{\text{term}} = E - I r` (https://physicshub.github.io/formulas#emf-terminal-voltage)
+- Power dissipated in a resistor: `P = I^{2} R` (https://physicshub.github.io/formulas#joule-heating)

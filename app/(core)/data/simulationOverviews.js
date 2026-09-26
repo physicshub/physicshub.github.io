@@ -404,30 +404,19 @@ const simulationOverviews = {
       "Sign conventions: a negative branch current means a cell is charging",
     ],
     formulas: [
+      "ohms-law",
+      { ref: "kirchhoffs-current-law", label: "Junction rule (KCL)" },
+      { ref: "kirchhoffs-voltage-law", label: "Loop rule (KVL)" },
       {
-        label: "Ohm's law",
-        latex: "V = IR",
-      },
-      {
-        label: "Junction rule (KCL)",
-        latex: "\\sum_{\\text{into node}} I = \\sum_{\\text{out of node}} I",
-      },
-      {
-        label: "Loop rule (KVL)",
-        latex: "\\sum_{\\text{closed loop}} \\Delta V = 0",
-      },
-      {
+        ref: "ohms-law",
         label: "Current in a branch of EMF E and resistance R",
         latex: "I = \\dfrac{V_{\\text{from}} - V_{\\text{to}} + E}{R}",
       },
       {
-        label: "Terminal voltage of a real cell",
+        ref: "emf-terminal-voltage",
         latex: "V_{\\text{term}} = E - I r",
       },
-      {
-        label: "Power dissipated in a resistance",
-        latex: "P = I^{2} R",
-      },
+      "joule-heating",
     ],
   },
 };

@@ -281,6 +281,20 @@
     <category term="Vectors" />
   </entry>
   <entry>
+    <title>Kirchhoff's Circuit Laws Explained</title>
+    <link href="https://physicshub.github.io/blog/kirchhoffs-circuit-laws-explained" />
+    <id>https://physicshub.github.io/blog/kirchhoffs-circuit-laws-explained</id>
+    <published>2026-09-11T00:00:00Z</published>
+    <updated>2026-09-11T00:00:00Z</updated>
+    <summary>Why current splits at a junction and why voltages around a loop always add to zero — with a fully worked two-loop network, sign conventions that actually survive contact with a problem, and the nodal method the simulation uses to solve any circuit you build.</summary>
+    <author><name>PhysicsHub Community</name></author>
+    <category term="High School" />
+    <category term="Extended" />
+    <category term="Physics" />
+    <category term="Electromagnetism" />
+    <category term="Energy" />
+  </entry>
+  <entry>
     <title>Vectors: components, addition, dot and cross products</title>
     <link href="https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations" />
     <id>https://physicshub.github.io/blog/comprehensive-guide-to-vector-operations</id>

@@ -91,6 +91,148 @@ const electromagnetism = [
       A: ({ R, rho, L }) => (rho * L) / R,
     },
   },
+  {
+    id: "ohms-law",
+    name: "Ohm's law",
+    latex: "V = IR",
+    summary:
+      "The voltage across a resistor is proportional to the current through it; the constant of proportionality is its resistance $R$.",
+    variables: [
+      { key: "V", latex: "V", name: "Voltage across the resistor", unit: "V" },
+      { key: "I", latex: "I", name: "Current", unit: "A", value: 2 },
+      { key: "R", latex: "R", name: "Resistance", unit: "Ω", value: 6, min: 0 },
+    ],
+    validity: [
+      "Ohmic conductors (metals at constant temperature)",
+      "Not diodes, lamps heating up or other non-linear components",
+    ],
+    tags: [TAGS.ELECTROMAGNETISM],
+    level: "lowerSecondary",
+    difficulty: "core",
+    related: ["wire-resistance", "joule-heating", "emf-terminal-voltage"],
+    solve: {
+      V: ({ I, R }) => I * R,
+      I: ({ V, R }) => V / R,
+      R: ({ V, I }) => V / I,
+    },
+    history: {
+      who: "Georg Simon Ohm",
+      year: "1827",
+      text: "Published in Die galvanische Kette, mathematisch bearbeitet.",
+    },
+  },
+  {
+    id: "kirchhoffs-current-law",
+    name: "Kirchhoff's current law",
+    aka: ["Junction rule", "KCL"],
+    latex: "\\sum_{\\text{into node}} I = \\sum_{\\text{out of node}} I",
+    summary:
+      "The current flowing into any junction equals the current flowing out of it — charge is neither created nor stored at a node.",
+    variables: [
+      { key: "I", latex: "I", name: "Branch current at the node", unit: "A" },
+    ],
+    validity: [
+      "Steady (DC) or slowly varying currents",
+      "Lumped circuits, where no charge builds up at a junction",
+    ],
+    tags: [TAGS.ELECTROMAGNETISM],
+    level: "upperSecondary",
+    difficulty: "core",
+    related: ["kirchhoffs-voltage-law", "ohms-law"],
+    note: "Written with signed currents it becomes $\\sum_k I_k = 0$.",
+    history: {
+      who: "Gustav Kirchhoff",
+      year: "1845",
+    },
+  },
+  {
+    id: "kirchhoffs-voltage-law",
+    name: "Kirchhoff's voltage law",
+    aka: ["Loop rule", "KVL"],
+    latex: "\\sum_{\\text{closed loop}} \\Delta V = 0",
+    summary:
+      "Going once round any closed loop, the rises in potential (across cells) and the drops (across resistances) add up to zero — energy conservation for a unit charge.",
+    variables: [
+      {
+        key: "dV",
+        latex: "\\Delta V",
+        name: "Potential change across each element",
+        unit: "V",
+      },
+    ],
+    validity: [
+      "Steady (DC) circuits",
+      "No changing magnetic flux through the loop",
+    ],
+    tags: [TAGS.ELECTROMAGNETISM, TAGS.ENERGY],
+    level: "upperSecondary",
+    difficulty: "core",
+    related: ["kirchhoffs-current-law", "emf-terminal-voltage"],
+    history: {
+      who: "Gustav Kirchhoff",
+      year: "1845",
+    },
+  },
+  {
+    id: "emf-terminal-voltage",
+    name: "Terminal voltage of a real cell",
+    aka: ["EMF and internal resistance"],
+    latex: "V = \\mathcal{E} - Ir",
+    summary:
+      "A real cell loses part of its EMF $\\mathcal{E}$ across its own internal resistance $r$, so the voltage at its terminals drops as it delivers more current.",
+    variables: [
+      { key: "V", latex: "V", name: "Terminal voltage", unit: "V" },
+      { key: "E", latex: "\\mathcal{E}", name: "EMF", unit: "V", value: 12 },
+      { key: "I", latex: "I", name: "Current", unit: "A", value: 1.2 },
+      {
+        key: "r",
+        latex: "r",
+        name: "Internal resistance",
+        unit: "Ω",
+        value: 0.5,
+        min: 0,
+      },
+    ],
+    validity: ["Internal resistance roughly constant over the current range"],
+    tags: [TAGS.ELECTROMAGNETISM],
+    level: "upperSecondary",
+    difficulty: "extended",
+    related: ["ohms-law", "kirchhoffs-voltage-law"],
+    solve: {
+      V: ({ E, I, r }) => E - I * r,
+      E: ({ V, I, r }) => V + I * r,
+      I: ({ V, E, r }) => (E - V) / r,
+      r: ({ V, E, I }) => (E - V) / I,
+    },
+  },
+  {
+    id: "joule-heating",
+    name: "Power dissipated in a resistor",
+    aka: ["Joule heating", "Electrical power"],
+    latex: "P = I^{2} R",
+    summary:
+      "A current through a resistance turns electrical energy into heat at a rate that grows with the square of the current.",
+    variables: [
+      { key: "P", latex: "P", name: "Power", unit: "W" },
+      { key: "I", latex: "I", name: "Current", unit: "A", value: 2 },
+      { key: "R", latex: "R", name: "Resistance", unit: "Ω", value: 6, min: 0 },
+    ],
+    validity: ["Ohmic resistor"],
+    tags: [TAGS.ELECTROMAGNETISM, TAGS.ENERGY],
+    level: "upperSecondary",
+    difficulty: "core",
+    related: ["ohms-law"],
+    note: "With Ohm's law it can also be written $P = VI = V^2/R$.",
+    solve: {
+      P: ({ I, R }) => I * I * R,
+      I: ({ P, R }) => Math.sqrt(P / R),
+      R: ({ P, I }) => P / (I * I),
+    },
+    history: {
+      who: "James Prescott Joule",
+      year: "1841",
+    },
+  },
 ];
 
 export default electromagnetism;

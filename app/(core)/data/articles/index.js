@@ -24,6 +24,7 @@ import { lightningThunderBlog } from "./why-do-we-see-lightning-before-thunder.j
 import { astronautsFloatBlog } from "./why-do-astronauts-float-in-space.js";
 import { metalColderThanWoodBlog } from "./why-does-metal-feel-colder-than-wood.js";
 import { rayTracingBlog } from "./how-does-ray-tracing-work.js";
+import { kirchhoffLawsBlog } from "./kirchhoffs-circuit-laws-explained.js";
 
 export const allBlogs = {
   [whatIsPhysicsBlog.slug]: whatIsPhysicsBlog,
@@ -50,6 +51,7 @@ export const allBlogs = {
   [projectileParabolicBlog.slug]: projectileParabolicBlog,
   [threeBodyProblemBlog.slug]: threeBodyProblemBlog,
   [piCollisionBlog.slug]: piCollisionBlog,
+  [rayTracingBlog.slug]: rayTracingBlog,
   [kirchhoffLawsBlog.slug]: kirchhoffLawsBlog,
 };
 
