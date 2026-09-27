@@ -1,6 +1,7 @@
 "use client";
 import Header from "./Header";
 import Footer from "./Footer";
+import NavigationWatchdog from "./NavigationWatchdog";
 import Stars from "./Stars";
 import GradientBackground from "./GradientBackground";
 import useTranslation from "../hooks/useTranslation.ts";
@@ -16,6 +17,7 @@ export default function Layout({
   const isCompleted = meta?.completed || false;
   return (
     <>
+      <NavigationWatchdog />
       <Header />
       {showStars && (
         <Stars

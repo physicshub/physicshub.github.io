@@ -21,6 +21,7 @@
 /* --- Site chrome ----------------------------------------------------------- */
 @import "./layout/header.css";
 @import "./layout/footer.css";
+@import "./layout/navigation-progress.css";
 
 /* --- Components ------------------------------------------------------------ */
 @import "./components/buttons.css";
