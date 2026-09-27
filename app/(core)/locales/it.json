@@ -498,5 +498,14 @@
   "Article": "Articolo",
   "domains": "ambiti",
   "with a calculator": "con calcolatrice",
-  "Found a setup worth showing?": "Hai trovato una configurazione che vale la pena mostrare?"
+  "Found a setup worth showing?": "Hai trovato una configurazione che vale la pena mostrare?",
+  "A double pendulum, computed live in your browser.": "Un doppio pendolo, calcolato dal vivo nel tuo browser.",
+  "Open it": "Aprilo",
+  "Open simulation": "Apri la simulazione",
+  "Live previews": "Anteprime dal vivo",
+  "Play previews": "Riprendi le anteprime",
+  "Pause previews": "Metti in pausa le anteprime",
+  "Three equal masses chasing each other along a figure eight.": "Tre masse uguali che si inseguono lungo un otto.",
+  "Projectile": "Proiettile",
+  "A projectile launched at a new angle each time, with no drag.": "Un proiettile lanciato ogni volta con un angolo diverso, senza attrito dell'aria."
 }

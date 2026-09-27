@@ -499,5 +499,14 @@
   "Article": "Article",
   "domains": "domains",
   "with a calculator": "with a calculator",
-  "Found a setup worth showing?": "Found a setup worth showing?"
+  "Found a setup worth showing?": "Found a setup worth showing?",
+  "Open simulation": "Open simulation",
+  "A double pendulum, computed live in your browser.": "A double pendulum, computed live in your browser.",
+  "Open it": "Open it",
+  "Live previews": "Live previews",
+  "Play previews": "Play previews",
+  "Pause previews": "Pause previews",
+  "Three equal masses chasing each other along a figure eight.": "Three equal masses chasing each other along a figure eight.",
+  "Projectile": "Projectile",
+  "A projectile launched at a new angle each time, with no drag.": "A projectile launched at a new angle each time, with no drag."
 }

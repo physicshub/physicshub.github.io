@@ -489,5 +489,14 @@
   "Article": "Artículo",
   "domains": "áreas",
   "with a calculator": "con calculadora",
-  "Found a setup worth showing?": "¿Has encontrado una configuración que merece la pena mostrar?"
+  "Found a setup worth showing?": "¿Has encontrado una configuración que merece la pena mostrar?",
+  "A double pendulum, computed live in your browser.": "Un péndulo doble, calculado en directo en tu navegador.",
+  "Open it": "Ábrelo",
+  "Open simulation": "Abrir la simulación",
+  "Live previews": "Vistas previas en directo",
+  "Play previews": "Reanudar las vistas previas",
+  "Pause previews": "Pausar las vistas previas",
+  "Three equal masses chasing each other along a figure eight.": "Tres masas iguales que se persiguen a lo largo de un ocho.",
+  "Projectile": "Proyectil",
+  "A projectile launched at a new angle each time, with no drag.": "Un proyectil lanzado cada vez con un ángulo distinto, sin rozamiento del aire."
 }

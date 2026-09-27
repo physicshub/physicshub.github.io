@@ -1,99 +1,61 @@
 import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faAtom,
-  faPlay,
-  faWaveSquare,
-} from "@fortawesome/free-solid-svg-icons";
-import chaptersData from "../data/chapters.js";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { motion, useReducedMotion } from "framer-motion";
+import HeroPreview from "./HeroPreview";
 import useTranslation from "../hooks/useTranslation.ts";
 
-// Container variant for staggered child animations. Kept short: this is a
-// Persuade surface, so the primary CTA must settle almost immediately.
+// Kept short: the primary CTA must settle almost immediately. Every variant
+// keeps opacity at 1 so the server-rendered hero (heading, CTAs, preview) is
+// readable before hydration, in a background tab, or if JS never runs; only
+// position eases in.
 const containerVariants = (rm) => ({
-  // Kept at opacity 1 so the server-rendered hero (heading, CTAs) is visible
-  // before hydration; individual children still stagger in via their own y.
   hidden: { opacity: 1 },
   show: {
     opacity: 1,
     transition: {
-      delayChildren: rm ? 0.05 : 0.12,
-      staggerChildren: rm ? 0.05 : 0.08,
+      delayChildren: rm ? 0 : 0.1,
+      staggerChildren: rm ? 0 : 0.07,
     },
   },
 });
 
-// Fade-up variant for subtitles and CTAs
-const fadeUp = (rm) => ({
-  hidden: { opacity: 0, y: rm ? 8 : 18 },
+const riseIn = (rm) => ({
+  hidden: { opacity: 1, y: rm ? 0 : 16 },
   show: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: rm ? 0.4 : 0.5,
-      ease: [0.22, 1, 0.36, 1],
-    },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
   },
 });
 
-// Button interactions
-const buttonVariant = {
-  hidden: { opacity: 0, y: 16, scale: 0.98 },
+const titleLine = (rm) => ({
+  hidden: { opacity: 1, y: rm ? 0 : 14 },
   show: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 140, damping: 18 },
-  },
-  hover: {
-    scale: 1.04,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
-    transition: { duration: 0.25 },
-  },
-  tap: { scale: 0.98 },
-};
-
-// Text container for per-word staggering. The <h1> text must stay readable
-// even if hydration never runs, so the heading is never faded out — only its
-// words rise into place.
-const textContainer = (rm) => ({
-  hidden: { opacity: 1 },
-  show: {
-    opacity: 1,
-    transition: {
-      delayChildren: rm ? 0.05 : 0.08,
-      staggerChildren: rm ? 0.03 : 0.045,
-    },
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
   },
 });
-
-// Per-word rise. Opacity stays at 1 so the server-rendered heading is visible
-// with JavaScript disabled or before the bundle loads.
-const wordVariant = {
-  hidden: { opacity: 1, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
   const { t, meta } = useTranslation();
-
   const isCompleted = meta?.completed || false;
 
-  // Compute simulations count
-  const chaptersCount = Array.isArray(chaptersData)
-    ? chaptersData.length
-    : chaptersData && typeof chaptersData === "object"
-      ? Object.keys(chaptersData).length
-      : 0;
-
-  // Split heading into words; the second sentence carries the accent.
+  // Two sentences, one line each on desktop; the second carries the accent.
+  // A translation without "start" in it simply renders as one line group.
   const heading = t("Stop memorizing formulas. Start visualizing them.");
-  const titleWords = heading.split(" ");
-  const accentFrom = titleWords.findIndex((w) => /start/i.test(w));
+  const words = heading.split(" ");
+  const accentFrom = words.findIndex((w) => /start/i.test(w));
+  const lines =
+    accentFrom > 0
+      ? [
+          words.slice(0, accentFrom).join(" "),
+          words.slice(accentFrom).join(" "),
+        ]
+      : [heading];
 
   return (
     <motion.div
@@ -103,121 +65,42 @@ export function Hero() {
       variants={containerVariants(reduceMotion)}
       initial="hidden"
       animate="show"
-      style={{ position: "relative", overflow: "hidden" }}
     >
       <div className="ph-hero__copy">
-        {/* Animated H1, second sentence tinted with the accent */}
-        <motion.h1
-          className="ph-hero__title"
-          variants={textContainer(reduceMotion)}
-        >
-          {titleWords.map((word, idx) => {
-            const isAccent = accentFrom !== -1 && idx >= accentFrom;
-            return (
-              <motion.span
-                key={idx}
-                className={isAccent ? "ph-hero__title-accent" : undefined}
-                variants={wordVariant}
-                style={{ display: "inline-block", marginRight: "0.25ch" }}
-              >
-                {word}
-              </motion.span>
-            );
-          })}
-        </motion.h1>
+        <h1 className="ph-hero__title">
+          {lines.map((line, i) => (
+            <motion.span
+              key={i}
+              className={`ph-hero__title-line${
+                i === 1 ? " ph-hero__title-accent" : ""
+              }`}
+              variants={titleLine(reduceMotion)}
+            >
+              {line}
+            </motion.span>
+          ))}
+        </h1>
 
-        {/* Subtitle */}
-        <motion.p className="ph-hero__subtitle" variants={fadeUp(reduceMotion)}>
+        <motion.p className="ph-hero__subtitle" variants={riseIn(reduceMotion)}>
           {t(
             "Experience physics in real time, uncover the concepts behind the formulas, and instantly see how they apply to the real world."
           )}
         </motion.p>
 
-        {/* CTA buttons */}
-        <motion.div className="ph-hero__ctas" variants={fadeUp(reduceMotion)}>
-          <motion.div
-            variants={buttonVariant}
-            whileHover="hover"
-            whileTap="tap"
-          >
-            <Link
-              className="ph-btn ph-btn--primary main-btn"
-              href="/simulations"
-            >
-              {t("Go to Simulations")}
-              <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
-            </Link>
-          </motion.div>
-          <motion.div
-            variants={buttonVariant}
-            whileHover="hover"
-            whileTap="tap"
-          >
-            <Link
-              className="ph-btn ph-btn--ghost main-btn"
-              href="#how-it-works"
-            >
-              {t("See how it works")}
-            </Link>
-          </motion.div>
+        <motion.div className="ph-hero__ctas" variants={riseIn(reduceMotion)}>
+          <Link className="ph-btn ph-btn--primary main-btn" href="/simulations">
+            {t("Go to Simulations")}
+            <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: 8 }} />
+          </Link>
+          <Link className="ph-btn ph-btn--ghost main-btn" href="#how-it-works">
+            {t("See how it works")}
+          </Link>
         </motion.div>
-
-        {/* Info text */}
-        <motion.p className="ph-hero__info" variants={fadeUp(reduceMotion)}>
-          {chaptersCount}{" "}
-          {t(
-            "interactive simulations. Free forever, no login required, no ads."
-          )}
-        </motion.p>
       </div>
 
-      <motion.aside
-        className="ph-hero-preview"
-        aria-label={t("Jump into a topic")}
-        variants={fadeUp(reduceMotion)}
-      >
-        <div className="ph-hero-preview__toolbar">
-          <span />
-          <span />
-          <span />
-          <strong>{t("Start with a concept")}</strong>
-        </div>
-        <div className="ph-hero-preview__stage" aria-hidden="true">
-          <div className="ph-hero-preview__scan" />
-          <div className="ph-hero-preview__pulse ph-hero-preview__pulse--one" />
-          <div className="ph-hero-preview__pulse ph-hero-preview__pulse--two" />
-          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--outer" />
-          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--inner" />
-          <div className="ph-hero-preview__orbit ph-hero-preview__orbit--tilt" />
-          <div className="ph-hero-preview__mass ph-hero-preview__mass--primary" />
-          <div className="ph-hero-preview__mass ph-hero-preview__mass--secondary" />
-          <div className="ph-hero-preview__mass ph-hero-preview__mass--tertiary" />
-          <div className="ph-hero-preview__vector" />
-          <FontAwesomeIcon className="ph-hero-preview__atom" icon={faAtom} />
-        </div>
-        <div
-          className="ph-hero-preview__topics"
-          aria-label={t("Related topics")}
-        >
-          <Link href="/simulations/BallGravity">{t("Gravity")}</Link>
-          <Link href="/simulations/VectorsOperations">{t("Vectors")}</Link>
-          <Link href="/simulations/SimplePendulum">{t("Oscillations")}</Link>
-        </div>
-        <div className="ph-hero-preview__metrics">
-          <Link href="/simulations/SimplePendulum">
-            <FontAwesomeIcon icon={faWaveSquare} />
-            {t("Pendulum")}
-          </Link>
-          <Link href="/simulations/ThreeBody">
-            <FontAwesomeIcon icon={faAtom} />
-            {t("Orbits")}
-          </Link>
-          <Link className="ph-hero-preview__try" href="/simulations">
-            <FontAwesomeIcon icon={faPlay} />
-            {t("Try it live")}
-          </Link>
-        </div>
-      </motion.aside>
+      <motion.div className="ph-hero__visual" variants={riseIn(reduceMotion)}>
+        <HeroPreview />
+      </motion.div>
     </motion.div>
   );
 }

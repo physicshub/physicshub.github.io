@@ -470,5 +470,14 @@
   "Article": "Artikel",
   "domains": "bidang",
   "with a calculator": "dengan kalkulator",
-  "Found a setup worth showing?": "Menemukan pengaturan yang layak dibagikan?"
+  "Found a setup worth showing?": "Menemukan pengaturan yang layak dibagikan?",
+  "A double pendulum, computed live in your browser.": "Pendulum ganda, dihitung langsung di peramban Anda.",
+  "Open it": "Buka",
+  "Open simulation": "Buka simulasi",
+  "Live previews": "Pratinjau langsung",
+  "Play previews": "Lanjutkan pratinjau",
+  "Pause previews": "Jeda pratinjau",
+  "Three equal masses chasing each other along a figure eight.": "Tiga massa sama yang saling mengejar di sepanjang angka delapan.",
+  "Projectile": "Proyektil",
+  "A projectile launched at a new angle each time, with no drag.": "Proyektil yang diluncurkan dengan sudut berbeda setiap kali, tanpa hambatan udara."
 }

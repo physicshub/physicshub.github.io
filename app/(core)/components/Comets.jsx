@@ -9,6 +9,9 @@ export default function Comets({
   opacity = 1,
   zIndex = 0,
   className = "",
+  // Below this viewport width (px) nothing is drawn: on phones the comets
+  // cost battery and cover the text. 0 keeps them everywhere.
+  disableBelow = 768,
 }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(0);
@@ -25,6 +28,10 @@ export default function Comets({
     ) {
       return;
     }
+
+    // Phones: no comets. Checked on each (re)start, so rotating a tablet or
+    // resizing the window across the breakpoint switches them on or off.
+    const narrow = window.matchMedia(`(max-width: ${disableBelow - 1}px)`);
 
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
     let w = window.innerWidth;
@@ -183,15 +190,27 @@ export default function Comets({
       rafRef.current = requestAnimationFrame(loop);
     }
 
-    resize();
-    rafRef.current = requestAnimationFrame(loop);
+    const start = () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+      state.comets = [];
+      resize();
+      ctx.clearRect(0, 0, w, h);
+      if (disableBelow > 0 && narrow.matches) return;
+      state.lastTime = performance.now();
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    start();
     window.addEventListener("resize", resize);
+    narrow.addEventListener("change", start);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
+      narrow.removeEventListener("change", start);
     };
-  }, [count, speed, direction, color]);
+  }, [count, speed, direction, color, disableBelow]);
 
   return (
     <canvas

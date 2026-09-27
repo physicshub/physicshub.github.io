@@ -11,6 +11,10 @@ import TrustStrip from "./TrustStrip.jsx";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import useTranslation from "../hooks/useTranslation.ts";
 
+// The orbiting-particles canvas behind the hero, switched off while the live
+// preview (HeroPreview) is the hero's visual. Flip to bring it back.
+const SHOW_HERO_BACKGROUND = false;
+
 export default function FullLandingPage() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
@@ -26,7 +30,7 @@ export default function FullLandingPage() {
           opacity={0.25}
           zIndex={1}
         />
-        <HeroBackground />
+        {SHOW_HERO_BACKGROUND ? <HeroBackground /> : null}
         <Hero />
         <ScrollDown />
       </section>

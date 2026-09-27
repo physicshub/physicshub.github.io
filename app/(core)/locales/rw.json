@@ -444,5 +444,14 @@
   "Please sign in with GitHub first, then try saving again.": "Banza winjire na GitHub, hanyuma wongere ugerageze kubika.",
   "We store only what sign-in needs, a public nickname you can change, and what you choose to publish. No passwords, no ads, nothing sold. Under 16? Ask a parent or teacher first.": "Tubika gusa ibikenewe mu kwinjira, izina rigaragara ushobora guhindura, n'ibyo uhisemo gutangaza. Nta jambo ry'ibanga, nta matangazo, nta kigurishwa. Uri munsi y'imyaka 16? Banza ubaze umubyeyi cyangwa mwarimu.",
   "Privacy Policy": "Politiki y'ibanga",
-  "The full details are in our": "Ibisobanuro byose biri muri"
+  "The full details are in our": "Ibisobanuro byose biri muri",
+  "A double pendulum, computed live in your browser.": "Pendile ebyiri, ibarwa ako kanya muri mushakisha yawe.",
+  "Open it": "Yifungure",
+  "Open simulation": "Fungura igerageza",
+  "Live previews": "Igaragaza ry'ako kanya",
+  "Play previews": "Komeza igaragaza",
+  "Pause previews": "Hagarika igaragaza",
+  "Three equal masses chasing each other along a figure eight.": "Imibiri itatu ingana yirukanana ku ishusho ya munani.",
+  "Projectile": "Ikintu kiraswa",
+  "A projectile launched at a new angle each time, with no drag.": "Ikintu kiraswa buri gihe ku nguni itandukanye, nta kurwanywa n'umwuka."
 }
