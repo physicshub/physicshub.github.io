@@ -38,6 +38,15 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Check credentials
+        env:
+          GOOGLE_INDEXING_CREDENTIALS: ${{ secrets.GOOGLE_INDEXING_CREDENTIALS }}
+        run: |
+          if [ -z "$GOOGLE_INDEXING_CREDENTIALS" ]; then
+            echo "::error title=Missing secret::GOOGLE_INDEXING_CREDENTIALS is not set. Add it with: gh secret set GOOGLE_INDEXING_CREDENTIALS < .secrets/<key>.json"
+            exit 1
+          fi
+
       - name: Submit URLs
         env:
           GOOGLE_INDEXING_CREDENTIALS: ${{ secrets.GOOGLE_INDEXING_CREDENTIALS }}
