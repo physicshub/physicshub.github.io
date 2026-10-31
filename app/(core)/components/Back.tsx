@@ -7,7 +7,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Link from "next/link";
-import useMobile from "../hooks/useMobile";
 import useTranslation from "../hooks/useTranslation.ts";
 
 interface BaseProps {
@@ -52,7 +51,6 @@ function Back({
   type = "icon",
   arrowPosition = "left",
 }: Props) {
-  const isMobile = useMobile();
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
 
@@ -74,11 +72,18 @@ function Back({
       </span>
     );
 
-  const shouldShowText =
-    type === "full" || (type === "responsive" && !isMobile);
+  // `responsive` keeps the label in the DOM and lets CSS hide it on narrow
+  // screens, so the first paint has the same geometry as the hydrated one.
+  const shouldShowText = type === "full" || type === "responsive";
 
   const text = shouldShowText && (
-    <span className="back-to-home__text">{t(content as string)}</span>
+    <span
+      className={`back-to-home__text${
+        type === "responsive" ? " back-to-home__text--responsive" : ""
+      }`}
+    >
+      {t(content as string)}
+    </span>
   );
 
   const className = "btn-glow back-to-home__link";

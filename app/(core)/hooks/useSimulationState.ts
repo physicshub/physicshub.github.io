@@ -1,6 +1,10 @@
 // hooks/useSimulationState.ts
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import {
+  parseInputsFromSearch,
+  sanitizeInputs,
+} from "../utils/simulationUrl.js";
 
 /**
  * Hook per gestire lo stato di una simulazione con priorità:
@@ -8,7 +12,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
  */
 export default function useSimulationState<T extends Record<string, unknown>>(
   initialInputs: T,
-  storageKey: string
+  storageKey: string,
+  // INPUT_FIELDS: lets URL values be checked against a select's options.
+  fields?: object[]
 ) {
   const [inputs, setInputs] = useState<T>(initialInputs);
   const inputsRef = useRef<T>(initialInputs);
@@ -24,30 +30,17 @@ export default function useSimulationState<T extends Record<string, unknown>>(
     if (typeof window === "undefined") return null;
 
     try {
-      const queryString = window.location.search; // es: "?velocityX=4&..."
-      if (!queryString) return null;
-
-      const params = new URLSearchParams(queryString);
-      if ([...params.keys()].length === 0) return null;
-
-      const parsed: Record<string, unknown> = {};
-      params.forEach((value, key) => {
-        if (value === "true") {
-          parsed[key] = true;
-        } else if (value === "false") {
-          parsed[key] = false;
-        } else {
-          const num = Number(value);
-          parsed[key] = isNaN(num) ? value : num;
-        }
-      });
-
-      return parsed as Partial<T>;
+      // Whitelisted against INITIAL_INPUTS and coerced to each default's type.
+      return parseInputsFromSearch(
+        window.location.search,
+        initialInputs,
+        fields
+      ) as Partial<T> | null;
     } catch (error) {
       console.warn("[useSimulationState] Errore parsing URL params:", error);
       return null;
     }
-  }, []);
+  }, [initialInputs, fields]);
 
   // 🔎 Leggi da localStorage
   const loadFromStorage = useCallback((): T | null => {
@@ -73,11 +66,16 @@ export default function useSimulationState<T extends Record<string, unknown>>(
 
     const storageInputs = loadFromStorage();
     if (storageInputs) {
-      return storageInputs;
+      // An old save may predate inputs added since (fill the gaps with
+      // defaults) or hold values the simulation no longer accepts (drop them).
+      return {
+        ...initialInputs,
+        ...sanitizeInputs(storageInputs, initialInputs, fields),
+      } as T;
     }
 
     return initialInputs;
-  }, [initialInputs, loadFromUrl, loadFromStorage]);
+  }, [initialInputs, fields, loadFromUrl, loadFromStorage]);
 
   // 🔒 Salva su localStorage
   const saveInputs = useCallback(() => {

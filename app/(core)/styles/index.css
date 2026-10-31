@@ -21,6 +21,7 @@
 /* --- Site chrome ----------------------------------------------------------- */
 @import "./layout/header.css";
 @import "./layout/footer.css";
+@import "./layout/navigation-progress.css";
 
 /* --- Components ------------------------------------------------------------ */
 @import "./components/buttons.css";
@@ -31,9 +32,12 @@
 @import "./components/contributors.css";
 @import "./components/github-header-badge.css";
 @import "./components/language-switcher.css";
+@import "./components/curriculum-switcher.css";
 @import "./components/popup.css";
 @import "./components/simulation.css";
+@import "./components/community.css";
 @import "./components/theory.css";
+@import "./components/formulas.css";
 @import "./components/blog-editor.css";
 
 /* --- Pages ----------------------------------------------------------------- */

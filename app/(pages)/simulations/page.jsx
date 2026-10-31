@@ -1,9 +1,10 @@
 "use client";
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import Chapter from "../../(core)/components/Chapter.jsx";
 import Chapters from "../../(core)/data/chapters.js";
 import { Search } from "../../(core)/components/Search";
-import { LEVELS, DIFFICULTIES } from "../../(core)/data/tags.js";
+import { DIFFICULTIES } from "../../(core)/data/tags.js";
+import { getPlacement } from "../../(core)/data/curricula.js";
 import {
   getSimulationFacets,
   facetMatches,
@@ -11,6 +12,7 @@ import {
   DEFAULT_SORT,
 } from "../../(core)/utils/catalogFilters.js";
 import useTranslation from "../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../(core)/hooks/useCurriculum.ts";
 
 const getChapterTagNames = (tags) => tags.map((tag) => tag.name.toLowerCase());
 
@@ -22,7 +24,7 @@ const emptyFilter = {
   sort: DEFAULT_SORT,
 };
 
-const textMatches = (chap, text) => {
+const textMatches = (chap, text, curriculumId) => {
   const terms = text
     .toLowerCase()
     .trim()
@@ -31,10 +33,19 @@ const textMatches = (chap, text) => {
 
   if (terms.length === 0) return true;
 
-  const levelIds = [chap.level, ...(chap.alsoFor || [])];
-  const levelNames = levelIds
-    .map((id) => LEVELS[id]?.name?.toLowerCase())
-    .filter(Boolean);
+  // Everything a reader might type for a level: the stage name and the precise
+  // grade in their own curriculum ("a-level", "year 12", "class 11").
+  const placement = getPlacement(chap, curriculumId);
+  const levelText = placement
+    ? [
+        placement.stage.name,
+        placement.grades,
+        ...placement.alsoStages.map((stage) => stage.name),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+    : "";
   const difficultyName = (
     DIFFICULTIES[chap.difficulty]?.name || ""
   ).toLowerCase();
@@ -45,7 +56,7 @@ const textMatches = (chap, text) => {
     return (
       chap.name.toLowerCase().includes(term) ||
       getChapterTagNames(chap.tags).includes(term) ||
-      levelNames.includes(term) ||
+      levelText.includes(term) ||
       difficultyName.includes(term) ||
       (chap.id && chap.id.toString().includes(term)) ||
       (chap.id &&
@@ -55,68 +66,33 @@ const textMatches = (chap, text) => {
   });
 };
 
-const chapterMatches = (chap, filter) =>
-  textMatches(chap, filter.text) &&
-  facetMatches(getSimulationFacets(chap), filter);
+const chapterMatches = (chap, filter, curriculumId, getFacets) =>
+  textMatches(chap, filter.text, curriculumId) &&
+  facetMatches(getFacets(chap), filter);
 
 export default function Simulations() {
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
+  const { curriculumId, stages } = useCurriculum();
   const [filter, setFilter] = useState(emptyFilter);
-  const [showHero] = useState(() => {
-    if (typeof window !== "undefined") {
-      // A shared filtered link (see Search's URL sync) should land on the
-      // results, not the splash — a link that dumps a visitor at the hero
-      // defeats the point of sharing it.
-      if (window.location.search.length > 1) return false;
-      return !localStorage.getItem("hasVisitedSimulations");
-    }
-    return true;
-  });
-  const contentRef = useRef(null);
-  const duration = 1200;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-  }, []);
-
-  const handleStart = () => {
-    localStorage.setItem("hasVisitedSimulations", "true");
-    scrollToContent();
-  };
-
-  const scrollToContent = () => {
-    if (!contentRef.current) return;
-    const start = window.scrollY;
-    const target = contentRef.current.offsetTop;
-    const distance = target - start;
-    let startTime = null;
-
-    const animateScroll = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const ease =
-        progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-      window.scrollTo(0, start + distance * ease);
-      if (progress < 1) requestAnimationFrame(animateScroll);
-    };
-    requestAnimationFrame(animateScroll);
-  };
+  // Level facets are stage ids of the reader's curriculum.
+  const getFacets = useCallback(
+    (chap) => getSimulationFacets(chap, curriculumId),
+    [curriculumId]
+  );
 
   const filteredChapters = useMemo(() => {
-    const matched = Chapters.filter((chap) => chapterMatches(chap, filter));
+    const matched = Chapters.filter((chap) =>
+      chapterMatches(chap, filter, curriculumId, getFacets)
+    );
     return sortCatalog(matched, filter.sort, {
-      getFacets: getSimulationFacets,
+      getFacets,
+      curriculumId,
       getName: (chap) => chap.name,
       getRecency: (chap) => chap.id,
     });
-  }, [filter]);
+  }, [filter, curriculumId, getFacets]);
 
   const hasAnyFilter =
     filter.text.trim() !== "" ||
@@ -133,39 +109,20 @@ export default function Simulations() {
     filteredChapters.length > 0 &&
     filteredChapters.length <= 2;
   const thinLevelName = isThinLevelResult
-    ? LEVELS[filter.levels[0]]?.name
+    ? stages.find((stage) => stage.id === filter.levels[0])?.name
     : null;
 
   return (
     <div
       className={`simulations-container ${isCompleted ? "notranslate" : ""}`}
     >
-      {showHero && (
-        <section className="simulations-hero">
-          <p className="simulations-hero__title">
-            {t("Interactive Physics Simulations")}
-          </p>
-          <p>
-            {t(
-              "Explore core physics concepts through real-time, interactive experiments"
-            )}
-          </p>
-          <button
-            className="ph-btn ph-btn--primary main-btn"
-            onClick={handleStart}
-          >
-            {t("Let's begin")}
-          </button>
-        </section>
-      )}
-
-      <section ref={contentRef} className="simulations-content">
+      <section className="simulations-content">
         <h1 className="simulations-content__title">
           {t("Interactive Physics Simulations")}
         </h1>
         <Search
           dataset={Chapters}
-          getFacets={getSimulationFacets}
+          getFacets={getFacets}
           onChange={setFilter}
           itemNoun="simulations"
           resultCount={filteredChapters.length}

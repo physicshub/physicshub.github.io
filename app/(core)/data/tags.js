@@ -126,6 +126,13 @@ const TAGS = {
     name: "Oscillations",
     color: "pink",
   },
+  // Marks an article as written for developers. It is the only gate for `code`
+  // blocks in the theory renderer — articles without this tag must stay
+  // code-free (see .claude/skills/new-article/SKILL.md).
+  PROGRAMMING: {
+    name: "Programming",
+    color: "grey",
+  },
 };
 
 // School levels. Ordered deliberately: Elementary → Undergraduate, then Tool.

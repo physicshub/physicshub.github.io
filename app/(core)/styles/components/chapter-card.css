@@ -1,8 +1,8 @@
 /* ============================================================================
    CHAPTER CARD  (components/Chapter.jsx)
-   "Laboratory instrument" treatment — reuses the landing page's visual
-   vocabulary: .ph-hero-preview (blueprint grid, scan sweep, glow), the
-   eyebrow pill (.ph-hero__eyebrow) and the metrics footer (.ph-hero-preview__metrics).
+   "Laboratory instrument" treatment. Its visual
+   vocabulary: a blueprint grid, a scan sweep and a glow, an
+   eyebrow pill and a metrics footer.
 
    Structure: .chapter-card > .chapter-card-stage + .chapter-card-body
    The stage shows a thumbnail when available, otherwise a generated fallback
@@ -65,7 +65,7 @@
   opacity: 1;
 }
 
-/* Blueprint grid overlay (landing .ph-hero-preview::before) */
+/* Blueprint grid overlay */
 .chapter-card-stage-grid {
   position: absolute;
   inset: 0;
@@ -244,8 +244,9 @@
 
 /* --- Body ------------------------------------------------------------------- */
 
+/* No `position` here on purpose: the CTA's stretched-link ::after must resolve
+   against .chapter-card, not the body, or the thumbnail stays unclickable. */
 .chapter-card-body {
-  position: relative;
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -254,7 +255,7 @@
   min-width: 0;
 }
 
-/* Eyebrow topic pill (landing .ph-hero__eyebrow) */
+/* Eyebrow topic pill */
 .chapter-card-eyebrow {
   align-self: flex-start;
   z-index: 1;
@@ -321,7 +322,7 @@
   overflow-wrap: anywhere;
 }
 
-/* --- Metrics footer (landing .ph-hero-preview__metrics) -------------------- */
+/* --- Metrics footer -------------------------------------------------------- */
 
 .chapter-card-meta {
   display: grid;
@@ -332,7 +333,9 @@
   margin-top: 2px;
 }
 
-.chapter-card--blog .chapter-card-meta {
+/* Blog cards hide the metric tiles unless `detailed` (recommended reading on
+   simulation pages) asks for level, difficulty and read time. */
+.chapter-card--blog:not(.chapter-card--detailed) .chapter-card-meta {
   display: none;
 }
 
@@ -483,12 +486,6 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-}
-
-/* --- Blog variant ---------------------------------------------------------- */
-
-.chapter-card--blog .chapter-card-meta {
-  display: none;
 }
 
 /* --- Small screens ------------------------------------------------------------

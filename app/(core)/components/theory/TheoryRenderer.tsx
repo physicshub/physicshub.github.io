@@ -31,6 +31,9 @@ import { TheoryCallout } from "./elements/TheoryCallout";
 import { TheoryExample, TheoryToggle } from "./elements/TheoryToggle";
 import { TheoryTable } from "./elements/TheoryTable";
 import { TheoryImage } from "./elements/TheoryImage";
+import { TheoryTakeaways } from "./elements/TheoryTakeaways";
+import { TheoryFAQ, FaqItem } from "./elements/TheoryFAQ";
+import { getFormula } from "../../data/formulas/index.js";
 
 // Block Editor Controls with Drag & Drop
 const BlockEditorControls: React.FC<BlockControlsProps> = ({
@@ -150,8 +153,26 @@ const renderBlock = (
       return (
         <TheoryList
           {...commonProps}
-          items={block.items || []}
+          items={(block.items as string[] | string) || []}
           ordered={block.ordered || false}
+        />
+      );
+
+    case "takeaways":
+      return (
+        <TheoryTakeaways
+          {...commonProps}
+          title={block.title}
+          items={(block.items as string[] | string) || []}
+        />
+      );
+
+    case "faq":
+      return (
+        <TheoryFAQ
+          {...commonProps}
+          title={block.title}
+          items={(block.items as FaqItem[] | string) || []}
         />
       );
 
@@ -159,7 +180,8 @@ const renderBlock = (
       return (
         <TheoryFormula
           {...commonProps}
-          latex={block.latex || ""}
+          latex={block.latex || getFormula(block.ref)?.latex || ""}
+          formulaRef={block.ref}
           inline={block.inline || false}
         />
       );

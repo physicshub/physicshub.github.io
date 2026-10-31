@@ -15,8 +15,10 @@ const links = [
   { label: "Home", to: "/", exact: true },
   { label: "Simulations", to: "/simulations" },
   { label: "Blog", to: "/blog" },
+  { label: /* i18n */ "Formulas", to: "/formulas" },
   { label: "About", to: "/about" },
   { label: "Contribute", to: "/contribute" },
+  { label: "Privacy Policy", to: "/privacy" },
 ];
 
 function Footer() {
@@ -97,7 +99,15 @@ function Footer() {
       </div>
       <div className="footer-bottom">
         <p>
-          &copy; {year} @mattqdev. {t("Released under the")}{" "}
+          &copy; {year}{" "}
+          <a
+            href="https://github.com/mattqdev"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @mattqdev
+          </a>
+          . {t("Released under the")}{" "}
           <a href="https://opensource.org/licenses/MIT">{t("MIT License")}</a>.{" "}
           {t("Credits to")} <a href="https://p5js.org/">p5.js</a> {t("and")}{" "}
           <a href="https://natureofcode.com/">Nature of Code</a>{" "}

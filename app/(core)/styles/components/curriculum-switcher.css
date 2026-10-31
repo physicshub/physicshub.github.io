@@ -1,0 +1,226 @@
+/* ============================================================================
+   CURRICULUM SWITCHER  (components/CurriculumSelector.jsx)
+   Header control that sets the school system levels are worded in. Mirrors the
+   language switcher's trigger so the two read as a pair.
+   ============================================================================ */
+
+.curriculum-switcher {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.curriculum-switcher__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0 0.65rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background: var(--bg-color);
+  color: var(--ph-fg-muted, var(--text-color));
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.curriculum-switcher__trigger:hover,
+.curriculum-switcher__trigger:focus-visible {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px
+    color-mix(in oklab, var(--accent-color), transparent 75%);
+  outline: none;
+}
+
+.curriculum-switcher__icon {
+  font-size: 1rem;
+  color: var(--accent-color);
+  pointer-events: none;
+}
+
+/* Fixed width: the code changes (INT → UK) when detection lands, and the
+   header must not shift when it does. */
+.curriculum-switcher__code {
+  min-width: 1.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-align: center;
+  pointer-events: none;
+}
+
+.curriculum-switcher__chevron {
+  font-size: 0.55rem;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.curriculum-switcher__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.curriculum-switcher__menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 50;
+  width: min(19rem, calc(100vw - 2rem));
+  max-height: min(75vh, 32rem);
+  padding: 0.75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background: var(--bg-color);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.curriculum-switcher__title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+}
+
+.curriculum-switcher__hint {
+  margin: 0.35rem 0 0.6rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--subtitle-color);
+}
+
+.curriculum-switcher__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.curriculum-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.5rem 0.55rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ph-fg-muted, var(--text-color));
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.curriculum-switcher__option:hover,
+.curriculum-switcher__option:focus-visible {
+  background: color-mix(in oklab, var(--accent-color), transparent 90%);
+  outline: none;
+}
+
+.curriculum-switcher__option.is-active {
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+}
+
+.curriculum-switcher__badge {
+  flex: 0 0 2.4rem;
+  padding: 0.25rem 0;
+  border: 1px solid var(--border-color);
+  border-radius: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.curriculum-switcher__option.is-active .curriculum-switcher__badge {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.curriculum-switcher__label {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.curriculum-switcher__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.curriculum-switcher__option.is-active .curriculum-switcher__name {
+  color: var(--accent-color);
+}
+
+.curriculum-switcher__framework {
+  overflow: hidden;
+  font-size: 0.72rem;
+  color: var(--subtitle-color);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curriculum-switcher__check {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+}
+
+.curriculum-switcher__auto,
+.curriculum-switcher__auto-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.6rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--subtitle-color);
+}
+
+.curriculum-switcher__auto {
+  width: 100%;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+  background: transparent;
+  color: var(--accent-color);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.curriculum-switcher__auto:hover,
+.curriculum-switcher__auto:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* Below 640px the header collapses the trigger to a square
+   (styles/layout/header.css). */
+@media (max-width: 840px) {
+  /* The trigger sits mid-bar here, so a menu anchored to it would run off the
+     left edge of a phone. Anchor to the (fixed) header instead and span it. */
+  .curriculum-switcher {
+    position: static;
+  }
+
+  .curriculum-switcher__menu {
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    margin-top: 0.4rem;
+    top: 100%;
+  }
+}

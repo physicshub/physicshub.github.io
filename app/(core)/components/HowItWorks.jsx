@@ -56,13 +56,15 @@ export default function HowItWorks() {
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
     >
-      <motion.h2
-        id="lp-how-title"
-        className="lp-section__title"
-        variants={item(reduceMotion)}
-      >
-        {t("Change something. Watch the physics answer.")}
-      </motion.h2>
+      <div className="lp-section__head">
+        <motion.h2
+          id="lp-how-title"
+          className="lp-section__title"
+          variants={item(reduceMotion)}
+        >
+          {t("Change something. Watch the physics answer.")}
+        </motion.h2>
+      </div>
 
       <ol className="lp-how__steps">
         {steps.map((step, i) => (
@@ -74,8 +76,10 @@ export default function HowItWorks() {
             <span className="lp-how__num" aria-hidden="true">
               {i + 1}
             </span>
-            <h3 className="lp-how__step-title">{step.title}</h3>
-            <p className="lp-how__step-body">{step.body}</p>
+            <div className="lp-how__text">
+              <h3 className="lp-how__step-title">{step.title}</h3>
+              <p className="lp-how__step-body">{step.body}</p>
+            </div>
           </motion.li>
         ))}
       </ol>

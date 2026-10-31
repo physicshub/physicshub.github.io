@@ -13,6 +13,9 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import useTranslation from "../../../(core)/hooks/useTranslation.ts";
+import useCurriculum from "../../../(core)/hooks/useCurriculum.ts";
+import { localizeTags } from "../../../(core)/data/curricula.js";
+import { resolveAuthor } from "../../../(core)/data/authors.js";
 
 export default function BlogPostContent({
   blog,
@@ -24,7 +27,11 @@ export default function BlogPostContent({
   slug,
 }) {
   const { t, meta } = useTranslation();
+  const { curriculumId } = useCurriculum();
   const isCompleted = meta?.completed || false;
+  const tags = localizeTags(blog.tags, blog, curriculumId);
+  const author = resolveAuthor(blog.author);
+  const hasUpdate = blog.updated && blog.updated !== blog.date;
 
   return (
     <div className={`blog-page-wrapper ${isCompleted ? "notranslate" : ""}`}>
@@ -42,7 +49,7 @@ export default function BlogPostContent({
           <div className="blog-container">
             <div className="blog-header">
               <div className="chapter-card-tags-container">
-                {blog.tags.map((tag, idx) => (
+                {tags.map((tag, idx) => (
                   <Tag tag={tag} key={tag.id || idx} />
                 ))}
               </div>
@@ -59,9 +66,7 @@ export default function BlogPostContent({
                       width={40}
                       height={40}
                     />
-                  ) : blog.author ? (
-                    <div className="author-avatar">{blog.author[0]}</div>
-                  ) : (
+                  ) : author.org ? (
                     <Image
                       className="author-avatar"
                       src="/Logo.png"
@@ -69,13 +74,31 @@ export default function BlogPostContent({
                       width={40}
                       height={40}
                     />
+                  ) : (
+                    <div className="author-avatar">{author.name[0]}</div>
                   )}
                   <div className="author-details">
                     <span className="author-name">
-                      {t(blog.author || "PhysicsHub Community")}
+                      {author.url ? (
+                        <a
+                          href={author.url}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                        >
+                          {t(author.name)}
+                        </a>
+                      ) : (
+                        t(author.name)
+                      )}
                     </span>
                     <span className="publish-date">
-                      {t("Last update:")} {blog.date || "--/--/----"}
+                      {t("Published")} {blog.date || "--/--/----"}
+                      {hasUpdate && (
+                        <>
+                          {" · "}
+                          {t("Updated")} {blog.updated}
+                        </>
+                      )}
                     </span>
                   </div>
                 </div>

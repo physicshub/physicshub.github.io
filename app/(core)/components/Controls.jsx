@@ -10,15 +10,23 @@ import UploadButton from "./controls/UploadButton.jsx";
 import ShareLinkControl from "./controls/ShareLinkControl.jsx";
 import EmbedCodeControl from "./controls/EmbedCodeControl.jsx";
 import StepButton from "./controls/StepButton.jsx";
+import { simIdFromPath } from "../utils/simulationUrl.js";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
-export default function Controls({ onReset, inputs, simulation, onLoad }) {
+export default function Controls({
+  onReset,
+  inputs,
+  initialInputs,
+  simulation,
+  onLoad,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
   const simulationPath = simulation;
+  const simId = simIdFromPath(simulationPath);
   simulation = simulation.replaceAll(/[/#]/g, "");
 
   return (
@@ -48,16 +56,24 @@ export default function Controls({ onReset, inputs, simulation, onLoad }) {
 
       <div className="extra-controls-wrapper">
         <div className="controls-group">
-          <SaveButton inputs={inputs} simulation={simulation} />
-          <DeleteButton simulation={simulation} />
+          <SaveButton inputs={inputs} simulation={simulation} simId={simId} />
+          <DeleteButton simulation={simulation} simId={simId} />
         </div>
         <div className="controls-group">
           <DownloadButton inputs={inputs} simulation={simulation} />
           <UploadButton onLoad={onLoad} simulation={simulation} />
         </div>
         <div className="controls-group">
-          <ShareLinkControl inputs={inputs} simulation={simulationPath} />
-          <EmbedCodeControl inputs={inputs} simulation={simulation} />
+          <ShareLinkControl
+            inputs={inputs}
+            initialInputs={initialInputs}
+            simulation={simulationPath}
+          />
+          <EmbedCodeControl
+            inputs={inputs}
+            initialInputs={initialInputs}
+            simulation={simulationPath}
+          />
         </div>
       </div>
     </div>

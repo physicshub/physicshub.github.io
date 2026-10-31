@@ -1,33 +1,24 @@
 // app/components/SimulationLayout.jsx
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import useTranslation from "../hooks/useTranslation.ts";
 import { resetTime } from "../constants/Time.js";
 import Stars from "./Stars.jsx";
 import GradientBackground from "./GradientBackground.jsx";
 import TopSim from "./TopSim.tsx";
 import Controls from "./Controls.jsx";
-import TheoryRenderer from "./theory/TheoryRenderer.tsx";
-import chapters from "../data/chapters.js";
-import { allBlogs } from "../data/articles/index.js";
+import { buildSimulationUrl } from "../utils/simulationUrl.js";
 
 export default function SimulationLayout({
   onReset,
   inputs,
+  initialInputs,
   simulation,
   onLoad,
   children,
   dynamicInputs,
-  overview,
 }) {
-  const { meta } = useTranslation();
+  const { t, meta } = useTranslation();
   const isCompleted = meta?.completed || false;
-
-  const theory = useMemo(() => {
-    const chapter = chapters.find((ch) => ch.link === simulation);
-    const slug = chapter?.relatedBlogSlug;
-
-    return slug && allBlogs[slug] ? allBlogs[slug].theory : { sections: [] };
-  }, [simulation]);
 
   // Reset time on simulation change
   useEffect(() => {
@@ -44,24 +35,30 @@ export default function SimulationLayout({
           dock into a sticky side panel; below 1080px everything stacks in the
           same reading order. */}
       <div className="simulation-stage">
-        <div className="simulation-stage__canvas">{children}</div>
+        <div className="simulation-stage__canvas">
+          {children}
+          {/* Shown only in embed mode (CSS), so it never changes the layout. */}
+          <a
+            className="embed-open-link"
+            href={buildSimulationUrl(simulation, inputs, initialInputs ?? {})}
+            target="_blank"
+            rel="noopener"
+          >
+            {t("Open on PhysicsHub")} ↗
+          </a>
+        </div>
 
         <aside className="simulation-stage__panel">
           <Controls
             onReset={onReset}
             inputs={inputs}
+            initialInputs={initialInputs}
             simulation={simulation}
             onLoad={onLoad}
           />
           {dynamicInputs}
         </aside>
       </div>
-
-      {/* Concise, server-rendered summary — sits directly under the stage, above
-          the long theory article. */}
-      {overview}
-
-      <TheoryRenderer theory={theory} />
     </div>
   );
 }

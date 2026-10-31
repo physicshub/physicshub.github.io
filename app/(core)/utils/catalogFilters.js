@@ -3,31 +3,46 @@
 // on how a "School level", "Difficulty" or "Topic" selection narrows a list and
 // how a sort reorders it — this module is that single source of truth.
 
-import { LEVELS, LEVEL_ORDER, DIFFICULTIES } from "../data/tags.js";
+import { LEVELS, DIFFICULTIES } from "../data/tags.js";
+import {
+  DEFAULT_CURRICULUM,
+  getStageIds,
+  getStages,
+} from "../data/curricula.js";
 
 // ─── Facets ──────────────────────────────────────────────────────────────────
 // Normalise a catalogue item to the three filterable axes. Simulations carry
 // them as explicit fields; blogs fold level/difficulty/topic into one `tags`
 // array of the very objects exported from tags.js, so we classify by identity.
+//
+// `levels` are stage ids of the given curriculum (see data/curricula.js), so
+// "School level" filters by the reader's own school system. With the default
+// `intl` curriculum they are the international LEVELS ids, as before.
 
-export const getSimulationFacets = (chap) => ({
-  levels: [chap.level, ...(chap.alsoFor || [])].filter(Boolean),
+export const getSimulationFacets = (
+  chap,
+  curriculumId = DEFAULT_CURRICULUM
+) => ({
+  levels: getStageIds(chap, curriculumId),
   difficulties: chap.difficulty ? [chap.difficulty] : [],
   topics: (chap.tags || []).map((tag) => tag.name),
 });
 
-export const getBlogFacets = (blog) => {
-  const levels = [];
+// Formulary cards carry `level`/`difficulty`/`tags` exactly like a simulation
+// (and have no curriculum topic, so levels come from the international band).
+export const getFormulaFacets = getSimulationFacets;
+
+export const getBlogFacets = (blog, curriculumId = DEFAULT_CURRICULUM) => {
   const difficulties = [];
   const topics = [];
 
   for (const tag of blog.tags || []) {
-    if (tag?.id && LEVELS[tag.id]) levels.push(tag.id);
-    else if (tag?.id && DIFFICULTIES[tag.id]) difficulties.push(tag.id);
+    if (tag?.id && LEVELS[tag.id]) continue;
+    if (tag?.id && DIFFICULTIES[tag.id]) difficulties.push(tag.id);
     else if (tag?.name) topics.push(tag.name);
   }
 
-  return { levels, difficulties, topics };
+  return { levels: getStageIds(blog, curriculumId), difficulties, topics };
 };
 
 // ─── Matching ────────────────────────────────────────────────────────────────
@@ -61,10 +76,12 @@ export const hasActiveFacets = (filter) =>
 
 // ─── Sorting ─────────────────────────────────────────────────────────────────
 
-const LEVEL_INDEX = LEVEL_ORDER.reduce((acc, level, i) => {
-  acc[level.id] = i;
-  return acc;
-}, {});
+// Position of each stage of a curriculum, youngest first.
+const stageIndex = (curriculumId) =>
+  getStages(curriculumId).reduce((acc, stage, i) => {
+    acc[stage.id] = i;
+    return acc;
+  }, {});
 
 // Articles store their date as "DD/MM/YYYY"; community drafts may have none.
 export const parseCatalogDate = (value) => {
@@ -91,9 +108,14 @@ export const SORT_OPTIONS = [
   { id: "oldest", label: "Oldest first" },
 ];
 
-const primaryLevelIndex = (facets) => {
+// Sorts that make sense without dates, for the Formulary.
+export const UNDATED_SORT_OPTIONS = SORT_OPTIONS.filter(
+  (option) => option.id !== "newest" && option.id !== "oldest"
+);
+
+const primaryLevelIndex = (facets, index) => {
   const indices = facets.levels
-    .map((id) => LEVEL_INDEX[id])
+    .map((id) => index[id])
     .filter((n) => n !== undefined);
   return indices.length ? Math.min(...indices) : Number.MAX_SAFE_INTEGER;
 };
@@ -103,6 +125,7 @@ const primaryLevelIndex = (facets) => {
  *   getFacets(item)   → { levels, difficulties, topics }  (for level sort)
  *   getName(item)     → string                            (for name sort)
  *   getRecency(item)  → number | null                     (for date/newest sort)
+ *   curriculumId      → whose stage order the level sort follows (default intl)
  * The original order is preserved as the stable tie-breaker, so "recommended"
  * is a genuine no-op and every other sort stays deterministic.
  */
@@ -110,6 +133,7 @@ export const sortCatalog = (items, sortId, ctx = {}) => {
   const getName = ctx.getName || ((item) => item.name || "");
   const getFacets = ctx.getFacets || (() => ({ levels: [] }));
   const getRecency = ctx.getRecency || (() => null);
+  const index = stageIndex(ctx.curriculumId || DEFAULT_CURRICULUM);
 
   const decorated = items.map((item, index) => ({ item, index }));
 
@@ -129,11 +153,11 @@ export const sortCatalog = (items, sortId, ctx = {}) => {
       name(b).localeCompare(name(a), undefined, { sensitivity: "base" }) ||
       byIndex(a, b),
     "level-asc": (a, b) =>
-      primaryLevelIndex(getFacets(a.item)) -
-        primaryLevelIndex(getFacets(b.item)) || byIndex(a, b),
+      primaryLevelIndex(getFacets(a.item), index) -
+        primaryLevelIndex(getFacets(b.item), index) || byIndex(a, b),
     "level-desc": (a, b) =>
-      primaryLevelIndex(getFacets(b.item)) -
-        primaryLevelIndex(getFacets(a.item)) || byIndex(a, b),
+      primaryLevelIndex(getFacets(b.item), index) -
+        primaryLevelIndex(getFacets(a.item), index) || byIndex(a, b),
     newest: (a, b) => recency(b) - recency(a) || byIndex(a, b),
     oldest: (a, b) => recency(a) - recency(b) || byIndex(a, b),
   };
