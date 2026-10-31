@@ -1,0 +1,29 @@
+name: Supabase keep-alive
+
+# Supabase pauses free-tier projects after about a week without activity. Site
+# traffic normally keeps the community database awake; this is the safety net
+# for quiet weeks: one tiny read every three days. Skipped when the repo
+# variables aren't set (forks, or before the community layer is configured).
+
+on:
+  schedule:
+    - cron: "17 5 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    if: ${{ vars.NEXT_PUBLIC_SUPABASE_URL != '' }}
+    steps:
+      - name: Read one preset id
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          curl --fail --silent --show-error --max-time 30 \
+            "$SUPABASE_URL/rest/v1/presets?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -o /dev/null

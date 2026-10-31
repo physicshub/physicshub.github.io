@@ -48,6 +48,9 @@ jobs:
       - name: Build with Next.js
         env:
           NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK: ${{ secrets.NEXT_PUBLIC_DISCORD_WEBHOOK_URL_FEEDBACK }}
+          # Community layer (supabase/README.md). Public values; unset = off.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build:static
 
       # 4. Carica Artifact (Sempre eseguito)

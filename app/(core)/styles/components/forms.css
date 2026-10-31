@@ -349,7 +349,14 @@
    Toggle (checkbox rendered as a switch)
    ---------------------------------------------------------------------------- */
 
+/* position: relative makes the toggle the containing block of its hidden
+   checkbox. Otherwise the checkbox's containing block sits outside the
+   parameters panel (a non-positioned scroller at ≥1080px), so it doesn't
+   scroll with the panel and stays at its unscrolled spot, often below the
+   stage. Clicking the label focuses it, and the browser then scrolls the page
+   down to it, as far as the presets section. */
 .sim-field--toggle {
+  position: relative;
   flex-direction: row;
   align-items: center;
   gap: 0.6rem;

@@ -1,0 +1,44 @@
+name: Submit URLs to Google Indexing API
+
+# Pings Google's Web Search Indexing API with every live URL from the sitemap so
+# new/changed pages get re-crawled sooner. Zero npm deps — the script uses only
+# node:crypto + fetch. Needs the GOOGLE_INDEXING_CREDENTIALS secret: the full
+# JSON of a service-account key whose email is a verified Owner of the
+# physicshub.github.io Search Console property.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # every Monday 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      type:
+        description: "Notification type"
+        type: choice
+        default: URL_UPDATED
+        options:
+          - URL_UPDATED
+          - URL_DELETED
+
+permissions:
+  contents: read
+
+concurrency:
+  group: submit-indexing
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Submit URLs
+        env:
+          GOOGLE_INDEXING_CREDENTIALS: ${{ secrets.GOOGLE_INDEXING_CREDENTIALS }}
+        run: node scripts/submit-indexing.js --type "${{ inputs.type || 'URL_UPDATED' }}"

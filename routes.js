@@ -1,188 +1,302 @@
 export const routes = [
   {
-    "path": "/",
-    "component": "Home",
-    "changefreq": "weekly",
-    "priority": 1
+    path: "/",
+    component: "Home",
+    changefreq: "weekly",
+    priority: 1,
   },
   {
-    "path": "/contribute",
-    "component": "Contribute",
-    "changefreq": "monthly",
-    "priority": 0.8
+    path: "/contribute",
+    component: "Contribute",
+    changefreq: "monthly",
+    priority: 0.8,
   },
   {
-    "path": "/simulations",
-    "component": "Simulations",
-    "changefreq": "weekly",
-    "priority": 0.9
+    path: "/simulations",
+    component: "Simulations",
+    changefreq: "weekly",
+    priority: 0.9,
   },
   {
-    "path": "/about",
-    "component": "About",
-    "changefreq": "monthly",
-    "priority": 0.7
+    path: "/about",
+    component: "About",
+    changefreq: "monthly",
+    priority: 0.7,
   },
   {
-    "path": "/blog",
-    "component": "Blog",
-    "changefreq": "weekly",
-    "priority": 0.9
+    path: "/privacy",
+    component: "Privacy",
+    changefreq: "yearly",
+    priority: 0.3,
   },
   {
-    "path": "/blog/what-is-physics",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-03-09"
+    path: "/blog",
+    component: "Blog",
+    changefreq: "weekly",
+    priority: 0.9,
   },
   {
-    "path": "/blog/class-12-physics-complete-guide",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-03-09"
+    path: "/formulas",
+    component: "Formulas",
+    changefreq: "weekly",
+    priority: 0.8,
   },
   {
-    "path": "/blog/physics-bouncing-ball-comprehensive-educational-guide",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-23"
+    path: "/blog/what-is-physics",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
   },
   {
-    "path": "/blog/comprehensive-guide-to-vector-operations",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-22"
+    path: "/blog/class-12-physics-complete-guide",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
   },
   {
-    "path": "/blog/ball-uniformly-accelerated-motion",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-21"
+    path: "/blog/physics-bouncing-ball-comprehensive-educational-guide",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
   },
   {
-    "path": "/blog/ball-free-fall-comprehensive-guide",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-24"
+    path: "/blog/comprehensive-guide-to-vector-operations",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/blog/spring-connection",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-21"
+    path: "/blog/ball-uniformly-accelerated-motion",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/blog/physics-of-pendulum-explained",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-26"
+    path: "/blog/ball-free-fall-comprehensive-guide",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
   },
   {
-    "path": "/blog/projectile-parabolic-motion",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-01-21"
+    path: "/blog/spring-connection",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/blog/physics-behind-three-body-problem",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-04-20"
+    path: "/blog/physics-of-pendulum-explained",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
   },
   {
-    "path": "/blog/pi-from-block-collisions-explained",
-    "changefreq": "monthly",
-    "priority": 0.8,
-    "lastmod": "2026-06-02"
+    path: "/blog/projectile-parabolic-motion",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/simulations/BouncingBall",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/blog/physics-behind-three-body-problem",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/simulations/VectorsOperations",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/blog/pi-from-block-collisions-explained",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-06",
   },
   {
-    "path": "/simulations/BallAcceleration",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/BouncingBall",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/BallGravity",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/VectorsOperations",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/SpringConnection",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/BallAcceleration",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/SimplePendulum",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/BallGravity",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/ParabolicMotion",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/SpringConnection",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/InclinedPlane",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/SimplePendulum",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/CircularMotion",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/ParabolicMotion",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/ThreeBody",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/InclinedPlane",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/HorizontalSpring",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/CircularMotion",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/DoublePendulum",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/ThreeBody",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/CollisionSimulation",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/HorizontalSpring",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/PiCollisions",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
+    path: "/simulations/DoublePendulum",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
   },
   {
-    "path": "/simulations/TrigonometricCircle",
-    "changefreq": "weekly",
-    "priority": 0.7,
-    "lastmod": "2026-09-04"
-  }
+    path: "/simulations/CollisionSimulation",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
+  },
+  {
+    path: "/simulations/PiCollisions",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
+  },
+  {
+    path: "/simulations/TrigonometricCircle",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
+  },
+  {
+    path: "/blog/coding-a-bouncing-ball-simulation",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
+  },
+  {
+    path: "/blog/simulating-air-resistance-in-code",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
+  },
+  {
+    path: "/blog/simulating-a-pendulum-in-code",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
+  },
+  {
+    path: "/blog/elastic-inelastic-collisions",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/unit-circle-trigonometry",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/inclined-plane-forces",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/circular-motion-centripetal-force",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/double-pendulum-chaos",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/why-is-the-sky-blue",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/why-does-metal-feel-colder-than-wood",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/why-do-we-see-lightning-before-thunder",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/how-do-airplanes-fly",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/why-do-astronauts-float-in-space",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-24",
+  },
+  {
+    path: "/blog/how-does-ray-tracing-work",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-23",
+  },
+  {
+    path: "/simulations/RayTracing",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
+  },
+  {
+    path: "/blog/kirchhoffs-circuit-laws-explained",
+    changefreq: "monthly",
+    priority: 0.8,
+    lastmod: "2026-09-11",
+  },
+  {
+    path: "/simulations/KirchhoffCircuit",
+    changefreq: "weekly",
+    priority: 0.7,
+    lastmod: "2026-09-27",
+  },
 ];

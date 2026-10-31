@@ -19,6 +19,9 @@ import {
   faChevronCircleDown,
   faEye,
   faUpload,
+  faListCheck,
+  faCircleQuestion,
+  faKey,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import TheoryRenderer from "../../../(core)/components/theory/TheoryRenderer";
@@ -175,6 +178,27 @@ const NEW_BLOCK_TEMPLATES = {
     type: "toggle",
     title: "Toggle Details",
     content: "Hidden content visible on click.",
+  },
+  takeaways: {
+    type: "takeaways",
+    title: "Key takeaways",
+    items: ["First key point", "Second key point", "Third key point"],
+  },
+  faq: {
+    type: "faq",
+    title: "Frequently asked questions",
+    items: [
+      {
+        q: "A question people actually search for?",
+        a: "A short, self-contained answer of two or three sentences.",
+      },
+    ],
+  },
+  keyFact: {
+    type: "callout",
+    calloutType: "key",
+    title: "Key fact",
+    text: "One sentence that answers the article's core question.",
   },
 };
 
@@ -409,8 +433,15 @@ export default function CreateBlogPage() {
       if (newBlock.title) newBlock.title = t(newBlock.title);
       if (newBlock.caption) newBlock.caption = t(newBlock.caption);
       if (newBlock.content) newBlock.content = t(newBlock.content);
-      if (newBlock.items)
-        newBlock.items = newBlock.items.map((it: string) => t(it));
+      if (Array.isArray(newBlock.items))
+        newBlock.items = newBlock.items.map((it: unknown) => {
+          if (typeof it === "string") return t(it);
+          if (it && typeof it === "object") {
+            const row = it as { q?: string; a?: string };
+            return { q: t(row.q || ""), a: t(row.a || "") };
+          }
+          return it;
+        });
       if (newBlock.data) {
         newBlock.data = newBlock.data.map((row: Record<string, string>) => {
           const newRow: Record<string, string> = {};
@@ -861,6 +892,30 @@ export default function CreateBlogPage() {
                     title={t("Add Toggle/Spoiler")}
                   >
                     <FontAwesomeIcon icon={faChevronCircleDown} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("keyFact")}
+                    className="add-block-btn"
+                    title={t("Add Key Fact")}
+                  >
+                    <FontAwesomeIcon icon={faKey} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("takeaways")}
+                    className="add-block-btn"
+                    title={t("Add Key Takeaways")}
+                  >
+                    <FontAwesomeIcon icon={faListCheck} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAddBlock("faq")}
+                    className="add-block-btn"
+                    title={t("Add FAQ")}
+                  >
+                    <FontAwesomeIcon icon={faCircleQuestion} />
                   </button>
                 </div>
 

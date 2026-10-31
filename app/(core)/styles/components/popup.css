@@ -1,120 +1,689 @@
 /* ============================================================================
-   POPUP / FEEDBACK MODAL  (components/Popup.tsx, context/FeedbackProvider.tsx)
+   POPUP — the site's one modal dialog (components/Popup.tsx)
+   Used by feedback, share link, download, sign-in, publish preset and the
+   landing CTAs.
+
+   .popup-overlay            fixed backdrop, centres the dialog
+   .popup (--sm | --md)      the card: header · body (scrolls) · footer
+   .popup__header/__body/__footer
+   .popup-stack / -field / -input / -note / -alert
+                             content primitives consumers build forms from,
+                             so every dialog shares one spacing and control
+                             scale
+
+   Spacing scale inside a dialog: 0.35rem (label → control), 0.6rem (tight
+   groups), 1rem (between fields), 1.5rem (dialog padding). Under 640px the
+   dialog docks to the bottom as a sheet, like the filter popovers.
    ============================================================================ */
 
 .popup-overlay {
+  --popup-pad: 1.5rem;
+  --popup-radius: 18px;
+  --popup-border: color-mix(in oklab, var(--accent-color), transparent 74%);
+  --popup-surface: var(--card-bg);
+  --popup-footer-bg: color-mix(in oklab, var(--card-bg), var(--bg-color) 55%);
+  --popup-scrim: rgba(2, 6, 14, 0.66);
+
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  z-index: 5000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
-  transition: opacity 0.3s ease;
+  padding: 1.5rem;
+  background: var(--popup-scrim);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overscroll-behavior: contain;
+  animation: popup-fade-in 0.2s ease-out both;
 }
 
-.popup-overlay.show {
-  opacity: 1;
+[data-theme="light"] .popup-overlay {
+  --popup-surface: #ffffff;
+  --popup-footer-bg: #f8f9fa;
+  --popup-scrim: rgba(15, 23, 42, 0.38);
 }
 
-.popup-overlay.hide {
-  opacity: 0;
+.popup-overlay[data-state="closed"] {
+  pointer-events: none;
+  animation: popup-fade-out 0.2s ease-in both;
+}
+
+/* --- The dialog ------------------------------------------------------------ */
+
+.popup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 32rem;
+  max-height: min(88vh, 48rem);
+  max-height: min(88dvh, 48rem);
+  border: 1px solid var(--popup-border);
+  border-radius: var(--popup-radius);
+  background: var(--popup-surface);
+  color: var(--text-color);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 1px color-mix(in oklab, var(--accent-color), transparent 92%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  outline: none;
+  animation: popup-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+[data-theme="light"] .popup {
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.18),
+    0 0 0 1px color-mix(in oklab, var(--accent-color), transparent 88%);
+}
+
+/* A hairline of accent light along the top edge. */
+.popup::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--accent-color), transparent 35%),
+    transparent
+  );
   pointer-events: none;
 }
 
-.popup-container {
+.popup--sm {
+  max-width: 26rem;
+}
+
+.popup--md {
+  max-width: 32rem;
+}
+
+.popup-overlay[data-state="closed"] .popup {
+  animation: popup-out 0.18s ease-in both;
+}
+
+/* --- Header ---------------------------------------------------------------- */
+
+.popup__header {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background: var(--bg-gradient);
-  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 75%);
-  box-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-  width: 30rem;
-  max-width: 70%;
-  max-height: 80vh;
-  overflow-y: auto;
-  /* Entry state — .popup-enter / .popup-exit drive the animation */
-  transform: scale(0.8);
-  opacity: 0;
-  transition: all 0.3s ease;
+  align-items: flex-start;
+  gap: 0.9rem;
+  flex-shrink: 0;
+  padding: var(--popup-pad) calc(var(--popup-pad) - 0.5rem) 0 var(--popup-pad);
 }
 
-.popup-enter {
-  transform: scale(1);
-  opacity: 1;
+/* Header alone (no body, no footer): close the card with the same padding. */
+.popup__header:last-child {
+  padding-bottom: var(--popup-pad);
 }
 
-.popup-exit {
-  transform: scale(0.8);
-  opacity: 0;
-}
-
-.popup-container > h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 2rem;
-}
-
-.popup-container > p {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
-.popup-header {
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.popup-close-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-top: 1.5rem;
-}
-
-.popup-buttons {
-  display: flex;
-  gap: 1rem;
-  cursor: pointer;
-}
-
-/* --- Feedback form --------------------------------------------------------- */
-
-.feedback-form {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.popup__icon {
+  display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid color-mix(in oklab, var(--accent-color), transparent 68%);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--accent-color), transparent 88%);
+  color: var(--accent-color);
+  font-size: 1.05rem;
 }
 
-.feedback-textarea {
+.popup__heading {
+  flex: 1;
+  min-width: 0;
+  /* Optical centre against the 2.5rem icon / close button. */
+  padding-top: 0.3rem;
+}
+
+.popup__title {
+  margin: 0;
+  color: var(--title-color);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.popup__description {
+  margin: 0.4rem 0 0;
+  max-width: 60ch;
+  color: var(--subtitle-color);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.popup__close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: -0.2rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.popup__close:hover {
+  background: var(--color-background-active);
+  color: var(--text-color);
+}
+
+.popup__close:focus-visible {
+  border-color: var(--accent-color);
+  color: var(--text-color);
+  outline: none;
+  box-shadow: 0 0 0 3px
+    color-mix(in oklab, var(--accent-color), transparent 78%);
+}
+
+/* --- Body ------------------------------------------------------------------ */
+
+.popup__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1.25rem var(--popup-pad) var(--popup-pad);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--accent-color), transparent 70%)
+    transparent;
+}
+
+/* --- Footer ------------------------------------------------------------------ */
+
+.popup__footer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem var(--popup-pad);
+  border-top: 1px solid var(--border-color);
+  background: var(--popup-footer-bg);
+}
+
+/* No body: the footer follows the title directly, no divider needed. */
+.popup__header + .popup__footer {
+  margin-top: 1.25rem;
+  border-top: 0;
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: var(--popup-pad);
+}
+
+.popup__action {
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  line-height: 1.2;
+}
+
+.popup__action.ph-btn--primary {
+  box-shadow:
+    0 10px 24px color-mix(in oklab, var(--accent-color), transparent 72%),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.popup__action.ph-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.popup__action:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.popup__action:disabled {
+  box-shadow: none;
+}
+
+/* ============================================================================
+   Content primitives — what dialogs are built from
+   ============================================================================ */
+
+.popup-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* --- Field: label + control (+ hint / counter) ----------------------------- */
+
+.popup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.popup-field__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.popup-field__label {
+  color: var(--title-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.popup-field__optional {
+  margin-left: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.popup-field__count {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Text input / textarea --------------------------------------------------- */
+
+.popup-input {
+  box-sizing: border-box;
   width: 100%;
-  min-height: 10rem;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--bg-color), transparent 30%);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+[data-theme="light"] .popup-input {
+  background: #ffffff;
+}
+
+.popup-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.popup-input:hover {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 65%);
+}
+
+.popup-input:focus-visible {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 3px
+    color-mix(in oklab, var(--accent-color), transparent 80%);
+}
+
+.popup-input[readonly] {
+  color: var(--subtitle-color);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+}
+
+textarea.popup-input {
+  min-height: 7.5rem;
   resize: vertical;
 }
 
-.feedback-textarea:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  transition: all 0.3s ease;
-}
-
-.star-rating {
+/* Input with a button glued to its right edge (email + send, link + copy). */
+.popup-inline {
   display: flex;
-  gap: 5px;
-  transition: transform 0.2s;
+  gap: 0.5rem;
 }
 
-.star-rating span:hover {
-  transform: scale(1.2);
+.popup-inline .popup-input {
+  flex: 1;
+}
+
+.popup-inline .popup__action {
+  flex-shrink: 0;
+  width: auto;
+}
+
+/* --- Small print ------------------------------------------------------------- */
+
+.popup-note {
+  margin: 0;
+  color: var(--subtitle-color);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.popup-note a {
+  color: var(--accent-color);
+  text-underline-offset: 2px;
+}
+
+.popup-label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --- Divider with a caption ("or with your email") ----------------------------- */
+
+.popup-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.popup-divider::before,
+.popup-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+/* --- Alerts (inline status) --------------------------------------------------- */
+
+.popup-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--text-color);
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.popup-alert svg {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.popup-alert--error {
+  border-color: color-mix(in oklab, var(--error-color), transparent 65%);
+  background: color-mix(in oklab, var(--error-color), transparent 90%);
+}
+
+.popup-alert--error svg {
+  color: var(--error-color);
+}
+
+.popup-alert--success {
+  border-color: color-mix(in oklab, var(--success-color), transparent 65%);
+  background: var(--bg-success);
+}
+
+.popup-alert--success svg {
+  color: var(--success-color);
+}
+
+.popup-alert--info {
+  border-color: var(--border-color);
+  background: var(--bg);
+  color: var(--subtitle-color);
+}
+
+.popup-alert--info svg {
+  color: var(--accent-color);
+}
+
+/* ============================================================================
+   Dialog-specific content
+   ============================================================================ */
+
+/* --- Feedback (context/FeedbackProvider.tsx) ----------------------------------- */
+
+.feedback-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--bg-light);
+}
+
+.feedback-rating__stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.feedback-rating__star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: color-mix(in oklab, var(--text-color), transparent 78%);
+  font-size: 1.55rem;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.feedback-rating__star:hover {
+  transform: scale(1.12);
+}
+
+.feedback-rating__star.is-on {
+  color: #fbbf24;
+}
+
+.feedback-rating__star:focus-visible {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.feedback-rating__caption {
+  min-height: 1.25rem;
+  margin: 0;
+  color: var(--subtitle-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* --- Share link (controls/ShareLinkControl.jsx) -------------------------------- */
+
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.share-grid__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 100%;
+  padding: 0.8rem 0.4rem 0.7rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-light);
+  color: var(--text-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.share-grid__item svg {
+  font-size: 1.35rem;
+  color: var(--subtitle-color);
+  transition: color 0.15s ease;
+}
+
+.share-grid__item:hover,
+.share-grid__item:focus-visible {
+  border-color: color-mix(in oklab, var(--accent-color), transparent 45%);
+  background: color-mix(in oklab, var(--accent-color), transparent 92%);
+  color: var(--title-color);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.share-grid__item:hover svg,
+.share-grid__item:focus-visible svg {
+  color: var(--accent-color);
+}
+
+/* ============================================================================
+   Motion
+   ============================================================================ */
+
+@keyframes popup-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes popup-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+
+@keyframes popup-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes popup-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes popup-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* ============================================================================
+   Phones: a bottom sheet
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  .popup-overlay {
+    --popup-pad: 1.25rem;
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .popup,
+  .popup--sm,
+  .popup--md {
+    max-width: none;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-bottom: 0;
+    border-radius: var(--popup-radius) var(--popup-radius) 0 0;
+    animation: popup-sheet-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .popup-overlay[data-state="closed"] .popup {
+    animation: popup-sheet-out 0.2s ease-in both;
+  }
+
+  /* Whatever closes the sheet clears the home indicator. */
+  .popup > .popup__header:last-child,
+  .popup > .popup__body:last-child,
+  .popup > .popup__footer:last-child {
+    padding-bottom: calc(var(--popup-pad) + env(safe-area-inset-bottom));
+  }
+
+  .popup__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .popup__footer .popup__action {
+    width: 100%;
+  }
+
+  .popup-inline {
+    flex-direction: column;
+  }
+
+  .popup-inline .popup__action {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup,
+  .popup--sm,
+  .popup--md,
+  .popup-overlay[data-state="closed"] .popup {
+    animation-name: popup-fade-in;
+    animation-duration: 0.15s;
+  }
+
+  .popup-overlay[data-state="closed"] .popup {
+    animation-name: popup-fade-out;
+  }
+
+  .feedback-rating__star:hover,
+  .share-grid__item:hover {
+    transform: none;
+  }
 }

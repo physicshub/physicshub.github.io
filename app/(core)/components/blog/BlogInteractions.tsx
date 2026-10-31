@@ -22,11 +22,13 @@ export default function BlogInteractions({ title }: BlogInteractionsProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  // ✅ SSR-safe, lint-safe, no hydration mismatch
-  const [shareUrl] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return window.location.href;
-  });
+  // Read only after mount: the server and the client's first render must agree
+  // (both produce ""), so the share links resolve on the client without a
+  // hydration mismatch.
+  const [shareUrl, setShareUrl] = useState("");
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

@@ -3,7 +3,7 @@ import TAGS, { LEVELS, DIFFICULTIES } from "../tags.js";
 export const threeBodyProblemBlog = {
   slug: "physics-behind-three-body-problem",
   name: "The Three-Body Problem: The Equation That Broke Physics",
-  desc: "The three-body problem has stumped Newton, captivated Poincaré, and now broken the internet thanks to Netflix. Here is everything you need to know — the real physics, the chaos theory, the unsolvable mathematics, and exactly how much of the show is actually true.",
+  desc: "Two bodies under gravity are perfectly predictable; three are chaotic. Why the three-body problem has no formula — and what the Netflix show gets right.",
   tags: [
     LEVELS.undergraduate,
     DIFFICULTIES.advanced,
@@ -14,6 +14,7 @@ export const threeBodyProblemBlog = {
     TAGS.ANIMATIONS,
   ],
   date: "20/04/2026",
+  updated: "06/09/2026",
   theory: {
     title: "The Three-Body Problem: The Equation That Broke Physics",
     sections: [
@@ -28,11 +29,28 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "paragraph",
-            text: "Isaac Newton invented calculus, discovered the law of universal gravitation, and explained the motion of every planet in the solar system. He was, by any measure, one of the most powerful minds in human history. And yet, when he tried to calculate how the Sun, Earth, and Moon would move together — three gravitational bodies influencing each other simultaneously — he failed. Completely. So completely, in fact, that he wrote: *'[an exact solution] exceeds, if I am not mistaken, the force of any human mind.'*",
+            text: 'Isaac Newton invented calculus, discovered the law of universal gravitation, and explained the motion of every planet in the solar system. He was, by any measure, one of the most powerful minds in human history. And yet, when he tried to calculate how the Sun, Earth, and Moon would move together — three gravitational bodies influencing each other simultaneously — he failed. Completely. So completely, in fact, that he wrote that an exact solution **"exceeds, if I am not mistaken, the force of any human mind."**',
           },
           {
             type: "paragraph",
-            text: "He was right. For over three centuries, the greatest mathematicians and physicists on Earth — Euler, Lagrange, Poincaré, Kolmogorov — threw everything they had at this problem. And the problem fought back. It turned out to be hiding something nobody expected: **chaos itself**, lurking inside the most beautifully simple equations ever written. The Netflix series *3 Body Problem* brought this centuries-old scientific nightmare to 70 million households. This article tells you the whole story — the real physics, the breathtaking mathematics, the actual science behind the show, and why this problem is still very much alive in 2026.",
+            text: "He was right. For over three centuries, the greatest mathematicians and physicists on Earth — Euler, Lagrange, Poincaré, Kolmogorov — threw everything they had at this problem. And the problem fought back. It turned out to be hiding something nobody expected: **chaos itself**, lurking inside the most beautifully simple equations ever written. The Netflix series **3 Body Problem** brought this centuries-old scientific nightmare to 70 million households. This article tells you the whole story — the real physics, the breathtaking mathematics, the actual science behind the show, and why this problem is still very much alive in 2026.",
+          },
+          {
+            type: "callout",
+            calloutType: "key",
+            title: "Key fact",
+            text: "Two bodies orbiting under gravity have an exact, permanent solution. Add a third and, for almost all starting conditions, the motion becomes chaotic — no formula predicts it, and tiny changes in the start blow up exponentially.",
+          },
+          {
+            type: "takeaways",
+            title: "Key takeaways",
+            items: [
+              "The **two-body** problem is solved exactly (Kepler's ellipses). The **three-body** problem has no general closed-form solution.",
+              "For most starting conditions three-body motion is **chaotic**: deterministic equations, but unpredictable in practice beyond the Lyapunov time.",
+              "A handful of exact periodic solutions exist — the Lagrange points (1772), the figure-eight orbit (1993), and 695+ families found by supercomputer in 2017.",
+              "Real examples surround us: the Sun–Earth–Moon system, Jupiter's Trojan asteroids, the Alpha Centauri triple star, and black-hole binaries that feed LIGO.",
+              "In the Netflix show the chaotic sky is real physics; faster-than-light messaging by quantum entanglement is not.",
+            ],
           },
           {
             type: "callout",
@@ -76,6 +94,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "formula",
+            ref: "newtons-law-of-gravitation",
             latex: "F = G\\frac{m_1 m_2}{r^2}",
             inline: false,
           },
@@ -280,7 +299,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "paragraph",
-            text: "But there is a catch so severe it is almost comedic. The series converges — but so slowly that to compute the positions 1 second into the future to practical accuracy would require summing more terms than there are atoms in the observable universe. The solution exists in principle, is totally useless in practice, and does nothing to explain *why* the system is chaotic or *what* the trajectories look like. It is, mathematically speaking, a hollow victory — one of the most famous cases in history of a problem being simultaneously 'solved' and 'still completely open'.",
+            text: "But there is a catch so severe it is almost comedic. The series converges — but so slowly that to compute the positions 1 second into the future to practical accuracy would require summing more terms than there are atoms in the observable universe. The solution exists in principle, is totally useless in practice, and does nothing to explain **why** the system is chaotic or **what** the trajectories look like. It is, mathematically speaking, a hollow victory — one of the most famous cases in history of a problem being simultaneously 'solved' and 'still completely open'.",
           },
           {
             type: "table",
@@ -647,7 +666,7 @@ export const threeBodyProblemBlog = {
           },
           {
             type: "paragraph",
-            text: "Liu Cixin is a Chinese science fiction author and computer engineer. His *Remembrance of Earth's Past* trilogy — *The Three-Body Problem* (2008), *The Dark Forest* (2008), and *Death's End* (2010) — is widely considered the greatest science fiction trilogy written in the 21st century. The English translation won the Hugo Award in 2015. The books are notable for their genuine scientific depth: Liu does real research, cites real physics, and often invents extrapolation from actual scientific frontiers.",
+            text: "Liu Cixin is a Chinese science fiction author and computer engineer. His **Remembrance of Earth's Past** trilogy — **The Three-Body Problem** (2008), **The Dark Forest** (2008), and **Death's End** (2010) — is widely considered the greatest science fiction trilogy written in the 21st century. The English translation won the Hugo Award in 2015. The books are notable for their genuine scientific depth: Liu does real research, cites real physics, and often invents extrapolation from actual scientific frontiers.",
           },
           {
             type: "paragraph",
@@ -770,16 +789,44 @@ export const threeBodyProblemBlog = {
             text: "The Trisolarans in Liu Cixin's story are defined by their relationship with this chaos — a civilisation that evolved under the constant existential threat of an unpredictable sky, that built a culture of survival and ruthlessness because the universe gave them no other option. It is a deeply physical metaphor: the environment of three-body chaos didn't just describe their world, it shaped what kind of beings they became. Whether that metaphor holds for real physics — whether a civilisation can survive long enough in such a system to become a threat — remains, like the problem itself, beautifully, stubbornly open.",
           },
           {
-            type: "callout",
-            calloutType: "info",
-            title: "The Three-Body Problem at a Glance — Share This",
-            text: "🔵 Two gravitating bodies: perfectly solvable, orbits are exact ellipses, predictable forever. | 🔴 Three gravitating bodies: chaotic for most starting conditions, no general formula, predictions fail beyond the Lyapunov time. | ✨ Special stable solutions exist: Lagrange points (1772), figure-eight (1993), 695+ new families (2017). | 🌌 Real examples: Sun-Earth-Moon, Alpha Centauri triple star, Jupiter's Trojan asteroids, LIGO black hole mergers. | 📺 The Netflix show: core premise (chaos) is real; quantum communication via entanglement is not possible; sophon concept draws on real string theory speculation. | 🧠 The deepest lesson: the universe is irreducibly chaotic at certain scales — not because of randomness, but because of the geometry of nonlinear equations.",
+            type: "faq",
+            title: "Frequently asked questions",
+            items: [
+              {
+                q: "Has the three-body problem been solved?",
+                a: "Not in any useful sense. Karl Sundman proved in 1912 that a convergent power-series solution exists for almost all initial conditions, but it converges so slowly that computing one second of motion would need more terms than there are atoms in the universe. There is still no practical general formula.",
+              },
+              {
+                q: "Why is three bodies so much harder than two?",
+                a: "Two bodies have exactly enough conserved quantities (energy, momentum, angular momentum, centre of mass) to pin the motion down completely. Three bodies have the same ten conserved quantities but an 18-dimensional state space, leaving eight dimensions free to wander — and wander chaotically.",
+              },
+              {
+                q: "Is our own Solar System stable?",
+                a: "Only mildly chaotic. On human timescales the planets are predictable to extreme precision. Over billions of years the picture blurs: simulations give Mercury roughly a 1% chance of a destabilising orbit before the Sun dies.",
+              },
+              {
+                q: "How accurate is the Netflix show's physics?",
+                a: "The core premise — a planet in a chaotic three-star system facing unpredictable eras — is real physics, though such a planet would most likely be ejected before life could evolve. The 'sophon' faster-than-light messaging via quantum entanglement is impossible: entanglement cannot carry information.",
+              },
+              {
+                q: "What are Lagrange points?",
+                a: "Five positions in a two-body system where a much lighter third object can keep pace with the two large bodies. L4 and L5 are stable and hold Jupiter's Trojan asteroids; the James Webb Space Telescope orbits the unstable Sun–Earth L2 point.",
+              },
+            ],
           },
           {
-            type: "toggle",
-            title: "Where to Go Next: Books, Papers, and Simulations",
-            content:
-              "📚 **Fiction**: Liu Cixin, 'The Three-Body Problem' (2008), 'The Dark Forest' (2008), 'Death's End' (2010). These are the source novels — richer and more scientifically detailed than the show. | 📐 **Mathematics**: Richard Montgomery, 'The Three-Body Problem' (Scientific American, August 2019) — an accessible account of the figure-eight discovery and the modern mathematical landscape. | 🖥️ **Interactive simulation**: Search 'three-body problem simulator' online — there are excellent browser-based tools where you can set initial conditions and watch chaos unfold in real time. Try the figure-eight configuration, then slightly perturb one mass and watch the orbit dissolve. | 🎥 **Video**: The 3Blue1Brown YouTube channel has an exceptional visualisation of chaos and phase space that complements this article perfectly. | 🔬 **Research frontier**: Shijun Liao's papers on 'clean numerical simulation' (CNS) of the three-body problem on arXiv describe the 2017 supercomputer search and the methodology behind finding new periodic orbits.",
+            type: "sectionTitle",
+            text: "Keep exploring",
+          },
+          {
+            type: "list",
+            ordered: false,
+            items: [
+              "Watch three suns pull a world apart in the [Three-Body Problem simulation](/simulations/ThreeBody).",
+              "Chaos with just two degrees of freedom: the [Double Pendulum simulation](/simulations/DoublePendulum).",
+              "Where the chaos in this article also shows up: [The physics of the pendulum](/blog/physics-of-pendulum-explained).",
+              "Another surprising result hiding in conservation laws: [How two sliding blocks compute π](/blog/pi-from-block-collisions-explained).",
+            ],
           },
         ],
       },
