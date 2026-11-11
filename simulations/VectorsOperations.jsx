@@ -6,6 +6,7 @@ import {
   Bounds,
 } from "../app/(core)/engine/index.js";
 import { adjustColor } from "../app/(core)/utils/adjustColor.ts";
+import { SCALE } from "../app/(core)/constants/Config.js";
 import {
   INITIAL_INPUTS,
   INPUT_FIELDS,
@@ -55,7 +56,7 @@ export default createSimulation({
 
   draw({ p, inputs }) {
     drawOperation(p, inputs);
-    drawAxisProjections(p);
+    drawAxisProjections(p, inputs);
   },
 
   info: ({ p, inputs }) => ({ state: { p, inputs }, context: {} }),
@@ -78,10 +79,24 @@ function vectorA(inputs) {
   };
 }
 
-/** Vector B, from the canvas centre to the pointer. */
-function vectorB(p) {
+/** Vector B: from the canvas centre to the pointer, or set by the inputs. */
+function vectorB(p, inputs) {
+  if (inputs.vectorBMode === "manual") {
+    const angle = (inputs.vectorBAngle * Math.PI) / 180;
+    return {
+      x: Math.cos(angle) * inputs.vectorBMag,
+      y: Math.sin(angle) * inputs.vectorBMag,
+    };
+  }
   const centre = centreOf(p);
   return { x: p.mouseX - centre.x, y: p.mouseY - centre.y };
+}
+
+/** Screen position of B's tip (B drawn from the canvas centre). */
+function tipOfB(p, inputs) {
+  const centre = centreOf(p);
+  const B = vectorB(p, inputs);
+  return { x: centre.x + B.x, y: centre.y + B.y };
 }
 
 /**
@@ -93,7 +108,8 @@ function vectorForces(p, inputs) {
   const centre = centreOf(p);
 
   let A = { x: centre.x / perNewton, y: centre.y / perNewton };
-  let B = { x: vectorB(p).x / perNewton, y: vectorB(p).y / perNewton };
+  const b = vectorB(p, inputs);
+  let B = { x: b.x / perNewton, y: b.y / perNewton };
 
   if (inputs.operation === "-") {
     B = { x: -B.x, y: -B.y };
@@ -114,9 +130,9 @@ function drawOperation(p, inputs) {
   const { strokeColor, strokeWeight, multiVector, operation, visualizeMode } =
     inputs;
   const centre = centreOf(p);
-  const mouse = { x: p.mouseX, y: p.mouseY };
+  const mouse = tipOfB(p, inputs);
   const A = vectorA(inputs);
-  const B = vectorB(p);
+  const B = vectorB(p, inputs);
   const accent = adjustColor(strokeColor);
 
   const line = (from, to) => p.line(from.x, from.y, to.x, to.y);
@@ -297,16 +313,17 @@ function drawOperation(p, inputs) {
 }
 
 /** Dashed x/y components of B, plus its angle from the x-axis. */
-function drawAxisProjections(p) {
+function drawAxisProjections(p, inputs) {
   const centre = centreOf(p);
-  const B = vectorB(p);
+  const B = vectorB(p, inputs);
+  const tip = tipOfB(p, inputs);
 
   p.push();
   p.noFill();
   p.stroke(255, 255, 255, 120);
   p.drawingContext.setLineDash([4, 4]);
-  p.line(centre.x, centre.y, p.mouseX, centre.y);
-  p.line(p.mouseX, centre.y, p.mouseX, p.mouseY);
+  p.line(centre.x, centre.y, tip.x, centre.y);
+  p.line(tip.x, centre.y, tip.x, tip.y);
   p.drawingContext.setLineDash([]);
 
   p.stroke(255, 255, 255, 150);
@@ -327,15 +344,22 @@ function mapSimInfo({ p, inputs }) {
 
   const centre = centreOf(p);
   const A = vectorA(inputs);
-  const B = vectorB(p);
-  const Bfromorigin = { x: p.mouseX, y: p.mouseY };
+  const B = vectorB(p, inputs);
+  const Bfromorigin = tipOfB(p, inputs);
   const { operation, visualizeMode, multiVector } = inputs;
 
-  const format = (v) => `(${v.x.toFixed(2)}, ${v.y.toFixed(2)}) px`;
+  // Everything is computed in screen pixels; convert only for display.
+  const unit = inputs.lengthUnit;
+  const perPx = { px: 1, cm: 100 / SCALE, m: 1 / SCALE }[unit] ?? 1;
+  const digits = unit === "m" ? 4 : 2;
+  const len = (value) => `${(value * perPx).toFixed(digits)} ${unit}`;
+  const area = (value) => `${(value * perPx * perPx).toFixed(digits)} ${unit}²`;
+  const format = (v) =>
+    `(${(v.x * perPx).toFixed(digits)}, ${(v.y * perPx).toFixed(digits)}) ${unit}`;
   const magnitude = (v) => Math.hypot(v.x, v.y);
 
   const info = {
-    "Vector |B|": `${magnitude(B).toFixed(2)} px`,
+    "Vector |B|": len(magnitude(B)),
     "Vector angle θ": `${((Math.atan2(B.y, B.x) * 180) / Math.PI).toFixed(1)} deg`,
     "B components": format(B),
   };
@@ -347,10 +371,10 @@ function mapSimInfo({ p, inputs }) {
           ? Bfromorigin
           : { x: A.x + B.x, y: A.y + B.y };
       info["Addition resultant R"] = format(R);
-      info["|R|"] = `${magnitude(R).toFixed(2)} px`;
+      info["|R|"] = len(magnitude(R));
       info["Formula"] =
         visualizeMode === "triangle"
-          ? "Triangle: R = B (origin→mouse)"
+          ? "Triangle: R = B (origin→tip of B)"
           : "Parallelogram: R = A + B";
       break;
     }
@@ -362,14 +386,15 @@ function mapSimInfo({ p, inputs }) {
       const check = { x: base.x + R.x, y: base.y + R.y };
 
       info["Subtraction resultant R = B - A"] = format(R);
-      info["|R|"] = `${magnitude(R).toFixed(2)} px`;
+      info["|R|"] = len(magnitude(R));
       info["Auxiliary -A"] = format({ x: -base.x, y: -base.y });
       info["Parallelogram check B = A + R"] = format(check);
-      info["Check error |(A + R) - B|"] =
-        `${magnitude({ x: check.x - effective.x, y: check.y - effective.y }).toFixed(4)} px`;
+      info["Check error |(A + R) - B|"] = len(
+        magnitude({ x: check.x - effective.x, y: check.y - effective.y })
+      );
       info["Formula"] =
         visualizeMode === "triangle"
-          ? "Triangle: R = B - A (center→mouse)"
+          ? "Triangle: R = B - A (center→tip of B)"
           : "Parallelogram: use B and -A as adjacent sides, diagonal is R = B + (-A)";
       break;
     }
@@ -378,7 +403,7 @@ function mapSimInfo({ p, inputs }) {
       const R = { x: B.x * multiVector, y: B.y * multiVector };
       info["Scalar s"] = multiVector.toFixed(2);
       info["Scaled vector s·v"] = format(R);
-      info["|s·v|"] = `${magnitude(R).toFixed(2)} px`;
+      info["|s·v|"] = len(magnitude(R));
       info["Angle of s·v"] =
         `${((Math.atan2(R.y, R.x) * 180) / Math.PI).toFixed(1)} deg`;
       info["Formula"] = "s·v = (s·vx, s·vy); if s < 0, orientation flips";
@@ -390,7 +415,7 @@ function mapSimInfo({ p, inputs }) {
       const unit = length
         ? { x: B.x / length, y: B.y / length }
         : { x: 0, y: 0 };
-      info["|v|"] = length.toFixed(2);
+      info["|v|"] = len(length);
       info["unit v̂"] = `(${unit.x.toFixed(3)}, ${unit.y.toFixed(3)})`;
       info["Formula"] = "v̂ = v / |v|";
       break;
@@ -402,7 +427,7 @@ function mapSimInfo({ p, inputs }) {
       const cosTheta = denominator ? dot / denominator : 0;
       const theta =
         (Math.acos(Math.max(-1, Math.min(1, cosTheta))) * 180) / Math.PI;
-      info["A·B"] = `${dot.toFixed(2)} px²`;
+      info["A·B"] = area(dot);
       info["θ between A and B (deg)"] = theta.toFixed(1);
       info["Formula"] = "A·B = |A||B| cosθ = AxBx + AyBy";
       break;
@@ -412,7 +437,7 @@ function mapSimInfo({ p, inputs }) {
       const z = A.x * B.y - A.y * B.x;
       const sign =
         z > 0 ? "+ (counterclockwise)" : z < 0 ? "- (clockwise)" : "0";
-      info["A×B (z-component)"] = `${z.toFixed(2)} ${sign} px²`;
+      info["A×B (z-component)"] = `${area(z)} ${sign}`;
       info["Formula"] = "A×B (2D) = AxBy − AyBx (z-axis out of plane)";
       break;
     }

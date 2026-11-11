@@ -10,6 +10,10 @@ export const INITIAL_INPUTS = {
   pxPerNewton: 100,
   vectorAMag: 150,
   vectorAAngle: 30,
+  vectorBMode: "mouse",
+  vectorBMag: 200,
+  vectorBAngle: -45,
+  lengthUnit: "cm",
 };
 
 export const INPUT_FIELDS = [
@@ -60,7 +64,8 @@ export const INPUT_FIELDS = [
     name: "vectorAMag",
     label: "Vector A magnitude",
     symbol: "|A|",
-    unit: "px",
+    // 1 px on this canvas is exactly 1 cm (SCALE = 100 px/m).
+    unit: "cm",
     min: 10,
     max: 500,
     step: 10,
@@ -84,6 +89,47 @@ export const INPUT_FIELDS = [
       inputs.operation === "cross" ||
       (inputs.visualizeMode === "parallelogram" &&
         (inputs.operation === "+" || inputs.operation === "-")),
+  },
+  {
+    type: "select",
+    name: "vectorBMode",
+    label: "Vector B control",
+    options: [
+      { value: "mouse", label: "Follow the pointer" },
+      { value: "manual", label: "Set manually" },
+    ],
+  },
+  {
+    type: "number",
+    name: "vectorBMag",
+    label: "Vector B magnitude",
+    symbol: "|B|",
+    unit: "cm",
+    min: 0,
+    max: 500,
+    step: 10,
+    showCondition: (inputs) => inputs.vectorBMode === "manual",
+  },
+  {
+    type: "number",
+    name: "vectorBAngle",
+    label: "Vector B angle",
+    symbol: "∠B",
+    unit: "°",
+    min: -180,
+    max: 180,
+    step: 5,
+    showCondition: (inputs) => inputs.vectorBMode === "manual",
+  },
+  {
+    type: "select",
+    name: "lengthUnit",
+    label: "Length unit",
+    options: [
+      { value: "cm", label: "Centimetres (cm)" },
+      { value: "m", label: "Metres (m)" },
+      { value: "px", label: "Pixels (px)" },
+    ],
   },
   {
     type: "number",

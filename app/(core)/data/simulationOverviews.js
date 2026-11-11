@@ -49,6 +49,8 @@ const simulationOverviews = {
     controls: [
       "Vector A magnitude",
       "Vector A angle",
+      "Vector B: follow the pointer or set magnitude and angle",
+      "Length unit (cm, m or px)",
       "Operation (add / subtract / dot)",
       "Scalar multiplier",
     ],
