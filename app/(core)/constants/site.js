@@ -1,8 +1,8 @@
 // constants/site.js
 //
 // Single source of truth for the public identity of the site. Kept as plain JS
-// (not .ts) so the Node ESM build scripts — scripts/sitemap-generator.js,
-// scripts/generate-feeds.js — can import it directly alongside the app.
+// (not .ts) so plain Node ESM (scripts/, site-seo-kit.config.mjs) can import it
+// directly alongside the app.
 
 export const SITE_URL = "https://physicshub.github.io";
 export const SITE_NAME = "PhysicsHub";

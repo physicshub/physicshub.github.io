@@ -8,8 +8,8 @@ you change the project structure.
 ## Commands & verification
 
 ```bash
-npm run dev           # next dev + sitemap regen on routes.js changes
-npm run build         # generate:sitemap + generate:feeds, then next build (server mode, API live)
+npm run dev           # next dev + generate:seo on config / data changes
+npm run build         # generate:seo, then next build (server mode, API live)
 npm run build:static  # Pages export: strips app/api, exports to out/, restores
 npm run lint          # eslint (lint:fix to autofix)
 npm run format:check  # prettier --check .  — CI parity
@@ -24,11 +24,11 @@ pre-commit runs `scripts/check-package-lock.js` and lint-staged. Node >= 24 (see
 
 - **Never edit `version` in package.json** — semantic-release owns it. PR titles
   must be conventional commits (`feat:`, `fix:`, `ci:` …); the squashed title is the changelog.
-- **`routes.js` at the repo root is generated** — `scripts/sitemap-generator.js`
-  rewrites it in place (lastmod churn) and writes `public/sitemap.xml` + `public/robots.txt`.
-  `scripts/generate-feeds.js` writes `public/feed.xml` (Atom), `public/llms.txt`, and
-  `public/llms-full.txt`. All five run before every `next build`; all are build
-  output — don't hand-edit them.
+- **`routes.js` at the repo root is generated** — site-seo-kit (`npm run generate:seo`,
+  configured in `site-seo-kit.config.mjs`) rewrites it and writes `public/sitemap.xml`,
+  `public/robots.txt`, `public/feed.xml` (Atom), `public/llms.txt`, `public/llms-full.txt`
+  and the IndexNow key file. It runs before every `next build`; all are build
+  output — don't hand-edit them (change the config instead).
 - **Two build modes, switched by `app/api` presence** (see `next.config.js`):
   - `npm run build` — API present → normal Next.js app (Vercel, local dev).
   - `npm run build:static` — strips `app/api` via `scripts/strip-api-for-static-export.js`, exports to `out/`.

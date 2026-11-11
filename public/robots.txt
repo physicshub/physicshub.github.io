@@ -6,36 +6,77 @@ Disallow: /account
 
 User-agent: GPTBot
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
+
+User-agent: Claude-User
+Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: anthropic-ai
 Allow: /
-
-User-agent: Claude-Web
-Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: Perplexity-User
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 User-agent: CCBot
 Allow: /
+Disallow: /blog/create
+Disallow: /simulations/test
+Disallow: /account
 
 Sitemap: https://physicshub.github.io/sitemap.xml
 
 # Atom feed: https://physicshub.github.io/feed.xml
-
 # LLM context: https://physicshub.github.io/llms.txt

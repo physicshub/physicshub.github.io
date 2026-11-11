@@ -186,7 +186,7 @@ No test suite. Before proposing the change:
 - `npm run lint` and `npm run format:check` (CI gate).
 - `npm run build` — a new article missing from `index.js` still 404s; a malformed
   `theory` renders "Error: Invalid content structure."
-- `npm run generate:sitemap && npm run generate:feeds` — the article should
+- `npm run generate:seo` — the article should
   appear in `public/sitemap.xml`, `public/feed.xml`, `public/llms.txt`.
 - Load `/blog/<slug>`: the lead answers the `name` in ≤ 2 sentences; the `key`
   callout, `takeaways` and `faq` all render; the TOC (right rail) is populated

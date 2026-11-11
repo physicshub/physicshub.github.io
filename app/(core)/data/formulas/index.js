@@ -5,7 +5,7 @@
 // is never written here — utils/formulaUsage.js derives it from those refs.
 //
 // One file per domain; the order of DOMAINS is the order of the page.
-// scripts/generate-feeds.js validates the registry and every ref on each build
+// site-seo-kit.config.mjs validates the registry and every ref on each build
 // (see validateFormulas in utils/formulaUsage.js).
 
 import kinematics from "./kinematics.js";

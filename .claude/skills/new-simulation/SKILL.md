@@ -265,7 +265,7 @@ radians; return NaN when there is no real solution) wherever the formula makes
 sense to compute. `example`, `pitfalls`, `note` and `history` are optional, so
 only write them when they teach something. An unknown id or a broken card fails
 the build (`validateFormulas` in `utils/formulaUsage.js`, run by
-`generate:feeds`).
+`generate:seo`).
 
 ## The createSimulation spec
 

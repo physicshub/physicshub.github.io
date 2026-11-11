@@ -62,7 +62,7 @@ export const buildFormulaUsage = ({ chapters, overviews, articles }) => {
 
 /**
  * Every problem in the registry and in the refs to it, as readable strings.
- * scripts/generate-feeds.js fails the build when this is non-empty.
+ * site-seo-kit.config.mjs (beforeGenerate) fails the build when this is non-empty.
  */
 export const validateFormulas = ({ overviews, articles }) => {
   const errors = [];
