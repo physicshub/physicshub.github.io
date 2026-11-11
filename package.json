@@ -71,7 +71,7 @@
     "lint-staged": "^16.2.7",
     "nodemon": "^3.1.10",
     "prettier": "^3.8.0",
-    "puppeteer": "^24.42.0",
+    "puppeteer": "^25.17.0",
     "site-seo-kit": "^0.1.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
