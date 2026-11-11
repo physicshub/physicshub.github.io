@@ -38,6 +38,26 @@ async function ensureForkExists(octokit: Octokit, username: string) {
   }
 }
 
+// Tells the maintainers' Discord (server-only secret, unlike the feedback
+// webhook). A failed notification never fails the publish.
+async function notifyDiscord(embed: Record<string, unknown>) {
+  const url = process.env.DISCORD_WEBHOOK_URL_ACTIVITY;
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: "PhysicsHub",
+        allowed_mentions: { parse: [] },
+        embeds: [embed],
+      }),
+    });
+  } catch (error) {
+    console.error("Discord notification failed:", error);
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const token = await getSessionToken();
@@ -135,6 +155,41 @@ export async function POST(req: Request) {
       head: `${owner}:${branchName}`,
       base: "main",
       body: `New blog proposal submitted through the website editor by @${owner}.\n\nTitle: ${title}`,
+    });
+
+    await notifyDiscord({
+      title: `📝 New blog proposal: ${title}`.slice(0, 256),
+      url: pr.html_url,
+      color: 0x8b5cf6,
+      author: {
+        name: owner,
+        url: authenticatedUser.html_url,
+        icon_url: authenticatedUser.avatar_url,
+      },
+      description: String(jsonContent.desc).slice(0, 1000),
+      fields: [
+        {
+          name: "Pull request",
+          value: `[#${pr.number}](${pr.html_url})`,
+          inline: true,
+        },
+        {
+          name: "Author",
+          value: `[${owner}](${authenticatedUser.html_url})`,
+          inline: true,
+        },
+        {
+          name: "Sections",
+          value: String(jsonContent.sections?.length ?? 0),
+          inline: true,
+        },
+        {
+          name: "Tags",
+          value: jsonContent.tags.map(String).join(" · ").slice(0, 1024),
+        },
+      ],
+      footer: { text: `PhysicsHub blog · ${fileName}` },
+      timestamp: new Date().toISOString(),
     });
 
     return NextResponse.json({ success: true, url: pr.html_url });

@@ -9,7 +9,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-const LAST_UPDATED = "25 September 2026";
+const LAST_UPDATED = "11 November 2026";
 const CONTACT = "mattqdevv@gmail.com";
 
 const description =
@@ -82,6 +82,16 @@ export default function PrivacyPage() {
             your rating, your comment, the page you were on and your device type
             are posted to the maintainers&apos; Discord server. Don&apos;t put
             personal information in the comment.
+          </li>
+          <li>
+            <strong>Community activity.</strong> When you create, rename or
+            delete an account, publish, like, report or delete a preset, save a
+            configuration to your account for the first time, hit a rate limit,
+            or propose a blog post, a notice is posted to the same Discord
+            server so maintainers can follow and moderate the community. It
+            contains your public nickname, the sign-in method you used, the
+            preset or simulation involved and, for reports, the reason you wrote
+            — never your email address.
           </li>
           <li>
             <strong>Translation.</strong> Languages without a finished
@@ -223,8 +233,11 @@ export default function PrivacyPage() {
               </tr>
               <tr>
                 <td>Discord</td>
-                <td>Receiving feedback</td>
-                <td>Your rating, comment, page and device type</td>
+                <td>Receiving feedback and community activity notices</td>
+                <td>
+                  Your rating, comment, page and device type; your nickname,
+                  sign-in method, presets, likes, reports and their reasons
+                </td>
               </tr>
               <tr>
                 <td>Email delivery service</td>

@@ -62,8 +62,12 @@ async function client() {
 // is what lets `npm run i18n:extract` find them.
 function friendly(message: string | undefined | null): string | null {
   if (!message) return null;
-  if (message.includes("rate_limited"))
+  if (message.includes("rate_limited")) {
+    // The rejected write rolled back its own alert; the database re-checks the
+    // counters and notifies the maintainers once per window (Discord migration).
+    void getSupabase().then((supabase) => supabase?.rpc("report_rate_limit"));
     return /* i18n */ "You're doing that too often. Please wait a while and try again.";
+  }
   if (message.includes("account_too_new"))
     return /* i18n */ "New accounts can report presets after 24 hours.";
   if (

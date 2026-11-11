@@ -32,6 +32,8 @@ community layer switches itself off, so forks and local checkouts need none of t
    2. `migrations/20260925000000_hardening.sql`
    3. `migrations/20260926000000_official_presets.sql` — one or two featured
       starter presets per simulation, signed by a banned, password-less "PhysicsHub" system account
+   4. `migrations/20261111000000_discord_notifications.sql` — Discord embeds
+      for every community event (see "Discord notifications" below)
 3. **Auth → URL Configuration**
    - Site URL: `https://physicshub.github.io`
    - Redirect URLs — exactly these, no broader wildcards:
@@ -76,6 +78,36 @@ Everything is in _Table Editor → presets_:
   users. Set `hidden = false` to restore, or delete the row.
 - **Ban a user**: _Authentication → Users → … → Ban_, or delete the user (cascades
   to everything they published).
+
+## Discord notifications
+
+The database posts an embed to Discord for every community event, through
+`pg_net` from triggers — never from the browser, so events can't be faked or
+suppressed and the webhook URLs stay secret. Create two webhooks in Discord
+(_Channel settings → Integrations → Webhooks_) and store them in Vault once:
+
+```sql
+select vault.create_secret('https://discord.com/api/webhooks/…', 'discord_webhook_activity');
+select vault.create_secret('https://discord.com/api/webhooks/…', 'discord_webhook_moderation');
+```
+
+| Channel      | Events                                                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `activity`   | new account, nickname change, account deleted, new preset, preset deleted, like, unlike, like milestones (10/25/50/…), first cloud save |
+| `moderation` | report, preset auto-hidden, featured/hidden/restored from the dashboard, rate limit hit                                                 |
+
+`moderation` falls back to `activity` when unset; with neither set nothing is
+sent. To change a URL: `select vault.update_secret(id, 'new-url') from
+vault.secrets where name = 'discord_webhook_activity';`. Rows removed by a
+cascade (a deleted account's presets and likes) are not notified one by one.
+Rate limits are reported by `report_rate_limit()`, which the browser calls on a
+`rate_limited` error: the rejected write rolls back anything it queued, so the
+function re-checks the counters and alerts once per window. Blog proposals come
+from `/api/publish` with the server-only `DISCORD_WEBHOOK_URL_ACTIVITY` env var
+(set it on Vercel; the same URL as the `activity` secret).
+
+When you add a community write path, give it a notify trigger next to its
+limiter trigger, built from the `private.embed` / `private.field` helpers.
 
 ## Staying free
 
