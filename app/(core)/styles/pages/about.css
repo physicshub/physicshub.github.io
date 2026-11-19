@@ -106,7 +106,8 @@
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: color-mix(in oklab, var(--accent-color), white 30%);
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 /* --- Panels ---------------------------------------------------------------- */
