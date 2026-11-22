@@ -140,7 +140,9 @@ export default function createSimulation(spec) {
     // from inside p.draw without re-creating the sketch callback.
     const simInfoRefsRef = useRef(simInfoRefs);
     simInfoRefsRef.current = simInfoRefs;
-    const { simData, updateSimInfo } = useSimInfo({ customRefs: simInfoRefs });
+    const { simData, updateSimInfo, resetSimInfo } = useSimInfo({
+      customRefs: simInfoRefs,
+    });
 
     const handleInputChange = useCallback(
       (name, value) => {
@@ -273,23 +275,25 @@ export default function createSimulation(spec) {
     const handleReset = useCallback(() => {
       const wasPaused = isPaused();
       resetTime();
+      resetSimInfo();
       refsRef.current = {};
       if (wasPaused) setPause(true);
       setResetVersion((v) => v + 1);
-    }, []);
+    }, [resetSimInfo]);
 
     // Every set of inputs from outside the controls — an uploaded JSON file, a
     // community preset, a cloud-saved config — is untrusted: sanitised against
     // the config and laid over the defaults.
     const handleLoad = useCallback(
       (loadedInputs) => {
+        resetSimInfo();
         setInputs({
           ...INITIAL_INPUTS,
           ...sanitizeInputs(loadedInputs, INITIAL_INPUTS, INPUT_FIELDS),
         });
         setResetVersion((v) => v + 1);
       },
-      [setInputs]
+      [setInputs, resetSimInfo]
     );
 
     // Community presets ("Try") and the signed-in user's cloud-saved config.

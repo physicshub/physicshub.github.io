@@ -270,7 +270,7 @@ the build (`validateFormulas` in `utils/formulaUsage.js`, run by
 ## The createSimulation spec
 
 `createSimulation` already owns: input state and localStorage, URL params, the
-reset and load controls, canvas setup and resize, the fixed-timestep loop,
+reset and load controls (including clearing stale info readouts), canvas setup and resize, the fixed-timestep loop,
 pointer dispatch, the background, and the sim-info panel. Never re-implement any
 of it in a simulation.
 
