@@ -364,6 +364,7 @@ export const CONTENT_TOPICS = {
   "sim:SimplePendulum": "pendulum",
   "sim:ParabolicMotion": "projectile",
   "sim:InclinedPlane": "inclined-plane",
+  "sim:CartPulley": "inclined-plane",
   "sim:CircularMotion": "circular-motion",
   "sim:ThreeBody": "three-body",
   "sim:HorizontalSpring": "hooke-law",

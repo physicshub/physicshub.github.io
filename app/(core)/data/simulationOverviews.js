@@ -18,6 +18,18 @@
  * @type {Record<string, SimulationOverview>}
  */
 const simulationOverviews = {
+  CartPulley: {
+    intro:
+      "A hanging mass pulls a cart along a horizontal track. Adjust the masses to compare the tension in the string with the hanging weight. The model assumes a frictionless track and a light, inextensible string over a massless, frictionless pulley. The cart reaches a fixed stop, where the animation stops both bodies; the impact itself is not modelled. Reset to run again.",
+    controls: ["Cart mass", "Hanging mass", "Gravity"],
+    concepts: [
+      "Newton's second law",
+      "Connected bodies share an acceleration",
+      "String tension is less than hanging weight",
+    ],
+    formulas: ["newtons-second-law"],
+  },
+
   BouncingBall: {
     intro:
       "A ball moves in a straight line at constant speed until it meets a wall, then rebounds. It is the simplest possible model of motion and collision: velocity, reflection, and — once gravity and restitution are switched on — energy loss on each bounce. Watching one velocity component flip at every wall makes the idea of a vector concrete.",

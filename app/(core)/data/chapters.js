@@ -215,6 +215,16 @@ const chapters = [
     thumbnail: "/thumbnails/kirchhoff-circuit.webp",
     relatedBlogSlug: "kirchhoffs-circuit-laws-explained",
   },
+  {
+    id: 18,
+    name: "Cart and Hanging Mass",
+    desc: "Explore Newton's second law with a cart pulled by a hanging mass over an ideal pulley. Compare the string tension with the hanging weight.",
+    link: "/simulations/CartPulley",
+    level: "upperSecondary",
+    difficulty: "core",
+    tags: [TAGS.DYNAMICS, TAGS.FORCES, TAGS.GRAVITY],
+    thumbnail: "/thumbnails/cart-pulley.svg",
+  },
 ];
 
 export default chapters;
