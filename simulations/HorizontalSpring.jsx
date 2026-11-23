@@ -6,7 +6,7 @@ import {
   Strut,
   LockAxis,
   Dragging,
-  CustomForce,
+  Damping,
   ForceVectors,
   toScreen,
   drawCoil,
@@ -29,8 +29,8 @@ const WALL_X = 0.2;
  *
  * The spring is bolted to the wall but not to the block, so it can only push:
  * once the block passes the rest length they separate and it coasts under
- * friction alone. That is the whole point of the demo — elastic potential energy
- * converts to kinetic energy, and only then does friction start removing it.
+ * viscous damping alone. Elastic potential energy converts to kinetic energy,
+ * while damping dissipates energy throughout the motion.
  */
 export default createSimulation({
   config: { INITIAL_INPUTS, INPUT_FIELDS, SimInfoMapper },
@@ -57,19 +57,8 @@ export default createSimulation({
     );
 
     world.add(
-      // Sliding friction of fixed magnitude, opposing motion and never
-      // reversing it: a body at rest stays at rest instead of jittering.
-      CustomForce(
-        (body, ctx) => {
-          const damping = ctx.inputs.bobDamping;
-          const vx = body.state.velocity.x;
-          if (damping <= 0 || Math.abs(vx) < 1e-4) return null;
-
-          const stoppingForce = (Math.abs(vx) * body.params.mass) / ctx.dt;
-          return { x: -Math.sign(vx) * Math.min(damping, stoppingForce), y: 0 };
-        },
-        { label: "friction" }
-      ),
+      // The control is a viscous coefficient in N·s/m: F = −c·v.
+      Damping({ bodies: block, c: () => inputs.bobDamping }),
 
       LockAxis(block, { y: GROUND_Y }),
 
