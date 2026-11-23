@@ -25,7 +25,7 @@ pre-commit runs `scripts/check-package-lock.js` and lint-staged. Node >= 24 (see
 - **Never edit `version` in package.json** — semantic-release owns it. PR titles
   must be conventional commits (`feat:`, `fix:`, `ci:` …); the squashed title is the changelog.
 - **`routes.js` at the repo root is generated** — site-seo-kit (`npm run generate:seo`,
-  configured in `site-seo-kit.config.mjs`) rewrites it and writes `public/sitemap.xml`,
+  configured in `site-seo-kit.config.mjs`) rewrites it and writes `public/sitemap-main.xml`,
   `public/robots.txt`, `public/feed.xml` (Atom), `public/llms.txt`, `public/llms-full.txt`
   and the IndexNow key file. It runs before every `next build`; all are build
   output — don't hand-edit them (change the config instead).

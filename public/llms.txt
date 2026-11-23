@@ -138,5 +138,5 @@ PhysicsHub hosts 17 browser-based physics simulations built on a custom, in-hous
 
 ## Optional
 - [Full simulation context](https://physicshub.github.io/llms-full.txt): Concepts, controls, and formulas for every indexed simulation.
-- [Sitemap](https://physicshub.github.io/sitemap.xml)
+- [Sitemap](https://physicshub.github.io/sitemap-main.xml)
 - [Atom feed](https://physicshub.github.io/feed.xml)

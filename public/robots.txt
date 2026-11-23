@@ -76,7 +76,7 @@ Disallow: /blog/create
 Disallow: /simulations/test
 Disallow: /account
 
-Sitemap: https://physicshub.github.io/sitemap.xml
+Sitemap: https://physicshub.github.io/sitemap-main.xml
 
 # Atom feed: https://physicshub.github.io/feed.xml
 # LLM context: https://physicshub.github.io/llms.txt

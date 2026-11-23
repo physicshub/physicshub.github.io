@@ -1,4 +1,4 @@
-// site-seo-kit (https://github.com/mattqdev/site-seo-kit): sitemap.xml, routes.js,
+// site-seo-kit (https://github.com/mattqdev/site-seo-kit): sitemap-main.xml, routes.js,
 // robots.txt, feed.xml, llms.txt + llms-full.txt and the IndexNow key file, written
 // by `npm run generate:seo` before every build. Data imports stay inside the
 // functions so `submit` / `indexnow` / `doctor` never load the app.
@@ -101,7 +101,8 @@ export default {
     manifest: "routes.js",
   },
 
-  sitemap: true,
+  // Not "sitemap.xml": Search Console's scheduled fetch of that exact name keeps failing ("Couldn't fetch") on *.github.io, a renamed file is fetched fine.
+  sitemap: { file: "sitemap-main.xml" },
 
   robots: {
     aiCrawlers: "allow",
