@@ -325,7 +325,15 @@ const simulationOverviews = {
   test: {
     intro:
       "A deliberately heavy scene that spawns hundreds of interacting bodies at once. It is a benchmark for the rendering and physics loop, not a physics lesson — use it to see how many bodies your device can integrate and draw while holding a smooth frame rate.",
-    controls: ["Number of bodies", "Gravity"],
+    controls: [
+      "Number of bodies",
+      "Gravity",
+      "Base diameter",
+      "Base mass",
+      "Restitution",
+      "Friction coefficient",
+      "Enable trail",
+    ],
     concepts: [
       "Fixed-timestep simulation loops",
       "Frame rate and rendering budget",

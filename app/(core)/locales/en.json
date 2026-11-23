@@ -508,5 +508,13 @@
   "Pause previews": "Pause previews",
   "Three equal masses chasing each other along a figure eight.": "Three equal masses chasing each other along a figure eight.",
   "Projectile": "Projectile",
-  "A projectile launched at a new angle each time, with no drag.": "A projectile launched at a new angle each time, with no drag."
+  "A projectile launched at a new angle each time, with no drag.": "A projectile launched at a new angle each time, with no drag.",
+  "Mean frame time": "Mean frame time",
+  "P95 frame time": "P95 frame time",
+  "Slow frames (>33.3 ms)": "Slow frames (>33.3 ms)",
+  "Sampled frames": "Sampled frames",
+  "Bodies": "Bodies",
+  "Candidate pairs per step": "Candidate pairs per step",
+  "Base diameter": "Base diameter",
+  "Base mass": "Base mass"
 }
